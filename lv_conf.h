@@ -22,6 +22,10 @@
 #include "my_include.h"
 #endif
 
+// #ifdef(__ASSEMBLY__)
+#include "lv_conf_my.h" // Note Shane
+// #endif
+
 /*====================
    COLOR SETTINGS
  *====================*/
@@ -478,7 +482,8 @@
 /*Support bidirectional texts. Allows mixing Left-to-Right and Right-to-Left texts.
  *The direction will be processed according to the Unicode Bidirectional Algorithm:
  *https://www.w3.org/International/articles/inline-bidi-markup/uba-basics*/
-#define LV_USE_BIDI 0
+// #define LV_USE_BIDI 0
+#define LV_USE_BIDI 1 // NOTE Shane
 #if LV_USE_BIDI
     /*Set the default direction. Supported values:
     *`LV_BASE_DIR_LTR` Left-to-Right
@@ -489,7 +494,8 @@
 
 /*Enable Arabic/Persian processing
  *In these languages characters should be replaced with an other form based on their position in the text*/
-#define LV_USE_ARABIC_PERSIAN_CHARS 0
+// #define LV_USE_ARABIC_PERSIAN_CHARS 0
+#define LV_USE_ARABIC_PERSIAN_CHARS 1  // NOTE Shane
 
 /*==================
  * WIDGETS
@@ -857,7 +863,8 @@
  *==================*/
 
 /*Use SDL to open window on PC and handle mouse and keyboard*/
-#define LV_USE_SDL              1
+// #define LV_USE_SDL              0
+#define LV_USE_SDL              1 // NOTE Shane
 #if LV_USE_SDL
     #define LV_SDL_INCLUDE_PATH     <SDL2/SDL.h>
     #define LV_SDL_RENDER_MODE      LV_DISPLAY_RENDER_MODE_DIRECT   /*LV_DISPLAY_RENDER_MODE_DIRECT is recommended for best performance*/

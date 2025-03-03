@@ -28,8 +28,8 @@
 /**********************
  *  STATIC PROTOTYPES
  **********************/
-static lv_display_t * hal_init(int32_t w, int32_t h);
 
+ 
 /**********************
  *  STATIC VARIABLES
  **********************/
@@ -63,6 +63,59 @@ extern void freertos_main(void);
 /**********************
  *   GLOBAL FUNCTIONS
  **********************/
+#include "drivers/wayland/lv_wayland.h"
+
+
+uint16_t window_width =  800;
+uint16_t window_height = 600;
+
+bool fullscreen = false;
+bool maximize = false;
+
+/* Currently, the wayland driver calls lv_timer_handler internaly */
+void lv_linux_run_loop(void)
+{
+
+    bool completed;
+
+    /* Handle LVGL tasks */
+    while (1) {
+
+        completed = lv_wayland_timer_handler();
+
+        if (completed) {
+            /* wait only if the cycle was completed */
+            usleep(LV_DEF_REFR_PERIOD * 1000);
+        }
+
+        /* Run until the last window closes */
+        if (!lv_wayland_window_is_open(NULL)) {
+            break;
+        }
+    }
+
+}
+
+void lv_linux_disp_init(void)
+{
+    lv_display_t *disp;
+    lv_group_t *g;
+
+    disp = lv_wayland_window_create(window_width, window_height,
+            "LVGL Simulator", NULL);
+
+    if (fullscreen) {
+            lv_wayland_window_set_fullscreen(disp, fullscreen);
+    } else if (maximize) {
+            lv_wayland_window_set_maximized(disp, maximize);
+    }
+
+    g = lv_group_create();
+    lv_group_set_default(g);
+    lv_indev_set_group(lv_wayland_get_keyboard(disp), g);
+    lv_indev_set_group(lv_wayland_get_pointeraxis(disp), g);
+
+}
 
 int main(int argc, char **argv)
 {
@@ -72,19 +125,24 @@ int main(int argc, char **argv)
   /*Initialize LVGL*/
   lv_init();
 
-  /*Initialize the HAL (display, input devices, tick) for LVGL*/
-  hal_init(320, 480);
+  // lv_wayland_init();
+  lv_linux_disp_init();
+
 
   #if LV_USE_OS == LV_OS_NONE
  
-  lv_demo_widgets();
+//   lv_demo_widgets();
 
-  while(1) {
-    /* Periodically call the lv_task handler.
-     * It could be done in a timer interrupt or an OS task too.*/
-    lv_timer_handler();
-    usleep(5 * 1000);
-  }
+  lv_demo_ebike();
+
+  // while(1) {
+  //   /* Periodically call the lv_task handler.
+  //    * It could be done in a timer interrupt or an OS task too.*/
+  //   lv_timer_handler();
+  //   usleep(5 * 1000);
+  // }
+
+  lv_linux_run_loop();
 
   #elif LV_USE_OS == LV_OS_FREERTOS
 
@@ -100,35 +158,3 @@ int main(int argc, char **argv)
  *   STATIC FUNCTIONS
  **********************/
 
-/**
- * Initialize the Hardware Abstraction Layer (HAL) for the LVGL graphics
- * library
- */
-static lv_display_t * hal_init(int32_t w, int32_t h)
-{
-
-  lv_group_set_default(lv_group_create());
-
-  lv_display_t * disp = lv_sdl_window_create(w, h);
-
-  lv_indev_t * mouse = lv_sdl_mouse_create();
-  lv_indev_set_group(mouse, lv_group_get_default());
-  lv_indev_set_display(mouse, disp);
-  lv_display_set_default(disp);
-
-  LV_IMAGE_DECLARE(mouse_cursor_icon); /*Declare the image file.*/
-  lv_obj_t * cursor_obj;
-  cursor_obj = lv_image_create(lv_screen_active()); /*Create an image object for the cursor */
-  lv_image_set_src(cursor_obj, &mouse_cursor_icon);           /*Set the image source*/
-  lv_indev_set_cursor(mouse, cursor_obj);             /*Connect the image  object to the driver*/
-
-  lv_indev_t * mousewheel = lv_sdl_mousewheel_create();
-  lv_indev_set_display(mousewheel, disp);
-  lv_indev_set_group(mousewheel, lv_group_get_default());
-
-  lv_indev_t * kb = lv_sdl_keyboard_create();
-  lv_indev_set_display(kb, disp);
-  lv_indev_set_group(kb, lv_group_get_default());
-
-  return disp;
-}
