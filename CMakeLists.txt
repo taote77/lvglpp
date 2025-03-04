@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
-# project(lvgl C CXX)
 
 project(lvglpp C CXX)
+
+add_compile_options(-fPIC)
 
 
 # Main include files of the project
@@ -46,11 +47,22 @@ set(WAYLAND_SRC
     ${PROJECT_SOURCE_DIR}/lvgl/src/drivers/wayland/lv_wayland.h
 )
 
-add_executable(${PROJECT_NAME}
-    ${PROJECT_SOURCE_DIR}/main/src/main.c
-    ${PROJECT_SOURCE_DIR}/main/src/mouse_cursor_icon.c
+# add_executable(${PROJECT_NAME}
+#     ${PROJECT_SOURCE_DIR}/main/src/main.c
+#     ${PROJECT_SOURCE_DIR}/main/src/mouse_cursor_icon.c
+#     ${WAYLAND_SRC}
+# )
+
+
+
+add_library(${PROJECT_NAME}  SHARED 
+    # ${PROJECT_SOURCE_DIR}/main/src/main.c
+    # ${PROJECT_SOURCE_DIR}/main/src/mouse_cursor_icon.c
     ${WAYLAND_SRC}
+    core/application.h
+    core/application.cc
 )
+
 
 
 target_link_libraries(${PROJECT_NAME} 
@@ -166,3 +178,7 @@ else()
     message(STATUS "AddressSanitizer disabled")
 endif()
 endif()
+
+
+
+add_subdirectory(test)

@@ -1,13 +1,11 @@
 
 #define LV_USE_WAYLAND 1
 
-
-
 #define LV_HOR_RES_MAX 1024
 #define LV_VER_RES_MAX 600
 
-#define LV_SIM_WINDOW_WIDTH     800
-#define LV_SIM_WINDOW_HEIGHT 	480
+#define LV_SIM_WINDOW_WIDTH 800
+#define LV_SIM_WINDOW_HEIGHT 480
 
 // #define LV_USE_LINUX_FBDEV	0
 // #define LV_USE_LINUX_DRM	0
@@ -16,11 +14,13 @@
 // option
 #define LV_WAYLAND_WINDOW_DECORATIONS 1
 
-
-#define LV_WAYLAND_WL_SHELL  1
-
+#define LV_WAYLAND_WL_SHELL 1
 
 #define LV_USE_DEMO_EBIKE 1
 
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 600
+
 // #define LV_USE_BIDI 1
+
 // #define LV_USE_ARABIC_PERSIAN_CHARS    1
