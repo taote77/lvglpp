@@ -86,8 +86,8 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
 
 target_link_libraries(${PROJECT_NAME}
     lvgl
-    lvgl::examples
-    lvgl::demos
+    # lvgl::examples
+    # lvgl::demos
     lvgl::thorvg
     ${SDL2_LIBRARIES}
     m
