@@ -1,9 +1,9 @@
 #ifndef LV_DEMO_EBIKE_HOME_H
 #define LV_DEMO_EBIKE_HOME_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+// #ifdef __cplusplus
+// extern "C" {
+// #endif
 
 /*********************
  *      INCLUDES
@@ -42,8 +42,8 @@ void lv_demo_ebike_home_create(lv_obj_t *parent);
  *      MACROS
  **********************/
 
-#ifdef __cplusplus
-} /*extern "C"*/
-#endif
+// #ifdef __cplusplus
+// } /*extern "C"*/
+// #endif
 
 #endif /*LV_DEMO_EBIKE_HOME_H*/

@@ -6,9 +6,9 @@
 #ifndef LV_DEMO_EBIKE_STATS_H
 #define LV_DEMO_EBIKE_STATS_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+// #ifdef __cplusplus
+// extern "C" {
+// #endif
 
 /*********************
  *      INCLUDES
@@ -43,7 +43,7 @@ void lv_demo_ebike_stats_deinit(void);
  * Create the statistic page
  * @param parent    the parent of the statistics page
  */
-void lv_demo_ebike_stats_create(lv_obj_t * parent);
+void lv_demo_ebike_stats_create(lv_obj_t *parent);
 
 #endif /*LV_USE_DEMO_EBIKE*/
 
@@ -51,8 +51,8 @@ void lv_demo_ebike_stats_create(lv_obj_t * parent);
  *      MACROS
  **********************/
 
-#ifdef __cplusplus
-} /*extern "C"*/
-#endif
+// #ifdef __cplusplus
+// } /*extern "C"*/
+// #endif
 
 #endif /*LV_DEMO_EBIKE_STATS_H*/

@@ -3,4 +3,6 @@
 
 #include "lvgl/lvgl.h"
 
-#ifdef WINDOW_FRAMEBUF_H
+// create a framebuffer device
+
+#endif WINDOW_FRAMEBUF_H

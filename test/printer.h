@@ -2,9 +2,9 @@
 #ifndef LV_DEMO_EBIKE_H
 #define LV_DEMO_EBIKE_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+// #ifdef __cplusplus
+// extern "C" {
+// #endif
 
 /*********************
  *      INCLUDES
@@ -13,16 +13,14 @@ extern "C" {
 
 /*Testing of dependencies*/
 #if LV_USE_BIDI == 0
-#error "BiDirectional text support is required. Enable it in lv_conf.h (LV_USE_BIDI 1)"
+#  error "BiDirectional text support is required. Enable it in lv_conf.h (LV_USE_BIDI 1)"
 #endif
 
 #if LV_USE_ARABIC_PERSIAN_CHARS == 0
-#error "Arabic/Perisan character processing is required. Enable it in lv_conf.h (LV_USE_ARABIC_PERSIAN_CHARS 1)"
+#  error "Arabic/Perisan character processing is required. Enable it in lv_conf.h (LV_USE_ARABIC_PERSIAN_CHARS 1)"
 #endif
 
-
-void lv_demo_ebike(void);
-
+void lv_demo_ebike(lv_obj_t *main_cont);
 
 /**********************
  * GLOBAL VARIABLES
@@ -32,9 +30,8 @@ void lv_demo_ebike(void);
  *      MACROS
  **********************/
 
-
-#ifdef __cplusplus
-} /*extern "C"*/
-#endif
+// #ifdef __cplusplus
+// } /*extern "C"*/
+// #endif
 
 #endif /*LV_DEMO_EBIKE_H*/

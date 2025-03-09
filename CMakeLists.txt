@@ -150,7 +150,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
         -Wextra
         -Wformat-security
         -Wmaybe-uninitialized
-        # -Wmissing-prototypes
+        -Wmissing-prototypes
         -Wpointer-arith
         -Wmultichar
         -Wno-pedantic # ignored for now, we convert functions to pointers for properties table.

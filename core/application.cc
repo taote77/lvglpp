@@ -2,9 +2,10 @@
 
 namespace lvglpp {
 
-Application::Application() {}
+Application::Application() { }
 
-void Application::setup() {}
+void Application::setup() { }
 
-void Application::loop() {}
+void Application::exec() { }
+
 } // namespace lvglpp

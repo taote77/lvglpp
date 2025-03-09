@@ -3,13 +3,14 @@
 
 namespace lvglpp {
 
-class Application {
+class Application
+{
 public:
-  Application();
+    Application();
 
-  void setup();
+    void setup();
 
-  void loop();
+    void exec();
 
 private:
 };
