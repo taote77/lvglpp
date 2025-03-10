@@ -22,6 +22,8 @@ target_sources(${LVGLPP_TEST} PRIVATE
     printer.cc
     home.cc
     home.h
+    Home.cc
+    Home.h
     private.h
     settings.cc
     settings.h

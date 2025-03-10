@@ -4,6 +4,9 @@ project(lvglpp C CXX)
 
 add_compile_options(-fPIC)
 
+# -DUSED_WAYLAND = ON
+add_compile_definitions(USED_WAYLAND ON)
+
 
 # Main include files of the project
 include_directories(${PROJECT_SOURCE_DIR}/main/inc)
@@ -53,14 +56,16 @@ set(WAYLAND_SRC
 #     ${WAYLAND_SRC}
 # )
 
+file(GLOB_RECURSE TOOLS_SRC ${CMAKE_CURRENT_SOURCE_DIR}/core/*.c *.cpp *.hpp *.h)
 
 
 add_library(${PROJECT_NAME}  SHARED 
     # ${PROJECT_SOURCE_DIR}/main/src/main.c
     # ${PROJECT_SOURCE_DIR}/main/src/mouse_cursor_icon.c
     ${WAYLAND_SRC}
-    core/application.h
-    core/application.cc
+    ${TOOLS_SRC}
+    # core/application.h
+    # core/application.cc
 )
 
 
@@ -83,6 +88,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
     LV_CONF_INCLUDE_SIMPLE
 )
 
+find_package(Boost REQUIRED COMPONENTS log filesystem)
 
 target_link_libraries(${PROJECT_NAME}
     lvgl
@@ -90,6 +96,8 @@ target_link_libraries(${PROJECT_NAME}
     # lvgl::demos
     lvgl::thorvg
     ${SDL2_LIBRARIES}
+    ${Boost_LIBRARIES}
+    sqlite3
     m
     pthread
 )
@@ -141,29 +149,29 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "Debug mode enabled")
 
     target_compile_options(lvgl PRIVATE
-        -pedantic-errors
-        -Wall
-        -Wclobbered
-        -Wdeprecated
-        -Wdouble-promotion
-        -Wempty-body
-        -Wextra
-        -Wformat-security
-        -Wmaybe-uninitialized
-        -Wmissing-prototypes
-        -Wpointer-arith
-        -Wmultichar
-        -Wno-pedantic # ignored for now, we convert functions to pointers for properties table.
-        -Wreturn-type
-        -Wshadow
-        -Wshift-negative-value
-        -Wsizeof-pointer-memaccess
-        -Wtype-limits
-        -Wundef
-        -Wuninitialized
-        -Wunreachable-code
-        -Wfloat-conversion
-        -Wstrict-aliasing
+        # -pedantic-errors
+        # -Wall
+        # -Wclobbered
+        # -Wdeprecated
+        # -Wdouble-promotion
+        # -Wempty-body
+        # -Wextra
+        # -Wformat-security
+        # -Wmaybe-uninitialized
+        # -Wmissing-prototypes
+        # -Wpointer-arith
+        # -Wmultichar
+        # -Wno-pedantic # ignored for now, we convert functions to pointers for properties table.
+        # -Wreturn-type
+        # -Wshadow
+        # -Wshift-negative-value
+        # -Wsizeof-pointer-memaccess
+        # -Wtype-limits
+        # -Wundef
+        # -Wuninitialized
+        # -Wunreachable-code
+        # -Wfloat-conversion
+        # -Wstrict-aliasing
     )
 
 if (ASAN)
