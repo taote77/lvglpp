@@ -1,7 +1,7 @@
 
 cmake_minimum_required(VERSION 3.16)
 
-
+project(lvgl_wrapper)
 
 if (CMAKE_SYSTEM_PROCESSOR MATCHES "arm" OR CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
     add_definitions(-DUSED_FRAMEBUFF)
@@ -15,6 +15,6 @@ else ()
 endif ()
 
 
-add_subdirectory(lvglpp)
+add_subdirectory(sdk)
 
 add_subdirectory(test)

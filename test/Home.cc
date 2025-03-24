@@ -11,7 +11,7 @@ void Home::onCreate(void *arg)
 
     _label = std::make_shared<widgets::ConsumeText>("Network Preparing...", CLR_PRIMARY_BLACK,
                                                     getRootWindow(),
-                                                    widgets::ConsumeText::HeadingBold);
+                                                    widgets::ConsumeText::FontSize32);
 
     // _label.reset(new widgets::ConsumeText("Network Preparing...", CLR_PRIMARY_BLACK,
     //                                       getRootWindow(), widgets::ConsumeText::HeadingBold));
