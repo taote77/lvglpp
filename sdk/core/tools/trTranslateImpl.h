@@ -1,14 +1,5 @@
 /**************************************************************************
 
-Copyright:Copyright © 2022 HeyGears. All rights reserved
-
-Author: LnJan
-
-Date:2022-03-21
-
-Class:${CLASS}
-
-Description:中英文转换实现类
 
 **************************************************************************/
 
@@ -18,42 +9,35 @@ Description:中英文转换实现类
 #include <string>
 #include <map>
 
-namespace heygears
+namespace heygears {
+namespace tools {
+class trTranslateImpl
 {
-    namespace tools
-    {
-        class trTranslateImpl
-        {
-        public:
-            enum LanguageType
-            {
-                English,
-                Chinese
-            };
+public:
+    enum LanguageType { English, Chinese };
 
-            trTranslateImpl(const trTranslateImpl &) = delete;
+    trTranslateImpl(const trTranslateImpl &) = delete;
 
-            trTranslateImpl &operator=(const trTranslateImpl &) = delete;
+    trTranslateImpl &operator=(const trTranslateImpl &) = delete;
 
-            static trTranslateImpl *getInstance(LanguageType type);
+    static trTranslateImpl *getInstance(LanguageType type);
 
-            /**
-             * 语言转换
-             * @param src_text
-             * @return
-             */
-            std::string translate(const std::string &src_text);
+    /**
+     * 语言转换
+     * @param src_text
+     * @return
+     */
+    std::string translate(const std::string &src_text);
 
-        private:
-            trTranslateImpl(LanguageType type);
+private:
+    trTranslateImpl(LanguageType type);
 
-            void init(LanguageType type);
+    void init(LanguageType type);
 
-            static std::map<LanguageType, trTranslateImpl *> instance_;
-            std::map<std::string, std::string> translate_map_;
-        };
-    }
-}
+    static std::map<LanguageType, trTranslateImpl *> instance_;
+    std::map<std::string, std::string> translate_map_;
+};
+} // namespace tools
+} // namespace heygears
 
-
-#endif //HEYGEARS_LVGL_DEMO_TRENGLISHIMPL_H
+#endif // HEYGEARS_LVGL_DEMO_TRENGLISHIMPL_H

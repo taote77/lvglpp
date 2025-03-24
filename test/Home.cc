@@ -13,9 +13,6 @@ void Home::onCreate(void *arg)
                                                     getRootWindow(),
                                                     widgets::ConsumeText::FontSize32);
 
-    // _label.reset(new widgets::ConsumeText("Network Preparing...", CLR_PRIMARY_BLACK,
-    //                                       getRootWindow(), widgets::ConsumeText::HeadingBold));
-
     _label->setTextAlign(LV_TEXT_ALIGN_CENTER);
     _label->setAligment(LV_ALIGN_TOP_MID, 0, 424);
 }

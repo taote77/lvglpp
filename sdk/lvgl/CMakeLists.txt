@@ -13,6 +13,11 @@ endif()
 
 set(LVGL_ROOT_DIR ${CMAKE_CURRENT_LIST_DIR})
 
+add_subdirectory(freetype-2)
+
+include_directories(freetype-2/include)
+
+
 if(ESP_PLATFORM)
   include(${CMAKE_CURRENT_LIST_DIR}/env_support/cmake/esp.cmake)
 elseif(ZEPHYR_BASE)
@@ -22,6 +27,9 @@ elseif(MICROPY_DIR)
 else()
   include(${CMAKE_CURRENT_LIST_DIR}/env_support/cmake/custom.cmake)
 endif()
+
+
+target_link_libraries(lvgl PUBLIC freetype)
 
 #[[
     unfortunately CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS does not work for global data. 
@@ -39,3 +47,4 @@ if (MSVC)
     PRIVATE LV_ATTRIBUTE_EXTERN_DATA=__declspec\(dllexport\)
   )
 endif()
+
