@@ -9,8 +9,10 @@
 #include <thread>
 
 namespace heygears::sys {
+
 std::string Application::application_dir_path_;
 std::string Application::application_name_;
+
 Application::LanguageType Application::language_type_ = Application::Chinese;
 
 Application::Application(int argc, char *argv[])

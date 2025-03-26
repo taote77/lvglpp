@@ -1,48 +1,28 @@
-/**************************************************************************
-
-Copyright:Copyright © 2022 HeyGears. All rights reserved
-
-Author: LnJan
-
-Date:2022-06-20
-
-Class:${CLASS}
-
-Description:
-
-**************************************************************************/
-
-#ifndef ULTRACORE_FOR_MAKERS_GIFIMAGE_H
-#define ULTRACORE_FOR_MAKERS_GIFIMAGE_H
+#ifndef LV_GIF_IMAGE_H
+#define LV_GIF_IMAGE_H
 
 #include "BaseItem.h"
 
 #include <string>
 
-namespace heygears
+namespace heygears {
+namespace widgets {
+
+class GifImage : public BaseItem
 {
-    namespace widgets
-    {
+public:
+    explicit GifImage(const std::string &path, BaseItem *parent = nullptr);
 
-        class GifImage : public BaseItem
-        {
-        public:
-            explicit GifImage(const std::string &path, BaseItem *parent = nullptr);
+    void setImageSrcPath(const std::string &path);
 
-            void setImageSrcPath(const std::string &path);
+    const std::string &getImageSrcPath() const { return src_path_; }
 
-            const std::string &getImageSrcPath() const
-            {
-                return src_path_;
-            }
+protected:
+private:
+    std::string src_path_;
+};
 
-        protected:
+} // namespace widgets
+} // namespace heygears
 
-        private:
-            std::string src_path_;
-        };
-
-    }
-} // widgets
-
-#endif //ULTRACORE_FOR_MAKERS_GIFIMAGE_H
+#endif // LV_GIF_IMAGE_H

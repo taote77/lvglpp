@@ -4,22 +4,20 @@
 #define LVGLPP_WAYLANDAPPLICATION_H
 #ifdef USED_WAYLAND
 
-#include "Application.h"
-namespace heygears
+#  include "Application.h"
+namespace heygears {
+namespace sys {
+class WaylandApplication : public Application
 {
-    namespace sys
-    {
-        class WaylandApplication:public Application
-        {
-        public:
-            WaylandApplication(int argc, char *argv[]);
+public:
+    WaylandApplication(int argc, char *argv[]);
 
-            virtual bool initApp() override;
+    virtual bool initApp() override;
 
-            virtual void exit(int c) override;
-        };
+    virtual void exit(int c) override;
+};
 
-    } // heygears
-} // sys
+} // namespace sys
+} // namespace heygears
 #endif
-#endif //LVGLPP_WAYLANDAPPLICATION_H
+#endif // LVGLPP_WAYLANDAPPLICATION_H

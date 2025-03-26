@@ -3,8 +3,8 @@
 #define LINUXFRAMEBUF_APPLICATION_H
 #ifdef USED_FRAMEBUFF
 
-#include "Application.h"
-#include "lvgl.h"
+#  include "Application.h"
+#  include "lvgl.h"
 
 namespace heygears {
 namespace sys {
@@ -23,13 +23,13 @@ public:
 
 protected:
 private:
-    void          framebufInit();
+    void framebufInit();
     lv_display_t *_disp;
 
     // lv_indev_t *mouse_indev_;
 };
-}
-} // namespace heygears::sys
+} // namespace sys
+} // namespace heygears
 #endif
 
 #endif // LINUXFRAMEBUF_APPLICATION_H

@@ -1,52 +1,38 @@
-/**************************************************************************
 
-Copyright:Copyright  2022 HeyGears. All rights reserved
-
-Author: Lhyang hli3@heygears.com
-
-Date:2022-11-29
-
-Class:ScrollItem
-
-Description:
-
-**************************************************************************/
-
-#ifndef ULTRACORE_REFLEX_SCROLLITEM_H
-#define ULTRACORE_REFLEX_SCROLLITEM_H
+#ifndef LV_SCROLL_ITEM_H
+#define LV_SCROLL_ITEM_H
 
 #include "BaseItem.h"
-namespace heygears
+
+namespace heygears {
+namespace widgets {
+
+class ScrollItem : public BaseItem
 {
-    namespace widgets
-    {
-        class ScrollItem : public BaseItem
-        {
-        public:
-            ScrollItem(BaseItem *parent);
+public:
+    ScrollItem(BaseItem *parent);
 
-            void setScrollable(bool b);
+    void setScrollable(bool b);
 
-            bool getScrollable();
+    bool getScrollable();
 
-            void setFlickable(bool b);
+    void setFlickable(bool b);
 
-            bool getFlickable();
+    bool getFlickable();
 
-            void setScrollBarVisible(bool b);
+    void setScrollBarVisible(bool b);
 
-            void setScrollSnapping(lv_scroll_snap_t l);
+    void setScrollSnapping(lv_scroll_snap_t l);
 
-            lv_coord_t getScrollSnapX();
+    lv_coord_t getScrollSnapX();
 
-            void setScrollToX(lv_coord_t x, bool animEnable);
+    void setScrollToX(lv_coord_t x, bool animEnable);
 
-            lv_coord_t getScrollSnapY();
+    lv_coord_t getScrollSnapY();
 
-            void setScrollToY(lv_coord_t y, bool animEnable);
-        };
-    }
-}
+    void setScrollToY(lv_coord_t y, bool animEnable);
+};
+} // namespace widgets
+} // namespace heygears
 
-
-#endif //ULTRACORE_REFLEX_SCROLLITEM_H
+#endif // LV_SCROLL_ITEM_H

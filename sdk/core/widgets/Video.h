@@ -1,62 +1,42 @@
-/**************************************************************************
-
-Copyright:Copyright  2023 HeyGears. All rights reserved
-
-Author: Lhyang hli3@heygears.com
-
-Date:2023-05-29
-
-Class:Video
-
-Description:
-
-**************************************************************************/
-
-#ifndef ULTRACORE_REFLEX_VIDEO_H
-#define ULTRACORE_REFLEX_VIDEO_H
+#ifndef LV_VIDEO_H
+#define LV_VIDEO_H
 
 #if LV_USE_FFMPEG == 1
 
-#include "BaseItem.h"
-#include <string>
+#  include "BaseItem.h"
+#  include <string>
 
-namespace heygears
+namespace heygears {
+namespace widgets {
+
+class Video : public BaseItem
 {
-    namespace widgets
-    {
+public:
+    explicit Video(const std::string &path, BaseItem *parent = nullptr);
 
-        class Video : public BaseItem
-        {
-        public:
-            explicit Video(const std::string& path, BaseItem *parent = nullptr);
+    void setVideoSrcPath(const std::string &path);
 
-            void setVideoSrcPath(const std::string &path);
+    void setVideoAutoRestart(bool b);
 
-            void setVideoAutoRestart(bool b);
+    void setVideoCmd(lv_ffmpeg_player_cmd_t cmd);
 
-            void setVideoCmd(lv_ffmpeg_player_cmd_t cmd);
+    const std::string &getVideoSrcPath() const { return src_path_; }
 
-            const std::string &getVideoSrcPath() const
-            {
-                return src_path_;
-            }
+    void setVisible(bool visible) override;
 
-            void setVisible(bool visible) override;
+    ~Video() override;
 
-            ~Video() override;
+protected:
+private:
+    std::string src_path_;
 
-        protected:
+    bool visible_ = true;
 
-        private:
-            std::string src_path_;
+    lv_timer_t *lv_time_update_visible_ = nullptr;
+};
 
-            bool visible_ = true;
+} // namespace widgets
+} // namespace heygears
 
-            lv_timer_t *lv_time_update_visible_= nullptr;
-        };
-
-    } // heygears
-} // widgets
-
-#endif //LV_USE_FFMPEG
-#endif //ULTRACORE_REFLEX_VIDEO_H
+#endif // LV_USE_FFMPEG
+#endif // LV_VIDEO_H

@@ -2,11 +2,13 @@
 #define _HOME_H
 
 #include "core/sys/BaseActivity.h"
-#include "core/widgets/ConsumeText.h"
+#include "core/widgets/LvText.h"
+#include "core/widgets/LvButton.h"
 #include "core/sys/Event.h"
 #include <memory>
 
 using namespace heygears;
+
 class Home : public ::sys::BaseActivity
 {
 public:
@@ -21,7 +23,8 @@ protected:
     void onDestroy() override;
 
 private:
-    std::shared_ptr<widgets::ConsumeText> _label;
+    std::shared_ptr<widgets::LvText> _label;
+    std::shared_ptr<widgets::LvButton> _btn;
 };
 
-#endif
+#endif // _HOME_H

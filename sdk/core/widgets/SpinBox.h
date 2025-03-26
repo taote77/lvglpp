@@ -1,45 +1,30 @@
-/**************************************************************************
 
-Copyright:Copyright © 2022 HeyGears. All rights reserved
-
-Author: LnJan
-
-Date:2022-06-06
-
-Class:${CLASS}
-
-Description:
-
-**************************************************************************/
-
-#ifndef ULTRACORE_FOR_MAKERS_SPINBOX_H
-#define ULTRACORE_FOR_MAKERS_SPINBOX_H
+#ifndef LVPP_SPINBOX_H
+#define LVPP_SPINBOX_H
 
 #include "BaseItem.h"
 
-namespace heygears
+namespace heygears {
+namespace widgets {
+
+class SpinBox : public BaseItem
 {
-    namespace widgets
-    {
+public:
+    explicit SpinBox(BaseItem *parent = nullptr);
 
-        class SpinBox : public BaseItem
-        {
-        public:
-            explicit SpinBox(BaseItem *parent = nullptr);
+    void setRange(int min, int max);
 
-            void setRange(int min, int max);
+    void setDigitFormat(int total, int intNum);
 
-            void setDigitFormat(int total, int intNum);
+    void setVal(int val);
 
-            void setVal(int val);
+    int getVal() const;
 
-            int getVal() const;
+private:
+    lv_style_t font_style_{};
+};
 
-        private:
-            lv_style_t font_style_{};
-        };
+} // namespace widgets
+} // namespace heygears
 
-    }
-} // widgets
-
-#endif //ULTRACORE_FOR_MAKERS_SPINBOX_H
+#endif // LVPP_SPINBOX_H

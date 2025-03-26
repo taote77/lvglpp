@@ -9,12 +9,13 @@ Home::~Home() { }
 void Home::onCreate(void *arg)
 {
 
-    _label = std::make_shared<widgets::ConsumeText>("Network Preparing...", CLR_PRIMARY_BLACK,
-                                                    getRootWindow(),
-                                                    widgets::ConsumeText::FontSize32);
+    _label = std::make_shared<widgets::LvText>("Network Preparing...", CLR_PRIMARY_BLACK,
+                                               getRootWindow(), widgets::LvText::FontSize32);
 
     _label->setTextAlign(LV_TEXT_ALIGN_CENTER);
     _label->setAligment(LV_ALIGN_TOP_MID, 0, 424);
+
+    // _btn
 }
 
 void Home::onNotifyUI(const sys::Event &evt) { }

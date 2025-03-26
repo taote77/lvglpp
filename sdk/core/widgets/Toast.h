@@ -1,43 +1,26 @@
-/**************************************************************************
 
-Copyright:Copyright © 2022 HeyGears. All rights reserved
-
-Author: LnJan
-
-Date:2022-07-29
-
-Class:${CLASS}
-
-Description:
-
-**************************************************************************/
-
-#ifndef ULTRACORE_FOR_MAKERS_TOAST_H
-#define ULTRACORE_FOR_MAKERS_TOAST_H
+#ifndef LV_TOAST_H
+#define LV_TOAST_H
 #include "BaseItem.h"
 #include "Image.h"
-#include "ConsumeText.h"
+#include "LvText.h"
 #include <memory>
-namespace heygears
+
+namespace heygears {
+namespace widgets {
+class Toast : public BaseItem
 {
-    namespace widgets
-    {
-        class Toast:public BaseItem
-        {
-        public:
-            enum IconType{
-                Succeed,
-                Error,
-                Warn
-            };
-            explicit Toast();
-            void setMessage(const std::string& str_msg,IconType type);
-        private:
-            std::shared_ptr<widgets::Image> icon_;
-            std::shared_ptr<ConsumeText> desc_;
-        };
+public:
+    enum IconType { Succeed, Error, Warn };
+    explicit Toast();
+    void setMessage(const std::string &str_msg, IconType type);
 
-    } // heygears
-} // widgets
+private:
+    std::shared_ptr<widgets::Image> icon_;
+    std::shared_ptr<LvText> desc_;
+};
 
-#endif //ULTRACORE_FOR_MAKERS_TOAST_H
+} // namespace widgets
+} // namespace heygears
+
+#endif // LV_TOAST_H
