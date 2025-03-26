@@ -2,22 +2,58 @@
 
 #include "core/widgets/GlobalVar.h"
 
-GameActivity::GameActivity() : sys::BaseActivity() { }
+GameActivity::GameActivity() : sys::BaseActivity()
+{
+    this->getRootWindow()->setBgColor(0xffffff);
 
-GameActivity::~GameActivity() { }
+    init();
+    //
+    update();
+}
+
+GameActivity::~GameActivity()
+{
+    //
+    //
+}
 
 void GameActivity::onCreate(void *arg)
 {
-
-    _label = std::make_shared<widgets::LvText>("Network Preparing...", CLR_PRIMARY_BLACK,
-                                               getRootWindow(), widgets::LvText::FontSize32);
-
-    _label->setTextAlign(LV_TEXT_ALIGN_CENTER);
-    _label->setAligment(LV_ALIGN_TOP_MID, 0, 424);
-
-    // _btn
+    //
+    //
 }
 
-void GameActivity::onNotifyUI(const sys::Event &evt) { }
+void GameActivity::onNotifyUI(const sys::Event &evt)
+{
+    //
+    //
+}
 
-void GameActivity::onDestroy() { }
+void GameActivity::onDestroy()
+{
+    //
+    //
+}
+
+void GameActivity::init()
+{
+    _snake_body.emplace_back(Point{ 10, 10 });
+    _snake_body.emplace_back(Point{ 10, 11 });
+    _snake_body.emplace_back(Point{ 10, 12 });
+    _snake_body.emplace_back(Point{ 11, 12 });
+}
+
+void GameActivity::update()
+{
+    //
+    //
+    for (auto &point : _snake_body) {
+
+        auto box = std::make_shared<widgets::BaseItem>(this->getRootWindow());
+        box->setSize(hor_box_size, ver_box_size);
+        box->setPos(point.x * hor_box_size, point.y * ver_box_size);
+        box->setBgColor(0x000000);
+        // box->setBorderColor(lv_color_hex(0xffffff));
+        // box->setBorderWidth(1);
+    }
+}
