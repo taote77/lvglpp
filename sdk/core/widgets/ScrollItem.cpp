@@ -1,7 +1,7 @@
 
 #include "ScrollItem.h"
 
-namespace heygears {
+namespace lvglpp {
 namespace widgets {
 
 ScrollItem::ScrollItem(BaseItem *parent) : BaseItem(parent) { }
@@ -68,4 +68,4 @@ void ScrollItem::setScrollToY(lv_coord_t y, bool animEnable)
     lv_obj_scroll_to_y(getLvglItem(), y, animEnable ? LV_ANIM_ON : LV_ANIM_OFF);
 }
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp

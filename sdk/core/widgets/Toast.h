@@ -6,7 +6,7 @@
 #include "LvText.h"
 #include <memory>
 
-namespace heygears {
+namespace lvglpp {
 namespace widgets {
 class Toast : public BaseItem
 {
@@ -21,6 +21,6 @@ private:
 };
 
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp
 
 #endif // LV_TOAST_H

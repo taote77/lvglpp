@@ -9,7 +9,7 @@
 // #include "lv_timer.h"
 // #include <chrono>
 
-namespace heygears {
+namespace lvglpp {
 namespace widgets {
 template <typename T, typename T2 = ListViewDelegate<T>>
 class ListView : public ScrollItem
@@ -215,6 +215,6 @@ bool ListView<T, T2>::changeModelData(int index, const T &data)
     return true;
 }
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp
 
 #endif // LV_LISTVIEW_H

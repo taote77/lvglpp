@@ -5,7 +5,7 @@
 #  include "Video.h"
 #  include "core/log/log.h"
 
-namespace heygears {
+namespace lvglpp {
 namespace widgets {
 Video::Video(const std::string &path, BaseItem *parent) : BaseItem(ItemType::Video, parent)
 {
@@ -73,6 +73,6 @@ Video::~Video()
 }
 
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp
 
 #endif // LV_USE_FFMPEG

@@ -8,7 +8,7 @@
 #include <boost/dll.hpp>
 #include <thread>
 
-namespace heygears::sys {
+namespace lvglpp::sys {
 
 std::string Application::application_dir_path_;
 std::string Application::application_name_;
@@ -205,4 +205,4 @@ void Application::handleEvent()
     event_queue_.pop();
     Navigators::getInstance()->notifyAllUi(event_ref);
 }
-} // namespace heygears::sys
+} // namespace lvglpp::sys

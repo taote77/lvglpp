@@ -4,7 +4,8 @@
 #include "Toast.h"
 #include <string>
 #include <memory>
-namespace heygears {
+
+namespace lvglpp {
 namespace widgets {
 
 class ToastManager
@@ -24,6 +25,6 @@ private:
 };
 
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp
 
 #endif // LV_TOAST_MANAGER_H

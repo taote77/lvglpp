@@ -11,7 +11,7 @@ Description:一个空白页的基础实现界面
 
 #include "Activity.h"
 
-namespace heygears {
+namespace lvglpp {
 namespace sys {
 
 class BaseActivity : public Activity
@@ -60,6 +60,6 @@ private:
     widgets::BaseItem *window_ptr{};
 };
 } // namespace sys
-} // namespace heygears
+} // namespace lvglpp
 
 #endif // BASE_ACTIVITY_H

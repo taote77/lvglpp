@@ -1,6 +1,6 @@
 #include "LvButton.h"
 
-namespace heygears {
+namespace lvglpp {
 
 namespace widgets {
 
@@ -22,4 +22,4 @@ LvButton::~LvButton()
 // }
 
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp

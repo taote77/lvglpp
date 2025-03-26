@@ -4,7 +4,7 @@
 #include "BaseItem.h"
 #include <functional>
 
-namespace heygears {
+namespace lvglpp {
 namespace widgets {
 
 struct Point
@@ -25,6 +25,7 @@ struct Point
 };
 typedef std::function<void(const Point &)> MousePressingCB;
 typedef std::function<void(const Point &)> MouseReleaseCB;
+
 class MouseArea : public BaseItem
 {
 public:
@@ -38,6 +39,6 @@ private:
 };
 
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp
 
 #endif // LV_MOUSEAREA_H

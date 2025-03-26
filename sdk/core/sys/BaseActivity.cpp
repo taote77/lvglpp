@@ -3,7 +3,7 @@
 #include <lvgl.h>
 #include "Navigators.h"
 
-namespace heygears {
+namespace lvglpp {
 namespace sys {
 BaseActivity::~BaseActivity() noexcept
 {
@@ -58,4 +58,4 @@ void BaseActivity::onNotifyUI(const Event &e)
     // LV_LOG_USER("notify index:%d",(int)et);
 }
 } // namespace sys
-} // namespace heygears
+} // namespace lvglpp

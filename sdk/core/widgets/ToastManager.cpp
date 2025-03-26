@@ -2,7 +2,7 @@
 #include "ToastManager.h"
 #include "core/log/log.h"
 
-namespace heygears {
+namespace lvglpp {
 namespace widgets {
 ToastManager *ToastManager::instance_ = nullptr;
 void ToastManager::showToast(const std::string &msg, ToastManager::ToastLevel level)
@@ -65,4 +65,4 @@ ToastManager::ToastManager()
     lv_anim_set_var(&anim_hide_t_, this);
 }
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp

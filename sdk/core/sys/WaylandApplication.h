@@ -5,7 +5,7 @@
 #ifdef USED_WAYLAND
 
 #  include "Application.h"
-namespace heygears {
+namespace lvglpp {
 namespace sys {
 class WaylandApplication : public Application
 {
@@ -18,6 +18,6 @@ public:
 };
 
 } // namespace sys
-} // namespace heygears
+} // namespace lvglpp
 #endif
 #endif // LVGLPP_WAYLANDAPPLICATION_H

@@ -5,7 +5,7 @@
 
 #include <string>
 
-namespace heygears {
+namespace lvglpp {
 namespace widgets {
 
 class GifImage : public BaseItem
@@ -23,6 +23,6 @@ private:
 };
 
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp
 
 #endif // LV_GIF_IMAGE_H

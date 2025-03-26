@@ -6,13 +6,13 @@
 
 int main(int argc, char *argv[])
 {
-    heygears::sys::SdlSimulateApplication app(argc, argv);
+    lvglpp::sys::SdlSimulateApplication app(argc, argv);
 
     if (!app.initApp()) {
         return -1;
     }
 
-    heygears::sys::Navigators::getInstance()->pushView(std::make_shared<Home>());
+    lvglpp::sys::Navigators::getInstance()->pushView(std::make_shared<Home>());
 
     return app.exec();
 }

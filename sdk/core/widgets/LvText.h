@@ -5,7 +5,7 @@
 #include "BaseItem.h"
 #include <string>
 
-namespace heygears {
+namespace lvglpp {
 
 namespace widgets {
 
@@ -96,6 +96,6 @@ private:
     LongModeStruct long_mode_;
 };
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp
 
 #endif // LVGLPP_TEXT_H

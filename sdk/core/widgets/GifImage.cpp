@@ -1,6 +1,6 @@
 #include "GifImage.h"
 
-namespace heygears {
+namespace lvglpp {
 namespace widgets {
 GifImage::GifImage(const std::string &path, BaseItem *parent) : BaseItem(ItemType::GIF, parent)
 {
@@ -15,4 +15,4 @@ void GifImage::setImageSrcPath(const std::string &path)
     }
 }
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp

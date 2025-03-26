@@ -14,7 +14,7 @@ Description:圆角按钮
 #include <chrono>
 #include <cmath>
 
-namespace heygears {
+namespace lvglpp {
 namespace widgets {
 class RoundedButton : public BaseItem
 {
@@ -66,6 +66,6 @@ private:
     void handleButtonClicked();
 };
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp
 
 #endif // LV_ROUNDED_BUTTON_H

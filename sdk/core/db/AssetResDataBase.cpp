@@ -3,11 +3,11 @@
 #include "core/tools/Utils.h"
 #include <boost/format.hpp>
 
-namespace heygears {
+namespace lvglpp {
 namespace db {
 AssetResDataBase::AssetResDataBase() : db_storage_(nullptr)
 {
-    std::string db_path = heygears::tools::Utils::getAssetDirRoot() + "/db/resource.db";
+    std::string db_path = lvglpp::tools::Utils::getAssetDirRoot() + "/db/resource.db";
     int result = sqlite3_open_v2(db_path.c_str(), &db_storage_, SQLITE_OPEN_READONLY, nullptr);
     if (result == SQLITE_OK) {
         LogDebug << "db path:" << db_path << " is opened succeed!";
@@ -47,4 +47,4 @@ AssetResDataBase::~AssetResDataBase()
     sqlite3_close_v2(db_storage_);
 }
 } // namespace db
-} // namespace heygears
+} // namespace lvglpp

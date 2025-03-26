@@ -5,7 +5,7 @@
 #include "BaseItem.h"
 #include <string>
 
-namespace heygears {
+namespace lvglpp {
 namespace widgets {
 
 class Image : public BaseItem
@@ -25,6 +25,6 @@ private:
 };
 
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp
 
 #endif // LVPP_IMAGE_H

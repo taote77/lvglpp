@@ -1,5 +1,5 @@
-#ifndef _HOME_H
-#define _HOME_H
+#ifndef GAME_ACTIVITY_H
+#define GAME_ACTIVITY_H
 
 #include "core/sys/BaseActivity.h"
 #include "core/widgets/LvText.h"
@@ -9,11 +9,11 @@
 
 using namespace lvglpp;
 
-class Home : public ::sys::BaseActivity
+class GameActivity : public ::sys::BaseActivity
 {
 public:
-    explicit Home();
-    ~Home();
+    explicit GameActivity();
+    ~GameActivity();
 
 protected:
     void onCreate(void *arg) override;
@@ -27,4 +27,4 @@ private:
     std::shared_ptr<widgets::LvButton> _btn;
 };
 
-#endif // _HOME_H
+#endif // GAME_ACTIVITY_H

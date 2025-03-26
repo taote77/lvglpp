@@ -3,7 +3,8 @@
 #include "BaseItem.h"
 #include <vector>
 #include <memory>
-namespace heygears {
+
+namespace lvglpp {
 namespace widgets {
 class PageIndicator : public BaseItem
 {
@@ -20,6 +21,6 @@ private:
     void update();
 };
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp
 
 #endif // LV_PAGE_INDICATOR_H

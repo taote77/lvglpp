@@ -2,7 +2,7 @@
 #define LV_DIALOGS_EVENT_MANAGER_H
 #include "lvgl/lvgl.h"
 
-namespace heygears {
+namespace lvglpp {
 namespace widgets {
 
 class DialogsEventManager
@@ -30,6 +30,6 @@ private:
 };
 
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp
 
 #endif // LV_DIALOGS_EVENT_MANAGER_H

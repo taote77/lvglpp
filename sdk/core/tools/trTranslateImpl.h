@@ -9,7 +9,7 @@
 #include <string>
 #include <map>
 
-namespace heygears {
+namespace lvglpp {
 namespace tools {
 class trTranslateImpl
 {
@@ -38,6 +38,6 @@ private:
     std::map<std::string, std::string> translate_map_;
 };
 } // namespace tools
-} // namespace heygears
+} // namespace lvglpp
 
 #endif // HEYGEARS_LVGL_DEMO_TRENGLISHIMPL_H

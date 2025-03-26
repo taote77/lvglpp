@@ -12,7 +12,7 @@ Description:c++ lvgl封装item基类
 #include "lvgl.h"
 #include <functional>
 
-namespace heygears::widgets {
+namespace lvglpp::widgets {
 class BaseItem
 {
 public:
@@ -127,6 +127,6 @@ private:
 
     friend class BaseDialog;
 };
-} // namespace heygears::widgets
+} // namespace lvglpp::widgets
 
 #endif // LV_BASE_ITEM_H

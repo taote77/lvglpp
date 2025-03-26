@@ -11,7 +11,7 @@
 #include "core/tools/stb/stb_image_write.h"
 #include "core/tools/stb/stb_image_resize2.h"
 
-namespace heygears {
+namespace lvglpp {
 namespace widgets {
 
 void Base64Resize(const std::string &src, std::string &output, int width, int height)
@@ -160,4 +160,4 @@ void Base64Image::updateImage(const std::string &data)
     lv_img_set_src(getLvglItem(), &img_struct_);
 }
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp

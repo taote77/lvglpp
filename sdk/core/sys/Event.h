@@ -8,7 +8,7 @@
 #include "source_location.hpp"
 #include "core/log/log.h"
 
-namespace heygears {
+namespace lvglpp {
 namespace sys {
 class Event
 {
@@ -47,6 +47,6 @@ boost::optional<T> Event::convertData(const nostd::source_location &l) const noe
     return boost::none;
 }
 } // namespace sys
-} // namespace heygears
+} // namespace lvglpp
 
 #endif // LVGLPP_EVENT_H

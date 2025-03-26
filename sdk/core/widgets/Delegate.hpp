@@ -3,7 +3,7 @@
 
 #include "ScrollItem.h"
 
-namespace heygears {
+namespace lvglpp {
 namespace widgets {
 template <class T>
 class Delegate : public ScrollItem
@@ -35,6 +35,6 @@ Delegate<T>::~Delegate()
 }
 
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp
 
 #endif // LV_DELEGATE_H

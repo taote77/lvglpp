@@ -6,7 +6,7 @@
 #  include "BaseItem.h"
 #  include <string>
 
-namespace heygears {
+namespace lvglpp {
 namespace widgets {
 
 class Video : public BaseItem
@@ -36,7 +36,7 @@ private:
 };
 
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp
 
 #endif // LV_USE_FFMPEG
 #endif // LV_VIDEO_H

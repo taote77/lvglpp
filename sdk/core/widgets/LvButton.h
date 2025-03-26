@@ -4,7 +4,7 @@
 #include "core/widgets/BaseItem.h"
 #include <string>
 
-namespace heygears {
+namespace lvglpp {
 
 namespace widgets {
 
@@ -19,6 +19,6 @@ public:
 };
 
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp
 
 #endif // _LVPP_BUTTON_H

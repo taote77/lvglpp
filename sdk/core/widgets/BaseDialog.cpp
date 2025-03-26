@@ -2,7 +2,7 @@
 #include "BaseDialog.h"
 #include "GlobalVar.h"
 
-namespace heygears {
+namespace lvglpp {
 namespace widgets {
 BaseItem *BaseDialog::getRootItem() const
 {
@@ -37,4 +37,4 @@ bool BaseDialog::isOpen()
     return background_item_ptr_->getVisible();
 }
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp

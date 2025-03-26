@@ -3,20 +3,19 @@
 #define ULTRACORE_FOR_MAKERS_IMAGEMANAGER_H
 #include "lvgl.h"
 #include <string>
-namespace heygears
+namespace lvglpp {
+namespace tools {
+
+class ImageManager
 {
-    namespace tools
-    {
+public:
+    static lv_img_dsc_t *getImageDscByUrl(const std::string &url);
+    static std::string getImageFileDataByUrl(const std::string &url);
 
-        class ImageManager
-        {
-        public:
-            static lv_img_dsc_t * getImageDscByUrl(const std::string& url);
-            static std::string getImageFileDataByUrl(const std::string& url);
-        private:
-        };
+private:
+};
 
-    } // heygears
-} // tools
+} // namespace tools
+} // namespace lvglpp
 
-#endif //ULTRACORE_FOR_MAKERS_IMAGEMANAGER_H
+#endif // ULTRACORE_FOR_MAKERS_IMAGEMANAGER_H

@@ -73,7 +73,7 @@ static void lv_linux_init_input_pointer(lv_display_t *disp)
     // lv_indev_set_cursor(touch, cursor_obj);
 }
 
-namespace heygears {
+namespace lvglpp {
 namespace sys {
 
 #  if 1
@@ -208,5 +208,5 @@ void LinuxFramebufApplication::clearAppScreen()
 // }
 #  endif
 } // namespace sys
-} // namespace heygears
+} // namespace lvglpp
 #endif

@@ -4,7 +4,7 @@
 
 #include "Delegate.hpp"
 
-namespace heygears {
+namespace lvglpp {
 namespace widgets {
 template <typename T>
 class PageViewDelegate : public Delegate<T>
@@ -15,5 +15,5 @@ public:
 private:
 };
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp
 #endif // LV_PAGEVIEW_DELEGATE_H

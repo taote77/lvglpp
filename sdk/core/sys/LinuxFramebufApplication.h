@@ -6,7 +6,7 @@
 #  include "Application.h"
 #  include "lvgl.h"
 
-namespace heygears {
+namespace lvglpp {
 namespace sys {
 class LinuxFramebufApplication : public Application
 {
@@ -29,7 +29,7 @@ private:
     // lv_indev_t *mouse_indev_;
 };
 } // namespace sys
-} // namespace heygears
+} // namespace lvglpp
 #endif
 
 #endif // LINUXFRAMEBUF_APPLICATION_H

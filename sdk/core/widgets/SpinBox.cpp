@@ -1,7 +1,7 @@
 
 #include "SpinBox.h"
 
-namespace heygears {
+namespace lvglpp {
 namespace widgets {
 
 SpinBox::SpinBox(BaseItem *parent) : BaseItem(BaseItem::SpinBox, parent)
@@ -36,4 +36,4 @@ int SpinBox::getVal() const
     return lv_spinbox_get_value(getLvglItem());
 }
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp

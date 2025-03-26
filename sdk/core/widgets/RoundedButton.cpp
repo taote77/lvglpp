@@ -6,7 +6,7 @@
 #include "core/tools/LvglUtils.h"
 #include "core/tools/ImageManager.h"
 
-namespace heygears {
+namespace lvglpp {
 namespace widgets {
 
 RoundedButton::RoundedButton(int width, int height, RoundedButton::ColorStyle type,
@@ -199,4 +199,4 @@ void RoundedButton::handleButtonClicked()
     }
 }
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp

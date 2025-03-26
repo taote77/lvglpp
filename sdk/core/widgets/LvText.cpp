@@ -5,14 +5,14 @@
 #include "core/tools/Utils.h"
 #include "core/tools/fonts/LvFontManager.h"
 
-namespace heygears {
+namespace lvglpp {
 namespace widgets {
 
 static const lv_font_t *getFontByStyle(LvText::TextStyle style, LvText::FontType type)
 {
     tools::LvFontManager::FontName font_type;
     if (type == LvText::FontType::Auto) {
-        if (heygears::sys::Application::getLanguageType() == sys::Application::Chinese) {
+        if (lvglpp::sys::Application::getLanguageType() == sys::Application::Chinese) {
             font_type = tools::LvFontManager::SansSC;
         } else {
             font_type = tools::LvFontManager::DMSans;
@@ -101,15 +101,15 @@ void LvText::setText(const std::string &strMsg)
     text_ = strMsg;
     std::string str_show_text = strMsg;
     if (max_len_ > 8) {
-        std::wstring tmp = heygears::tools::Utils::s2ws(str_show_text);
+        std::wstring tmp = lvglpp::tools::Utils::s2ws(str_show_text);
         auto n = tmp.length();
         if (n > max_len_) {
             int split_left = max_len_ / 2;
             int split_right = max_len_ - split_left;
             std::wstring str_left = tmp.substr(0, split_left);
             std::wstring str_right = tmp.substr(tmp.length() - split_right, split_right);
-            tmp = str_left + heygears::tools::Utils::s2ws("...") + str_right;
-            str_show_text = heygears::tools::Utils::ws2s(tmp);
+            tmp = str_left + lvglpp::tools::Utils::s2ws("...") + str_right;
+            str_show_text = lvglpp::tools::Utils::ws2s(tmp);
         }
     }
     lv_label_set_text(getLvglItem(), getLongModeStr(str_show_text).c_str());
@@ -133,7 +133,7 @@ void LvText::setMaxLen(int n)
 
 //        void LvText::setPos(lv_coord_t x, lv_coord_t y)
 //        {
-//            if (heygears::sys::Application::getLanguageType() != sys::Application::Chinese2English
+//            if (lvglpp::sys::Application::getLanguageType() != sys::Application::Chinese2English
 //            ||
 //                font_type_ == FontType::SansSC)
 //            {
@@ -201,7 +201,7 @@ std::string LvText::getLongModeStr(std::string src)
         return out_str;
     }
 
-    std::wstring src_str = heygears::tools::Utils::s2ws(getText());
+    std::wstring src_str = lvglpp::tools::Utils::s2ws(getText());
 
     lv_coord_t letter_space = lv_obj_get_style_text_letter_space(getLvglItem(), LV_PART_MAIN);
     int real_txt_width =
@@ -216,8 +216,8 @@ std::string LvText::getLongModeStr(std::string src)
                     i < src_str.length() - 1 ? src_str[i + 1] : 0);
             if (src_text_width > real_txt_width && i > 0) {
                 last_char_index = i;
-                out_str = heygears::tools::Utils::ws2s(src_str.substr(0, last_char_index)
-                                                       + heygears::tools::Utils::s2ws("..."));
+                out_str = lvglpp::tools::Utils::ws2s(src_str.substr(0, last_char_index)
+                                                     + lvglpp::tools::Utils::s2ws("..."));
                 break;
             }
         }
@@ -231,8 +231,8 @@ std::string LvText::getLongModeStr(std::string src)
                     i < src_str.length() - 1 ? src_str[i + 1] : 0);
             if (src_text_width_font >= real_txt_width / 2 && i > 0) {
                 last_char_index = i - 1;
-                out_str = heygears::tools::Utils::ws2s(src_str.substr(0, last_char_index + 1)
-                                                       + heygears::tools::Utils::s2ws("..."));
+                out_str = lvglpp::tools::Utils::ws2s(src_str.substr(0, last_char_index + 1)
+                                                     + lvglpp::tools::Utils::s2ws("..."));
                 break;
             }
         }
@@ -250,10 +250,10 @@ std::string LvText::getLongModeStr(std::string src)
         if (src_text_width_end + src_text_width_font >= real_txt_width) {
             last_char_index++;
         }
-        out_str += heygears::tools::Utils::ws2s(
+        out_str += lvglpp::tools::Utils::ws2s(
                 src_str.substr(last_char_index, src_str.length() - last_char_index));
     }
     return out_str;
 }
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp

@@ -1,7 +1,7 @@
 #include "BaseItem.h"
 #include "core/tools/LvglUtils.h"
 
-namespace heygears::widgets {
+namespace lvglpp::widgets {
 
 BaseItem::BaseItem(BaseItem *parentItem) : BaseItem(BaseItem::NormalItem, parentItem) { }
 
@@ -255,4 +255,4 @@ void BaseItem::setPaddingHor(lv_coord_t padding)
 {
     lv_obj_set_style_pad_hor(lv_base_ptr_, padding, LV_STATE_DEFAULT);
 }
-} // namespace heygears::widgets
+} // namespace lvglpp::widgets

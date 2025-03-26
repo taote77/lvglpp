@@ -4,7 +4,7 @@
 #include "BaseItem.h"
 #include <memory>
 
-namespace heygears {
+namespace lvglpp {
 namespace widgets {
 
 class BaseDialog
@@ -35,6 +35,6 @@ private:
 };
 
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp
 
 #endif // LV_BASE_DIALOG_H

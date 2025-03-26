@@ -6,7 +6,7 @@
 
 #  include "Application.h"
 
-namespace heygears::sys {
+namespace lvglpp::sys {
 class DrmApplication : public Application
 {
 public:
@@ -28,7 +28,7 @@ private:
     lv_display_t *_display{ nullptr };
 };
 
-} // namespace heygears::sys
+} // namespace lvglpp::sys
 
 #endif
 #endif // LVGLPP_DRM_APPLICATION_H

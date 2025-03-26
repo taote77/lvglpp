@@ -6,7 +6,7 @@
 #include "BaseModel.hpp"
 #include <memory>
 
-namespace heygears {
+namespace lvglpp {
 namespace widgets {
 template <typename T, typename T2 = PageViewDelegate<T>>
 class PageView : public ScrollItem
@@ -162,6 +162,6 @@ void PageView<T, T2>::createDelegates()
     }
 }
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp
 
 #endif // LV_PAGEVIEW_HPP

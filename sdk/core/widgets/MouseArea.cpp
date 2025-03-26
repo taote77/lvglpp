@@ -1,6 +1,6 @@
 #include "MouseArea.h"
 
-namespace heygears {
+namespace lvglpp {
 namespace widgets {
 MouseArea::MouseArea(BaseItem *parent)
     : BaseItem(parent), pressing_cb_(nullptr), released_cb_(nullptr)
@@ -43,4 +43,4 @@ MouseArea::MouseArea(BaseItem *parent)
             LV_EVENT_RELEASED, this);
 }
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp

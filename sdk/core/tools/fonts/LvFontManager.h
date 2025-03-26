@@ -18,35 +18,25 @@ Description:
 #include <map>
 #include <string>
 
-namespace heygears::tools
+namespace lvglpp::tools {
+class LvFontManager
 {
-    class LvFontManager
-    {
-    public:
-        enum FontName
-        {
-            SansSC,
-            DMSans,
-            Oswald
-        };
-        enum FontStyle
-        {
-            Normal,
-            Bold
-        };
+public:
+    enum FontName { SansSC, DMSans, Oswald };
+    enum FontStyle { Normal, Bold };
 
-        LvFontManager() = delete;
+    LvFontManager() = delete;
 
-        LvFontManager(const LvFontManager &) = delete;
+    LvFontManager(const LvFontManager &) = delete;
 
-        LvFontManager operator=(const LvFontManager &) = delete;
+    LvFontManager operator=(const LvFontManager &) = delete;
 
-        static const lv_font_t *getFontInfo(FontName name, int size, FontStyle style);
+    static const lv_font_t *getFontInfo(FontName name, int size, FontStyle style);
 
-    private:
-    };
+private:
+};
 
-}// namespace heygears::tools
- // tools
+} // namespace lvglpp::tools
+  // tools
 
-#endif//ULTRACORE_FOR_MAKERS_LVFONTMANAGER_H
+#endif // ULTRACORE_FOR_MAKERS_LVFONTMANAGER_H

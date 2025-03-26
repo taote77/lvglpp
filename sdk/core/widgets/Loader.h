@@ -6,9 +6,10 @@
 #include "core/sys/Event.h"
 #include <memory>
 
-namespace heygears {
+namespace lvglpp {
 namespace widgets {
-using namespace heygears::sys;
+
+using namespace lvglpp::sys;
 class Component;
 class Loader : public BaseItem
 {
@@ -23,6 +24,6 @@ private:
 };
 
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp
 
 #endif // LV_LOADER_H

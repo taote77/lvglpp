@@ -4,7 +4,7 @@
 
 #include "BaseItem.h"
 
-namespace heygears {
+namespace lvglpp {
 namespace widgets {
 
 class SpinBox : public BaseItem
@@ -25,6 +25,6 @@ private:
 };
 
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp
 
 #endif // LVPP_SPINBOX_H

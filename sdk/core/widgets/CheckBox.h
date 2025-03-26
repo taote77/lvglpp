@@ -5,7 +5,7 @@
 #include <memory>
 #include "MouseArea.h"
 
-namespace heygears {
+namespace lvglpp {
 namespace widgets {
 
 class CheckBox : public BaseItem
@@ -27,6 +27,6 @@ private:
 };
 
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp
 
 #endif // LV_CHECKBOX_H

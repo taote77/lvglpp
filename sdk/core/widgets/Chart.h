@@ -3,7 +3,7 @@
 
 #include "BaseItem.h"
 
-namespace heygears {
+namespace lvglpp {
 namespace widgets {
 
 class Chart : public BaseItem
@@ -13,6 +13,6 @@ public:
 };
 
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp
 
 #endif // LV_CHART_H

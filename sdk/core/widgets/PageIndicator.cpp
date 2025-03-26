@@ -2,7 +2,7 @@
 #include "PageIndicator.h"
 #include "GlobalVar.h"
 
-namespace heygears {
+namespace lvglpp {
 namespace widgets {
 
 PageIndicator::PageIndicator(int count, BaseItem *parent)
@@ -61,4 +61,4 @@ void PageIndicator::setPageCount(int n)
     update();
 }
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp

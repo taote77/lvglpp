@@ -1,7 +1,7 @@
 #include "Loader.h"
 #include "Component.h"
 
-namespace heygears {
+namespace lvglpp {
 namespace widgets {
 
 Loader::Loader(BaseItem *parent) : BaseItem(parent) { }
@@ -29,4 +29,4 @@ void Loader::sendEventToComponent(const Event &e)
     }
 }
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp

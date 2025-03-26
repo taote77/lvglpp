@@ -4,7 +4,7 @@
 
 #include "Delegate.hpp"
 
-namespace heygears {
+namespace lvglpp {
 namespace widgets {
 template <typename T>
 class ListViewDelegate : public Delegate<T>
@@ -19,6 +19,6 @@ protected:
     int index_;
 };
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp
 
 #endif // LV_LISTVIEW_DELEGATE_H

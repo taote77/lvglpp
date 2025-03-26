@@ -7,26 +7,25 @@
 #include "lvgl.h"
 #include "core/db/AssetResDataBase.h"
 
-namespace heygears
+namespace lvglpp {
+namespace tools {
+
+class ImageManagerImpl
 {
-    namespace tools
-    {
+public:
+    virtual ~ImageManagerImpl();
+    static ImageManagerImpl *getInstance();
+    lv_img_dsc_t *getImageDscByUrl(const std::string &url);
+    std::string getImageFileDataByUrl(const std::string &url);
 
-        class ImageManagerImpl
-        {
-        public:
-            virtual ~ImageManagerImpl();
-            static ImageManagerImpl* getInstance();
-            lv_img_dsc_t * getImageDscByUrl(const std::string& url);
-            std::string getImageFileDataByUrl(const std::string& url);
-        private:
-            static ImageManagerImpl* instance_;
-            ImageManagerImpl();
-            std::map<std::string,lv_img_dsc_t> app_image_map_{};
-            db::AssetResDataBase* asset_db_=nullptr;
-        };
+private:
+    static ImageManagerImpl *instance_;
+    ImageManagerImpl();
+    std::map<std::string, lv_img_dsc_t> app_image_map_{};
+    db::AssetResDataBase *asset_db_ = nullptr;
+};
 
-    } // heygears
-} // tools
+} // namespace tools
+} // namespace lvglpp
 
-#endif //LVGLPPP_IMAGEMANAGERIMPL_H
+#endif // LVGLPPP_IMAGEMANAGERIMPL_H

@@ -6,7 +6,7 @@
 
 #  include "Application.h"
 
-namespace heygears::sys {
+namespace lvglpp::sys {
 class SdlSimulateApplication : public Application
 {
 public:
@@ -34,7 +34,7 @@ private:
 
     lv_indev_t *_mouse_indev;
 };
-} // namespace heygears::sys
+} // namespace lvglpp::sys
 
 #endif
 

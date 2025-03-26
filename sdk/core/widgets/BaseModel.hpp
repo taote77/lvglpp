@@ -3,7 +3,7 @@
 
 #include <vector>
 
-namespace heygears {
+namespace lvglpp {
 namespace widgets {
 template <class T>
 class BaseModel
@@ -93,6 +93,6 @@ bool BaseModel<T>::changed(int index, const T &data)
     return true;
 }
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp
 
 #endif // LV_BASE_MODEL_H

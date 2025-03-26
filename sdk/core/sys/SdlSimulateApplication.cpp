@@ -145,7 +145,7 @@ void lv_linux_run_loop()
     }
 }
 
-namespace heygears::sys {
+namespace lvglpp::sys {
 SdlSimulateApplication::SdlSimulateApplication(int argc, char **argv) : Application(argc, argv)
 {
     configure_simulator(argc, argv);
@@ -202,6 +202,6 @@ void SdlSimulateApplication::halInit()
     /* Use the 'monitor' driver which creates window on PC's monitor to simulate a display*/
     lv_linux_disp_init();
 }
-} // namespace heygears::sys
+} // namespace lvglpp::sys
 
 #endif

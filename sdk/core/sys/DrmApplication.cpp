@@ -129,7 +129,7 @@ void lv_linux_run_loop()
 }
 #  endif
 
-namespace heygears::sys {
+namespace lvglpp::sys {
 
 DrmApplication::DrmApplication(int argc, char **argv) : Application(argc, argv) { }
 
@@ -173,6 +173,6 @@ void DrmApplication::setTheme(lv_theme_t *theme)
     }
 }
 
-} // namespace heygears::sys
+} // namespace lvglpp::sys
 
 #endif

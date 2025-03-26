@@ -1,6 +1,6 @@
 #include "DialogsEventManager.h"
 
-namespace heygears {
+namespace lvglpp {
 namespace widgets {
 
 DialogsEventManager::DialogsEventManager()
@@ -19,4 +19,4 @@ lv_event_code_t DialogsEventManager::getCloseEventId()
     return DIALOG_CLOSE;
 }
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp

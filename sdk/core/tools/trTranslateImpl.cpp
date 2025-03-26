@@ -5,7 +5,7 @@
 #include <boost/algorithm/string.hpp>
 #include <iostream>
 
-namespace heygears {
+namespace lvglpp {
 namespace tools {
 std::map<trTranslateImpl::LanguageType, trTranslateImpl *> trTranslateImpl::instance_;
 
@@ -80,4 +80,4 @@ std::string trTranslateImpl::translate(const std::string &src_text)
     return find_it->second;
 }
 } // namespace tools
-} // namespace heygears
+} // namespace lvglpp

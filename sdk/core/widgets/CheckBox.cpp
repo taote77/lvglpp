@@ -2,7 +2,7 @@
 #include "CheckBox.h"
 #include "GlobalVar.h"
 
-namespace heygears {
+namespace lvglpp {
 namespace widgets {
 
 CheckBox::CheckBox(int width, int height, uint32_t bg_clr, uint32_t check_clr, BaseItem *parent)
@@ -41,4 +41,4 @@ void CheckBox::init()
     });
 }
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp

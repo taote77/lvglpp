@@ -4,41 +4,39 @@ Description:搭配Loader使用
 
 **************************************************************************/
 
-#ifndef ULTRACORE_FOR_MAKERS_COMPONENT_H
-#define ULTRACORE_FOR_MAKERS_COMPONENT_H
+#ifndef LVPP_COMPONENT_H
+#define LVPP_COMPONENT_H
+
 #include "core/sys/Event.h"
-namespace heygears
+
+namespace lvglpp {
+namespace widgets {
+using namespace lvglpp::sys;
+class BaseItem;
+class Component
 {
-    namespace widgets
-    {
-        using namespace heygears::sys;
-        class BaseItem;
-        class Component
-        {
-        public:
-            virtual ~Component()=default;
-        protected:
-            /**
-             * 加载控件时使用的回调
-             * @param parent 传入loader的指针
-             * @return
-             */
-            virtual bool onLoad(BaseItem* parent) = 0;
-            /**
-             * 组件销毁前执行的回调
-             */
-            virtual void onDestroy()
-            {
-            }
+public:
+    virtual ~Component() = default;
 
-            virtual void onNotifyUI(const Event &e)
-            {
-            }
-        private:
-            friend class Loader;
-        };
+protected:
+    /**
+     * 加载控件时使用的回调
+     * @param parent 传入loader的指针
+     * @return
+     */
+    virtual bool onLoad(BaseItem *parent) = 0;
+    /**
+     * 组件销毁前执行的回调
+     */
+    virtual void onDestroy() { }
 
-    } // heygears
-} // widgets
+    virtual void onNotifyUI(const Event &e) { }
 
-#endif //ULTRACORE_FOR_MAKERS_COMPONENT_H
+private:
+    friend class Loader;
+};
+
+} // namespace widgets
+} // namespace lvglpp
+
+#endif // LVPP_COMPONENT_H

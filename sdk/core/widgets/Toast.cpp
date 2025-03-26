@@ -1,7 +1,7 @@
 #include "Toast.h"
 #include "GlobalVar.h"
 
-namespace heygears {
+namespace lvglpp {
 namespace widgets {
 Toast::Toast() : BaseItem(BaseItem::Dialog)
 {
@@ -30,4 +30,4 @@ void Toast::setMessage(const std::string &str_msg, Toast::IconType type)
     }
 }
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp

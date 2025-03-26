@@ -3,7 +3,7 @@
 #  include "WaylandApplication.h"
 // #include "lv_drivers/wayland/wayland.h"
 #  include "lvgl.h"
-namespace heygears {
+namespace lvglpp {
 namespace sys {
 WaylandApplication::WaylandApplication(int argc, char **argv) : Application(argc, argv) { }
 
@@ -34,5 +34,5 @@ void WaylandApplication::exit(int c)
     // lv_wayland_deinit();
 }
 } // namespace sys
-} // namespace heygears
+} // namespace lvglpp
 #endif

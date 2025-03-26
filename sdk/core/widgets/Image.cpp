@@ -2,7 +2,7 @@
 #include "Image.h"
 #include "core/tools/ImageManager.h"
 
-namespace heygears {
+namespace lvglpp {
 namespace widgets {
 
 Image::Image(const std::string &path, BaseItem *parent)
@@ -31,4 +31,4 @@ void Image::setEnable(bool enable)
     }
 }
 } // namespace widgets
-} // namespace heygears
+} // namespace lvglpp
