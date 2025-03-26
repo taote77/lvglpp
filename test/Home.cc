@@ -16,8 +16,8 @@ void Home::onCreate(void *arg)
     _label->setTextAlign(LV_TEXT_ALIGN_CENTER);
     _label->setAligment(LV_ALIGN_TOP_MID, 0, 424);
 
-    _btn = std::make_shared<widgets::LvButton>("Start", CLR_PRIMARY_BLACK, getRootWindow(),
-                                               widgets::LvText::FontSize32);
+    _btn = std::make_shared<widgets::RoundedButton>(
+            200, 40, widgets::RoundedButton::ColorStyle::Gray, "Start", getRootWindow());
     // _btn->setText("Start Game");
     _btn->setPos(480, 300);
     // _btn->setTextAlign(LV_TEXT_ALIGN_CENTER);

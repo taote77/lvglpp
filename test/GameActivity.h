@@ -34,8 +34,11 @@ private:
         short y;
     };
 
+    static constexpr int box_length = 20;
     static constexpr int hor_box_size = WINDOW_WIDTH / 20; //  800 / 20 = 40
     static constexpr int ver_box_size = WINDOW_HEIGHT / 20; // 480 / 20 = 24
+
+    lv_timer_t *_timer;
 
     std::list<Point> _snake_body;
 

@@ -3,7 +3,7 @@
 
 #include "core/sys/BaseActivity.h"
 #include "core/widgets/LvText.h"
-#include "core/widgets/LvButton.h"
+#include "core/widgets/RoundedButton.h"
 #include "core/sys/Event.h"
 #include <memory>
 
@@ -24,7 +24,7 @@ protected:
 
 private:
     std::shared_ptr<widgets::LvText> _label;
-    std::shared_ptr<widgets::LvButton> _btn;
+    std::shared_ptr<widgets::RoundedButton> _btn;
 };
 
 #endif // _HOME_H
