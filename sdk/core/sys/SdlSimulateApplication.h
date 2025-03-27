@@ -33,6 +33,8 @@ private:
     lv_display_t *_display{nullptr};
 
     lv_indev_t *_mouse_indev;
+
+    lv_indev_t *_keybaord_indev;
 };
 } // namespace lvglpp::sys
 

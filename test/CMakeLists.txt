@@ -25,6 +25,8 @@ target_sources(${LVGLPP_TEST} PRIVATE
     Home.h
     GameActivity.h
     GameActivity.cc
+    GameStateDialog.h
+    GameStateDialog.cc
 )
 
 

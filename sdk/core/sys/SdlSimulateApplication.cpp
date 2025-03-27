@@ -192,9 +192,15 @@ void SdlSimulateApplication::lv_linux_disp_init()
 {
     _display = lv_sdl_window_create(LV_HOR_RES_MAX, LV_VER_RES_MAX);
 
-    lv_indev_t *mouse = lv_sdl_mouse_create();
-    lv_indev_set_group(mouse, lv_group_get_default());
-    lv_indev_set_display(mouse, _display);
+    _mouse_indev = lv_sdl_mouse_create();
+    lv_indev_set_group(_mouse_indev, lv_group_get_default());
+
+    _keybaord_indev = lv_sdl_keyboard_create();
+    lv_indev_set_group(_keybaord_indev, lv_group_get_default());
+
+    lv_indev_set_display(_mouse_indev, _display);
+    lv_indev_set_display(_keybaord_indev, _display);
+
     lv_display_set_default(_display);
 }
 
