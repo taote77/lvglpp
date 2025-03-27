@@ -15,7 +15,10 @@ public:
 
     void setImageSrcPath(const std::string &path);
 
-    const std::string &getImageSrcPath() const { return src_path_; }
+    const std::string &getImageSrcPath() const
+    {
+        return src_path_;
+    }
 
 protected:
 private:

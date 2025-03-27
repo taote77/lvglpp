@@ -3,8 +3,8 @@
 
 #if LV_USE_FFMPEG == 1
 
-#  include "BaseItem.h"
-#  include <string>
+#include "BaseItem.h"
+#include <string>
 
 namespace lvglpp {
 namespace widgets {
@@ -20,7 +20,10 @@ public:
 
     void setVideoCmd(lv_ffmpeg_player_cmd_t cmd);
 
-    const std::string &getVideoSrcPath() const { return src_path_; }
+    const std::string &getVideoSrcPath() const
+    {
+        return src_path_;
+    }
 
     void setVisible(bool visible) override;
 

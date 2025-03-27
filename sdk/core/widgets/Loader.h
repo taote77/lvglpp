@@ -15,8 +15,11 @@ class Loader : public BaseItem
 {
 public:
     explicit Loader(BaseItem *parent = nullptr);
-    void setSourceComponent(const std::shared_ptr<Component> &component);
-    Component *getSourceComponent() const { return loader_component_ptr_.get(); }
+    void       setSourceComponent(const std::shared_ptr<Component> &component);
+    Component *getSourceComponent() const
+    {
+        return loader_component_ptr_.get();
+    }
     void sendEventToComponent(const Event &e);
 
 private:

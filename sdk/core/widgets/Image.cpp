@@ -5,8 +5,7 @@
 namespace lvglpp {
 namespace widgets {
 
-Image::Image(const std::string &path, BaseItem *parent)
-    : BaseItem(BaseItem::ItemType::Image, parent)
+Image::Image(const std::string &path, BaseItem *parent) : BaseItem(BaseItem::ItemType::Image, parent)
 {
     setImageSrcPath(path);
 }
@@ -14,10 +13,13 @@ Image::Image(const std::string &path, BaseItem *parent)
 void Image::setImageSrcPath(const std::string &path)
 {
     src_path_ = path;
-    if (getLvglItem() != nullptr && !src_path_.empty()) {
-        if (src_path_[0] == ':') {
+    if (getLvglItem() != nullptr && !src_path_.empty())
+    {
+        if (src_path_[0] == ':')
+        {
             lv_img_set_src(getLvglItem(), tools::ImageManager::getImageDscByUrl(src_path_));
-        } else {
+        } else
+        {
             lv_img_set_src(getLvglItem(), src_path_.c_str());
         }
     }
@@ -26,7 +28,8 @@ void Image::setImageSrcPath(const std::string &path)
 void Image::setEnable(bool enable)
 {
     BaseItem::setEnable(enable);
-    if (enable) {
+    if (enable)
+    {
         lv_obj_set_ext_click_area(getLvglItem(), 15);
     }
 }

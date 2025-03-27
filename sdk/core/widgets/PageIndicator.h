@@ -1,8 +1,8 @@
 #ifndef LV_PAGE_INDICATOR_H
 #define LV_PAGE_INDICATOR_H
 #include "BaseItem.h"
-#include <vector>
 #include <memory>
+#include <vector>
 
 namespace lvglpp {
 namespace widgets {
@@ -15,10 +15,10 @@ public:
     void setPageCount(int n);
 
 private:
-    int count_;
-    int current_index_;
+    int                                    count_;
+    int                                    current_index_;
     std::vector<std::shared_ptr<BaseItem>> indicator_vec_;
-    void update();
+    void                                   update();
 };
 } // namespace widgets
 } // namespace lvglpp

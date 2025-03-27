@@ -8,8 +8,8 @@ Description:定义不同活动的窗口。类似Android
 #ifndef LVGLPP_ACTIVITY_H
 #define LVGLPP_ACTIVITY_H
 
-#include "core/widgets/BaseItem.h"
 #include "Event.h"
+#include "core/widgets/BaseItem.h"
 
 namespace lvglpp {
 namespace sys {

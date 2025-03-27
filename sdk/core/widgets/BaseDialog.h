@@ -13,9 +13,15 @@ public:
     explicit BaseDialog(bool is_sys_dialog = false);
     virtual void open();
     virtual void close();
-    bool isOpen();
-    void setAutoDel(bool b) { auto_del_ = b; }
-    bool getAutoDel() const { return auto_del_; }
+    bool         isOpen();
+    void         setAutoDel(bool b)
+    {
+        auto_del_ = b;
+    }
+    bool getAutoDel() const
+    {
+        return auto_del_;
+    }
 
     void setOnClicked(const std::function<void()> &func)
     {
@@ -23,7 +29,10 @@ public:
         background_item_ptr_->setOnClickedListener(func);
     }
 
-    void setOpacity(double opacity) { background_item_ptr_->setOpacity(opacity); }
+    void setOpacity(double opacity)
+    {
+        background_item_ptr_->setOpacity(opacity);
+    }
 
 protected:
     BaseItem *getRootItem() const;
@@ -31,7 +40,7 @@ protected:
 
 private:
     std::shared_ptr<BaseItem> background_item_ptr_;
-    bool auto_del_ = true;
+    bool                      auto_del_ = true;
 };
 
 } // namespace widgets

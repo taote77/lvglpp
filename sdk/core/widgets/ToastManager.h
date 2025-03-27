@@ -2,8 +2,8 @@
 #ifndef LV_TOAST_MANAGER_H
 #define LV_TOAST_MANAGER_H
 #include "Toast.h"
-#include <string>
 #include <memory>
+#include <string>
 
 namespace lvglpp {
 namespace widgets {
@@ -18,10 +18,10 @@ private:
     ToastManager();
     ToastManager(const ToastManager &) = default;
     std::shared_ptr<Toast> toast_impl_;
-    static ToastManager *instance_;
-    lv_anim_t anim_show_t_{};
-    lv_anim_t anim_hide_t_{};
-    bool is_running_ = false;
+    static ToastManager   *instance_;
+    lv_anim_t              anim_show_t_{};
+    lv_anim_t              anim_hide_t_{};
+    bool                   is_running_ = false;
 };
 
 } // namespace widgets

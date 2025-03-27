@@ -1,8 +1,8 @@
 
 #define LV_USE_SDL 1
 
-#define LV_HOR_RES_MAX 1024
-#define LV_VER_RES_MAX 600
+#define LV_HOR_RES_MAX 800
+#define LV_VER_RES_MAX 480
 
 #define LV_SIM_WINDOW_WIDTH 800
 #define LV_SIM_WINDOW_HEIGHT 480

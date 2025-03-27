@@ -6,7 +6,9 @@
 #include <string>
 
 namespace lvglpp {
+
 namespace widgets {
+
 class Base64Image : public BaseItem
 {
 public:
@@ -16,9 +18,9 @@ public:
 
 private:
     lv_image_dsc_t img_struct_{};
-    int w_;
-    int h_;
-    std::string base64Data_;
+    int            w_;
+    int            h_;
+    std::string    base64Data_;
 };
 
 } // namespace widgets

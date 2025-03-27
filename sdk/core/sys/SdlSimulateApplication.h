@@ -4,7 +4,7 @@
 
 #if (defined(USED_SDL)) || (defined(USED_SDL_GPU))
 
-#  include "Application.h"
+#include "Application.h"
 
 namespace lvglpp::sys {
 class SdlSimulateApplication : public Application
@@ -30,7 +30,7 @@ protected:
 private:
     void halInit();
 
-    lv_display_t *_display{ nullptr };
+    lv_display_t *_display{nullptr};
 
     lv_indev_t *_mouse_indev;
 };

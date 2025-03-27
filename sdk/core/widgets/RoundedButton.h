@@ -6,13 +6,13 @@ Description:圆角按钮
 #ifndef LV_ROUNDED_BUTTON_H
 #define LV_ROUNDED_BUTTON_H
 
-#include "LvText.h"
-#include "Image.h"
 #include "BaseItem.h"
-#include <memory>
-#include <functional>
+#include "Image.h"
+#include "LvText.h"
 #include <chrono>
 #include <cmath>
+#include <functional>
+#include <memory>
 
 namespace lvglpp {
 namespace widgets {
@@ -21,11 +21,9 @@ class RoundedButton : public BaseItem
 public:
     enum ColorStyle { Blue, Dark, Gray, LightBlue, BlackBroder, Red };
 
-    RoundedButton(int width, int height, ColorStyle type, const std::string &strMsg,
-                  BaseItem *parent);
+    RoundedButton(int width, int height, ColorStyle type, const std::string &strMsg, BaseItem *parent);
 
-    RoundedButton(int width, int height, ColorStyle type, const std::string &strMsg,
-                  const std::string &strImgPath, BaseItem *parent);
+    RoundedButton(int width, int height, ColorStyle type, const std::string &strMsg, const std::string &strImgPath, BaseItem *parent);
 
     void setImagePos(int x, int y);
 
@@ -47,15 +45,18 @@ public:
 
     void setColorType(ColorStyle type);
 
-    void setRepeatMs(int n) { repeat_ms_ = n; }
+    void setRepeatMs(int n)
+    {
+        repeat_ms_ = n;
+    }
 
 private:
-    std::shared_ptr<LvText> label_;
-    std::shared_ptr<widgets::Image> img_obj_;
-    RoundedButton::ColorStyle type_;
-    int repeat_ms_ = 500;
+    std::shared_ptr<LvText>               label_;
+    std::shared_ptr<widgets::Image>       img_obj_;
+    RoundedButton::ColorStyle             type_;
+    int                                   repeat_ms_ = 500;
     std::chrono::system_clock::time_point prev_time_point_;
-    std::function<void()> onButtonClicked_cb_ = nullptr;
+    std::function<void()>                 onButtonClicked_cb_ = nullptr;
 
     void init(int width, int height, ColorStyle type);
 

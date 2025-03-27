@@ -2,11 +2,11 @@
 #ifndef LVGLPP_NAVIGATORS_H
 #define LVGLPP_NAVIGATORS_H
 
+#include "Activity.h"
+#include "Application.h"
+#include "Event.h"
 #include <memory>
 #include <vector>
-#include "Activity.h"
-#include "Event.h"
-#include "Application.h"
 
 namespace lvglpp {
 namespace sys {
@@ -38,22 +38,33 @@ public:
 
     void pushViewImmediately(const std::shared_ptr<Activity> &view, void *arg = nullptr);
 
-    int32_t depth() const { return view_manager_.size(); }
+    int32_t depth() const
+    {
+        return view_manager_.size();
+    }
 
     Activity *getCurrentActivity() const
     {
-        if (view_manager_.empty()) {
+        if (view_manager_.empty())
+        {
             return nullptr;
-        } else {
+        } else
+        {
             return view_manager_[view_manager_.size() - 1].get();
         }
     }
 
     void notifyAllUi(const Event &e);
 
-    void setApplication(Application *app) { app_ = app; }
+    void setApplication(Application *app)
+    {
+        app_ = app;
+    }
 
-    Application *getApplication() const { return app_; }
+    Application *getApplication() const
+    {
+        return app_;
+    }
 
     void clearDeleteVec();
 
@@ -71,13 +82,13 @@ protected:
     virtual void popAnim(const Activity *act);
 
 private:
-    static Navigators *instance_;
-    bool working_ = false;
-    const int enter_anim_ms_ = 250;
-    const int pop_anim_ms_ = 250;
+    static Navigators                     *instance_;
+    bool                                   working_       = false;
+    const int                              enter_anim_ms_ = 250;
+    const int                              pop_anim_ms_   = 250;
     std::vector<std::shared_ptr<Activity>> view_manager_;
     std::vector<std::shared_ptr<Activity>> delete_view_manager_;
-    Application *app_ = nullptr;
+    Application                           *app_ = nullptr;
 
     Navigators();
 

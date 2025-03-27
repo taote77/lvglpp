@@ -17,7 +17,7 @@ public:
 
 private:
     std::shared_ptr<widgets::Image> icon_;
-    std::shared_ptr<LvText> desc_;
+    std::shared_ptr<LvText>         desc_;
 };
 
 } // namespace widgets

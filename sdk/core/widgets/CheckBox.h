@@ -2,8 +2,8 @@
 #define LV_CHECKBOX_H
 
 #include "BaseItem.h"
-#include <memory>
 #include "MouseArea.h"
+#include <memory>
 
 namespace lvglpp {
 namespace widgets {
@@ -11,8 +11,7 @@ namespace widgets {
 class CheckBox : public BaseItem
 {
 public:
-    explicit CheckBox(int width, int height, uint32_t bg_clr, uint32_t check_clr,
-                      BaseItem *parent = nullptr);
+    explicit CheckBox(int width, int height, uint32_t bg_clr, uint32_t check_clr, BaseItem *parent = nullptr);
 
     bool getCheckState();
 

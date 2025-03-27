@@ -7,46 +7,50 @@
 
 #if (defined(USED_SDL)) || (defined(USED_SDL_GPU))
 
-#  include "SdlSimulateApplication.h"
-#  include "lvgl/src/core/lv_global.h"
-#  include <lvgl.h>
+#include "SdlSimulateApplication.h"
+#include "lvgl/src/core/lv_global.h"
+#include <lvgl.h>
 
-#  if defined(USED_SDL)
+#if defined(USED_SDL)
 // #include <sdl/sdl.h>
-#  elif defined(USED_SDL_GPU)
-#    include <sdl/sdl_gpu.h>
-#  endif
+#elif defined(USED_SDL_GPU)
+#include <sdl/sdl_gpu.h>
+#endif
 
-#  include <unistd.h>
+#include <unistd.h>
 
 uint16_t window_width;
 uint16_t window_height;
-bool fullscreen;
-bool maximize;
+bool     fullscreen;
+bool     maximize;
 
 static void configure_simulator(int argc, char **argv)
 {
-    int opt = 0;
+    int  opt = 0;
     bool err = false;
 
     /* Default values */
     fullscreen = maximize = false;
-    window_width = atoi(getenv("LV_SIM_WINDOW_WIDTH") ?: "800");
-    window_height = atoi(getenv("LV_SIM_WINDOW_HEIGHT") ?: "480");
+    window_width          = atoi(getenv("LV_SIM_WINDOW_WIDTH") ?: "800");
+    window_height         = atoi(getenv("LV_SIM_WINDOW_HEIGHT") ?: "480");
 
     /* Parse the command-line options. */
-    while ((opt = getopt(argc, argv, "fmw:h:")) != -1) {
-        switch (opt) {
+    while ((opt = getopt(argc, argv, "fmw:h:")) != -1)
+    {
+        switch (opt)
+        {
         case 'f':
             fullscreen = true;
-            if (LV_USE_WAYLAND == 0) {
+            if (LV_USE_WAYLAND == 0)
+            {
                 fprintf(stderr, "The SDL driver doesn't support fullscreen mode on start\n");
                 exit(1);
             }
             break;
         case 'm':
             maximize = true;
-            if (LV_USE_WAYLAND == 0) {
+            if (LV_USE_WAYLAND == 0)
+            {
                 fprintf(stderr, "The SDL driver doesn't support maximized mode on start\n");
                 exit(1);
             }
@@ -72,10 +76,11 @@ static const char *getenv_default(const char *name, const char *dflt)
     return getenv(name) ?: dflt;
 }
 
-#  if LV_USE_EVDEV
+#if LV_USE_EVDEV
 static void indev_deleted_cb(lv_event_t *e)
 {
-    if (LV_GLOBAL_DEFAULT()->deinit_in_progress) {
+    if (LV_GLOBAL_DEFAULT()->deinit_in_progress)
+    {
         return;
     }
     auto cursor_obj = static_cast<lv_obj_t *>(lv_event_get_user_data(e));
@@ -84,16 +89,13 @@ static void indev_deleted_cb(lv_event_t *e)
 
 static void discovery_cb(lv_indev_t *indev, lv_evdev_type_t type, void *user_data)
 {
-    LV_LOG_USER("new '%s' device discovered",
-                type == LV_EVDEV_TYPE_REL           ? "REL"
-                        : type == LV_EVDEV_TYPE_ABS ? "ABS"
-                        : type == LV_EVDEV_TYPE_KEY ? "KEY"
-                                                    : "unknown");
+    LV_LOG_USER("new '%s' device discovered", type == LV_EVDEV_TYPE_REL ? "REL" : type == LV_EVDEV_TYPE_ABS ? "ABS" : type == LV_EVDEV_TYPE_KEY ? "KEY" : "unknown");
 
     auto disp = static_cast<lv_display_t *>(user_data);
     lv_indev_set_display(indev, disp);
 
-    if (type == LV_EVDEV_TYPE_REL) {
+    if (type == LV_EVDEV_TYPE_REL)
+    {
         /* Set the cursor icon */
         LV_IMAGE_DECLARE(mouse_cursor_icon);
         lv_obj_t *cursor_obj = lv_image_create(lv_display_get_screen_active(disp));
@@ -115,7 +117,8 @@ static void lv_linux_init_input_pointer(lv_display_t *disp)
      */
     const char *input_device = getenv("LV_LINUX_EVDEV_POINTER_DEVICE");
 
-    if (input_device == NULL) {
+    if (input_device == NULL)
+    {
         LV_LOG_USER("the LV_LINUX_EVDEV_POINTER_DEVICE environment variable is not set. using "
                     "evdev automatic discovery.");
         lv_evdev_discovery_start(discovery_cb, disp);
@@ -131,15 +134,15 @@ static void lv_linux_init_input_pointer(lv_display_t *disp)
     lv_image_set_src(cursor_obj, &mouse_cursor_icon);
     lv_indev_set_cursor(touch, cursor_obj);
 }
-#  endif
+#endif
 
 void lv_linux_run_loop()
 {
     uint32_t idle_time = 0;
 
     /*Handle LVGL tasks*/
-    while (true) {
-
+    while (true)
+    {
         idle_time = lv_timer_handler(); /*Returns the time to the next timer execution*/
         usleep(idle_time * 1000);
     }
@@ -158,7 +161,8 @@ lv_display_t *SdlSimulateApplication::getDisplay()
 
 bool SdlSimulateApplication::initApp()
 {
-    if (!Application::initApp()) {
+    if (!Application::initApp())
+    {
         LV_LOG_WARN("Application init failed!");
     }
     halInit();
@@ -167,12 +171,14 @@ bool SdlSimulateApplication::initApp()
 
 void SdlSimulateApplication::setTheme(lv_theme_t *theme)
 {
-    if (!theme) {
+    if (!theme)
+    {
         LOG_WARN() << "theme invalid";
         return;
     }
 
-    if (_display) {
+    if (_display)
+    {
         lv_display_set_theme(_display, theme);
     }
 }
@@ -184,7 +190,6 @@ void SdlSimulateApplication::exit(int code)
 
 void SdlSimulateApplication::lv_linux_disp_init()
 {
-
     _display = lv_sdl_window_create(LV_HOR_RES_MAX, LV_VER_RES_MAX);
 
     lv_indev_t *mouse = lv_sdl_mouse_create();

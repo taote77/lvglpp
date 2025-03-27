@@ -30,18 +30,26 @@ public:
 
     virtual ~Application() = default;
 
-    static const std::string &applicationDirPath() { return application_dir_path_; }
+    static const std::string &applicationDirPath()
+    {
+        return application_dir_path_;
+    }
 
-    static const std::string &applicationName() { return application_name_; }
+    static const std::string &applicationName()
+    {
+        return application_name_;
+    }
 
     static void setLanguageType(LanguageType type)
     {
         language_type_ = type;
-        LogDebug << "Set Language_type_:"
-                 << (language_type_ == LanguageType::Chinese ? "English" : "English2Chinese");
+        LogDebug << "Set Language_type_:" << (language_type_ == LanguageType::Chinese ? "English" : "English2Chinese");
     }
 
-    static LanguageType getLanguageType() { return language_type_; }
+    static LanguageType getLanguageType()
+    {
+        return language_type_;
+    }
 
     virtual int exec();
 
@@ -54,19 +62,25 @@ protected:
 
     void handleEvent();
 
-    bool isInit() const { return is_init_; }
+    bool isInit() const
+    {
+        return is_init_;
+    }
 
-    void setInitStatus(bool b_init) { is_init_ = b_init; }
+    void setInitStatus(bool b_init)
+    {
+        is_init_ = b_init;
+    }
 
 private:
-    bool is_init_ = false;
-    static std::string application_dir_path_;
-    static std::string application_name_;
+    bool                is_init_ = false;
+    static std::string  application_dir_path_;
+    static std::string  application_name_;
     static LanguageType language_type_;
-    std::queue<Event> event_queue_;
-    std::mutex mutex_;
-    lv_fs_drv_t file_assert_fs_drv_;
-    lv_fs_drv_t mem_assert_fs_drv_;
+    std::queue<Event>   event_queue_;
+    std::mutex          mutex_;
+    lv_fs_drv_t         file_assert_fs_drv_;
+    lv_fs_drv_t         mem_assert_fs_drv_;
 };
 } // namespace lvglpp::sys
 

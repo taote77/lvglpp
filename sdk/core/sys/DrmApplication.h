@@ -4,7 +4,7 @@
 
 #ifdef USE_LINUX_DRM
 
-#  include "Application.h"
+#include "Application.h"
 
 namespace lvglpp::sys {
 class DrmApplication : public Application
@@ -25,7 +25,7 @@ public:
     void setTheme(lv_theme_t *theme);
 
 private:
-    lv_display_t *_display{ nullptr };
+    lv_display_t *_display{nullptr};
 };
 
 } // namespace lvglpp::sys

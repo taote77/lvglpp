@@ -5,7 +5,7 @@ namespace widgets {
 
 DialogsEventManager::DialogsEventManager()
 {
-    DIALOG_OPEN = lv_event_code_t(lv_event_register_id());
+    DIALOG_OPEN  = lv_event_code_t(lv_event_register_id());
     DIALOG_CLOSE = lv_event_code_t(lv_event_register_id());
 }
 

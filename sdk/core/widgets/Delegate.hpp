@@ -9,17 +9,27 @@ template <class T>
 class Delegate : public ScrollItem
 {
 public:
-    explicit Delegate(BaseItem *parent = nullptr) : ScrollItem(parent) { }
+    explicit Delegate(BaseItem *parent = nullptr) : ScrollItem(parent)
+    {}
 
     ~Delegate() override;
 
-    void initItem(const T &t) { draw(t); }
+    void initItem(const T &t)
+    {
+        draw(t);
+    }
 
-    bool updateItem(const T &t) { return updateData(t); }
+    bool updateItem(const T &t)
+    {
+        return updateData(t);
+    }
 
 protected:
     virtual void draw(const T &) = 0;
-    virtual bool updateData(const T &) { return false; }
+    virtual bool updateData(const T &)
+    {
+        return false;
+    }
 
 private:
 };
@@ -27,7 +37,8 @@ private:
 template <class T>
 Delegate<T>::~Delegate()
 {
-    if (getLvglItem() != nullptr && lv_obj_is_valid(getLvglItem())) {
+    if (getLvglItem() != nullptr && lv_obj_is_valid(getLvglItem()))
+    {
         // LV_LOG_USER("Delegate delete!! %ld",getLvglItem());
         lv_obj_del(getLvglItem());
         setLvglItem(nullptr);

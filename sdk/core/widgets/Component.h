@@ -28,9 +28,11 @@ protected:
     /**
      * 组件销毁前执行的回调
      */
-    virtual void onDestroy() { }
+    virtual void onDestroy()
+    {}
 
-    virtual void onNotifyUI(const Event &e) { }
+    virtual void onNotifyUI(const Event &e)
+    {}
 
 private:
     friend class Loader;

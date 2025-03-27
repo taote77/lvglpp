@@ -4,13 +4,16 @@
 namespace lvglpp {
 namespace widgets {
 
-ScrollItem::ScrollItem(BaseItem *parent) : BaseItem(parent) { }
+ScrollItem::ScrollItem(BaseItem *parent) : BaseItem(parent)
+{}
 
 void ScrollItem::setScrollable(bool b)
 {
-    if (b) {
+    if (b)
+    {
         lv_obj_add_flag(getLvglItem(), LV_OBJ_FLAG_SCROLLABLE);
-    } else {
+    } else
+    {
         lv_obj_clear_flag(getLvglItem(), LV_OBJ_FLAG_SCROLLABLE);
     }
 }
@@ -22,9 +25,11 @@ bool ScrollItem::getScrollable()
 
 void ScrollItem::setFlickable(bool b)
 {
-    if (b) {
+    if (b)
+    {
         lv_obj_add_flag(getLvglItem(), LV_OBJ_FLAG_SCROLL_ELASTIC);
-    } else {
+    } else
+    {
         lv_obj_clear_flag(getLvglItem(), LV_OBJ_FLAG_SCROLL_ELASTIC);
     }
 }
@@ -36,9 +41,11 @@ bool ScrollItem::getFlickable()
 
 void ScrollItem::setScrollBarVisible(bool b)
 {
-    if (b) {
+    if (b)
+    {
         lv_obj_set_scrollbar_mode(getLvglItem(), LV_SCROLLBAR_MODE_AUTO);
-    } else {
+    } else
+    {
         lv_obj_set_scrollbar_mode(getLvglItem(), LV_SCROLLBAR_MODE_OFF);
     }
 }

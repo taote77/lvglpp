@@ -13,10 +13,10 @@ public:
         static DialogsEventManager instance;
         return &instance;
     }
-    DialogsEventManager(const DialogsEventManager &) = delete;
+    DialogsEventManager(const DialogsEventManager &)            = delete;
     DialogsEventManager &operator=(const DialogsEventManager &) = delete;
-    DialogsEventManager(DialogsEventManager &&) = delete;
-    DialogsEventManager &operator=(DialogsEventManager &&) = delete;
+    DialogsEventManager(DialogsEventManager &&)                 = delete;
+    DialogsEventManager &operator=(DialogsEventManager &&)      = delete;
 
     lv_event_code_t getOpenEventId();
     lv_event_code_t getCloseEventId();

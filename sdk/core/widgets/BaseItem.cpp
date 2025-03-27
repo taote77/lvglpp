@@ -3,7 +3,8 @@
 
 namespace lvglpp::widgets {
 
-BaseItem::BaseItem(BaseItem *parentItem) : BaseItem(BaseItem::NormalItem, parentItem) { }
+BaseItem::BaseItem(BaseItem *parentItem) : BaseItem(BaseItem::NormalItem, parentItem)
+{}
 
 BaseItem::BaseItem(BaseItem::ItemType type, BaseItem *parentItem) : parent(parentItem)
 {
@@ -12,8 +13,10 @@ BaseItem::BaseItem(BaseItem::ItemType type, BaseItem *parentItem) : parent(paren
 
 BaseItem::~BaseItem()
 {
-    if (getParent() == nullptr) {
-        if (lv_base_ptr_ != nullptr) {
+    if (getParent() == nullptr)
+    {
+        if (lv_base_ptr_ != nullptr)
+        {
             // LV_LOG_USER("remove!!%ld",lv_base_ptr_);
             lv_obj_del(lv_base_ptr_);
             lv_base_ptr_ = nullptr;
@@ -24,14 +27,17 @@ BaseItem::~BaseItem()
 void BaseItem::createElement(ItemType type)
 {
     lv_obj_t *parent_lvgl_obj;
-    if (parent == nullptr) {
+    if (parent == nullptr)
+    {
         // lv_base_ptr_=tools::LvglUtils::createLvglItem(lv_scr_act());
         parent_lvgl_obj = lv_scr_act();
-    } else {
+    } else
+    {
         // lv_base_ptr_=tools::LvglUtils::createLvglItem(parent->getLvglItem());
         parent_lvgl_obj = parent->getLvglItem();
     }
-    switch (type) {
+    switch (type)
+    {
     case ItemType::NormalItem:
         lv_base_ptr_ = tools::LvglUtils::createLvglItem(parent_lvgl_obj);
         break;
@@ -69,53 +75,63 @@ void BaseItem::createElement(ItemType type)
 
 void BaseItem::registerEvent()
 {
-    if (lv_base_ptr_ != nullptr) {
+    if (lv_base_ptr_ != nullptr)
+    {
         lv_obj_add_event_cb(
-                lv_base_ptr_,
-                [](lv_event_t *evt) -> void {
-                    auto user_data = lv_event_get_user_data(evt);
-                    if (user_data != nullptr) {
-                        auto item_data = (BaseItem *)user_data;
-                        if (lv_event_get_code(evt) == LV_EVENT_CLICKED) {
-                            if (item_data->clicked_cb_ != nullptr) {
-                                item_data->clicked_cb_();
-                            }
+            lv_base_ptr_,
+            [](lv_event_t *evt) -> void {
+                auto user_data = lv_event_get_user_data(evt);
+                if (user_data != nullptr)
+                {
+                    auto item_data = (BaseItem *)user_data;
+                    if (lv_event_get_code(evt) == LV_EVENT_CLICKED)
+                    {
+                        if (item_data->clicked_cb_ != nullptr)
+                        {
+                            item_data->clicked_cb_();
                         }
                     }
-                },
-                LV_EVENT_CLICKED, this);
+                }
+            },
+            LV_EVENT_CLICKED, this);
 
         lv_obj_add_event_cb(
-                lv_base_ptr_,
-                [](lv_event_t *evt) -> void {
-                    auto user_data = lv_event_get_user_data(evt);
+            lv_base_ptr_,
+            [](lv_event_t *evt) -> void {
+                auto user_data = lv_event_get_user_data(evt);
 
-                    if (user_data != nullptr) {
-                        auto item_data = (BaseItem *)user_data;
-                        if (lv_event_get_code(evt) == LV_EVENT_PRESSED) {
-                            if (item_data->pressed_cb_ != nullptr) {
-                                item_data->pressed_cb_();
-                            }
+                if (user_data != nullptr)
+                {
+                    auto item_data = (BaseItem *)user_data;
+                    if (lv_event_get_code(evt) == LV_EVENT_PRESSED)
+                    {
+                        if (item_data->pressed_cb_ != nullptr)
+                        {
+                            item_data->pressed_cb_();
                         }
                     }
-                },
-                LV_EVENT_PRESSED, this);
+                }
+            },
+            LV_EVENT_PRESSED, this);
 
         lv_obj_add_event_cb(
-                lv_base_ptr_,
-                [](lv_event_t *evt) -> void {
-                    auto user_data = lv_event_get_user_data(evt);
+            lv_base_ptr_,
+            [](lv_event_t *evt) -> void {
+                auto user_data = lv_event_get_user_data(evt);
 
-                    if (user_data != nullptr) {
-                        auto item_data = (BaseItem *)user_data;
-                        if (lv_event_get_code(evt) == LV_EVENT_RELEASED) {
-                            if (item_data->released_cb_ != nullptr) {
-                                item_data->released_cb_();
-                            }
+                if (user_data != nullptr)
+                {
+                    auto item_data = (BaseItem *)user_data;
+                    if (lv_event_get_code(evt) == LV_EVENT_RELEASED)
+                    {
+                        if (item_data->released_cb_ != nullptr)
+                        {
+                            item_data->released_cb_();
                         }
                     }
-                },
-                LV_EVENT_RELEASED, this);
+                }
+            },
+            LV_EVENT_RELEASED, this);
     }
 }
 
@@ -127,9 +143,11 @@ void BaseItem::initItem(ItemType type)
 
 void BaseItem::setVisible(bool visible)
 {
-    if (visible) {
+    if (visible)
+    {
         lv_obj_clear_flag(lv_base_ptr_, LV_OBJ_FLAG_HIDDEN);
-    } else {
+    } else
+    {
         lv_obj_add_flag(lv_base_ptr_, LV_OBJ_FLAG_HIDDEN);
     }
 }
@@ -141,10 +159,12 @@ bool BaseItem::getVisible() const
 
 void BaseItem::setEnable(bool enable)
 {
-    if (enable) {
+    if (enable)
+    {
         lv_obj_add_flag(lv_base_ptr_, LV_OBJ_FLAG_CLICKABLE);
         lv_obj_clear_state(lv_base_ptr_, LV_STATE_DISABLED);
-    } else {
+    } else
+    {
         lv_obj_clear_flag(lv_base_ptr_, LV_OBJ_FLAG_CLICKABLE);
         lv_obj_add_state(lv_base_ptr_, LV_STATE_DISABLED);
     }
@@ -170,8 +190,7 @@ void BaseItem::setAligment(lv_align_t align, lv_coord_t offsetX, lv_coord_t offs
     lv_obj_align(lv_base_ptr_, align, offsetX, offsetY);
 }
 
-void BaseItem::setAligmentTo(const BaseItem &item, lv_align_t align, lv_coord_t offsetX,
-                             lv_coord_t offsetY)
+void BaseItem::setAligmentTo(const BaseItem &item, lv_align_t align, lv_coord_t offsetX, lv_coord_t offsetY)
 {
     lv_obj_align_to(lv_base_ptr_, item.getLvglItem(), align, offsetX, offsetY);
 }
@@ -194,7 +213,7 @@ void BaseItem::setOpacity(double opa)
 
 void BaseItem::setSize(lv_coord_t width, lv_coord_t height)
 {
-    width_ = width;
+    width_  = width;
     height_ = height;
     lv_obj_set_size(lv_base_ptr_, width, height);
 }

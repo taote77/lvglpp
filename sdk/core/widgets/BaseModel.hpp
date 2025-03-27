@@ -35,8 +35,7 @@ private:
 
 template <class T>
 BaseModel<T>::BaseModel(const std::vector<T> &data) : model_data_(data)
-{
-}
+{}
 
 template <class T>
 bool BaseModel<T>::append(const T &data)
@@ -48,7 +47,8 @@ bool BaseModel<T>::append(const T &data)
 template <class T>
 bool BaseModel<T>::insert(int index, const T &data)
 {
-    if (index < 0 || index >= model_data_.size()) {
+    if (index < 0 || index >= model_data_.size())
+    {
         return false;
     }
     model_data_.insert(model_data_.begin() + index, data);
@@ -58,7 +58,8 @@ bool BaseModel<T>::insert(int index, const T &data)
 template <class T>
 bool BaseModel<T>::remove(int index)
 {
-    if (index < 0 || index >= model_data_.size()) {
+    if (index < 0 || index >= model_data_.size())
+    {
         return false;
     }
     model_data_.erase(model_data_.begin() + index);
@@ -86,7 +87,8 @@ const T &BaseModel<T>::getItem(int index) const
 template <class T>
 bool BaseModel<T>::changed(int index, const T &data)
 {
-    if (index < 0 || index >= model_data_.size()) {
+    if (index < 0 || index >= model_data_.size())
+    {
         return false;
     }
     model_data_[index] = data;

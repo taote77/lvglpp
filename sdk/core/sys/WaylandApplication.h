@@ -4,7 +4,7 @@
 #define LVGLPP_WAYLANDAPPLICATION_H
 #ifdef USED_WAYLAND
 
-#  include "Application.h"
+#include "Application.h"
 namespace lvglpp {
 namespace sys {
 class WaylandApplication : public Application

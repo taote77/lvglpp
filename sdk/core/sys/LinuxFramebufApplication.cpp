@@ -1,13 +1,13 @@
 #ifdef USED_FRAMEBUFF
-#  include "LinuxFramebufApplication.h"
+#include "LinuxFramebufApplication.h"
 // #include "lv_drivers/display/fbdev.h"
 // #include "lv_drivers/indev/evdev.h"
-#  include "lvgl/src/core/lv_global.h"
+#include "lvgl/src/core/lv_global.h"
 
 // #define DISP_BUF_SIZE (128 * 1024)
-#  define DISP_BUF_SIZE (LV_HOR_RES_MAX * LV_VER_RES_MAX * 4)
+#define DISP_BUF_SIZE (LV_HOR_RES_MAX * LV_VER_RES_MAX * 4)
 
-#  if LV_USE_EVDEV
+#if LV_USE_EVDEV
 static void indev_deleted_cb(lv_event_t *e)
 {
     if (LV_GLOBAL_DEFAULT()->deinit_in_progress)
@@ -18,16 +18,13 @@ static void indev_deleted_cb(lv_event_t *e)
 
 static void discovery_cb(lv_indev_t *indev, lv_evdev_type_t type, void *user_data)
 {
-    LV_LOG_USER("new '%s' device discovered",
-                type == LV_EVDEV_TYPE_REL           ? "REL"
-                        : type == LV_EVDEV_TYPE_ABS ? "ABS"
-                        : type == LV_EVDEV_TYPE_KEY ? "KEY"
-                                                    : "unknown");
+    LV_LOG_USER("new '%s' device discovered", type == LV_EVDEV_TYPE_REL ? "REL" : type == LV_EVDEV_TYPE_ABS ? "ABS" : type == LV_EVDEV_TYPE_KEY ? "KEY" : "unknown");
 
     auto disp = static_cast<lv_display_t *>(user_data);
     lv_indev_set_display(indev, disp);
 
-    if (type == LV_EVDEV_TYPE_REL) {
+    if (type == LV_EVDEV_TYPE_REL)
+    {
         /* Set the cursor icon */
         // LV_IMAGE_DECLARE(mouse_cursor_icon);
         // lv_obj_t *cursor_obj = lv_image_create(lv_display_get_screen_active(disp));
@@ -39,7 +36,7 @@ static void discovery_cb(lv_indev_t *indev, lv_evdev_type_t type, void *user_dat
     }
 }
 
-#  endif
+#endif
 
 static const char *getenv_default(const char *name, const char *dflt)
 {
@@ -56,7 +53,8 @@ static void lv_linux_init_input_pointer(lv_display_t *disp)
      */
     const char *input_device = getenv("LV_LINUX_EVDEV_POINTER_DEVICE");
 
-    if (input_device == NULL) {
+    if (input_device == NULL)
+    {
         LV_LOG_USER("the LV_LINUX_EVDEV_POINTER_DEVICE environment variable is not set. using "
                     "evdev automatic discovery.");
         lv_evdev_discovery_start(discovery_cb, disp);
@@ -76,19 +74,18 @@ static void lv_linux_init_input_pointer(lv_display_t *disp)
 namespace lvglpp {
 namespace sys {
 
-#  if 1
+#if 1
 LinuxFramebufApplication::LinuxFramebufApplication(int argc, char **argv) : Application(argc, argv)
-{
-}
+{}
 
 void LinuxFramebufApplication::framebufInit()
 {
     const char *device = getenv_default("LV_LINUX_FBDEV_DEVICE", "/dev/fb0");
-    _disp = lv_linux_fbdev_create();
+    _disp              = lv_linux_fbdev_create();
 
-#    if LV_USE_EVDEV
+#if LV_USE_EVDEV
     lv_linux_init_input_pointer(_disp);
-#    endif
+#endif
 
     lv_linux_fbdev_set_file(_disp, device);
 }
@@ -100,7 +97,8 @@ void LinuxFramebufApplication::exit(int c)
 
 bool LinuxFramebufApplication::initApp()
 {
-    if (!Application::initApp()) {
+    if (!Application::initApp())
+    {
         LV_LOG_WARN("Application init failed!");
     }
     framebufInit();
@@ -126,11 +124,9 @@ void LinuxFramebufApplication::clearAppScreen()
 //         mouseFeedback(drv, event);
 //     });
 // }
-#  else
-LinuxFramebufApplication::LinuxFramebufApplication(int argc, char **argv)
-    : Application(argc, argv), disp_drv()
-{
-}
+#else
+LinuxFramebufApplication::LinuxFramebufApplication(int argc, char **argv) : Application(argc, argv), disp_drv()
+{}
 
 void LinuxFramebufApplication::framebufInit()
 {
@@ -146,10 +142,10 @@ void LinuxFramebufApplication::framebufInit()
 
     /*Initialize and register a display driver*/
     lv_disp_drv_init(&disp_drv);
-    disp_drv.draw_buf = &disp_buf;
-    disp_drv.flush_cb = fbdev_flush;
-    disp_drv.hor_res = LV_HOR_RES_MAX;
-    disp_drv.ver_res = LV_VER_RES_MAX;
+    disp_drv.draw_buf     = &disp_buf;
+    disp_drv.flush_cb     = fbdev_flush;
+    disp_drv.hor_res      = LV_HOR_RES_MAX;
+    disp_drv.ver_res      = LV_VER_RES_MAX;
     disp_drv.full_refresh = 1;
     lv_disp_drv_register(&disp_drv);
 
@@ -161,7 +157,7 @@ void LinuxFramebufApplication::framebufInit()
     /*This function will be called periodically (by the library) to get the mouse position and
      * state*/
     indev_drv_1.read_cb = evdev_read;
-    mouse_indev_ = lv_indev_drv_register(&indev_drv_1);
+    mouse_indev_        = lv_indev_drv_register(&indev_drv_1);
 
     // #if 0
     //             /*Set a cursor for the mouse*/
@@ -180,7 +176,8 @@ void LinuxFramebufApplication::exit(int c)
 
 bool LinuxFramebufApplication::initApp()
 {
-    if (!Application::initApp()) {
+    if (!Application::initApp())
+    {
         LV_LOG_WARN("Application init failed!");
     }
     framebufInit();
@@ -189,7 +186,7 @@ bool LinuxFramebufApplication::initApp()
 
 void LinuxFramebufApplication::clearAppScreen()
 {
-    lv_area_t flush_area{ 0, 0, LV_HOR_RES_MAX, LV_VER_RES_MAX };
+    lv_area_t flush_area{0, 0, LV_HOR_RES_MAX, LV_VER_RES_MAX};
     // lv_color_t flush_buf[LV_HOR_RES_MAX*LV_VER_RES_MAX*4]={0};
     lv_color_t *flush_buf = new lv_color_t[LV_HOR_RES_MAX * LV_VER_RES_MAX * 4];
     memset(flush_buf, 0, sizeof(lv_coord_t) * (LV_HOR_RES_MAX * LV_VER_RES_MAX * 4));
@@ -206,7 +203,7 @@ void LinuxFramebufApplication::clearAppScreen()
 //     mouse_indev_->driver->feedback_cb = mouseFeedback;
 //     lv_indev_drv_update(mouse_indev_, mouse_indev_->driver);
 // }
-#  endif
+#endif
 } // namespace sys
 } // namespace lvglpp
 #endif

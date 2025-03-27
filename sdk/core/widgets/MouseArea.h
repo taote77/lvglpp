@@ -7,8 +7,7 @@
 namespace lvglpp {
 namespace widgets {
 
-struct Point
-{
+struct Point {
     int32_t x;
     int32_t y;
 
@@ -30,12 +29,18 @@ class MouseArea : public BaseItem
 {
 public:
     explicit MouseArea(BaseItem *parent = nullptr);
-    void setMousePressingListener(MousePressingCB cb) { pressing_cb_ = cb; }
-    void setMouseReleasedListener(MouseReleaseCB cb) { released_cb_ = cb; }
+    void setMousePressingListener(MousePressingCB cb)
+    {
+        pressing_cb_ = cb;
+    }
+    void setMouseReleasedListener(MouseReleaseCB cb)
+    {
+        released_cb_ = cb;
+    }
 
 private:
     MousePressingCB pressing_cb_;
-    MouseReleaseCB released_cb_;
+    MouseReleaseCB  released_cb_;
 };
 
 } // namespace widgets

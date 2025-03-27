@@ -5,8 +5,7 @@
 namespace lvglpp {
 namespace widgets {
 
-CheckBox::CheckBox(int width, int height, uint32_t bg_clr, uint32_t check_clr, BaseItem *parent)
-    : BaseItem(parent)
+CheckBox::CheckBox(int width, int height, uint32_t bg_clr, uint32_t check_clr, BaseItem *parent) : BaseItem(parent)
 {
     check_item_ = std::make_shared<BaseItem>(this);
     check_item_->setSize(width - 8, height - 8);
