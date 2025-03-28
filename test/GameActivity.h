@@ -70,6 +70,8 @@ protected:
 
     bool checkCollision();
 
+    bool eated();
+
     void move();
 
     void updateFrame();
@@ -80,8 +82,7 @@ private:
     static constexpr int box_length   = 20;
     static constexpr int hor_box_size = (WINDOW_WIDTH - 200) / 20; //  800 / 20 = 40 左右各留100像素，用来装控制按钮
     static constexpr int ver_box_size = WINDOW_HEIGHT / 20;        // 480 / 20 = 24
-
-    lv_timer_t *_timer;
+    lv_timer_t          *_timer;
 
     std::shared_ptr<widgets::RoundedButton> _btn_up;
     std::shared_ptr<widgets::RoundedButton> _btn_left;

@@ -10,12 +10,10 @@
 GameActivity::GameActivity() : sys::BaseActivity()
 {
     //
-    //
 }
 
 GameActivity::~GameActivity()
 {
-    //
     //
 }
 
@@ -48,18 +46,16 @@ void GameActivity::onCreate(void *arg)
 void GameActivity::onNotifyUI(const sys::Event &evt)
 {
     //
-    //
 }
 
 void GameActivity::onDestroy()
 {
     //
-    //
 }
 
 void GameActivity::init()
 {
-    _btn_up = std::make_shared<widgets::RoundedButton>(70, 40, widgets::RoundedButton::ColorStyle::Gray, "Start", getRootWindow());
+    _btn_up = std::make_shared<widgets::RoundedButton>(70, 40, widgets::RoundedButton::ColorStyle::Gray, "Up", getRootWindow());
     _btn_up->setPos(20, 100);
     _btn_up->setOnClickedListener([this]() -> void {
         //
@@ -78,7 +74,6 @@ void GameActivity::init()
         //
         _game_state.direction = LV_DIR_RIGHT;
     });
-
     _btn_down = std::make_shared<widgets::RoundedButton>(70, 40, widgets::RoundedButton::ColorStyle::Gray, "Down", getRootWindow());
     _btn_down->setPos(720, 220);
 
@@ -103,8 +98,8 @@ lv_point_t GameActivity::getRandomPos()
 {
     static std::random_device                 rd;
     static std::mt19937                       gen(rd());
-    static std::uniform_int_distribution<int> x_dist(0, 30);
-    static std::uniform_int_distribution<int> y_dist(0, 24);
+    static std::uniform_int_distribution<int> x_dist(0, 30 - 1);
+    static std::uniform_int_distribution<int> y_dist(0, 24 - 1);
 
     return lv_point_t{x_dist(gen), y_dist(gen)};
 }
@@ -132,6 +127,8 @@ lv_point_t GameActivity::createFood()
             return pos;
         }
     }
+
+    return {0, 0};
 }
 
 bool GameActivity::checkCollision()
@@ -141,15 +138,57 @@ bool GameActivity::checkCollision()
         return true;
     }
 
-    // std::cout << "size: " << this->getRootWindow()->getWidth() <<
-    // this->getRootWindow()->getHeight(); std::cout << "nums: " << hor_box_size << ver_box_size <<
-    // std::endl;
+    auto head = _game_state.body_indexs.begin();
+
+    return (head->x < 0 || head->x >= hor_box_size || head->y < 0 || head->y >= ver_box_size);
+}
+
+bool GameActivity::eated()
+{
+    if (_game_state.body_indexs.empty())
+    {
+        return false;
+    }
 
     auto head = _game_state.body_indexs.begin();
 
-    // std::cout << "pos: " << head->x << head->y << std::endl;
+    if (_game_state.exist_food)
+    {
+        if (head->x == _game_state.food.x && head->y == _game_state.food.y)
+        {
+            // s
+            auto food = _game_state.food;
 
-    return (head->x < 0 || head->x >= hor_box_size || head->y < 0 || head->y >= ver_box_size);
+            switch (_game_state.direction)
+            {
+            case lv_dir_t::LV_DIR_RIGHT:
+                food.x = head->x + 1;
+                food.y = head->y;
+                break;
+            case lv_dir_t::LV_DIR_BOTTOM:
+                food.x = head->x;
+                food.y = head->y + 1;
+                break;
+            case lv_dir_t::LV_DIR_LEFT:
+                food.x = head->x - 1;
+                food.y = head->y;
+                break;
+            case lv_dir_t::LV_DIR_TOP:
+                food.x = head->x;
+                food.y = head->y - 1;
+                break;
+            default:
+                break;
+            };
+
+            _game_state.body_indexs.emplace_front(food);
+
+            _game_state.exist_food = false;
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void GameActivity::move()
@@ -216,6 +255,11 @@ void GameActivity::updateFrame()
         std::cerr << "***********************************************************************";
         std::cerr << "**************************     STOP      ******************************";
         std::cerr << "***********************************************************************";
+    }
+
+    if (eated())
+    {
+        std::cout << "get soore";
     }
 
     bool head{true};
