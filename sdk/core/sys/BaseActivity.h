@@ -54,10 +54,10 @@ protected:
      * @brief  返回根屏幕的指针
      * @return
      */
-    widgets::BaseItem *getRootWindow() const override;
+    widgets::BaseItem *getRootItem() const override;
 
 private:
-    widgets::BaseItem *window_ptr{};
+    widgets::BaseItem *_root_win{};
 };
 } // namespace sys
 } // namespace lvglpp

@@ -70,7 +70,7 @@ Navigators::Navigators()
 
 void Navigators::enterAnim(const Activity *act)
 {
-    auto root_item = act->getRootWindow();
+    auto root_item = act->getRootItem();
     if (root_item == nullptr)
     {
         return;
@@ -99,7 +99,7 @@ void Navigators::enterAnim(const Activity *act)
 
 void Navigators::popAnim(const Activity *act)
 {
-    auto root_item = act->getRootWindow();
+    auto root_item = act->getRootItem();
     if (root_item == nullptr)
     {
         return;

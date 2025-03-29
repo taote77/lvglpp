@@ -23,6 +23,8 @@ target_sources(${LVGLPP_TEST} PRIVATE
     main.cc
     Home.cc
     Home.h
+    BindDemo.h
+    BindDemo.cc
     GameActivity.h
     GameActivity.cc
     GameStateDialog.h

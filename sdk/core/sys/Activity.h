@@ -27,7 +27,7 @@ protected:
 
     virtual void onDestroy() = 0;
 
-    virtual widgets::BaseItem *getRootWindow() const = 0;
+    virtual widgets::BaseItem *getRootItem() const = 0;
 
     virtual void onNotifyUI(const Event &e) = 0;
 

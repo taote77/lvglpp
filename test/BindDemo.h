@@ -1,5 +1,5 @@
-#ifndef _HOME_H
-#define _HOME_H
+#ifndef _BIND_DEMO_H
+#define _BIND_DEMO_H
 
 #include "core/sys/BaseActivity.h"
 #include "core/sys/Event.h"
@@ -10,11 +10,11 @@
 
 using namespace lvglpp;
 
-class Home : public ::sys::BaseActivity
+class BindDemo : public ::sys::BaseActivity
 {
 public:
-    explicit Home();
-    ~Home();
+    explicit BindDemo();
+    ~BindDemo();
 
 protected:
     void onCreate(void *arg) override;
@@ -26,8 +26,9 @@ protected:
 private:
     lv_subject_t _subject;
 
+    std::string                             _txt{"Start"};
     std::shared_ptr<widgets::LvText>        _label;
     std::shared_ptr<widgets::RoundedButton> _btn;
 };
 
-#endif // _HOME_H
+#endif // _BIND_DEMO_H
