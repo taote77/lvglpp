@@ -1,5 +1,5 @@
-#ifndef _BIND_DEMO_H
-#define _BIND_DEMO_H
+#ifndef SNAP_SHOT_H
+#define SNAP_SHOT_H
 
 #include "core/sys/BaseActivity.h"
 #include "core/sys/Event.h"
@@ -10,11 +10,11 @@
 
 using namespace lvglpp;
 
-class BindDemo : public ::sys::BaseActivity
+class SnapShot : public ::sys::BaseActivity
 {
 public:
-    explicit BindDemo();
-    ~BindDemo();
+    explicit SnapShot();
+    ~SnapShot();
 
 protected:
     void onCreate(void *arg) override;
@@ -23,12 +23,12 @@ protected:
 
     void onDestroy() override;
 
-private:
-    lv_subject_t _subject;
+    void takeShot();
 
+private:
     std::string                             _txt{"Start"};
-    std::shared_ptr<widgets::Text>          _label;
+    std::shared_ptr<widgets::LvText>        _label;
     std::shared_ptr<widgets::RoundedButton> _btn;
 };
 
-#endif // _BIND_DEMO_H
+#endif // SNAP_SHOT_H

@@ -12,7 +12,7 @@ BindDemo::~BindDemo()
 
 void BindDemo::onCreate(void *arg)
 {
-    _label = std::make_shared<lvglpp::widgets::Text>(_txt, CLR_SUCCESS_CONTAINER, getRootItem());
+    _label = std::make_shared<lvglpp::widgets::LvText>(_txt, CLR_SUCCESS_CONTAINER, getRootItem());
 
     _label->setAligment(LV_ALIGN_CENTER, 0, -80);
 

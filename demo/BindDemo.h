@@ -27,7 +27,7 @@ private:
     lv_subject_t _subject;
 
     std::string                             _txt{"Start"};
-    std::shared_ptr<widgets::Text>          _label;
+    std::shared_ptr<widgets::LvText>        _label;
     std::shared_ptr<widgets::RoundedButton> _btn;
 };
 
