@@ -1,5 +1,5 @@
-#include "BindDemo.h"
-
+#include "LangChange.h"
+#include "LvTranslator.h"
 #include "core/sys/Navigators.h"
 #include "core/sys/SdlSimulateApplication.h"
 #include <pthread.h>
@@ -14,7 +14,11 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    lvglpp::sys::Navigators::getInstance()->pushView(std::make_shared<BindDemo>());
+    lvglpp::LvTranslator::Instance().init();
+
+    lvglpp::LvTranslator::Instance().load(lvglpp::LANGUAGE::ENGLISH);
+
+    lvglpp::sys::Navigators::getInstance()->pushView(std::make_shared<LangChangePage>());
 
     return app.exec();
 }

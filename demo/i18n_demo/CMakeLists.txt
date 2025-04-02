@@ -1,4 +1,4 @@
-project(demo)
+project(i18n_demo)
 
 
 if (CMAKE_SYSTEM_PROCESSOR MATCHES "arm" OR CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
@@ -18,13 +18,18 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_executable(${PROJECT_NAME})
 
+set(TR_SRC
+    translations/lv_i18n.h
+    translations/lv_i18n.c
+)
 
 target_sources(${PROJECT_NAME} PRIVATE
     main.cc
-    BindDemo.h
-    BindDemo.cc
-    SnapShot.h
-    SnapShot.cc
+    LangChange.h
+    LangChange.cc
+    LvTranslator.h
+    LvTranslator.cc
+    ${TR_SRC}
 )
 
 
@@ -40,5 +45,3 @@ include_directories(${PROJECT_NAME}
     ${CMAKE_CURRENT_LIST_DIR}/../lvgl/src/
 )
 
-
-add_subdirectory(i18n_demo)
