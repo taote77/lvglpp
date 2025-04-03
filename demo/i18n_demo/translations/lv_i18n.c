@@ -76,7 +76,18 @@ static lv_i18n_phrase_t ja_singulars[] = {
     {"Machine error. Please restart.", "予期せぬエラーが発生しました。再起動してください。"},
     {"If error still occurs after restart, please contact support.", "再起動後もエラーが続く場合は、技術サポートまでご連絡ください。"},
     {"Restart", "再起動"},
-    {"ChangeLangWarnText", "系统语言切换后设备会自动重启。"},
+    {"ChangeLangWarnText", "システム言語を切り替えると、デバイスは自動的に再起動します。"},
+    {"ChangeLangWarnTitle", "システム言語を変更"},
+    {"ChangeLangWarnConfirm", "変更"},
+    {"ChangeLangWarnCancel", "キャンセル"},
+    {"ChangeLangWarnConfirmText", "システム言語を変更しますか？"},
+    {"ChangeLangWarnConfirmTitle", "システム言語を変更"},
+    {"ChangeLangWarnConfirmConfirm", "変更"},
+    {"ChangeLangWarnConfirmCancel", "キャンセル"},
+    {"ChangeLangWarnConfirmConfirmText", "システム言語を変更しますか？"},
+    {"ChangeLangWarnConfirmConfirmTitle", "システム言語を変更"},
+    {"ChangeLangWarnConfirmConfirmConfirm", "変更"},
+    {"ChangeLangWarnConfirmConfirmCancel", "キャンセル"},
     {NULL, NULL} // End mark
 };
 
