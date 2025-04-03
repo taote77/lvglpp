@@ -13,9 +13,9 @@ endif()
 
 set(LVGL_ROOT_DIR ${CMAKE_CURRENT_LIST_DIR})
 
-add_subdirectory(freetype-2)
+add_subdirectory(freetype-2.13.3)
 
-include_directories(freetype-2/include)
+include_directories(freetype-2.13.3/include)
 
 
 if(ESP_PLATFORM)

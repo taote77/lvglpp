@@ -43,7 +43,7 @@ static const lv_i18n_lang_t en_us_lang = {
 };
 
 static lv_i18n_phrase_t ar_singulars[] = {
-    {"ChangeLangWarnText", "系统语言切换后设备会自动重启。"},
+    {"ChangeLangWarnText", "بعد تغيير لغة النظام، سيتم إعادة تشغيل الجهاز تلقائياً."},
     {"Start", "开始"},
     {NULL, NULL} // End mark
 };

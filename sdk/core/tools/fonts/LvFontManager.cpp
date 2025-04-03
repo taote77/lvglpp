@@ -23,11 +23,56 @@ LV_FONT_DECLARE(NotoSC_32_Bold)
 LV_FONT_DECLARE(NotoSC_36_Normal)
 LV_FONT_DECLARE(NotoSC_36_Bold)
 
+#define PATH_PREFIX "./"
+
+#include <iostream>
+
 namespace lvglpp::tools {
 const lv_font_t *LvFontManager::getFontInfo(LvFontManager::FontName name, int size, FontStyle style)
 {
-    if (name == FontName::DMSans) {
-        switch (size) {
+    static bool init{false};
+
+    static lv_font_t *font22{nullptr};
+    static lv_font_t *font24{nullptr};
+
+    if (!init)
+    {
+        font22 = lv_freetype_font_create(PATH_PREFIX "NotoSansSC-AR-Regular.ttf", LV_FREETYPE_FONT_RENDER_MODE_BITMAP, 22, LV_FREETYPE_FONT_STYLE_NORMAL);
+        font24 = lv_freetype_font_create(PATH_PREFIX "NotoSansSC-AR-Regular.ttf", LV_FREETYPE_FONT_RENDER_MODE_BITMAP, 24, LV_FREETYPE_FONT_STYLE_NORMAL);
+
+        // font22 = lv_freetype_font_create(PATH_PREFIX "NotoSansArabic-Regular.ttf", LV_FREETYPE_FONT_RENDER_MODE_BITMAP, 22, LV_FREETYPE_FONT_STYLE_NORMAL);
+        // font24 = lv_freetype_font_create(PATH_PREFIX "NotoSansArabic-Regular.ttf", LV_FREETYPE_FONT_RENDER_MODE_BITMAP, 24, LV_FREETYPE_FONT_STYLE_NORMAL);
+
+        // font22 = lv_freetype_font_create(PATH_PREFIX "NotoSansSC-Regular.ttf", LV_FREETYPE_FONT_RENDER_MODE_BITMAP, 22, LV_FREETYPE_FONT_STYLE_NORMAL);
+        // font24 = lv_freetype_font_create(PATH_PREFIX "NotoSansSC-Regular.ttf", LV_FREETYPE_FONT_RENDER_MODE_BITMAP, 24, LV_FREETYPE_FONT_STYLE_NORMAL);
+
+        if (!font22 || !font24)
+        {
+            LV_LOG_ERROR("fail");
+
+            std::cout << "fail" << std::endl;
+        } else
+        {
+            LV_LOG_ERROR("success");
+            std::cout << "success " << std::endl;
+        }
+        init = true;
+    }
+
+    switch (size)
+    {
+    case 22:
+        return font22;
+    case 24:
+        return font24;
+    default:
+        return font24;
+    }
+
+    if (name == FontName::DMSans)
+    {
+        switch (size)
+        {
         case 20:
             return style == FontStyle::Normal ? &Noto_20_Normal : &Noto_20_Bold;
         case 24:
@@ -43,8 +88,10 @@ const lv_font_t *LvFontManager::getFontInfo(LvFontManager::FontName name, int si
         default:
             return style == FontStyle::Normal ? &Noto_20_Normal : &Noto_20_Bold;
         }
-    } else if (name == FontName::SansSC) {
-        switch (size) {
+    } else if (name == FontName::SansSC)
+    {
+        switch (size)
+        {
         case 20:
             return style == FontStyle::Normal ? &NotoSC_20_Normal : &NotoSC_20_Bold;
         case 24:
