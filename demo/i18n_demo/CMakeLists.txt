@@ -45,3 +45,11 @@ include_directories(${PROJECT_NAME}
     ${CMAKE_CURRENT_LIST_DIR}/../lvgl/src/
 )
 
+SET(ASSET_SOURCE_DIR ${PROJECT_SOURCE_DIR}/assets)
+
+set(COPY_ASSET_RES 1)
+
+if (COPY_ASSET_RES)
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_directory ${ASSET_SOURCE_DIR} ${EXECUTABLE_OUTPUT_PATH}/assets)
+endif ()
