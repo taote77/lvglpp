@@ -28,12 +28,13 @@ private:
 
     std::string                      _txt{"Start"};
     std::shared_ptr<widgets::LvText> _label;
+    std::shared_ptr<widgets::LvText> _label1;
 
     std::shared_ptr<widgets::RoundedButton> _btn_chinese;
     std::shared_ptr<widgets::RoundedButton> _btn_english;
     std::shared_ptr<widgets::RoundedButton> _btn_japanese;
     std::shared_ptr<widgets::RoundedButton> _btn_russian;
-    std::shared_ptr<widgets::RoundedButton> _btn_ar;
+    // std::shared_ptr<widgets::RoundedButton> _btn_ar;
 };
 
 #endif // _LANG_CHANGE_PAGE_H

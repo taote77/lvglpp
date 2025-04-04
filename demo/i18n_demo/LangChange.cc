@@ -17,6 +17,12 @@ void LangChangePage::onCreate(void *arg)
 
     _label->setAligment(LV_ALIGN_CENTER, 0, -120);
 
+    static auto createLabel = [this]() {
+        _label1 = std::make_shared<lvglpp::widgets::LvText>(lvglpp::LvTranslator::tr("ChangeLangWarnText"), CLR_SUCCESS_CONTAINER, getRootItem());
+
+        _label->setAligment(LV_ALIGN_CENTER, 0, -140);
+    };
+
     auto btn = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "中文", getRootItem());
     btn->setPos(480, 300);
     btn->setAligment(LV_ALIGN_CENTER, 0, -50);
@@ -26,6 +32,9 @@ void LangChangePage::onCreate(void *arg)
 
         _txt = (_txt == "Start") ? "Stop" : "Start";
         lvglpp::LvTranslator::load(lvglpp::LANGUAGE::CHINESE);
+        createLabel();
+
+        _label->forceUpdate();
     });
     _btn_chinese = btn;
 
@@ -38,6 +47,10 @@ void LangChangePage::onCreate(void *arg)
         LOG_DEBUG() << "English lang";
         std::cout << "dsdsdsds";
         lvglpp::LvTranslator::load(lvglpp::LANGUAGE::ENGLISH);
+
+        createLabel();
+
+        _label->forceUpdate();
     });
     _btn_english = btn;
 
@@ -49,6 +62,9 @@ void LangChangePage::onCreate(void *arg)
 
         LOG_DEBUG() << "Japanese lang";
         lvglpp::LvTranslator::load(lvglpp::LANGUAGE::JAPANESE);
+        createLabel();
+
+        _label->forceUpdate();
     });
 
     _btn_japanese = btn;
@@ -61,19 +77,11 @@ void LangChangePage::onCreate(void *arg)
 
         LOG_DEBUG() << "Russian lang";
         lvglpp::LvTranslator::load(lvglpp::LANGUAGE::RUSSIAN);
+
+        createLabel();
+        _label->forceUpdate();
     });
     _btn_russian = btn;
-
-    btn = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "阿拉伯语", getRootItem());
-    btn->setPos(480, 300);
-    btn->setAligment(LV_ALIGN_CENTER, 0, 150);
-    btn->setOnClickedListener([this]() {
-        _txt = (_txt == "Start") ? "Stop" : "Start";
-
-        LOG_DEBUG() << "Arabic lang";
-        lvglpp::LvTranslator::load(lvglpp::LANGUAGE::AR);
-    });
-    _btn_ar = btn;
 }
 
 void LangChangePage::onNotifyUI(const sys::Event &evt)

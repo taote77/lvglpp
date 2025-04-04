@@ -198,6 +198,13 @@ void LvText::setLongMode(int maxWidth, LvText::LongMode longMode)
     setText(getText());
 }
 
+void LvText::forceUpdate()
+{
+    // auto tmp = text_;
+    // setText("");
+    // setText(tmp);
+}
+
 std::string LvText::getLongModeStr(std::string src)
 {
     std::string out_str = std::move(src);

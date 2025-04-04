@@ -74,6 +74,8 @@ public:
 
     void setLongMode(int maxWidth, LongMode longMode);
 
+    void forceUpdate();
+
 private:
     std::string getLongModeStr(std::string src);
 
