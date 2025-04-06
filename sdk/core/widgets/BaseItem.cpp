@@ -274,4 +274,5 @@ void BaseItem::setPaddingHor(lv_coord_t padding)
 {
     lv_obj_set_style_pad_hor(lv_base_ptr_, padding, LV_STATE_DEFAULT);
 }
+
 } // namespace lvglpp::widgets

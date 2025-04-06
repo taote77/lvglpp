@@ -1,8 +1,3 @@
-/**************************************************************************
-
-
-**************************************************************************/
-
 #include "core/log/log.h"
 
 #if (defined(USED_SDL)) || (defined(USED_SDL_GPU))
@@ -18,6 +13,22 @@
 #endif
 
 #include <unistd.h>
+
+// 定义输入设备句柄和状态
+
+static lv_indev_t *_simu_touch_indev{nullptr};
+
+static lv_point_t click_pos;
+static bool       is_pressed = false;
+
+// 输入设备读取回调
+static void mouse_read(lv_indev_t *indev, lv_indev_data_t *data)
+{
+    (void)indev; // 避免未使用警告
+    data->point.x = click_pos.x;
+    data->point.y = click_pos.y;
+    data->state   = is_pressed ? LV_INDEV_STATE_PRESSED : LV_INDEV_STATE_RELEASED;
+}
 
 uint16_t window_width;
 uint16_t window_height;
@@ -169,6 +180,45 @@ bool SdlSimulateApplication::initApp()
     return true;
 }
 
+void SdlSimulateApplication::simulate_click_at(int32_t x, int32_t y)
+{
+    //
+    // 设置坐标和按下状态
+    click_pos.x = x;
+    click_pos.y = y;
+    is_pressed  = true;
+
+    // 触发按下事件
+    lv_indev_read(_simu_touch_indev); // 更新输入设备状态
+    lv_refr_now(NULL);                // 立即处理事件和渲染
+
+    // 短暂延时（模拟真实点击）
+    lv_timer_handler(); // 处理 LVGL 内部任务
+    lv_tick_inc(10);    // 推进时间（如果未使用 OS）
+
+    // 设置释放状态
+    is_pressed = false;
+    lv_indev_read(_simu_touch_indev);
+    lv_refr_now(NULL);
+
+    // 确保事件处理完成
+    lv_timer_handler();
+    lv_tick_inc(10);
+}
+
+void SdlSimulateApplication::simulate_click_at(lv_obj_t *obj, int32_t x, int32_t y)
+{
+    // TODO
+    lv_point_t pos{0, 0};
+    // 遍历所有父容器，累加坐标偏移
+    while (obj != NULL)
+    {
+        pos.x += lv_obj_get_x(obj);
+        pos.y += lv_obj_get_y(obj);
+        obj = lv_obj_get_parent(obj);
+    }
+}
+
 void SdlSimulateApplication::setTheme(lv_theme_t *theme)
 {
     if (!theme)
@@ -198,8 +248,14 @@ void SdlSimulateApplication::lv_linux_disp_init()
     _keybaord_indev = lv_sdl_keyboard_create();
     lv_indev_set_group(_keybaord_indev, lv_group_get_default());
 
+    _simu_touch_indev = lv_sdl_mouse_create();
+    lv_indev_set_group(_simu_touch_indev, lv_group_get_default());
+
     lv_indev_set_display(_mouse_indev, _display);
     lv_indev_set_display(_keybaord_indev, _display);
+    lv_indev_set_display(_simu_touch_indev, _display);
+    lv_indev_set_type(_simu_touch_indev, LV_INDEV_TYPE_POINTER);
+    lv_indev_set_read_cb(_simu_touch_indev, mouse_read);
 
     lv_display_set_default(_display);
 }

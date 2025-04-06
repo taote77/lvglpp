@@ -19,11 +19,13 @@ class LvTranslator
 public:
     static LvTranslator &Instance();
 
-    void init();
+    static void init();
 
     static void load(LANGUAGE lang);
 
     static const char *tr(const char *text);
+
+    static const char *getI18nText(const char *text);
 
 protected:
     LvTranslator();

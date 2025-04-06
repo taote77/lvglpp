@@ -82,6 +82,8 @@ add_library(${PROJECT_NAME}  SHARED
     mouse_cursor_icon.c
 )
 
+add_subdirectory(net)
+
 
 
 target_link_libraries(${PROJECT_NAME} 
@@ -103,7 +105,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
     LV_CONF_INCLUDE_SIMPLE
 )
 
-find_package(Boost REQUIRED COMPONENTS log  log_setup filesystem)
+find_package(Boost REQUIRED COMPONENTS log  log_setup filesystem json)
 
 target_link_libraries(${PROJECT_NAME}
     lvgl
@@ -115,7 +117,12 @@ target_link_libraries(${PROJECT_NAME}
     sqlite3
     m
     pthread
-    avformat avcodec avutil swscale 
+    ws_gw
+    avformat avcodec avutil swscale
+)
+
+target_compile_definitions(${PROJECT_NAME} PUBLIC
+    BOOST_ALL_DYN_LINK
 )
 
 

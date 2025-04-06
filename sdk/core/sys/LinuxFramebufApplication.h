@@ -1,6 +1,7 @@
 
 #ifndef LINUXFRAMEBUF_APPLICATION_H
 #define LINUXFRAMEBUF_APPLICATION_H
+
 #ifdef USED_FRAMEBUFF
 
 #include "Application.h"

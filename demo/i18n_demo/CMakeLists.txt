@@ -30,6 +30,10 @@ target_sources(${PROJECT_NAME} PRIVATE
     LvTranslator.h
     LvTranslator.cc
     ${TR_SRC}
+    I18nWidgets/InText.h
+    I18nWidgets/InText.cc
+    session.h
+    session.cc
 )
 
 
@@ -43,6 +47,10 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 include_directories(${PROJECT_NAME}
     ${CMAKE_CURRENT_LIST_DIR}/../lvgl/
     ${CMAKE_CURRENT_LIST_DIR}/../lvgl/src/
+)
+
+target_include_directories(${PROJECT_NAME} PRIVATE
+    ./    
 )
 
 SET(ASSET_SOURCE_DIR ${PROJECT_SOURCE_DIR}/assets)

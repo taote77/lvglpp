@@ -2,6 +2,7 @@
 #include "LvTranslator.h"
 #include "core/sys/Navigators.h"
 #include "core/sys/SdlSimulateApplication.h"
+#include "session.h"
 #include <pthread.h>
 #include <unistd.h>
 
@@ -14,9 +15,11 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    lvglpp::LvTranslator::Instance().init();
+    WebsocketSession::Instance()->Init();
 
-    lvglpp::LvTranslator::Instance().load(lvglpp::LANGUAGE::RUSSIAN);
+    lvglpp::LvTranslator::init();
+
+    lvglpp::LvTranslator::load(lvglpp::LANGUAGE::RUSSIAN);
 
     lvglpp::sys::Navigators::getInstance()->pushView(std::make_shared<LangChangePage>());
 

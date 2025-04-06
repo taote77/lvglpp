@@ -1,19 +1,5 @@
-/**************************************************************************
-
-Copyright:Copyright © 2022 HeyGears. All rights reserved
-
-Author: LnJan
-
-Date:2022-04-19
-
-Class:${CLASS}
-
-Description:Lvgl工具集
-
-**************************************************************************/
-
-#ifndef LVGL_XFJ_DEMO_LVGLUTILS_H
-#define LVGL_XFJ_DEMO_LVGLUTILS_H
+#ifndef LVPP_UTILS_H
+#define LVPP_UTILS_H
 
 #include "lvgl.h"
 
@@ -68,4 +54,4 @@ public:
 } // namespace tools
 } // namespace lvglpp
 
-#endif // LVGL_XFJ_DEMO_LVGLUTILS_H
+#endif // LVPP_UTILS_H

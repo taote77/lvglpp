@@ -2,18 +2,21 @@
 
 Class:BaseItem
 
-Description:c++ lvgl封装item基类
 
 **************************************************************************/
 
 #ifndef LV_BASE_ITEM_H
 #define LV_BASE_ITEM_H
 
+#include "core/kernel/Object.h"
 #include "lvgl.h"
 #include <functional>
 
 namespace lvglpp::widgets {
-class BaseItem
+
+using namespace lvglpp::core;
+
+class BaseItem : public Object
 {
 public:
     explicit BaseItem(BaseItem *parentItem = nullptr);
@@ -26,8 +29,7 @@ public:
 
     virtual void setAligment(lv_align_t align, lv_coord_t offsetX, lv_coord_t offsetY);
 
-    virtual void setAligmentTo(const BaseItem &item, lv_align_t align, lv_coord_t offsetX,
-                               lv_coord_t offsetY);
+    virtual void setAligmentTo(const BaseItem &item, lv_align_t align, lv_coord_t offsetX, lv_coord_t offsetY);
 
     void setBgColor(uint32_t clr);
 
@@ -68,17 +70,32 @@ public:
 
     void setBorder(lv_coord_t width, uint32_t color) const;
 
-    BaseItem *getParent() const { return this->parent; }
+    BaseItem *getParent() const
+    {
+        return this->parent;
+    }
 
     void setParent(BaseItem *parent);
 
-    virtual void setOnClickedListener(const std::function<void()> &l) { this->clicked_cb_ = l; }
+    virtual void setOnClickedListener(const std::function<void()> &l)
+    {
+        this->clicked_cb_ = l;
+    }
 
-    virtual void setOnPressedListener(const std::function<void()> &l) { this->pressed_cb_ = l; }
+    virtual void setOnPressedListener(const std::function<void()> &l)
+    {
+        this->pressed_cb_ = l;
+    }
 
-    virtual void setOnReleasedListener(const std::function<void()> &l) { this->released_cb_ = l; }
+    virtual void setOnReleasedListener(const std::function<void()> &l)
+    {
+        this->released_cb_ = l;
+    }
 
-    lv_obj_t *getLvglItem() const { return lv_base_ptr_; }
+    lv_obj_t *getLvglItem() const
+    {
+        return lv_base_ptr_;
+    }
 
     void setPaddingBottom(lv_coord_t padding);
 
@@ -87,7 +104,10 @@ public:
     void setPaddingHor(lv_coord_t padding);
 
 protected:
-    void setLvglItem(lv_obj_t *ptr) { lv_base_ptr_ = ptr; }
+    void setLvglItem(lv_obj_t *ptr)
+    {
+        lv_base_ptr_ = ptr;
+    }
 
     enum ItemType {
         NormalItem,
@@ -105,13 +125,13 @@ protected:
     explicit BaseItem(ItemType type, BaseItem *parentItem = nullptr);
 
 private:
-    BaseItem *parent = nullptr;
-    lv_obj_t *lv_base_ptr_ = nullptr;
-    std::function<void()> clicked_cb_ = nullptr;
-    std::function<void()> pressed_cb_ = nullptr;
+    BaseItem             *parent       = nullptr;
+    lv_obj_t             *lv_base_ptr_ = nullptr;
+    std::function<void()> clicked_cb_  = nullptr;
+    std::function<void()> pressed_cb_  = nullptr;
     std::function<void()> released_cb_ = nullptr;
-    lv_coord_t width_ = 0;
-    lv_coord_t height_ = 0;
+    lv_coord_t            width_       = 0;
+    lv_coord_t            height_      = 0;
 
     void initItem(ItemType type);
 
