@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="./vue.global.js"></script>
+    <script src="./echarts.min.js"></script>
+
+    <title>远程控制</title>
+
+</head>
+
+
+<body>
+    <div id="app">
+        <img :src="imageData" v-if="imageData" style="max-width: 100%; height: auto">
+    </div>
+
+    <div>
+
+    </div>
+
+
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    imageData: null
+                }
+            },
+            created() {
+                this.channel = new BroadcastChannel('image_channel');
+                this.channel.onmessage = (event) => {
+                    if (event.data.type === 'image_update') {
+                        console.log('Received image data:', event.data.type);
+                        this.imageData = event.data.data;
+
+                        const binaryData = event.data.data;
+                        // 创建 Blob 对象
+                        const blob = new Blob([binaryData], { type: 'image/png' });
+                        // 创建 Object URL
+                        const objectUrl = URL.createObjectURL(blob);
+                        // 释放之前的 Object URL 以避免内存泄漏
+                        if (this.imageData) {
+                            URL.revokeObjectURL(this.imageData);
+                        }
+                        this.imageData = objectUrl;
+
+                    }
+                }
+            },
+            beforeUnmount() {
+                // 组件销毁前释放当前的 Object URL
+                if (this.imageData) {
+                    URL.revokeObjectURL(this.imageData);
+                }
+                // 关闭 BroadcastChannel
+                this.channel.close();
+            }
+        }).mount('#app');
+    </script>
+
+</body>
+
+</html>

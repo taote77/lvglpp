@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Printer</title>
+
+    <script src="./vue.global.js"></script>
+    <script src="./echarts.min.js"></script>
+    <!-- <script src=https://cdn.staticfile.net/vue/3.0.5/vue.global.js></script> -->
+
+    <!-- <script src="https://cdn.staticfile.org/echarts/5.4.3/echarts.min.js"></script> -->
+
+</head>
+
+<body>
+
+    <header>3D Printer</header>
+
+    <span>
+        <div id="sysInfoTable" style="width: 400px;height:400px; display: inline-block;"></div>
+
+        <div id="sysInfoTable1" style="width: 400px;height:400px; display: inline-block;"></div>
+
+    </span>
+
+    <div id="app">
+
+        <button @click="startMonitor" v-text="btnMonitor"></button>
+
+        <section>
+
+            <form action="">
+                加液模块:<input type="text" name="加液模块" v-model="config.fillMod"><br>
+                加热模块:<input type="text" name="加热模块" v-model="config.heatingMod">
+            </form>
+
+        </section>
+
+        <br>
+
+        <a href="remote.html">Remote</a>
+
+        <!-- <button onclick='table()'> as</button> -->
+
+    </div>
+
+    <script type="text/javascript">
+
+        let myChart = echarts.init(document.getElementById('sysInfoTable'));
+        let myChart1 = echarts.init(document.getElementById('sysInfoTable1'));
+
+        let option = {
+            title: {
+                text: '打印机系统资源'
+            },
+            tooltip: {},
+            legend: {
+                data: ['百分比']
+            },
+            xAxis: {
+                data: ['内存', 'CPU', '磁盘', 'VirMem', "Progress"]
+            },
+            yAxis: {},
+            series: [
+                {
+                    name: '百分比',
+                    type: 'bar',
+                    data: [5, 20, 36, 10, 10, 20]
+                }
+            ]
+        };
+
+        var int = self.setInterval("randData()", 1000);
+        function randData() {
+            option.series[0].data[0] = 5 + Math.floor(Math.random() * 10) + 1;
+            option.series[0].data[1] = 30 + Math.floor(Math.random() * 10) + 1;
+            option.series[0].data[2] = 30 + Math.floor(Math.random() * 10) + 1;
+            option.series[0].data[3] = 60 + Math.floor(Math.random() * 10) + 1;
+            option.series[0].data[4] = 30 + Math.floor(Math.random() * 10) + 1;
+
+            // console.log(option.series[0].data[1])
+
+            myChart.setOption(option);
+        }
+
+
+        let base = +new Date(2023, 10, 26);
+        let oneDay = 24 * 3600 * 1000;
+        let date = [];
+        let data = [Math.random() * 300];
+        for (let i = 1; i < 20000; i++) {
+            let now = new Date((base += oneDay));
+            date.push([now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'));
+            data.push(Math.round((Math.random() - 0.5) * 20 + data[i - 1]));
+        }
+
+        let option1 = {
+            tooltip: {
+                trigger: 'axis',
+                position: function (pt) {
+                    return [pt[0], '10%'];
+                }
+            },
+            title: {
+                left: 'center',
+                text: '实时动态'
+            },
+            toolbox: {
+                feature: {
+                    dataZoom: {
+                        yAxisIndex: 'none'
+                    },
+                    restore: {},
+                    saveAsImage: {}
+                }
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: date
+            },
+            yAxis: {
+                type: 'value',
+                boundaryGap: [0, '100%']
+            },
+            dataZoom: [
+                {
+                    type: 'inside',
+                    start: 0,
+                    end: 10
+                },
+                {
+                    start: 0,
+                    end: 10
+                }
+            ],
+            series: [
+                {
+                    name: 'Data',
+                    type: 'line',
+                    symbol: 'none',
+                    sampling: 'lttb',
+                    itemStyle: {
+                        color: 'rgb(255, 70, 131)'
+                    },
+                    areaStyle: {
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                            {
+                                offset: 0,
+                                color: 'rgb(255, 158, 68)'
+                            },
+                            {
+                                offset: 1,
+                                color: 'rgb(255, 70, 131)'
+                            }
+                        ])
+                    },
+                    data: data
+                }
+            ]
+        };
+
+        myChart.setOption(option);
+
+        myChart1.setOption(option1);
+
+    </script>
+
+    <script type="text/javascript">
+
+        const app = Vue.createApp({
+            data() {
+                return {
+                    message: "3D Printer",
+
+                    btnMonitor: "开始监控",
+                    isMonitoring: false,
+
+                    config: {
+                        fillMod: true,
+                        heatingMod: false
+                    },
+
+                    cpu_state: {
+                        used: 10
+                    },
+
+                    lockReconnect: false, //是否真正建立连接
+                    timeout: 58 * 1000, //58秒一次心跳
+                    timeoutObj: null, //心跳心跳倒计时
+                    serverTimeoutObj: null, //心跳倒计时
+                    timeoutnum: null, //断开 重连倒计时
+
+                }
+            },
+
+            created() {
+                this.initWebSocket();
+            },
+
+            methods: {
+                startMonitor() {
+                    this.btnMonitor = this.isMonitoring ? '停止监控' : '开始监控';
+
+                    if (this.isMonitoring) {
+                    }
+                    else {
+                    }
+
+                    let data = {
+                        topic: "START_MONITOR",
+                        data: {}
+                    };
+
+                    this.websocketSend(data);
+
+                },
+
+                initWebSocket() {
+                    const ws_uri = "ws://localhost:9998";
+                    //const ws_uri = "ws://10.255.255.254:9998";
+
+
+
+                    this.websock = new WebSocket(ws_uri);
+                    // 客户端接收服务端数据时触发
+                    this.websock.onmessage = this.websocketOnMessage;
+                    // 连接建立时触发
+                    this.websock.onopen = this.websocketOnOpen;
+                    // 通信发生错误时触发
+                    this.websock.onerror = this.websocketOnError;
+                    // 连接关闭时触发
+                    this.websock.onclose = this.websocketClose;
+
+                    this.chanel = new BroadcastChannel('image_channel');
+                },
+                // 连接建立时触发
+                websocketOnOpen() {
+                    //开启心跳
+                    //this.start();
+                },
+                // 通信发生错误时触发
+                websocketOnError() {
+                    console.log("出现错误");
+                    this.reconnect();
+                },
+
+                websocketOnMessage(msg) {
+                    //console.log(msg.data);
+                    if (msg.data instanceof Blob) {
+                        const reader = new FileReader();
+                        reader.readAsText(msg.data, "UTF-8");
+                        reader.onload = (e) => {
+                            let result = JSON.parse(reader.result.toString());
+
+                            if (result['topic'] === "image/png") {
+                                console.log('websocket 收到', 'cmd:', result['topic'], 'data', result['data']);
+
+                                this.chanel.postMessage({
+                                    type: 'image_update',
+                                    data: result['data']
+                                });
+                                console.log('send image to remote.html');
+                            }
+                            else {
+                                console.log('websocket 收到', 'cmd:', result['topic'], 'data', result['data']);
+                            }
+                            if (result['topic'] === 'NOTIFY_CPU_STATE') {
+                                console.log('handle msg cpu state')
+                            }
+
+                        }
+                    }
+                },
+                websocketSend(data) {
+                    if (typeof (data) == "object")
+                        this.websock.send(JSON.stringify(data));
+                    else
+                        throw 'wrong format parameter!!!';
+                },
+                // 连接关闭时触发
+                websocketClose(event) {
+                    console.log("断开连接", event);
+                    //重连
+                    this.reconnect();
+                },
+                reconnect() {
+                    //重新连接
+                    let that = this;
+                    if (that.lockReconnect) {
+                        return;
+                    }
+                    that.lockReconnect = true;
+                    //没连接上会一直重连，设置延迟避免请求过多
+                    that.timeoutnum && clearTimeout(that.timeoutnum);
+                    that.timeoutnum = setTimeout(function () {
+                        //新连接
+                        that.initWebSocket();
+                        that.lockReconnect = false;
+                    }, 5000);
+                },
+                reset() {
+                    //重置心跳
+                    let that = this;
+                    //清除时间
+                    clearTimeout(that.timeoutObj);
+                    clearTimeout(that.serverTimeoutObj);
+                    //重启心跳
+                    that.start();
+                },
+                start() {
+                    //开启心跳
+                    console.log("开启心跳");
+                    let self = this;
+                    self.timeoutObj && clearTimeout(self.timeoutObj);
+                    self.serverTimeoutObj && clearTimeout(self.serverTimeoutObj);
+                    self.timeoutObj = setTimeout(function () {
+                        //这里发送一个心跳，后端收到后，返回一个心跳消息，
+                        if (self.ws.readyState == 1) {
+                            //如果连接正常
+                            // self.ws.send("heartCheck"); //这里可以自己跟后端约定
+                        } else {
+                            //否则重连
+                            self.reconnect();
+                        }
+                        self.serverTimeoutObj = setTimeout(function () {
+                            //超时关闭
+                            self.ws.close();
+                        }, self.timeout);
+                    }, self.timeout);
+                },
+            }
+
+        }).mount('#app')
+    </script>
+
+</body>
+
+</html>

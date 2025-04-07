@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    WebsocketSession::Instance()->Init();
+    WebsocketSession::Instance().Init();
 
     lvglpp::LvTranslator::init();
 

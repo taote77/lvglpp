@@ -3,8 +3,11 @@
 #include "core/sys/Navigators.h"
 #include "core/sys/SdlSimulateApplication.h"
 #include "core/widgets/GlobalVar.h"
+#include "session.h"
 #include <core/log/log.h>
+#include <fstream>
 #include <iostream>
+#include <vector>
 
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
@@ -104,7 +107,18 @@ bool takeScreenshot(lv_obj_t *screen, const std::string &filename)
 
     save_rgb888_to_png("screenshot.png", rgb888_data, draw_buf->header.w, draw_buf->header.h);
 
-    // lv_draw_buf_free(draw_buf);
+    if (draw_buf)
+    {
+        if (draw_buf->data)
+        {
+            lv_free(draw_buf->data);
+        }
+
+        lv_free(draw_buf);
+        draw_buf = nullptr;
+    }
+
+    free(rgb888_data);
     // delete[] rgba_buffer;
     return true;
 }
@@ -214,6 +228,19 @@ void LangChangePage::onCreate(void *arg)
         if (takeScreenshot(screen, "screenshot.png"))
         {
             std::cout << "Screenshot saved successfully." << std::endl;
+
+            std::ifstream file("screenshot.png", std::ios::binary);
+
+            // 读取文件内容到缓冲区
+            std::string buffer((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+
+            file.close();
+
+            boost::json::object data;
+            data["topic"] = "image/png";
+            data["data"]  = buffer;
+
+            WebsocketSession::Instance().Post(data);
         } else
         {
             std::cerr << "Failed to save screenshot." << std::endl;
@@ -230,6 +257,12 @@ void LangChangePage::onCreate(void *arg)
         _txt = (_txt == "Start") ? "Stop" : "Start";
 
         LOG_DEBUG() << "Simu lang";
+
+        boost::json::object data;
+        data["topic"] = "test";
+        data["data"]  = "hello";
+
+        WebsocketSession::Instance().Post(data);
     });
 }
 

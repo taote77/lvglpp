@@ -12,13 +12,13 @@ private:
     WsGwContext *m_cxt = nullptr;
 
 public:
-    static WebsocketSession *Instance();
+    static WebsocketSession &Instance();
 
     WebsocketSession(/* args */);
 
     ~WebsocketSession();
 
-    void Post(const boost::json::object &data);
+    void Post(boost::json::object &data);
 
     void Init();
 };
