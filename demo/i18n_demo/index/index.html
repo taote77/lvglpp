@@ -260,7 +260,7 @@
                                 console.log('websocket 收到', 'cmd:', result['topic'], 'data', result['data']);
 
                                 this.chanel.postMessage({
-                                    type: 'image_update',
+                                    type: 'png_frame',
                                     data: result['data']
                                 });
                                 console.log('send image to remote.html');
