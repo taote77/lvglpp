@@ -42,3 +42,4 @@ include_directories(${PROJECT_NAME}
 
 
 add_subdirectory(i18n_demo)
+add_subdirectory(remote_ctrl)

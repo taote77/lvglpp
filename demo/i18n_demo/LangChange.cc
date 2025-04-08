@@ -119,7 +119,6 @@ bool takeScreenshot(lv_obj_t *screen, const std::string &filename)
     }
 
     free(rgb888_data);
-    // delete[] rgba_buffer;
     return true;
 }
 
@@ -239,6 +238,8 @@ void LangChangePage::onCreate(void *arg)
             boost::json::object data;
             data["topic"] = "image/png";
             data["data"]  = buffer;
+
+            std::cout << "JSON data length: " << buffer.length() << std::endl;
 
             WebsocketSession::Instance().Post(data);
         } else
