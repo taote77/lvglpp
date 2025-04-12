@@ -1,4 +1,5 @@
 #include "RemoteClient.h"
+#include "core/sys/Application.h"
 #include "core/sys/Navigators.h"
 #include "core/sys/SdlSimulateApplication.h"
 #include "core/widgets/GlobalVar.h"
@@ -8,6 +9,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <utility>
 #include <vector>
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -16,6 +18,11 @@
 #include "core/tools/stb/stb_image.h"
 #include "core/tools/stb/stb_image_resize2.h"
 #include "core/tools/stb/stb_image_write.h"
+
+enum ComTopic {
+    MOUSE_EVENT,
+    CLOUS_IMAGE_STREAM_PUSH,
+};
 
 using namespace lvglpp::core;
 
@@ -150,11 +157,21 @@ void RemoteClient::onCreate(void *arg)
 
         if (topic == "MOUSE_EVENT")
         {
+            static long long last_time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+
+            auto now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+
+            if (now - last_time < 150)
+            {
+                return;
+            }
+
             int x = data_json["x"].as_int64();
             int y = data_json["y"].as_int64();
             LOG_DEBUG() << "MOUSE_EVENT pos: " << x << y;
 
-            sys::SdlSimulateApplication::simulate_click_at(x, y);
+            last_time = now;
+            lvglpp::sys::Navigators::getInstance()->getApplication()->postEvent(lvglpp::sys::Event(ComTopic::MOUSE_EVENT, 0, std::pair<int, int>(x, y)));
         }
     });
 
@@ -221,7 +238,19 @@ void RemoteClient::onCreate(void *arg)
 
 void RemoteClient::onNotifyUI(const sys::Event &evt)
 {
-    (void)evt;
+    BaseActivity::onNotifyUI(evt);
+
+    if (evt.getType() == ComTopic::MOUSE_EVENT)
+    {
+        LOG_DEBUG() << "MOUSE_EVENT";
+        auto data = evt.convertData<std::pair<int, int>>();
+        if (data)
+        {
+            auto pos = *data;
+            LOG_DEBUG() << "MOUSE_EVENT pos: " << pos.first << pos.second;
+            sys::SdlSimulateApplication::simulate_click_at(pos.first, pos.second);
+        }
+    }
 }
 
 void RemoteClient::onDestroy()

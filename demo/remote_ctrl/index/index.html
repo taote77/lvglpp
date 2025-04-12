@@ -10,8 +10,6 @@
     <script src="./vue.global.js"></script>
     <script src="./echarts.min.js"></script>
 
-    <!-- <script src="https://cdn.staticfile.org/echarts/5.4.3/echarts.min.js"></script> -->
-
 </head>
 
 <body>
@@ -195,6 +193,9 @@
                     serverTimeoutObj: null, //心跳倒计时
                     timeoutnum: null, //断开 重连倒计时
 
+                    lastClickTime: 0, // 记录上一次点击的时间戳
+                    clickInterval: 500, // 设置点击间隔阈值，单位为毫秒
+
                 }
             },
 
@@ -251,7 +252,7 @@
                         reader.readAsText(msg.data, "UTF-8");
                         reader.onload = (e) => {
                             let result = JSON.parse(reader.result.toString());
-                            console.log('websocket 收到', 'cmd:', result['topic'], 'data', result['data'].length);
+                            // console.log('websocket 收到', 'cmd:', result['topic'], 'data', result['data'].length);
 
                             if (result['topic'] === 'NOTIFY_CPU_STATE') {
                                 console.log('handle msg cpu state')
@@ -267,7 +268,7 @@
                                 const arrayBuffer = bytes.buffer;
 
                                 const dataLength = arrayBuffer.byteLength;
-                                console.log('websocket 收到数据长度:', dataLength);
+                                // console.log('websocket 收到数据长度:', dataLength);
 
                                 const blob = new Blob([arrayBuffer], { type: 'image/jpg' });
                                 const reader = new FileReader();
@@ -278,16 +279,21 @@
                                     img.style.width = '800px';
                                     img.style.height = '480px';
 
+
                                     // 添加点击事件监听器
                                     img.addEventListener('click', (event) => {
+                                        const currentTime = Date.now();
+                                        if (currentTime - this.lastClickTime < this.clickInterval) {
+                                            return; // 如果点击间隔小于阈值，忽略本次点击
+                                        }
+
                                         // 获取图片元素的边界框
                                         const rect = img.getBoundingClientRect();
-                                        // 计算相对于图片的 X 坐标
+
                                         const x = event.clientX - rect.left;
-                                        // 计算相对于图片的 Y 坐标
+
                                         const y = event.clientY - rect.top;
                                         console.log(`点击位置相对于图片的坐标: (${x}, ${y})`);
-
 
                                         let data = {
                                             topic: "MOUSE_EVENT",
@@ -296,11 +302,13 @@
 
                                         this.websocketSend(data);
 
-
                                     });
 
                                 };
                                 reader.readAsDataURL(blob);
+
+
+                                // this.previousClickHandler = clickHandler; // 保存当前的点击事件监听器
 
                             }
 
