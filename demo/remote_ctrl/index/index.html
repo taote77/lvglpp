@@ -9,7 +9,6 @@
 
     <script src="./vue.global.js"></script>
     <script src="./echarts.min.js"></script>
-    <!-- <script src=https://cdn.staticfile.net/vue/3.0.5/vue.global.js></script> -->
 
     <!-- <script src="https://cdn.staticfile.org/echarts/5.4.3/echarts.min.js"></script> -->
 
@@ -24,6 +23,10 @@
 
         <div id="sysInfoTable1" style="width: 400px;height:400px; display: inline-block;"></div>
 
+        <div style="width: 800px;height:480px; display: inline-block;">
+            <img id="imageDisplay" style="max-width:100%; max-height:100%;" />
+        </div>
+
     </span>
 
     <div id="app">
@@ -31,19 +34,15 @@
         <button @click="startMonitor" v-text="btnMonitor"></button>
 
         <section>
-
+            <!-- 
             <form action="">
                 加液模块:<input type="text" name="加液模块" v-model="config.fillMod"><br>
                 加热模块:<input type="text" name="加热模块" v-model="config.heatingMod">
-            </form>
+            </form> -->
 
         </section>
 
         <br>
-
-        <a href="remote.html">Remote</a>
-
-        <!-- <button onclick='table()'> as</button> -->
 
     </div>
 
@@ -188,6 +187,8 @@
                         used: 10
                     },
 
+                    imageData: null,
+
                     lockReconnect: false, //是否真正建立连接
                     timeout: 58 * 1000, //58秒一次心跳
                     timeoutObj: null, //心跳心跳倒计时
@@ -221,9 +222,6 @@
 
                 initWebSocket() {
                     const ws_uri = "ws://localhost:9998";
-                    //const ws_uri = "ws://10.255.255.254:9998";
-
-
 
                     this.websock = new WebSocket(ws_uri);
                     // 客户端接收服务端数据时触发
@@ -234,8 +232,6 @@
                     this.websock.onerror = this.websocketOnError;
                     // 连接关闭时触发
                     this.websock.onclose = this.websocketClose;
-
-                    this.chanel = new BroadcastChannel('image_channel');
                 },
                 // 连接建立时触发
                 websocketOnOpen() {
@@ -249,37 +245,78 @@
                 },
 
                 websocketOnMessage(msg) {
-                    //console.log(msg.data);
+
                     if (msg.data instanceof Blob) {
                         const reader = new FileReader();
                         reader.readAsText(msg.data, "UTF-8");
                         reader.onload = (e) => {
                             let result = JSON.parse(reader.result.toString());
+                            console.log('websocket 收到', 'cmd:', result['topic'], 'data', result['data'].length);
 
-                            if (result['topic'] === "image/png") {
-                                console.log('websocket 收到', 'cmd:', result['topic'], 'data', result['data']);
-
-                                this.chanel.postMessage({
-                                    type: 'png_frame',
-                                    data: result['data']
-                                });
-                                console.log('send image to remote.html');
-                            }
-                            else {
-                                console.log('websocket 收到', 'cmd:', result['topic'], 'data', result['data']);
-                            }
                             if (result['topic'] === 'NOTIFY_CPU_STATE') {
                                 console.log('handle msg cpu state')
+                            } else if (result['topic'] === 'IMAGE_DATA') {
+
+                                const base64Data = result['data'];
+                                // 解码 Base64 数据
+                                const binaryString = atob(base64Data);
+                                const bytes = new Uint8Array(binaryString.length);
+                                for (let i = 0; i < binaryString.length; i++) {
+                                    bytes[i] = binaryString.charCodeAt(i);
+                                }
+                                const arrayBuffer = bytes.buffer;
+
+                                const dataLength = arrayBuffer.byteLength;
+                                console.log('websocket 收到数据长度:', dataLength);
+
+                                const blob = new Blob([arrayBuffer], { type: 'image/jpg' });
+                                const reader = new FileReader();
+                                reader.onload = (e) => {
+                                    this.imageData = e.target.result;
+                                    const img = document.getElementById('imageDisplay');
+                                    img.src = this.imageData;
+                                    img.style.width = '800px';
+                                    img.style.height = '480px';
+
+                                    // 添加点击事件监听器
+                                    img.addEventListener('click', (event) => {
+                                        // 获取图片元素的边界框
+                                        const rect = img.getBoundingClientRect();
+                                        // 计算相对于图片的 X 坐标
+                                        const x = event.clientX - rect.left;
+                                        // 计算相对于图片的 Y 坐标
+                                        const y = event.clientY - rect.top;
+                                        console.log(`点击位置相对于图片的坐标: (${x}, ${y})`);
+
+
+                                        let data = {
+                                            topic: "MOUSE_EVENT",
+                                            data: { "type": "click", "x": x, "y": y }
+                                        };
+
+                                        this.websocketSend(data);
+
+
+                                    });
+
+                                };
+                                reader.readAsDataURL(blob);
+
                             }
 
                         }
                     }
                 },
                 websocketSend(data) {
-                    if (typeof (data) == "object")
+                    if (typeof (data) == "object") {
                         this.websock.send(JSON.stringify(data));
-                    else
+                        console.log('websocket 发送', 'cmd:', data['topic'], 'data', data['data']);
+
+                    }
+                    else {
                         throw 'wrong format parameter!!!';
+
+                    }
                 },
                 // 连接关闭时触发
                 websocketClose(event) {

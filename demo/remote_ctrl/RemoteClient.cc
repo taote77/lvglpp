@@ -1,12 +1,13 @@
-#include "LangChange.h"
-#include "LvTranslator.h"
+#include "RemoteClient.h"
 #include "core/sys/Navigators.h"
 #include "core/sys/SdlSimulateApplication.h"
 #include "core/widgets/GlobalVar.h"
 #include "session.h"
+#include <boost/beast/core/detail/base64.hpp>
 #include <core/log/log.h>
 #include <fstream>
 #include <iostream>
+#include <string>
 #include <vector>
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -67,8 +68,10 @@ void save_rgb888_to_png(const char *filename, const uint8_t *data, int width, in
         LOG_DEBUG() << "Failed to write PNG " << filename;
     } else
     {
-        LOG_DEBUG() << "Saved PNG: " << filename;
+        //
     }
+
+    success = stbi_write_jpg("screenshot.jpg", width, height, 4, data, 90);
 }
 
 bool takeScreenshot(lv_obj_t *screen, const std::string &filename)
@@ -85,7 +88,7 @@ bool takeScreenshot(lv_obj_t *screen, const std::string &filename)
     lv_coord_t width  = lv_obj_get_width(screen);
     lv_coord_t height = lv_obj_get_height(screen);
 
-    LOG_DEBUG() << "Screenshot taken successfully." << width << "x" << height;
+    // LOG_DEBUG() << "Screenshot taken successfully." << width << "x" << height;
 
     // 调用 lv_snapshot_take 函数进行截图
     lv_draw_buf_t *draw_buf = lv_snapshot_take(screen, LV_COLOR_FORMAT_ARGB8888);
@@ -95,7 +98,7 @@ bool takeScreenshot(lv_obj_t *screen, const std::string &filename)
         return false;
     }
 
-    LOG_DEBUG() << "Screenshot taken successfully." << width << "x" << height << draw_buf->header.cf;
+    // LOG_DEBUG() << "Screenshot taken successfully." << width << "x" << height << draw_buf->header.cf;
 
     // 去除 stride 的填充字节
     uint8_t *rgb888_data = extract_argb8888_to_rgba(draw_buf);
@@ -122,62 +125,72 @@ bool takeScreenshot(lv_obj_t *screen, const std::string &filename)
     return true;
 }
 
-LangChangePage::LangChangePage() : sys::BaseActivity()
-{}
-
-LangChangePage::~LangChangePage()
-{}
-
-void LangChangePage::onCreate(void *arg)
+std::string base64_encode(const std::string &input)
 {
-    _label = std::make_shared<lvglpp::widgets::I18nText>(lvglpp::LvTranslator::tr("ChangeLangWarnText"), CLR_SUCCESS_CONTAINER, getRootItem());
+    std::string output;
+    output.resize(boost::beast::detail::base64::encoded_size(input.size()));
+    output.resize(boost::beast::detail::base64::encode(&output[0], input.data(), input.size()));
+    return output;
+}
+
+RemoteClient::RemoteClient() : sys::BaseActivity()
+{}
+
+RemoteClient::~RemoteClient()
+{}
+
+void RemoteClient::onCreate(void *arg)
+{
+    WebsocketSession::Instance().OnMsgHandler([this](boost::json::object &req, boost::json::object &res) {
+        auto topic = req["topic"].as_string();
+
+        auto data_json = req["data"].as_object();
+
+        LOG_DEBUG() << "===========================================" << topic;
+
+        if (topic == "MOUSE_EVENT")
+        {
+            int x = data_json["x"].as_int64();
+            int y = data_json["y"].as_int64();
+            LOG_DEBUG() << "MOUSE_EVENT pos: " << x << y;
+
+            sys::SdlSimulateApplication::simulate_click_at(x, y);
+        }
+    });
+
+    _label = std::make_shared<lvglpp::widgets::LvText>(("Demo"), CLR_SUCCESS_CONTAINER, getRootItem());
 
     _label->setAligment(LV_ALIGN_CENTER, 0, -120);
 
-    static auto createLabel = [this]() {
-        _label1 = std::make_shared<lvglpp::widgets::LvText>(lvglpp::LvTranslator::tr("ChangeLangWarnText"), CLR_SUCCESS_CONTAINER, getRootItem());
-
-        _label->setAligment(LV_ALIGN_CENTER, 0, -140);
-    };
-
-    btn = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "测试", getRootItem());
-    btn->setPos(480, 300);
-    btn->setAligment(LV_ALIGN_CENTER, 0, 150);
-    btn->setOnClickedListener([this, btn]() {
-        _txt = (_txt == "Start") ? "Stop" : "Start";
-
+    _btn_test = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "截图", getRootItem());
+    _btn_test->setPos(480, 300);
+    _btn_test->setAligment(LV_ALIGN_CENTER, 0, 150);
+    _btn_test->setOnClickedListener([this]() {
         LOG_DEBUG() << "Test lang";
-
-        createLabel();
-        _label->langTrigerred();
-
-        btn->emitSignal("hello");
-
-        sys::SdlSimulateApplication::simulate_click_at(780, 4);
+        _btn_test->emitSignal("snapshoot");
     });
 
-    Object::connect(btn.get(), "hello", [this]() {
-        LOG_DEBUG() << "onHello";
-        //
-
+    Object::connect(_btn_test.get(), "snapshoot", [this]() {
         lv_obj_t *screen = lv_scr_act();
         // getRootItem()->getLvglItem();
         if (takeScreenshot(screen, "screenshot.png"))
         {
-            std::cout << "Screenshot saved successfully." << std::endl;
+            // std::cout << "Screenshot saved successfully." << std::endl;
 
-            std::ifstream file("screenshot.png", std::ios::binary);
+            std::ifstream file("./screenshot.jpg", std::ios::binary);
 
             // 读取文件内容到缓冲区
             std::string buffer((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 
             file.close();
 
-            boost::json::object data;
-            data["topic"] = "image/png";
-            data["data"]  = buffer;
+            std::string base64Data = base64_encode(buffer);
 
-            std::cout << "JSON data length: " << buffer.length() << std::endl;
+            boost::json::object data;
+            data["topic"] = "IMAGE_DATA";
+            data["data"]  = base64Data;
+
+            // std::cout << "JSON data length: " << base64Data.length() << std::endl;
 
             WebsocketSession::Instance().Post(data);
         } else
@@ -186,29 +199,30 @@ void LangChangePage::onCreate(void *arg)
         }
     });
 
-    _btn_test = btn;
-
-    _btn_simu = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "模拟", getRootItem());
-    _btn_simu->setPos(480, 300);
+    _btn_simu = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "重置", getRootItem());
 
     _btn_simu->setAligment(LV_ALIGN_TOP_RIGHT, 0, 0);
     _btn_simu->setOnClickedListener([this]() {
-        _txt = (_txt == "Start") ? "Stop" : "Start";
-
         LOG_DEBUG() << "Simu lang";
-
-        boost::json::object data;
-        data["topic"] = "test";
-        data["data"]  = "hello";
-
-        WebsocketSession::Instance().Post(data);
+        _count = 0;
     });
+
+    _timer = lv_timer_create(
+        [](lv_timer_t *data) -> void {
+            auto user_data = lv_timer_get_user_data(data);
+            auto page      = (RemoteClient *)user_data;
+
+            page->_count++;
+            page->_label->setText(std::to_string(page->_count));
+            page->_btn_test->emitSignal("snapshoot");
+        },
+        1 * 1000, this);
 }
 
-void LangChangePage::onNotifyUI(const sys::Event &evt)
+void RemoteClient::onNotifyUI(const sys::Event &evt)
 {
     (void)evt;
 }
 
-void LangChangePage::onDestroy()
+void RemoteClient::onDestroy()
 {}

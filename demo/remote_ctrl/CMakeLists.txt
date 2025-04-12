@@ -18,20 +18,11 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_executable(${PROJECT_NAME})
 
-set(TR_SRC
-    translations/lv_i18n.h
-    translations/lv_i18n.c
-)
 
 target_sources(${PROJECT_NAME} PRIVATE
     main.cc
-    LangChange.h
-    LangChange.cc
-    LvTranslator.h
-    LvTranslator.cc
-    ${TR_SRC}
-    I18nWidgets/InText.h
-    I18nWidgets/InText.cc
+    RemoteClient.h
+    RemoteClient.cc
     session.h
     session.cc
 )

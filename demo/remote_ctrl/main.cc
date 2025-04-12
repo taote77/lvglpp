@@ -1,5 +1,4 @@
-#include "LangChange.h"
-#include "LvTranslator.h"
+#include "RemoteClient.h"
 #include "core/sys/Navigators.h"
 #include "core/sys/SdlSimulateApplication.h"
 #include "session.h"
@@ -17,11 +16,7 @@ int main(int argc, char *argv[])
 
     WebsocketSession::Instance().Init();
 
-    lvglpp::LvTranslator::init();
-
-    lvglpp::LvTranslator::load(lvglpp::LANGUAGE::RUSSIAN);
-
-    lvglpp::sys::Navigators::getInstance()->pushView(std::make_shared<LangChangePage>());
+    lvglpp::sys::Navigators::getInstance()->pushView(std::make_shared<RemoteClient>());
 
     return app.exec();
 }

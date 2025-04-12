@@ -34,18 +34,19 @@ void WebsocketSession::Init()
     setting.callback = [this](const std::string &id, boost::json::object &req, boost::json::object &res) {
         (void)(id);
 
-        PX_ERROR() << req["topic"];
-
-        // auto reply = Request(proto_px::GW_WS_REQUEST, req, 30 * 1000);
-        // if (reply.IsValid())
-        // {
-        //     res = reply.Data<boost::json::object>();
-        // } else
-        // {
-        //     PX_INFO() << reply.Error().what();
-        // }
+        this->OnHandle(req, res);
     };
 
     m_cxt = ws_gw_start(setting);
     PX_ERROR() << "gateway init";
+}
+
+void WebsocketSession::OnMsgHandler(MsgHandler handler)
+{
+    _msg_handler = handler;
+}
+
+void WebsocketSession::OnHandle(boost::json::object &req, boost::json::object &res)
+{
+    _msg_handler(req, res);
 }

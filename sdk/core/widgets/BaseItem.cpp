@@ -26,7 +26,8 @@ BaseItem::~BaseItem()
 
 void BaseItem::createElement(ItemType type)
 {
-    lv_obj_t *parent_lvgl_obj;
+    lv_obj_t *parent_lvgl_obj{nullptr};
+
     if (parent == nullptr)
     {
         // lv_base_ptr_=tools::LvglUtils::createLvglItem(lv_scr_act());
@@ -36,6 +37,7 @@ void BaseItem::createElement(ItemType type)
         // lv_base_ptr_=tools::LvglUtils::createLvglItem(parent->getLvglItem());
         parent_lvgl_obj = parent->getLvglItem();
     }
+
     switch (type)
     {
     case ItemType::NormalItem:
