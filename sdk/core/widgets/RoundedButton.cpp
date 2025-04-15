@@ -44,7 +44,7 @@ void RoundedButton::initLabel(const std::string &msg, RoundedButton::ColorStyle 
     {
         return;
     }
-    label_.reset(new LvText(msg, CLR_PRIMARY_BLACK, this, LvText::FontSize24));
+    label_.reset(new LvText(msg, CLR_PRIMARY_BLACK, this, LvText::FontSize20));
     label_->setAligment(LV_ALIGN_CENTER, 0, 0);
 }
 

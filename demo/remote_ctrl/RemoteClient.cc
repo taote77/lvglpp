@@ -6,6 +6,7 @@
 #include "session.h"
 #include <boost/beast/core/detail/base64.hpp>
 #include <core/log/log.h>
+#include <exception>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -149,29 +150,38 @@ RemoteClient::~RemoteClient()
 void RemoteClient::onCreate(void *arg)
 {
     WebsocketSession::Instance().OnMsgHandler([this](boost::json::object &req, boost::json::object &res) {
-        auto topic = req["topic"].as_string();
-
+        auto topic     = req["topic"].as_string();
         auto data_json = req["data"].as_object();
-
-        LOG_DEBUG() << "===========================================" << topic;
 
         if (topic == "MOUSE_EVENT")
         {
             static long long last_time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
             auto now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-
             if (now - last_time < 150)
             {
                 return;
             }
 
-            int x = data_json["x"].as_int64();
-            int y = data_json["y"].as_int64();
-            LOG_DEBUG() << "MOUSE_EVENT pos: " << x << y;
+            int pos_x{0};
+            int pos_y{0};
+
+            try
+            {
+                pos_y = data_json["y"].as_int64();
+                pos_x = data_json["x"].as_int64();
+            }
+            catch (const std::exception &e)
+            {
+                std::cerr << e.what() << '\n';
+            }
+
+            std::clamp(pos_x, 0, 800); // ensure x in range [0, 800]
+
+            std::clamp(pos_y, 0, 480); // ensure y in range [0, 480]
 
             last_time = now;
-            lvglpp::sys::Navigators::getInstance()->getApplication()->postEvent(lvglpp::sys::Event(ComTopic::MOUSE_EVENT, 0, std::pair<int, int>(x, y)));
+            lvglpp::sys::Navigators::getInstance()->getApplication()->postEvent(lvglpp::sys::Event(ComTopic::MOUSE_EVENT, 0, std::pair<int, int>(pos_x, pos_y)));
         }
     });
 
@@ -183,7 +193,7 @@ void RemoteClient::onCreate(void *arg)
     _btn_test->setPos(480, 300);
     _btn_test->setAligment(LV_ALIGN_CENTER, 0, 150);
     _btn_test->setOnClickedListener([this]() {
-        LOG_DEBUG() << "Test lang";
+        LOG_DEBUG() << "snapshoot";
         _btn_test->emitSignal("snapshoot");
     });
 
@@ -192,13 +202,8 @@ void RemoteClient::onCreate(void *arg)
         // getRootItem()->getLvglItem();
         if (takeScreenshot(screen, "screenshot.png"))
         {
-            // std::cout << "Screenshot saved successfully." << std::endl;
-
-            std::ifstream file("./screenshot.jpg", std::ios::binary);
-
-            // 读取文件内容到缓冲区
-            std::string buffer((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-
+            std::ifstream file("./screenshot.jpg", std::ios::binary); // 读取文件内容到缓冲区
+            std::string   buffer((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
             file.close();
 
             std::string base64Data = base64_encode(buffer);
@@ -206,8 +211,6 @@ void RemoteClient::onCreate(void *arg)
             boost::json::object data;
             data["topic"] = "IMAGE_DATA";
             data["data"]  = base64Data;
-
-            // std::cout << "JSON data length: " << base64Data.length() << std::endl;
 
             WebsocketSession::Instance().Post(data);
         } else
@@ -242,7 +245,6 @@ void RemoteClient::onNotifyUI(const sys::Event &evt)
 
     if (evt.getType() == ComTopic::MOUSE_EVENT)
     {
-        LOG_DEBUG() << "MOUSE_EVENT";
         auto data = evt.convertData<std::pair<int, int>>();
         if (data)
         {

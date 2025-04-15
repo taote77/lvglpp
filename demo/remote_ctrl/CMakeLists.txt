@@ -52,3 +52,6 @@ if (COPY_ASSET_RES)
     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_directory ${ASSET_SOURCE_DIR} ${EXECUTABLE_OUTPUT_PATH}/assets)
 endif ()
+
+
+add_executable(server  server.cc)

@@ -3,6 +3,7 @@
 #include "core/sys/Navigators.h"
 #include "core/sys/SdlSimulateApplication.h"
 #include "core/widgets/GlobalVar.h"
+#include "core/widgets/LvText.h"
 #include "session.h"
 #include <core/log/log.h>
 #include <fstream>
@@ -130,7 +131,7 @@ LangChangePage::~LangChangePage()
 
 void LangChangePage::onCreate(void *arg)
 {
-    _label = std::make_shared<lvglpp::widgets::I18nText>(lvglpp::LvTranslator::tr("ChangeLangWarnText"), CLR_SUCCESS_CONTAINER, getRootItem());
+    _label = std::make_shared<lvglpp::widgets::LvText>(("中文😀1"), CLR_SUCCESS_CONTAINER, getRootItem(), lvglpp::widgets::LvText::TextStyle::FontSize20);
 
     _label->setAligment(LV_ALIGN_CENTER, 0, -120);
 
@@ -140,7 +141,7 @@ void LangChangePage::onCreate(void *arg)
         _label->setAligment(LV_ALIGN_CENTER, 0, -140);
     };
 
-    auto btn = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "中文", getRootItem());
+    auto btn = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "中文😀 Button", getRootItem());
     btn->setPos(480, 300);
     btn->setAligment(LV_ALIGN_CENTER, 0, -50);
     btn->setOnClickedListener([this]() {
@@ -168,8 +169,6 @@ void LangChangePage::onCreate(void *arg)
         lvglpp::LvTranslator::load(lvglpp::LANGUAGE::ENGLISH);
 
         createLabel();
-
-        _label->langTrigerred();
     });
     _btn_english = btn;
 
@@ -182,8 +181,6 @@ void LangChangePage::onCreate(void *arg)
         LOG_DEBUG() << "Japanese lang";
         lvglpp::LvTranslator::load(lvglpp::LANGUAGE::JAPANESE);
         createLabel();
-
-        _label->langTrigerred();
     });
 
     _btn_japanese = btn;
@@ -198,7 +195,6 @@ void LangChangePage::onCreate(void *arg)
         lvglpp::LvTranslator::load(lvglpp::LANGUAGE::RUSSIAN);
 
         createLabel();
-        _label->langTrigerred();
     });
     _btn_russian = btn;
 
@@ -211,7 +207,6 @@ void LangChangePage::onCreate(void *arg)
         LOG_DEBUG() << "Test lang";
 
         createLabel();
-        _label->langTrigerred();
 
         btn->emitSignal("hello");
 
