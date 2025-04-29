@@ -33,7 +33,10 @@ public:
 
     static const lv_font_t *getFontInfo(FontName name, int size, FontStyle style);
 
+    static void enableFreetype(bool enable);
+
 private:
+    static bool kEnableFreetype;
 };
 
 } // namespace lvglpp::tools

@@ -1,4 +1,4 @@
-project(demo)
+project(demo-qrcode)
 
 
 if (CMAKE_SYSTEM_PROCESSOR MATCHES "arm" OR CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
@@ -13,25 +13,22 @@ endif ()
 
 include(CheckCXXCompilerFlag)
 
-
-set(CMAKE_CXX_STANDARD 17)
+# set(CMAKE_CXX_STANDARD 17)
 
 add_executable(${PROJECT_NAME})
 
-
 target_sources(${PROJECT_NAME} PRIVATE
     main.cc
-    BindDemo.h
-    BindDemo.cc
-    SnapShot.h
-    SnapShot.cc
+    TestPage.h
+    TestPage.cc
 )
 
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
-    lvglpp
-    sqlite3 ${SDL2_LIBRARIES} ${Boost_LIBRARIES}
     lvgl
+    lvglpp
+    sqlite3
+    ${SDL2_LIBRARIES} ${Boost_LIBRARIES}
 )
 
 
@@ -40,7 +37,6 @@ include_directories(${PROJECT_NAME}
     ${CMAKE_CURRENT_LIST_DIR}/../lvgl/src/
 )
 
-
-add_subdirectory(i18n_demo)
-add_subdirectory(qrcode)
-add_subdirectory(remote_ctrl)
+target_include_directories(${PROJECT_NAME} PRIVATE
+    ./    
+)

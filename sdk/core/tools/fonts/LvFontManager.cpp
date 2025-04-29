@@ -1,5 +1,6 @@
 
 #include "LvFontManager.h"
+#include <iostream>
 
 LV_FONT_DECLARE(Noto_20_Normal)
 LV_FONT_DECLARE(Noto_20_Bold)
@@ -25,9 +26,15 @@ LV_FONT_DECLARE(NotoSC_36_Bold)
 
 #define PATH_PREFIX "./assets/fonts/"
 
-#include <iostream>
-
 namespace lvglpp::tools {
+
+bool LvFontManager::kEnableFreetype = true;
+
+void LvFontManager::enableFreetype(bool enable)
+{
+    LvFontManager::kEnableFreetype = enable;
+}
+
 const lv_font_t *LvFontManager::getFontInfo(LvFontManager::FontName name, int size, FontStyle style)
 {
     static bool init{false};
@@ -35,38 +42,41 @@ const lv_font_t *LvFontManager::getFontInfo(LvFontManager::FontName name, int si
     static lv_font_t *font22{nullptr};
     static lv_font_t *font24{nullptr};
 
-    if (!init)
+    if (LvFontManager::kEnableFreetype)
     {
-        // font22 = lv_freetype_font_create(PATH_PREFIX "NotoSansSC-AR-Regular.ttf", LV_FREETYPE_FONT_RENDER_MODE_BITMAP, 22, LV_FREETYPE_FONT_STYLE_NORMAL);
-        // font24 = lv_freetype_font_create(PATH_PREFIX "NotoSansSC-AR-Regular.ttf", LV_FREETYPE_FONT_RENDER_MODE_BITMAP, 24, LV_FREETYPE_FONT_STYLE_NORMAL);
-
-        // font22 = lv_freetype_font_create(PATH_PREFIX "NotoSansArabic-Regular.ttf", LV_FREETYPE_FONT_RENDER_MODE_BITMAP, 22, LV_FREETYPE_FONT_STYLE_NORMAL);
-        // font24 = lv_freetype_font_create(PATH_PREFIX "NotoSansArabic-Regular.ttf", LV_FREETYPE_FONT_RENDER_MODE_BITMAP, 24, LV_FREETYPE_FONT_STYLE_NORMAL);
-
-        font22 = lv_freetype_font_create(PATH_PREFIX "NotoSansSC-Regular.ttf", LV_FREETYPE_FONT_RENDER_MODE_BITMAP, 22, LV_FREETYPE_FONT_STYLE_NORMAL);
-        font24 = lv_freetype_font_create(PATH_PREFIX "NotoSansSC-Regular.ttf", LV_FREETYPE_FONT_RENDER_MODE_BITMAP, 24, LV_FREETYPE_FONT_STYLE_NORMAL);
-
-        if (!font22 || !font24)
+        if (!init)
         {
-            LV_LOG_ERROR("fail");
+            // font22 = lv_freetype_font_create(PATH_PREFIX "NotoSansSC-AR-Regular.ttf", LV_FREETYPE_FONT_RENDER_MODE_BITMAP, 22, LV_FREETYPE_FONT_STYLE_NORMAL);
+            // font24 = lv_freetype_font_create(PATH_PREFIX "NotoSansSC-AR-Regular.ttf", LV_FREETYPE_FONT_RENDER_MODE_BITMAP, 24, LV_FREETYPE_FONT_STYLE_NORMAL);
 
-            std::cout << "fail" << std::endl;
-        } else
-        {
-            LV_LOG_ERROR("success");
-            std::cout << "success " << std::endl;
+            // font22 = lv_freetype_font_create(PATH_PREFIX "NotoSansArabic-Regular.ttf", LV_FREETYPE_FONT_RENDER_MODE_BITMAP, 22, LV_FREETYPE_FONT_STYLE_NORMAL);
+            // font24 = lv_freetype_font_create(PATH_PREFIX "NotoSansArabic-Regular.ttf", LV_FREETYPE_FONT_RENDER_MODE_BITMAP, 24, LV_FREETYPE_FONT_STYLE_NORMAL);
+
+            font22 = lv_freetype_font_create(PATH_PREFIX "NotoSansSC-Regular.ttf", LV_FREETYPE_FONT_RENDER_MODE_BITMAP, 22, LV_FREETYPE_FONT_STYLE_NORMAL);
+            font24 = lv_freetype_font_create(PATH_PREFIX "NotoSansSC-Regular.ttf", LV_FREETYPE_FONT_RENDER_MODE_BITMAP, 24, LV_FREETYPE_FONT_STYLE_NORMAL);
+
+            if (!font22 || !font24)
+            {
+                LV_LOG_ERROR("fail");
+
+                std::cout << "fail" << std::endl;
+            } else
+            {
+                LV_LOG_ERROR("success");
+                std::cout << "success " << std::endl;
+            }
+            init = true;
         }
-        init = true;
-    }
 
-    switch (size)
-    {
-    case 22:
-        return font22;
-    case 24:
-        return font24;
-    default:
-        return font24;
+        switch (size)
+        {
+        case 22:
+            return font22;
+        case 24:
+            return font24;
+        default:
+            return font24;
+        }
     }
 
     if (name == FontName::DMSans)
