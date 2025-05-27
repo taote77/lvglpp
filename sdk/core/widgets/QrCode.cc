@@ -5,7 +5,7 @@
 namespace lvglpp {
 namespace widgets {
 
-QrCode::QrCode(uint32_t length, lv_color_t back_color, lv_color_t front_color, BaseItem *parent) : BaseItem(parent)
+QrCode::QrCode(uint32_t length, lv_color_t back_color, lv_color_t front_color, BaseItem *parent) : BaseItem(parent), _length(length)
 {
     this->setSize(length, length);
 
@@ -34,6 +34,17 @@ QrCode::~QrCode()
 void QrCode::setData(const std::string &data)
 {
     lv_qrcode_update(_qr, data.c_str(), data.length());
+}
+
+void QrCode::setImgSrc(const std::string &src)
+{
+    if (!_img_icon)
+    {
+        _img_icon = std::make_shared<lvglpp::widgets::Image>("", this);
+        _img_icon->setSize(_length / 4, _length / 4);
+        _img_icon->setAligment(LV_ALIGN_CENTER, 0, 0);
+    }
+    _img_icon->setImageSrcPath(src);
 }
 
 } // namespace widgets

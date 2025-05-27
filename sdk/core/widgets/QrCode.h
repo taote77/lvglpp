@@ -2,6 +2,7 @@
 #define LV_QR_CODE_H
 
 #include "BaseItem.h"
+#include "Image.h"
 #include <memory>
 
 namespace lvglpp {
@@ -16,8 +17,13 @@ public:
 
     void setData(const std::string &data);
 
+    void setImgSrc(const std::string &src);
+
 private:
     lv_obj_t *_qr;
+
+    std::shared_ptr<widgets::Image> _img_icon;
+    uint32_t                        _length = 0;
 };
 
 } // namespace widgets

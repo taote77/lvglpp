@@ -20,6 +20,8 @@ void TestPage::onCreate(void *arg)
 
     const std::string info = "https://www.baidu.com";
     _qr_code->setData(info);
+
+    _qr_code->setImgSrc("./zhihu.png");
     _qr_code->setAligment(LV_ALIGN_CENTER, 0, 0);
 }
 
