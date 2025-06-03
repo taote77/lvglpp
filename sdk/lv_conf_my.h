@@ -7,6 +7,7 @@
 #define LV_SIM_WINDOW_WIDTH 800
 #define LV_SIM_WINDOW_HEIGHT 480
 
+#define LV_USE_MATRIX 1
 // #define LV_USE_LINUX_FBDEV	0
 // #define LV_USE_LINUX_DRM	0
 // #define LV_USE_SDL		0
@@ -17,6 +18,8 @@
 #define LV_WAYLAND_WINDOW_DECORATIONS 1
 
 #define LV_WAYLAND_WL_SHELL 1
+
+#define LV_USE_LOTTIE 1
 
 #define LV_USE_DEMO_EBIKE 1
 

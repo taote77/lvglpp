@@ -6,6 +6,8 @@
 #include "core/widgets/LvText.h"
 #include "core/widgets/RoundedButton.h"
 #include "core/widgets/Text.h"
+#include <core/widgets/GifImage.h>
+#include <core/widgets/Image.h>
 #include <memory>
 
 using namespace lvglpp;
@@ -26,8 +28,12 @@ protected:
 private:
     lv_subject_t _subject;
 
-    std::string                             _txt{"Start"};
-    std::shared_ptr<widgets::LvText>        _label;
+    std::string                      _txt{"Start"};
+    std::shared_ptr<widgets::LvText> _label;
+
+    std::shared_ptr<widgets::Image>    _img;
+    std::shared_ptr<widgets::GifImage> _gif;
+
     std::shared_ptr<widgets::RoundedButton> _btn;
 };
 

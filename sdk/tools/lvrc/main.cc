@@ -1,12 +1,60 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <png.h>
 #include <regex>
 #include <sqlite3.h>
 #include <string>
 #include <vector>
 
 namespace fs = std::filesystem;
+
+// Base64 编码表
+const std::string base64_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                                 "abcdefghijklmnopqrstuvwxyz"
+                                 "0123456789+/";
+
+// Base64 编码函数[3,5](@ref)
+std::string base64_encode(const unsigned char *data, size_t len)
+{
+    std::string   encoded;
+    int           i = 0, j = 0;
+    unsigned char char_array_3[3], char_array_4[4];
+
+    while (len--)
+    {
+        char_array_3[i++] = *(data++);
+        if (i == 3)
+        {
+            char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
+            char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
+            char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
+            char_array_4[3] = char_array_3[2] & 0x3f;
+
+            for (i = 0; i < 4; i++)
+                encoded += base64_chars[char_array_4[i]];
+            i = 0;
+        }
+    }
+
+    // 处理剩余字节[6](@ref)
+    if (i)
+    {
+        for (j = i; j < 3; j++)
+            char_array_3[j] = '\0';
+
+        char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
+        char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
+        char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
+
+        for (j = 0; j < i + 1; j++)
+            encoded += base64_chars[char_array_4[j]];
+
+        while (i++ < 3)
+            encoded += '=';
+    }
+    return encoded;
+}
 
 // 数据库记录结构体（修改imageData类型为std::string）
 struct ImageRecord {
@@ -15,6 +63,7 @@ struct ImageRecord {
     int         height;
     std::string format;
     std::string imageData; // 直接存储文件二进制流的字符串
+    std::string metaData;  // 直接存储文件二进制流的字符串
 };
 
 // 从路径提取尺寸信息（保持不变）
@@ -39,7 +88,8 @@ void create_table(sqlite3 *db)
             width INTEGER NOT NULL,
             height INTEGER NOT NULL,
             format TEXT NOT NULL,
-            imageData BLOB NOT NULL
+            imageData TEXT NOT NULL,
+            metaData TEXT NOT NULL
         )
     )";
 
@@ -57,13 +107,14 @@ void insert_record(sqlite3 *db, const ImageRecord &record)
 {
     sqlite3_stmt *stmt;
     const char   *sql = R"(
-        INSERT INTO images (url, width, height, format, imageData)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO images (url, width, height, format, imageData, metaData)
+        VALUES (?, ?, ?, ?, ?, ?)
         ON CONFLICT (url) DO UPDATE SET  -- 针对url主键冲突的处理
             width = excluded.width,       -- excluded表示插入时的新值
             height = excluded.height,
             format = excluded.format,
-            imageData = excluded.imageData
+            imageData = excluded.imageData,
+            metaData = excluded.metaData
     )";
 
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK)
@@ -76,9 +127,19 @@ void insert_record(sqlite3 *db, const ImageRecord &record)
     sqlite3_bind_int(stmt, 2, record.width);
     sqlite3_bind_int(stmt, 3, record.height);
     sqlite3_bind_text(stmt, 4, record.format.c_str(), -1, SQLITE_TRANSIENT);
-    if (sqlite3_bind_blob(stmt, 5,
+    if (sqlite3_bind_text(stmt, 5,
                           record.imageData.data(),                   // 直接使用字符串的底层数据指针
                           static_cast<int>(record.imageData.size()), // 使用字符串长度作为数据大小
+                          SQLITE_TRANSIENT)
+        != SQLITE_OK)
+    {
+        sqlite3_finalize(stmt);
+        throw std::runtime_error("绑定二进制数据失败");
+    }
+
+    if (sqlite3_bind_text(stmt, 6,
+                          record.metaData.data(),                   // 直接使用字符串的底层数据指针
+                          static_cast<int>(record.metaData.size()), // 使用字符串长度作为数据大小
                           SQLITE_TRANSIENT)
         != SQLITE_OK)
     {
@@ -109,16 +170,30 @@ std::string read_file(const fs::path &path)
     {
         throw std::runtime_error("获取文件大小失败: " + path.string());
     }
-    file.seekg(0);
 
-    std::string data;
-    data.resize(static_cast<size_t>(size)); // 预分配字符串空间
-    if (!file.read(data.data(), size))      // 直接读取到字符串的底层内存
+    // 获取文件大小
+    size_t file_size = file.tellg();
+    file.seekg(0, std::ios::beg);
+
+    // 读取到缓冲区
+    std::vector<unsigned char> buffer(file_size);
+    file.read(reinterpret_cast<char *>(buffer.data()), file_size);
+    file.close();
+
+    // 2. Base64 编码
+    std::string base64_str = base64_encode(buffer.data(), file_size);
+
+    return base64_str; // 返回二进制数据字符串
+}
+
+std::string extractAfterResource(const std::string &str)
+{
+    size_t pos = str.find("resource");
+    if (pos != std::string::npos)
     {
-        throw std::runtime_error("读取文件失败: " + path.string());
+        return ":" + str.substr(pos + 8); // "resource" 长度为 8
     }
-
-    return data; // 返回二进制数据字符串
+    return "";
 }
 
 // 主处理函数（调整记录构建逻辑）
@@ -138,7 +213,7 @@ void process_directory(const fs::path &dir_path, sqlite3 *db)
 
                 // 构建记录（imageData使用字符串）
                 ImageRecord record{
-                    "file://" + fs::absolute(entry.path()).string(), width, height, ext,
+                    extractAfterResource(fs::absolute(entry.path()).string()), width, height, ext,
                     std::move(data) // 转移字符串所有权避免拷贝
                 };
 
@@ -195,175 +270,3 @@ int main(int argc, char *argv[]) // 主函数保持不变
         return 1;
     }
 }
-
-// #include <filesystem>
-// #include <fstream>
-// #include <iostream>
-// #include <regex>
-// #include <sqlite3.h>
-// #include <string>
-// #include <vector>
-
-// namespace fs = std::filesystem;
-
-// // 数据库记录结构体
-// struct ImageRecord {
-//     std::string          url;
-//     int                  width;
-//     int                  height;
-//     std::string          format;
-//     std::vector<uint8_t> imageData;
-// };
-
-// // 从路径提取尺寸信息（支持大小写混合和多种分隔符）
-// std::pair<int, int> get_dimensions(const fs::path &path)
-// {
-//     std::smatch match;
-//     std::string full_path = path.string();
-
-//     // 正则匹配路径中的数字x数字组合（不区分大小写）
-//     if (std::regex_search(full_path, match, std::regex(R"((?:^|[/\\])(\d+)[xX](\d+)(?:[/\\]|$))")))
-//     {
-//         return {std::stoi(match[1]), std::stoi(match[2])};
-//     }
-//     throw std::runtime_error("无效路径格式: " + full_path);
-// }
-
-// // 创建数据库表
-// void create_table(sqlite3 *db)
-// {
-//     const char *sql = R"(
-//         CREATE TABLE IF NOT EXISTS images (
-//             url TEXT PRIMARY KEY NOT NULL,
-//             width INTEGER NOT NULL,
-//             height INTEGER NOT NULL,
-//             format TEXT NOT NULL,
-//             imageData BLOB NOT NULL
-//         )
-//     )";
-
-//     char *errMsg = nullptr;
-//     if (sqlite3_exec(db, sql, nullptr, nullptr, &errMsg) != SQLITE_OK)
-//     {
-//         throw std::runtime_error("创建表失败: " + std::string(errMsg));
-//     }
-// }
-
-// // 插入图片记录
-// void insert_record(sqlite3 *db, const ImageRecord &record)
-// {
-//     sqlite3_stmt *stmt;
-//     const char   *sql = R"(
-//         INSERT INTO images (url, width, height, format, imageData)
-//         VALUES (?, ?, ?, ?, ?)
-//     )";
-
-//     if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK)
-//     {
-//         throw std::runtime_error("准备语句失败");
-//     }
-
-//     // 绑定参数
-//     sqlite3_bind_text(stmt, 1, record.url.c_str(), -1, SQLITE_TRANSIENT);
-//     sqlite3_bind_int(stmt, 2, record.width);
-//     sqlite3_bind_int(stmt, 3, record.height);
-//     sqlite3_bind_text(stmt, 4, record.format.c_str(), -1, SQLITE_TRANSIENT);
-//     sqlite3_bind_blob(stmt, 5, record.imageData.data(), static_cast<int>(record.imageData.size()), SQLITE_TRANSIENT);
-
-//     if (sqlite3_step(stmt) != SQLITE_DONE)
-//     {
-//         sqlite3_finalize(stmt);
-//         throw std::runtime_error("插入数据失败");
-//     }
-
-//     sqlite3_finalize(stmt);
-// }
-
-// // 读取文件二进制数据（安全实现）
-// std::vector<uint8_t> read_file(const fs::path &path)
-// {
-//     std::ifstream file(path, std::ios::binary | std::ios::ate);
-//     if (!file)
-//     {
-//         throw std::runtime_error("无法打开文件: " + path.string());
-//     }
-
-//     auto size = file.tellg();
-//     file.seekg(0);
-
-//     std::vector<uint8_t> data(size);
-//     if (!file.read(reinterpret_cast<char *>(data.data()), size))
-//     {
-//         throw std::runtime_error("读取文件失败: " + path.string());
-//     }
-
-//     return data;
-// }
-
-// // 主处理函数
-// void process_directory(const fs::path &dir_path, sqlite3 *db)
-// {
-//     for (const auto &entry : fs::recursive_directory_iterator(dir_path))
-//     {
-//         if (entry.is_regular_file() && entry.path().extension() != ".db")
-//         { // 排除数据库文件
-//             try
-//             {
-//                 // 提取元数据
-//                 auto [width, height] = get_dimensions(entry.path());
-//                 std::string ext      = entry.path().extension().string().substr(1); // 去掉点
-
-//                 // 读取二进制数据
-//                 auto data = read_file(entry.path());
-
-//                 // 构建记录
-//                 ImageRecord record{std::string("file://") + entry.path().string(), width, height, ext, std::move(data)};
-
-//                 // 插入数据库
-//                 insert_record(db, record);
-//             }
-//             catch (const std::exception &e)
-//             {
-//                 std::cerr << "处理失败: " << entry.path() << "\n  原因: " << e.what() << "\n\n";
-//             }
-//         }
-//     }
-// }
-
-// int main(int argc, char *argv[])
-// {
-//     if (argc != 3)
-//     {
-//         std::cerr << "用法: " << argv[0] << " <图片目录>\n";
-//         return 1;
-//     }
-
-//     try
-//     {
-//         // 初始化数据库
-//         sqlite3 *db;
-//         if (sqlite3_open(argv[2], &db) != SQLITE_OK)
-//         {
-//             throw std::runtime_error("无法打开数据库: " + std::string(sqlite3_errmsg(db)));
-//         }
-
-//         // 创建表结构
-//         create_table(db);
-
-//         // 处理图片目录
-//         process_directory(argv[1], db);
-
-//         // 优化数据库
-//         sqlite3_exec(db, "VACUUM;", nullptr, nullptr, nullptr);
-
-//         // 关闭数据库
-//         sqlite3_close(db);
-//         std::cout << "成功创建数据库: \n" << argv[2] << "\n";
-//         return 0;
-//     }
-//     catch (const std::exception &e)
-//     {
-//         std::cerr << "错误: " << e.what() << "\n";
-//         return 1;
-//     }
-// }

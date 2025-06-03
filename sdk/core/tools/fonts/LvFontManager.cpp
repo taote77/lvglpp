@@ -24,7 +24,7 @@ LV_FONT_DECLARE(NotoSC_32_Bold)
 LV_FONT_DECLARE(NotoSC_36_Normal)
 LV_FONT_DECLARE(NotoSC_36_Bold)
 
-#define PATH_PREFIX "./assets/fonts/"
+#define PATH_PREFIX "./asset/fonts/"
 
 namespace lvglpp::tools {
 

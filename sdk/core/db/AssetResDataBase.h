@@ -1,21 +1,20 @@
 #ifndef ASSETRES_DATABASE_H
 #define ASSETRES_DATABASE_H
-#include <string>
 #include <boost/optional.hpp>
 #include <sqlite3.h>
+#include <string>
 namespace lvglpp {
 namespace db {
 /**
  * 图片资源结构体
  */
-struct AssetImageData
-{
+struct AssetImageData {
     std::string url;
     std::string format;
-    int width;
-    int height;
+    int         width;
+    int         height;
     std::string imageData;
-    std::string imageFileData;
+    // std::string imageFileData;
 };
 
 //#define CREATE_ASSET_TABLE_FUNCTION make_storage(lvglpp::tools::Utils::getAssetDirRoot()+"/db/resource.db",\
