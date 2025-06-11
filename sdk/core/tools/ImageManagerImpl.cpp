@@ -48,8 +48,6 @@ lv_img_dsc_t *ImageManagerImpl::getImageDscByUrl(const std::string &url)
             memcpy(buffer, data_str.c_str(), data_str.length());
             img_struct.data = buffer;
 
-            std::cout << "ImageManagerImpl::getImageDscByUrl: " << url << ", width: " << data->width << ", height: " << img_struct.data_size << std::endl;
-
             auto res = app_image_map_.insert(std::make_pair(url, img_struct));
             if (res.second)
             {

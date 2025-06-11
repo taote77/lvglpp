@@ -14,7 +14,7 @@ struct AssetImageData {
     int         width;
     int         height;
     std::string imageData;
-    // std::string imageFileData;
+    std::string metaData;
 };
 
 //#define CREATE_ASSET_TABLE_FUNCTION make_storage(lvglpp::tools::Utils::getAssetDirRoot()+"/db/resource.db",\

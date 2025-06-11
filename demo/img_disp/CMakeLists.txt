@@ -1,4 +1,4 @@
-project(demo)
+project(img_disp)
 
 
 if (CMAKE_SYSTEM_PROCESSOR MATCHES "arm" OR CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
@@ -21,10 +21,8 @@ add_executable(${PROJECT_NAME})
 
 target_sources(${PROJECT_NAME} PRIVATE
     main.cc
-    BindDemo.h
-    BindDemo.cc
-    SnapShot.h
-    SnapShot.cc
+    Widget.h
+    Widget.cc
 )
 
 
@@ -39,10 +37,3 @@ include_directories(${PROJECT_NAME}
     ${CMAKE_CURRENT_LIST_DIR}/../lvgl/
     ${CMAKE_CURRENT_LIST_DIR}/../lvgl/src/
 )
-
-
-add_subdirectory(i18n_demo)
-add_subdirectory(qrcode)
-add_subdirectory(remote_ctrl)
-add_subdirectory(img_disp)
-# add_subdirectory(clua)

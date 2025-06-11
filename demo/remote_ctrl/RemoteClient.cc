@@ -3,6 +3,7 @@
 #include "core/sys/Navigators.h"
 #include "core/sys/SdlSimulateApplication.h"
 #include "core/widgets/GlobalVar.h"
+// #include "lodepng.h"
 #include "session.h"
 #include <boost/beast/core/detail/base64.hpp>
 #include <core/log/log.h>
@@ -105,6 +106,8 @@ bool takeScreenshot(lv_obj_t *screen, const std::string &filename)
         std::cerr << "Failed to take the snapshot." << std::endl;
         return false;
     }
+
+    LOG_DEBUG() << "Screenshot taken successfully." << width << "x" << height << draw_buf->header.cf;
 
     // LOG_DEBUG() << "Screenshot taken successfully." << width << "x" << height << draw_buf->header.cf;
 
@@ -234,9 +237,16 @@ void RemoteClient::onCreate(void *arg)
 
             page->_count++;
             page->_label->setText(std::to_string(page->_count));
-            page->_btn_test->emitSignal("snapshoot");
+
+            static bool is_first = true;
+
+            if (is_first)
+            {
+                is_first = false;
+                page->_btn_test->emitSignal("snapshoot");
+            }
         },
-        1 * 1000, this);
+        100 * 1000, this);
 }
 
 void RemoteClient::onNotifyUI(const sys::Event &evt)

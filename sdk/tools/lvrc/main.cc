@@ -59,11 +59,11 @@ std::string base64_encode(const unsigned char *data, size_t len)
 // 数据库记录结构体（修改imageData类型为std::string）
 struct ImageRecord {
     std::string url;
+    std::string format;
     int         width;
     int         height;
-    std::string format;
     std::string imageData; // 直接存储文件二进制流的字符串
-    std::string metaData;  // 直接存储文件二进制流的字符串
+    // std::string metaData;  // 直接存储文件二进制流的字符串
 };
 
 // 从路径提取尺寸信息（保持不变）
@@ -85,11 +85,10 @@ void create_table(sqlite3 *db)
     const char *sql = R"(
         CREATE TABLE IF NOT EXISTS images (
             url TEXT PRIMARY KEY NOT NULL,
+            format TEXT NOT NULL,
             width INTEGER NOT NULL,
             height INTEGER NOT NULL,
-            format TEXT NOT NULL,
-            imageData TEXT NOT NULL,
-            metaData TEXT NOT NULL
+            imageData TEXT NOT NULL
         )
     )";
 
@@ -107,14 +106,13 @@ void insert_record(sqlite3 *db, const ImageRecord &record)
 {
     sqlite3_stmt *stmt;
     const char   *sql = R"(
-        INSERT INTO images (url, width, height, format, imageData, metaData)
-        VALUES (?, ?, ?, ?, ?, ?)
+        INSERT INTO images (url, format, width, height, imageData)
+        VALUES (?, ?, ?, ?, ?)
         ON CONFLICT (url) DO UPDATE SET  -- 针对url主键冲突的处理
+            format = excluded.format,
             width = excluded.width,       -- excluded表示插入时的新值
             height = excluded.height,
-            format = excluded.format,
-            imageData = excluded.imageData,
-            metaData = excluded.metaData
+            imageData = excluded.imageData
     )";
 
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK)
@@ -124,22 +122,12 @@ void insert_record(sqlite3 *db, const ImageRecord &record)
 
     // 绑定参数（imageData使用字符串的data()和size()）
     sqlite3_bind_text(stmt, 1, record.url.c_str(), -1, SQLITE_TRANSIENT);
-    sqlite3_bind_int(stmt, 2, record.width);
-    sqlite3_bind_int(stmt, 3, record.height);
-    sqlite3_bind_text(stmt, 4, record.format.c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 2, record.format.c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_int(stmt, 3, record.width);
+    sqlite3_bind_int(stmt, 4, record.height);
     if (sqlite3_bind_text(stmt, 5,
                           record.imageData.data(),                   // 直接使用字符串的底层数据指针
                           static_cast<int>(record.imageData.size()), // 使用字符串长度作为数据大小
-                          SQLITE_TRANSIENT)
-        != SQLITE_OK)
-    {
-        sqlite3_finalize(stmt);
-        throw std::runtime_error("绑定二进制数据失败");
-    }
-
-    if (sqlite3_bind_text(stmt, 6,
-                          record.metaData.data(),                   // 直接使用字符串的底层数据指针
-                          static_cast<int>(record.metaData.size()), // 使用字符串长度作为数据大小
                           SQLITE_TRANSIENT)
         != SQLITE_OK)
     {
@@ -213,7 +201,7 @@ void process_directory(const fs::path &dir_path, sqlite3 *db)
 
                 // 构建记录（imageData使用字符串）
                 ImageRecord record{
-                    extractAfterResource(fs::absolute(entry.path()).string()), width, height, ext,
+                    extractAfterResource(fs::absolute(entry.path()).string()), ext, width, height,
                     std::move(data) // 转移字符串所有权避免拷贝
                 };
 

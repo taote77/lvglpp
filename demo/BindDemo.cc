@@ -64,8 +64,8 @@ void BindDemo::onCreate(void *arg)
         lv_subject_copy_string(&_subject, _txt.c_str());
     });
 
-    _img = std::make_shared<widgets::Image>(":/image/12X12/circle.png", getRootItem());
-    _img->setSize(200, 200);
+    _img = std::make_shared<widgets::Image>(":/image/400x300/sky.png", getRootItem());
+    // _img->setSize(200, 200);
     _img->setAligment(LV_ALIGN_TOP_RIGHT, 0, 0);
 
     widgets::BaseItem *src = new widgets::BaseItem(getRootItem());

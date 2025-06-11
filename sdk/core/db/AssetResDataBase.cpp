@@ -2,6 +2,7 @@
 #include "core/log/log.h"
 #include "core/tools/Utils.h"
 #include <boost/format.hpp>
+#include <iostream>
 
 namespace lvglpp {
 namespace db {
@@ -24,8 +25,7 @@ boost::optional<AssetImageData> AssetResDataBase::getImageDataByUrl(const std::s
     {
         return boost::none;
     }
-    boost::format sql_fmt("select format,width,height,imageData, from images "
-                          "where url='%1%'");
+    boost::format sql_fmt("select format,width,height,imageData from images where url='%1%'");
     sql_fmt % url;
     sqlite3_stmt *stmt   = nullptr;
     int           result = sqlite3_prepare_v2(db_storage_, sql_fmt.str().c_str(), -1, &stmt, nullptr);
@@ -38,10 +38,15 @@ boost::optional<AssetImageData> AssetResDataBase::getImageDataByUrl(const std::s
             reply_data.width     = sqlite3_column_int(stmt, 1);
             reply_data.height    = sqlite3_column_int(stmt, 2);
             reply_data.imageData = (char *)sqlite3_column_text(stmt, 3);
-            // reply_data.imageFileData = (char *)sqlite3_column_text(stmt, 4);
+            // reply_data.metaData  = (char *)sqlite3_column_text(stmt, 4);
             sqlite3_finalize(stmt);
+
+            std::cout << "getImageDataByUrl: " << reply_data.imageData.size() << std::endl;
             return reply_data;
         }
+    } else
+    {
+        LogWarn << "getImageDataByUrl error: " << result << sqlite3_errmsg(db_storage_);
     }
     sqlite3_finalize(stmt);
     return boost::none;

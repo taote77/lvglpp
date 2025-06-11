@@ -12,6 +12,7 @@ cmake_minimum_required(VERSION 3.16)
 project(lvgl_wrapper)
 
 include(cmake/build.cmake)
+include(cmake/cmrc.cmake)
 
 
 if (CMAKE_SYSTEM_PROCESSOR MATCHES "arm" OR CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
