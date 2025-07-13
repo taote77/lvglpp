@@ -50,6 +50,8 @@ public:
     static lv_obj_t *createLvglChart(lv_obj_t *parent);
 
     static lv_obj_t *createLvglVideo(lv_obj_t *parent);
+
+    static lv_obj_t *createLvglLottie(lv_obj_t *parent);
 };
 } // namespace tools
 } // namespace lvglpp

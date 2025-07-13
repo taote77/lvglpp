@@ -81,5 +81,11 @@ lv_obj_t *LvglUtils::createLvglVideo(lv_obj_t *parent)
 {
     return lv_ffmpeg_player_create(parent);
 }
+
+lv_obj_t *LvglUtils::createLvglLottie(lv_obj_t *parent)
+{
+    return lv_lottie_create(parent);
+}
+
 } // namespace tools
 } // namespace lvglpp

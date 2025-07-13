@@ -70,6 +70,9 @@ void BaseItem::createElement(ItemType type)
     case ItemType::Video:
         lv_base_ptr_ = tools::LvglUtils::createLvglVideo(parent_lvgl_obj);
         break;
+    case ItemType::LottieCanvas:
+        lv_base_ptr_ = tools::LvglUtils::createLvglLottie(parent_lvgl_obj);
+        break;
     default:
         break;
     }

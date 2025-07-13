@@ -62,7 +62,7 @@ const lv_font_t *LvFontManager::getFontInfo(LvFontManager::FontName name, int si
                 std::cout << "fail" << std::endl;
             } else
             {
-                LV_LOG_ERROR("success");
+                LV_LOG_INFO("success");
                 std::cout << "success " << std::endl;
             }
             init = true;

@@ -8,6 +8,8 @@
 #include "core/widgets/Text.h"
 #include <core/widgets/GifImage.h>
 #include <core/widgets/Image.h>
+#include <core/widgets/LottieCanvas.h>
+
 #include <memory>
 
 using namespace lvglpp;
@@ -31,8 +33,9 @@ private:
     std::string                      _txt{"Start"};
     std::shared_ptr<widgets::LvText> _label;
 
-    std::shared_ptr<widgets::Image>    _img;
-    std::shared_ptr<widgets::GifImage> _gif;
+    std::shared_ptr<widgets::Image>        _img;
+    std::shared_ptr<widgets::GifImage>     _gif;
+    std::shared_ptr<widgets::LottieCanvas> _lottie;
 
     std::shared_ptr<widgets::RoundedButton> _btn;
 };

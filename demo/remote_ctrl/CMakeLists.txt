@@ -44,13 +44,13 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ./    
 )
 
-SET(ASSET_SOURCE_DIR ${PROJECT_SOURCE_DIR}/assets)
+SET(ASSET_SOURCE_DIR ${PROJECT_SOURCE_DIR}/asset)
 
 set(COPY_ASSET_RES 1)
 
 if (COPY_ASSET_RES)
     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_directory ${ASSET_SOURCE_DIR} ${EXECUTABLE_OUTPUT_PATH}/assets)
+            COMMAND ${CMAKE_COMMAND} -E copy_directory ${ASSET_SOURCE_DIR} ${EXECUTABLE_OUTPUT_PATH}/asset)
 endif ()
 
 

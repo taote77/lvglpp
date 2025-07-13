@@ -109,18 +109,7 @@ protected:
         lv_base_ptr_ = ptr;
     }
 
-    enum ItemType {
-        NormalItem,
-        Image,
-        Text,
-        SpinBox,
-        GIF,
-        Dialog,
-        Progress,
-        SysDialog,
-        Chart,
-        Video,
-    };
+    enum ItemType { NormalItem, Image, Text, SpinBox, GIF, Dialog, Progress, SysDialog, Chart, Video, LottieCanvas };
 
     explicit BaseItem(ItemType type, BaseItem *parentItem = nullptr);
 
