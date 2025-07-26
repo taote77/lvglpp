@@ -1,23 +1,20 @@
 
-#include "ToastManager.h"
+#include "Toast.h"
 #include "core/log/log.h"
 
 namespace lvglpp {
 namespace widgets {
-ToastManager *ToastManager::instance_ = nullptr;
-void          ToastManager::showToast(const std::string &msg, ToastManager::ToastLevel level)
+
+// Toast *Toast::instance_ = nullptr;
+void Toast::showToast(const std::string &msg, Toast::Type level)
 {
-    if (instance_ == nullptr)
+    getInstance().toast_impl_->setMessage(msg, (ToastImpl::IconType)level);
+    if (!getInstance().is_running_)
     {
-        instance_ = new ToastManager;
-    }
-    instance_->toast_impl_->setMessage(msg, (Toast::IconType)level);
-    if (!instance_->is_running_)
-    {
-        instance_->toast_impl_->setOpacity(0);
-        instance_->toast_impl_->setVisible(true);
-        lv_anim_start(&instance_->anim_show_t_);
-        instance_->is_running_ = true;
+        getInstance().toast_impl_->setOpacity(0);
+        getInstance().toast_impl_->setVisible(true);
+        lv_anim_start(&getInstance().anim_show_t_);
+        getInstance().is_running_ = true;
         LogDebug << "show toast:-- " << msg << " --";
     } else
     {
@@ -25,15 +22,21 @@ void          ToastManager::showToast(const std::string &msg, ToastManager::Toas
     }
 }
 
-ToastManager::ToastManager()
+Toast &Toast::getInstance()
 {
-    toast_impl_ = std::make_shared<Toast>();
+    static Toast instance;
+    return instance;
+}
+
+Toast::Toast()
+{
+    toast_impl_ = std::make_shared<ToastImpl>();
     toast_impl_->setVisible(false);
     lv_anim_init(&anim_show_t_);
     lv_anim_set_exec_cb(&anim_show_t_, [](void *p, int32_t progress) -> void {
         if (p != nullptr)
         {
-            ((ToastManager *)p)->toast_impl_->setOpacity(progress / 100.0);
+            ((Toast *)p)->toast_impl_->setOpacity(progress / 100.0);
         }
     });
     lv_anim_set_values(&anim_show_t_, 0, 100);
@@ -46,7 +49,7 @@ ToastManager::ToastManager()
                                           auto user_data = lv_timer_get_user_data(t);
                                           if (user_data != nullptr)
                                           {
-                                              auto p = (ToastManager *)user_data;
+                                              auto p = (Toast *)user_data;
                                               lv_anim_start(&p->anim_hide_t_);
                                           }
                                       },
@@ -58,12 +61,12 @@ ToastManager::ToastManager()
     lv_anim_set_exec_cb(&anim_hide_t_, [](void *p, int32_t progress) -> void {
         if (p != nullptr)
         {
-            ((ToastManager *)p)->toast_impl_->setOpacity((100 - progress) / 100.0);
+            ((Toast *)p)->toast_impl_->setOpacity((100 - progress) / 100.0);
         }
     });
     lv_anim_set_ready_cb(&anim_hide_t_, [](struct _lv_anim_t *t) -> void {
-        ((ToastManager *)t->var)->toast_impl_->setVisible(false);
-        ((ToastManager *)t->var)->is_running_ = false;
+        ((Toast *)t->var)->toast_impl_->setVisible(false);
+        ((Toast *)t->var)->is_running_ = false;
     });
     lv_anim_set_values(&anim_hide_t_, 0, 100);
     lv_anim_set_time(&anim_hide_t_, 300);

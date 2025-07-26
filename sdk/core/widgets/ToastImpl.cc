@@ -1,9 +1,9 @@
-#include "Toast.h"
+#include "ToastImpl.h"
 #include "GlobalVar.h"
 
 namespace lvglpp {
 namespace widgets {
-Toast::Toast() : BaseItem(BaseItem::Dialog)
+ToastImpl::ToastImpl() : BaseItem(BaseItem::Dialog)
 {
     lv_obj_clear_flag(getLvglItem(), LV_OBJ_FLAG_SCROLLABLE);
     setBgColor(CLR_PRIMARY_DIS_TEXT_PRESS);
@@ -15,15 +15,15 @@ Toast::Toast() : BaseItem(BaseItem::Dialog)
     desc_->setAligment(LV_ALIGN_LEFT_MID, 64, 0);
 }
 
-void Toast::setMessage(const std::string &str_msg, Toast::IconType type)
+void ToastImpl::setMessage(const std::string &str_msg, ToastImpl::IconType type)
 {
     // setSize(str_msg.length()*12+80,56);
     desc_->setText(str_msg);
     setSize(desc_->getDisplayTextWidth() + 72, 56);
-    if (type == Toast::Succeed)
+    if (type == ToastImpl::Succeed)
     {
         icon_->setImageSrcPath(":/image/40x40/icon_success.png");
-    } else if (type == Toast::Warn)
+    } else if (type == ToastImpl::Warn)
     {
         icon_->setImageSrcPath(":/image/40x40/icon_warn.png");
     } else

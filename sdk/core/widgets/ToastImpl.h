@@ -1,0 +1,27 @@
+
+#ifndef LV_TOAST_IMPL_H
+#define LV_TOAST_IMPL_H
+
+#include "BaseItem.h"
+#include "Image.h"
+#include "LvText.h"
+#include <memory>
+
+namespace lvglpp {
+namespace widgets {
+class ToastImpl : public BaseItem
+{
+public:
+    enum IconType { Succeed, Error, Warn };
+    explicit ToastImpl();
+    void setMessage(const std::string &str_msg, IconType type);
+
+private:
+    std::shared_ptr<widgets::Image> icon_;
+    std::shared_ptr<LvText>         desc_;
+};
+
+} // namespace widgets
+} // namespace lvglpp
+
+#endif // LV_TOAST_IMPL_H

@@ -1,13 +1,10 @@
 
 cmake_minimum_required(VERSION 3.16)
 
-
 # set(CMAKE_C_STANDARD 17)
 # set(CMAKE_CXX_STANDARD 17)
 # set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # set(CMAKE_CXX_EXTENSIONS OFF)
-
-
 
 project(lvgl_wrapper)
 
@@ -29,6 +26,11 @@ endif ()
 
 add_subdirectory(sdk)
 
-add_subdirectory(demo)
+set(ENABLE_DEMO OFF CACHE BOOL "Enable demo application")
+if (ENABLE_DEMO)
+    add_subdirectory(demo)
+endif ()
+
+add_subdirectory(smart_home)
 
 # add_subdirectory(test)

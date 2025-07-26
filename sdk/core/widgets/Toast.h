@@ -1,23 +1,32 @@
 
 #ifndef LV_TOAST_H
 #define LV_TOAST_H
-#include "BaseItem.h"
-#include "Image.h"
-#include "LvText.h"
+
+#include "ToastImpl.h"
+#include <functional>
+#include <lvgl.h>
 #include <memory>
+#include <string>
 
 namespace lvglpp {
 namespace widgets {
-class Toast : public BaseItem
+
+class Toast
 {
 public:
-    enum IconType { Succeed, Error, Warn };
-    explicit Toast();
-    void setMessage(const std::string &str_msg, IconType type);
+    enum Type { Succeed, Error, Warn };
+    static void showToast(const std::string &info, Type type);
 
 private:
-    std::shared_ptr<widgets::Image> icon_;
-    std::shared_ptr<LvText>         desc_;
+    static Toast &getInstance();
+
+    Toast();
+    Toast(const Toast &) = default;
+    std::shared_ptr<ToastImpl> toast_impl_;
+    // static Toast              *instance_;
+    lv_anim_t anim_show_t_{};
+    lv_anim_t anim_hide_t_{};
+    bool      is_running_ = false;
 };
 
 } // namespace widgets
