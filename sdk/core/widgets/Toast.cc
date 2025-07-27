@@ -2,10 +2,8 @@
 #include "Toast.h"
 #include "core/log/log.h"
 
-namespace lvglpp {
-namespace widgets {
+namespace lvglpp::widgets {
 
-// Toast *Toast::instance_ = nullptr;
 void Toast::showToast(const std::string &msg, Toast::Type level)
 {
     getInstance().toast_impl_->setMessage(msg, (ToastImpl::IconType)level);
@@ -18,8 +16,23 @@ void Toast::showToast(const std::string &msg, Toast::Type level)
         LogDebug << "show toast:-- " << msg << " --";
     } else
     {
-        LogWarn << "toast is running!not show:-- " << msg << " --";
+        LogWarn << "toast is running now " << msg << " --";
     }
+}
+
+void Toast::success(const std::string &msg)
+{
+    showToast(msg, Toast::Succeed);
+}
+
+void Toast::warn(const std::string &msg)
+{
+    showToast(msg, Toast::Warn);
+}
+
+void Toast::error(const std::string &msg)
+{
+    showToast(msg, Toast::Error);
 }
 
 Toast &Toast::getInstance()
@@ -30,7 +43,7 @@ Toast &Toast::getInstance()
 
 Toast::Toast()
 {
-    toast_impl_ = std::make_shared<ToastImpl>();
+    toast_impl_ = std::make_unique<ToastImpl>();
     toast_impl_->setVisible(false);
     lv_anim_init(&anim_show_t_);
     lv_anim_set_exec_cb(&anim_show_t_, [](void *p, int32_t progress) -> void {
@@ -73,5 +86,4 @@ Toast::Toast()
     lv_anim_set_path_cb(&anim_hide_t_, lv_anim_path_ease_out);
     lv_anim_set_var(&anim_hide_t_, this);
 }
-} // namespace widgets
-} // namespace lvglpp
+} // namespace lvglpp::widgets

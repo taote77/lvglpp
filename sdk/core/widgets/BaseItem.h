@@ -25,6 +25,8 @@ public:
 
     virtual void setPos(lv_coord_t x, lv_coord_t y);
 
+    lv_coord_t getX() const;
+
     lv_coord_t getY() const;
 
     virtual void setAligment(lv_align_t align, lv_coord_t offsetX, lv_coord_t offsetY);

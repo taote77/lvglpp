@@ -7,8 +7,7 @@
 #include "LvText.h"
 #include <memory>
 
-namespace lvglpp {
-namespace widgets {
+namespace lvglpp::widgets {
 class ToastImpl : public BaseItem
 {
 public:
@@ -21,7 +20,6 @@ private:
     std::shared_ptr<LvText>         desc_;
 };
 
-} // namespace widgets
-} // namespace lvglpp
+} // namespace lvglpp::widgets
 
 #endif // LV_TOAST_IMPL_H

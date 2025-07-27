@@ -1,6 +1,7 @@
 #ifndef _HOME_PAGE_H
 #define _HOME_PAGE_H
 
+#include "Drawer.h"
 #include "core/sys/BaseActivity.h"
 #include "core/sys/Event.h"
 #include "core/widgets/LvText.h"
@@ -16,6 +17,7 @@ class HomePage : public ::sys::BaseActivity
 {
 public:
     explicit HomePage();
+
     ~HomePage();
 
 protected:
@@ -26,7 +28,7 @@ protected:
     void onDestroy() override;
 
 private:
-    lv_subject_t _subject;
+    std::shared_ptr<lvglpp::ui::page::Drawer> _drawer;
 
     std::string                             _txt{"Start"};
     std::shared_ptr<widgets::LvText>        _label;

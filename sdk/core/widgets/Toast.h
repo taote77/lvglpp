@@ -14,19 +14,26 @@ namespace widgets {
 class Toast
 {
 public:
-    enum Type { Succeed, Error, Warn };
-    static void showToast(const std::string &info, Type type);
+    static void success(const std::string &msg);
+
+    static void warn(const std::string &msg);
+
+    static void error(const std::string &msg);
 
 private:
+    enum Type { Succeed, Error, Warn };
+
     static Toast &getInstance();
 
     Toast();
     Toast(const Toast &) = default;
-    std::shared_ptr<ToastImpl> toast_impl_;
-    // static Toast              *instance_;
-    lv_anim_t anim_show_t_{};
-    lv_anim_t anim_hide_t_{};
-    bool      is_running_ = false;
+
+    static void showToast(const std::string &info, Type type);
+
+    std::unique_ptr<ToastImpl> toast_impl_;
+    lv_anim_t                  anim_show_t_{};
+    lv_anim_t                  anim_hide_t_{};
+    bool                       is_running_{false};
 };
 
 } // namespace widgets

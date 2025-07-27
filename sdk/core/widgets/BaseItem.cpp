@@ -185,6 +185,11 @@ void BaseItem::setPos(lv_coord_t x, lv_coord_t y)
     lv_obj_set_pos(lv_base_ptr_, x, y);
 }
 
+lv_coord_t BaseItem::getX() const
+{
+    return lv_obj_get_x(lv_base_ptr_);
+}
+
 lv_coord_t BaseItem::getY() const
 {
     return lv_obj_get_y(lv_base_ptr_);

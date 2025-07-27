@@ -2,10 +2,8 @@
 #include "core/sys/Activity.h"
 #include "core/sys/Navigators.h"
 #include "core/widgets/BaseItem.h"
-#include "core/widgets/GlobalVar.h"
 #include "core/widgets/Toast.h"
 #include <iostream>
-#include <src/others/observer/lv_observer.h>
 
 HomePage::HomePage() : sys::BaseActivity()
 {}
@@ -15,16 +13,21 @@ HomePage::~HomePage()
 
 void HomePage::onCreate(void *arg)
 {
-    _btn = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "Click", getRootItem());
+    _btn = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "Light On", getRootItem());
 
     _btn->setPos(480, 300);
     _btn->setAligment(LV_ALIGN_CENTER, 0, 0);
 
     _btn->setOnClickedListener([this]() {
-        _txt = (_txt == "Start") ? "Stop" : "Start";
-        widgets::Toast::showToast("点击事件，检测到点击", widgets::Toast::Type::Warn);
-        // lv_subject_copy_string(&_subject, _txt.c_str());
+        bool light_status = (_txt == "Light On");
+        _txt              = light_status ? "Light Off" : "Light On";
+        _btn->setTextMsg(_txt);
+
+        // Simulate a light toggle action
+        widgets::Toast::success(light_status ? "点击，灯光已打开" : "点击，灯光已关闭");
     });
+
+    _drawer = std::make_shared<lvglpp::ui::page::Drawer>(lvglpp::ui::page::Drawer::Edge::TopEdge, this->getRootItem());
 }
 
 void HomePage::onNotifyUI(const sys::Event &evt)
