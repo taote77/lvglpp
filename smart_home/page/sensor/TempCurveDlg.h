@@ -32,7 +32,7 @@ private:
     std::shared_ptr<widgets::BaseItem> bg_;
     std::shared_ptr<widgets::Image>    back_icon_;
     std::shared_ptr<widgets::LvText>   peak_force_curve_label;
-    // std::shared_ptr<widgets::Image> abnormal_icon_btn_;
+
     std::shared_ptr<widgets::LvText>          abnormal_btn_label_;
     std::shared_ptr<lvglpp::widgets::LvChart> chart_;
     std::shared_ptr<widgets::LvText>          force_label_;

@@ -93,7 +93,7 @@ void TempCurveDlg::updateTime()
     lv_obj_align_to(time_label_3_->getLvglItem(), chart_->getLvglItem(), LV_ALIGN_OUT_BOTTOM_MID, -300, 16);
 }
 
-static void hook_division_lines(lv_event_t *e, TempCurveDlg *curve_page) // 内置曲线
+static void hook_division_lines(lv_event_t *e) // 内置曲线
 {
     lv_draw_task_t *draw_task = lv_event_get_draw_task(e);
     auto            base_dsc  = reinterpret_cast<lv_draw_dsc_base_t *>(lv_draw_task_get_draw_dsc(draw_task));
@@ -126,7 +126,7 @@ static void hook_division_lines(lv_event_t *e, TempCurveDlg *curve_page) // 内�
     }
 }
 
-static void hook_division_lines2(lv_event_t *e, TempCurveDlg *curve_page) // 自己添加的曲线
+static void hook_division_lines2(lv_event_t *e) // 自己添加的曲线
 {
     lv_draw_task_t *draw_task = lv_event_get_draw_task(e);
     auto            base_dsc  = reinterpret_cast<lv_draw_dsc_base_t *>(lv_draw_task_get_draw_dsc(draw_task));
@@ -162,14 +162,14 @@ void TempCurveDlg::draw_event_cb(lv_event_t *e)
     {
         if (lv_draw_task_get_type(draw_task) == LV_DRAW_TASK_TYPE_LINE)
         {
-            hook_division_lines2(e, this_page);
+            hook_division_lines2(e);
         }
     }
 
     if ((base_dsc->part == LV_PART_MAIN) && lv_draw_task_get_type(draw_task) == LV_DRAW_TASK_TYPE_LINE)
     {
         // LOG_DEBUG() << "=================================";
-        hook_division_lines(e, this_page);
+        hook_division_lines(e);
     }
 }
 
