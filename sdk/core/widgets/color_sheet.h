@@ -7,40 +7,40 @@
 namespace form::design {
 
 // 品牌色 - 主色
-const uint32_t CLR_PRIMARY              = 0x4986FF;
-const uint32_t CLR_ON_PRIMARY           = 0xFFFFFF;
-const uint32_t CLR_PRIMARY_CONTAINER    = 0x2F58A9;
-const uint32_t CLR_ON_PRIMARY_CONTAINER = 0xD5DDFB;
+const uint32_t CLR_PRIMARY              = 0x4986FF; // #4986FF
+const uint32_t CLR_ON_PRIMARY           = 0xFFFFFF; // #FFFFFF
+const uint32_t CLR_PRIMARY_CONTAINER    = 0x2F58A9; // #2F58A9
+const uint32_t CLR_ON_PRIMARY_CONTAINER = 0xD5DDFB; // #D5DDFB
 
 // 品牌色 - 次要色
-const uint32_t CLR_SECONDARY              = 0x7C90A7;
-const uint32_t CLR_ON_SECONDARY           = 0xFFFFFF;
-const uint32_t CLR_SECONDARY_CONTAINER    = 0x5D7090;
-const uint32_t CLR_ON_SECONDARY_CONTAINER = 0xE6EAF8;
+const uint32_t CLR_SECONDARY              = 0x7C90A7; // #7C90A7
+const uint32_t CLR_ON_SECONDARY           = 0xFFFFFF; // #FFFFFF
+const uint32_t CLR_SECONDARY_CONTAINER    = 0x5D7090; // #5D7090
+const uint32_t CLR_ON_SECONDARY_CONTAINER = 0xE6EAF8; // #E6EAF8
 
 // 功能色 - 错误
-const uint32_t CLR_ERROR              = 0xED5855;
-const uint32_t CLR_ON_ERROR           = 0xFFFFFF;
-const uint32_t CLR_ERROR_CONTAINER    = 0xB33330;
-const uint32_t CLR_ON_ERROR_CONTAINER = 0xFFD4D3;
+const uint32_t CLR_ERROR              = 0xED5855; // #ED5855
+const uint32_t CLR_ON_ERROR           = 0xFFFFFF; // #FFFFFF
+const uint32_t CLR_ERROR_CONTAINER    = 0xB33330; // #B33330
+const uint32_t CLR_ON_ERROR_CONTAINER = 0xFFD4D3; // #FFD4D3
 
 // 功能色 - 警告
-const uint32_t CLR_WARNING              = 0xF5A34A;
-const uint32_t CLR_ON_WARNING           = 0xFFFFFF;
-const uint32_t CLR_WARNING_CONTAINER    = 0xA9700D;
-const uint32_t CLR_ON_WARNING_CONTAINER = 0xFFECD8;
+const uint32_t CLR_WARNING              = 0xF5A34A; // #F5A34A
+const uint32_t CLR_ON_WARNING           = 0xFFFFFF; // #FFFFFF
+const uint32_t CLR_WARNING_CONTAINER    = 0xA9700D; // #A9700D
+const uint32_t CLR_ON_WARNING_CONTAINER = 0xFFECD8; // #FFECD8
 
 // 功能色 - 成功
-const uint32_t CLR_SUCCESS              = 0x0AC882;
-const uint32_t CLR_ON_SUCCESS           = 0xFFFFFF;
-const uint32_t CLR_SUCCESS_CONTAINER    = 0x21845F;
-const uint32_t CLR_ON_SUCCESS_CONTAINER = 0xD4FFEF;
+const uint32_t CLR_SUCCESS              = 0x0AC882; // #0AC882
+const uint32_t CLR_ON_SUCCESS           = 0xFFFFFF; // #FFFFFF
+const uint32_t CLR_SUCCESS_CONTAINER    = 0x21845F; // #21845F
+const uint32_t CLR_ON_SUCCESS_CONTAINER = 0xD4FFEF; // #D4FFEF
 
 // 功能色 - 信息
-const uint32_t CLR_INFO              = 0x34BAEF;
-const uint32_t CLR_ON_INFO           = 0xFFFFFF;
-const uint32_t CLR_INFO_CONTAINER    = 0x047DA2;
-const uint32_t CLR_ON_INFO_CONTAINER = 0xD2F5FF;
+const uint32_t CLR_INFO              = 0x34BAEF; // #34BAEF
+const uint32_t CLR_ON_INFO           = 0xFFFFFF; // #FFFFFF
+const uint32_t CLR_INFO_CONTAINER    = 0x047DA2; // #047DA2
+const uint32_t CLR_ON_INFO_CONTAINER = 0xD2F5FF; // #D2F5FF
 
 // 中性色
 const uint32_t CLR_SURFACE        = 0x444E5B; // #444E5B
@@ -55,14 +55,14 @@ const uint32_t CLR_SURFACE_CONTAINER_HIGH    = 0x5A6676; // #5A6676
 const uint32_t CLR_SURFACE_CONTAINER_HIGHEST = 0x73869B; // #73869B
 
 // 表面文字色
-const uint32_t CLR_ON_SURFACE           = 0xFFFFFF;
-const uint32_t CLR_ON_SURFACE_VARIANT_0 = 0xE3EAEE;
-const uint32_t CLR_ON_SURFACE_VARIANT_1 = 0xABB5C2;
-const uint32_t CLR_ON_SURFACE_VARIANT_2 = 0x95A6C0;
+const uint32_t CLR_ON_SURFACE           = 0xFFFFFF; // #FFFFFF
+const uint32_t CLR_ON_SURFACE_VARIANT_0 = 0xE3EAEE; // #E3EAEE
+const uint32_t CLR_ON_SURFACE_VARIANT_1 = 0xABB5C2; // #ABB5C2
+const uint32_t CLR_ON_SURFACE_VARIANT_2 = 0x95A6C0; // #95A6C0
 
 // 描边色
-const uint32_t CLR_OUTLINE         = 0x707F90;
-const uint32_t CLR_OUTLINE_VARIANT = 0x6B7580;
+const uint32_t CLR_OUTLINE         = 0x707F90; // #707F90
+const uint32_t CLR_OUTLINE_VARIANT = 0x6B7580; // #6B7580
 
 // old
 

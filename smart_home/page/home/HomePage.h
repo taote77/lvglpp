@@ -32,9 +32,10 @@ private:
 
     std::string                             _txt{"Start"};
     std::shared_ptr<widgets::LvText>        _label;
-    std::shared_ptr<widgets::Image>         _img;
     std::shared_ptr<widgets::GifImage>      _gif;
     std::shared_ptr<widgets::RoundedButton> _btn;
+
+    std::shared_ptr<widgets::RoundedButton> _btn_air_temp;
 };
 
 #endif // _HOME_PAGE_H

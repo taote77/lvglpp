@@ -3,7 +3,10 @@
 #include "core/sys/Navigators.h"
 #include "core/widgets/BaseItem.h"
 #include "core/widgets/Toast.h"
+#include "page/sensor/SensorActivity.h"
 #include <iostream>
+
+using namespace lvglpp;
 
 HomePage::HomePage() : sys::BaseActivity()
 {}
@@ -25,6 +28,18 @@ void HomePage::onCreate(void *arg)
 
         // Simulate a light toggle action
         widgets::Toast::success(light_status ? "点击，灯光已打开" : "点击，灯光已关闭");
+    });
+
+    _btn_air_temp = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "Temp Curve", getRootItem());
+    _btn_air_temp->setPos(480, 400);
+    _btn_air_temp->setAligment(LV_ALIGN_CENTER, 0, 0);
+
+    _btn_air_temp->setOnClickedListener([this]() {
+        std::cout << "Temp Curve\n";
+        // openActivity<AppPage>("AppPage");
+
+        auto page = std::make_shared<SensorActivity>();
+        sys::Navigators::getInstance()->pushView(page);
     });
 
     _drawer = std::make_shared<lvglpp::ui::page::Drawer>(lvglpp::ui::page::Drawer::Edge::TopEdge, this->getRootItem());

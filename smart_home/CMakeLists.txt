@@ -13,7 +13,14 @@ target_sources(${PROJECT_NAME} PRIVATE
     page/home/HomePage.cc
     page/home/Drawer.h
     page/home/Drawer.cc
-
+    page/sensor/SensorActivity.h
+    page/sensor/SensorActivity.cc
+    page/sensor/TempCurveDlg.h
+    page/sensor/TempCurveDlg.cc
+    i18n/LvTranslator.h
+    i18n/LvTranslator.cc
+    i18n/translations/lv_i18n.h
+    i18n/translations/lv_i18n.c
 )
 
 
@@ -22,7 +29,8 @@ add_definitions(-DUSED_SDL)
 find_package(SDL2 REQUIRED SDL2)
 
 target_include_directories(${PROJECT_NAME} PRIVATE
- ${SDL2_INCLUDE_DIRS}
+    ${SDL2_INCLUDE_DIRS}
+    ${CMAKE_CURRENT_LIST_DIR}
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
