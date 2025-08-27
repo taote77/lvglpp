@@ -15,7 +15,7 @@ Video::Video(const std::string &path, BaseItem *parent) : BaseItem(ItemType::Vid
 void Video::setVideoSrcPath(const std::string &path)
 {
 #ifdef USED_FRAMEBUFF
-    src_path_ = "/heygears/app/bin/" + path;
+    src_path_ = "/home/app/bin/" + path;
 #else
     src_path_ = "." + path;
 #endif

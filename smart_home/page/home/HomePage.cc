@@ -42,7 +42,7 @@ void HomePage::onCreate(void *arg)
         sys::Navigators::getInstance()->pushView(page);
     });
 
-    _drawer = std::make_shared<lvglpp::ui::page::Drawer>(lvglpp::ui::page::Drawer::Edge::TopEdge, this->getRootItem());
+    _drawer = std::make_shared<lvglpp::ui::page::TopDrawer>(this->getRootItem());
 }
 
 void HomePage::onNotifyUI(const sys::Event &evt)

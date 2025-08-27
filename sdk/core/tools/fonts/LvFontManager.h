@@ -1,19 +1,7 @@
-/**************************************************************************
 
-Copyright:Copyright © 2022 HeyGears. All rights reserved
+#ifndef LVFONTMANAGER_H
+#define LVFONTMANAGER_H
 
-Author: LnJan
-
-Date:2022-08-22
-
-Class:${CLASS}
-
-Description:
-
-**************************************************************************/
-
-#ifndef ULTRACORE_FOR_MAKERS_LVFONTMANAGER_H
-#define ULTRACORE_FOR_MAKERS_LVFONTMANAGER_H
 #include "lvgl.h"
 #include <map>
 #include <string>
@@ -42,4 +30,4 @@ private:
 } // namespace lvglpp::tools
   // tools
 
-#endif // ULTRACORE_FOR_MAKERS_LVFONTMANAGER_H
+#endif // LVFONTMANAGER_H

@@ -31,6 +31,10 @@ protected:
     LvTranslator();
 };
 
+const char *lvTr(const char *text);
+
+const std::string lvTrStr(const char *text);
+
 } // namespace lvglpp
 
 #endif // LV_TRANSLATOR_H

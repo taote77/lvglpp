@@ -1,19 +1,5 @@
-/**************************************************************************
-
-Copyright:Copyright © 2022 HeyGears. All rights reserved
-
-Author: LnJan
-
-Date:2022-03-20
-
-Class:${CLASS}
-
-Description:全局工具类
-
-**************************************************************************/
-
-#ifndef HEYGEARS_LVGL_DEMO_UTILS_H
-#define HEYGEARS_LVGL_DEMO_UTILS_H
+#ifndef UI_UTILS_H
+#define UI_UTILS_H
 
 #include <codecvt>
 #include <locale>
@@ -57,17 +43,22 @@ public:
      */
     static bool isAssetResUrl(const std::string &asset_res);
 
-    static char getAssetetter() { return g_asset_letter; }
+    static char getAssetetter()
+    {
+        return g_asset_letter;
+    }
 
-    static char getMemAssetLetter() { return g_mem_asset_letter; }
+    static char getMemAssetLetter()
+    {
+        return g_mem_asset_letter;
+    }
 
     /**
      * 转换成xh xmin xs
      * @param sec
      * @return
      */
-    static std::string convertSecToTimeLabel(int sec,
-                                             const std::string &boost_fmt = "%1%h %2%min %3%s");
+    static std::string convertSecToTimeLabel(int sec, const std::string &boost_fmt = "%1%h %2%min %3%s");
 
     /**
      * 时间戳转换为对应格式时间
@@ -75,8 +66,7 @@ public:
      * @param fmt
      * @return
      */
-    static std::string convertTimeStampToTimeStr(time_t ts,
-                                                 const std::string &fmt = "%Y/%m/%d    %H:%M:%S");
+    static std::string convertTimeStampToTimeStr(time_t ts, const std::string &fmt = "%Y/%m/%d    %H:%M:%S");
 
     /**
      * std::string to std::wstring
@@ -99,13 +89,16 @@ public:
     static std::string convertString(const std::string &input)
     {
         std::string output;
-        size_t len = input.length();
-        for (size_t i = 0; i < len; ++i) {
-            if (input[i] == '\\' && i < len - 3 && input[i + 1] == 'x') {
-                char hex[3] = { input[i + 2], input[i + 3], '\0' };
+        size_t      len = input.length();
+        for (size_t i = 0; i < len; ++i)
+        {
+            if (input[i] == '\\' && i < len - 3 && input[i + 1] == 'x')
+            {
+                char hex[3] = {input[i + 2], input[i + 3], '\0'};
                 output += (char)strtol(hex, NULL, 16);
                 i += 3;
-            } else {
+            } else
+            {
                 output += input[i];
             }
         }
@@ -114,18 +107,21 @@ public:
 
     static std::string Unicode2CN(std::string ssid)
     {
-        try {
+        try
+        {
             std::string output = convertString(ssid);
             // 将Hex编码为Unicode
             std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-            std::wstring unicodeString = converter.from_bytes(output);
+            std::wstring                                           unicodeString = converter.from_bytes(output);
 
             // 将Unicode转换为UTF-8编码的中文字符串
             std::wstring_convert<std::codecvt_utf8<wchar_t>> utf8_converter;
-            std::string utf8String = utf8_converter.to_bytes(unicodeString);
+            std::string                                      utf8String = utf8_converter.to_bytes(unicodeString);
             //   cout << "utf8String: " << utf8String << endl;
             return utf8String;
-        } catch (std::exception &e) {
+        }
+        catch (std::exception &e)
+        {
             return ssid;
         }
     }
@@ -139,4 +135,4 @@ std::string tr(const std::string &str_src);
 } // namespace tools
 } // namespace lvglpp
 
-#endif // HEYGEARS_LVGL_DEMO_UTILS_H
+#endif // UI_UTILS_H

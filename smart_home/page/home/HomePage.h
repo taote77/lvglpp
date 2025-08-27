@@ -1,12 +1,12 @@
 #ifndef _HOME_PAGE_H
 #define _HOME_PAGE_H
 
-#include "Drawer.h"
 #include "core/sys/BaseActivity.h"
 #include "core/sys/Event.h"
 #include "core/widgets/LvText.h"
 #include "core/widgets/RoundedButton.h"
 #include "core/widgets/Text.h"
+#include "page/drawer/TopDrawer.h"
 #include <core/widgets/GifImage.h>
 #include <core/widgets/Image.h>
 #include <memory>
@@ -28,7 +28,7 @@ protected:
     void onDestroy() override;
 
 private:
-    std::shared_ptr<lvglpp::ui::page::Drawer> _drawer;
+    std::shared_ptr<lvglpp::ui::page::TopDrawer> _drawer;
 
     std::string                             _txt{"Start"};
     std::shared_ptr<widgets::LvText>        _label;

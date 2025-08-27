@@ -1,13 +1,8 @@
-/**************************************************************************
+#ifndef TRENGLISH_IMPL_H
+#define TRENGLISH_IMPL_H
 
-
-**************************************************************************/
-
-#ifndef HEYGEARS_LVGL_DEMO_TRENGLISHIMPL_H
-#define HEYGEARS_LVGL_DEMO_TRENGLISHIMPL_H
-
-#include <string>
 #include <map>
+#include <string>
 
 namespace lvglpp {
 namespace tools {
@@ -35,9 +30,9 @@ private:
     void init(LanguageType type);
 
     static std::map<LanguageType, trTranslateImpl *> instance_;
-    std::map<std::string, std::string> translate_map_;
+    std::map<std::string, std::string>               translate_map_;
 };
 } // namespace tools
 } // namespace lvglpp
 
-#endif // HEYGEARS_LVGL_DEMO_TRENGLISHIMPL_H
+#endif // TRENGLISH_IMPL_H

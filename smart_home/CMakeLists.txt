@@ -17,10 +17,57 @@ target_sources(${PROJECT_NAME} PRIVATE
     page/sensor/SensorActivity.cc
     page/sensor/TempCurveDlg.h
     page/sensor/TempCurveDlg.cc
+    page/drawer/TopDrawer.h
+    page/drawer/TopDrawer.cc
+    page/drawer/SwipeView.cc
+    page/drawer/SwipeView.cc
+    page/drawer/MessageCenterControl.cc
+    page/drawer/MessageCenterControl.h
+    page/drawer/ModuleCollector.cc
+    page/drawer/ModuleCollector.h
+    page/drawer/module_panel/DetailPulseDialog.cc
+    page/drawer/module_panel/DetailPulseDialog.h
+    page/drawer/module_panel/DetailResinDialog.cc
+    page/drawer/module_panel/DetailResinDialog.h
+    page/drawer/module_panel/PanelHeater.cc
+    page/drawer/module_panel/PanelHeater.h
+    page/drawer/module_panel/PanelLCD.cc
+    page/drawer/module_panel/PanelLCD.h
+    page/drawer/module_panel/PanelPulseMod.cc
+    page/drawer/module_panel/PanelPulseMod.h
+    page/drawer/module_panel/PanelPulseTray.cc
+    page/drawer/module_panel/PanelPulseTray.h
+    page/drawer/module_panel/PanelResinBottle.cc
+    page/drawer/module_panel/PanelResinBottle.h
+    page/drawer/module_panel/PanelTempHumi.cc
+    page/drawer/module_panel/PanelTempHumi.h
+    page/drawer/NoticeDelegate.cc
+    page/drawer/NoticeDelegate.h
+    page/drawer/RebootConfirmDialog.cpp
+    page/drawer/RebootConfirmDialog.h
+    page/drawer/SwipeView.cc
+    page/drawer/SwipeView.h
     i18n/LvTranslator.h
     i18n/LvTranslator.cc
     i18n/translations/lv_i18n.h
     i18n/translations/lv_i18n.c
+    theme/theme_keeper.h
+    theme/theme_keeper.cc
+    theme/form_design.h
+    boost/screen_shoot.h
+    boost/screen_shoot.cc
+    boost/progress_bar.h
+    boost/progress_bar.cc
+    boost/LineEditor.h
+    boost/LineEditor.cc
+    boost/StringEditor.h
+    boost/StringEditor.cc
+    boost/ClickableCard.h
+    boost/ClickableCard.cc
+    boost/GroupCheckButton.h
+    boost/GroupCheckButton.cc
+    boost/ColLayout.h
+    boost/ColLayout.cc
 )
 
 

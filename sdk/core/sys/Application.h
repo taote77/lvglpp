@@ -24,7 +24,7 @@ namespace lvglpp::sys {
 class Application
 {
 public:
-    enum LanguageType { Chinese, Chinese2English };
+    enum LanguageType { Chinese, English, Japanese, Russian, LOCAL };
 
     Application(int argc, char *argv[]);
 

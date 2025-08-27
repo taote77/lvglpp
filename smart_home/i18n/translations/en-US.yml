@@ -1,3 +1,774 @@
 en-US:
+  Language: Language
+  LanguageEnglish: English
+  LanguageJapanese: Japanese
+  LanguageRussian: Russian
+  L18n.Setting.Lanugaue.English: Language # [[[以下几行不翻译]]]
+  L18n.Language.Chinese.2English: 切换为English # [[[以下几行不翻译]]]
+  L18n.Language.Chinese.2Japanese: 切换为える # [[[不翻译]]]
+  L18n.Language.Chinese.2Russian: 切换为Переключиться # [[[不翻译]]]
+  L18n.Language.English.2Chinese: Change language to 简体中文 # [[[不翻译]]]
+  L18n.Language.English.2Japanese: Change language to える # [[[不翻译]]]
+  L18n.Language.English.2Russian: Change language to ロシア語 # [[[不翻译]]]
+  L18n.Language.Japanese.2Chinese: 中国語に切り替える # [[[不翻译]]]
+  L18n.Language.Japanese.2English: 英語に切り替える # [[[不翻译]]]
+  L18n.Language.Japanese.2Russian: ロシア語に切り替える # [[[不翻译]]]
+  L18n.Language.Russian.2Chinese: Переключиться на китайский # [[[不翻译]]]
+  L18n.Language.Russian.2Japanese: Переключиться на японский # [[[不翻译]]]
+  L18n.Language.Russian.2English: Переключиться на русский # [[[以上几行不翻译]]]
   ChangeLangWarnText: The device will restart to change the language.
-  Start: Start 
+  Start: Start
+  EMPTY_INFO: --
+  PulseReleaseModLabel: Pulsing Release Module
+  MTLModLabel: LED
+  LCDScreenLable: LCD Screen
+  PulsingReleaseResinTank: Pulsing release resin tank
+  HeatMod.Open.Tips: Turn on Heating Module, the device will detect the resin temperature and keep it at a proper value during printing.
+  ModUsed: "Worked"
+  ModUsedColon: "Worked:"
+  PulseModInstalledTip: Pulsing release module installed!
+  PulseModUmInstalledTip: Pulsing release resin tank not installed, please install!
+  PulseModDisconnectTip: PR module disconnected. Please shut down and reconnect it.
+  ResinTray: Resin Tank
+  AbornalTxt: Abnormal
+  Click.Cancel: Cancel
+  Click.Continue: Continue
+  SystemLanguage: System Language
+  SDCardInsertTip: Memory card inserted.
+  SDCardPulloutTip: Memory card removed.
+  HighPrecisionStrategy: High-precision
+  StandardStrategy: Standard
+  RapidStrategy: Rapid
+  Click.Export: Export
+  Click.Install: Install
+  Click.Update: Update
+  Click.Cast: Cast
+  Click.Import: Import
+  Click.Print: Print
+  Wifi.Connected: Connected
+  Wifi.Encrypted: Encrypted
+  Wifi.Public: Public
+  PrintFinishAt: Finished at
+  PrintCancelAt: Canceled at
+  PrintFailAt: Failed at
+  SliceLayerInfo: "%1%,%2% layers"
+  NewVersion: "New Version: "
+  UpgradeLog: Release Notes
+  Leving.AdjustTips: Place the device horizontally. Follow the prompts to adjust foot pads.
+  Leving.DeviceStandHor: Device stands horizontally now.
+  Slice.Transferring: Transferring...
+  Slice.TransferringTips: Adding Selected job to Queue.
+  Click.Confirm: Confirm
+  Click.Ok: OK
+  Record.Task.LayerInfo: "%1%,%2%/%3% layers"
+  Click.Delete: Delete
+  Slice.Import.Success: Imported successfully!
+  Slice.Import.SuccessTips: You may go to the job queue to check it or directly print it.
+  Job.Queue: Job Queue
+  Click.Start.AtOnce: Print
+  SliceInfo.Layer: "Layer %1%"
+  Status.Idle: Idle
+  Status.Abnormal: Abnormal
+  Status.Error: Error
+  Status.Updating: updating ...
+  Home.Tasklib: JOB LIST
+  Home.Record: HISTORY
+  Home.Setting: SETTINGS
+  Home.Usb: USB
+  RestartTips: System Restart
+  Click.Reboot: Reboot
+  RecordJob.Label: History Job
+  Settings: Setting
+  Setting.General: GENERAL
+  Setting.Chinese: English
+  LanguageChinese: Simplified Chinese
+  Cloud.Unbind: Not Connected
+  WifiLabel: Wi-Fi
+  Setting.NetConnect: Net Connect
+  Setting.Upgrade: Software Update
+  Setting.Log.Export: Logs
+  Setting.Clean.Disk: Clean the Disk
+  Setting.Clean.DiskCache: Disc Cleaner
+  Setting.Clean.Cache: Wipe Cache
+  Setting.DeviceInfo: Basic Info
+  Cloud.Account: Cloud Account
+  Setting.InitialInstallTips: Please confirm to enter initial installation guide.
+  Click.Setting.Initial: Initial Installation Guide
+  Setting.ConfigurationGroup: SPEC
+  Setting.AccessoryUpdate: Accessory Update
+  Setting.Clean.ResinTank: Resin Tank Cleaning
+  Setting.Control.Platform: Calibration
+  Setting.Platform.Leveing: Build Platform Leveling
+  Setting.FrameEnergy.Calibration: Frame Energy Calibration
+  Setting.AdvancedMaintenance: Advanced Maintenance
+  Setting.Factory.Reset: Factory Reset
+  Factory.ResetTips: All content and settings will be reset to the factory default status. Sure to reset?
+  Screen.ResetTips: Please do NOT reset without the guidance of Support.
+  Click.Reset: Reset
+  Factory.ResetingTips: Resetting to factory status ...
+  Factory.ResetWarnTips: After reset is done, the machine will reboot.
+  Setting.Advanced.Header: Advanced Settings
+  Setting.Advanced.ElectromagnetControl: Electromagnet Control
+  Setting.Advanced.LCDControl: LCD Control
+  Setting.Advanced.UniformityCalibration: Uniformity Calibration
+  Setting.Advanced.SingleCalibration: Single Calib
+  Setting.Advanced.GyroscopeCalibration: Gyroscope Calibration
+  Setting.Advanced.LEDCalibrationModuleTest: LED Calibration Module Test
+  Setting.Advanced.PulsingReleaseModuleTest: Pulsing Release Module Test
+  Setting.Advanced.ImageCasting: Default Image Casting
+  Setting.Advanced.GrayAdjustment: Gray Adjustment
+  Setting.Advanced.PrintSimulation: Print Simulation
+  Setting.Advanced.ActivateSN: Activate SN
+  Setting.Advanced.DeviceActivateSN: Activate Device
+  Setting.Advanced.SN: SN
+  Setting.Advanced.WavelengthFile: Wavelength file
+  Setting.Advanced.WavelengthFile.Import.FailTip: Failed to import the wavelength file.
+  Setting.Advanced.UsbDriveNotConnected: USB Drive is not connected!
+  Setting.Advanced.CalibrationFile: Calibration file
+  Setting.Advanced.CalibrationFile.Export.FailTips: Failed to export the calibration file.
+  Setting.Advanced.Engineering-End.FactoryReset: Engineering-End Factory Reset
+  Setting.Advanced.Engineering-End.ResetTips: Device will be restored to original state and rebooted. Sure to reset?
+  Setting.Advanced.Engineering-End.ResetingTips: Resetting ...
+  Setting.Advanced.Engineering-End.SuccessTips: Resetting done. Please fine-tune the main axle and reboot the device.
+  Setting.Advanced.Engineering-End.Success: Resetting done.
+  Setting.Advanced.Mainaxle.ResettingTips: Main axle resetting ...
+  Setting.Advanced.Password.Error: password error!
+  Setting.Advanced.SN.Acticated: Device has activated
+  Setting.Advanced.SN.NotActicated: Device has not activated
+  Platform.Control.Reset: Reset
+  Platform.Control.FineTune: Fine-tune
+  Platform.Terms.Travel: Travel
+  Platform.Setting.DistanceRange: 10-100000
+  Platform.Setting.DistanceRangeTips: between(10-100000µm)
+  Platform.Setting.InvalidTip: arg is invalid!
+  Platform.Setting.Speed: Speed
+  Platform.Setting.SpeedRange: 10-300000
+  Platform.Setting.SpeedRangeTips: 介于(10-300000µm/s)
+  Platform.Control.FailTips: platform control failed!
+  Platform.Control.Stop.FailTips: platform stop failed!
+  TankClean.StartTips: After hitting [Start], the device will project an all white image.
+  TankClean.Projecting: Projecting ...
+  TankClean.FailTips: start clean failed!
+  TankClean.ProjectionDone: Projection done!
+  TankClean.ProjectionDoneTips: Gently lift to remove the cured resin. Cleaning done!
+  TankClean.StartProjectionTips: After hitting [Start], the device will project an all white image.
+  TankClean.StartFailTips: start clean failed!
+  ProjectionCurrentTips: Current:%1%        Time:%2%ms
+  ProjectionPowerTips: Power:%1%W        Time:%2%ms
+  Ota.Software: Software updates
+  PrinterOs: Printer OS
+  Ota.UpdateFrom: Update from
+  Ota.CloudService: Cloud Services
+  Ota.CheckingForUpdates: Checking for updates ...
+  Ota.Error.Unknown: Unknown error
+  Ota.Error.NetError: Network error.
+  Ota.Downloading: Downloading updates. Please be patient ...
+  Ota.UsbSource: USB
+  Ota.Query.Failure: "Error:"
+  Ota.Status.Downloaded: Updates downloaded!
+  Ota.Status.DownloadFail: Download failed,
+  Ota.Error.NotEnoughSpace: Not enough space! Please free up disk space.
+  Ota.UpgradePreparing: Upgrade preparing...
+  Ota.Error.Advice: ". Please try again and if still fail, please contact support. Error code: #"
+  Ota.NoNewVersionTip: You’re up to date!
+  History.NoPrintJob: No print job!
+  History.ImportPrintJob: Please import the print job
+  History.JobList: Job List
+  FailureText: Error!
+  FillingMod: Filling Mod
+  UltrasonicMod: Ultrasonic Mod
+  WeightMod: Weighing Mod
+  Setting.Resin.FillHeatSwitch: Resin Refill
+  Panel.PulseUsed: "Release film service life"
+  Setting.Resin.FillSwitch: Automatic Resin Fill
+  Status.Little: Low
+  Status.Normal: Normal
+  Panel.Autofill.Label: Automatic Resin Fill
+  Panel.Resin.Remaining: "Remaining:"
+  RegularResinTank: Regular resin tank
+  Status.Installed: Installed
+  Status.Uninstalled: Uninstalled
+  Status.Unlocked: Unlocked
+  Notice.InstalledTips: Reflex new version download finished. Go install it.
+  Notice.PulseInstallTips: Pulsing release resin tank not installed. Please install it!
+  Notice.FillingErrorTips: Resin filling error. Please check if the gate and the resin cartridge are well in place.
+  Notice.ResinInsufficientTips: Insufficient resin. Please replace the resin cartridge.
+  Notice.HeaterModExceptionTips: Heating module error. Please check if it is well in place.
+  Notice.HeatingTimeoutTips: Resin heating timeout. Print has started automatically.
+  Notice.PulseModFirmInstallTips: Please update your Pulsing Release Module firmware! Go update
+  Notice.ExternalVibrationOrHoodOpeningOccursTips: External vibration or hood opening occurs. Print quality might be affected.
+  Label.ConfirmChangeScreenTips: Please confirm the new screen has been well installed.
+  Click.UnChange: Uninstalled
+  CalibFileRestoredTips: Previous screen validation file restored. Please enter Screen Replacement Guide again.
+  GetitTips: Got it
+  Status.Changed: Installed
+  AdviceCheckScreenTips: It’s advised to validate the new screen to check if it works well.
+  ScreenCehck: Screen Validation
+  NextTime: Next time
+  Click.Back: Back
+  AirModuleDisconnectTips: No connection to the pulsing release module.
+  AirModuleCheckTips: Pulsing Release Module unconnected. Please check.
+  Job.DeleteTips: Delete the job?
+  Record.EmptyTips: History job failed!
+  EnvCheck.FailTips: start repaint env failed
+  CheckAirModAirTrayTips: Please confirm if pulsing release module and pulsing release resin tank are both well installed.
+  Job.Fetch.FailTips: get job failed!
+  Job.Remove.FailTips: Job remove failed!
+  Status.Canceling: Canceling...
+  Click.ResetSn: Reset SN Code
+  Status.RestingSn: Reseting SN Code, please waiting...
+  SucceccTips: success!
+  Activate.FallTips: Activated Failed
+  Reboot.FaillTips: reboot failed!!!
+  FileTransferErrorTips: File Transfer Error
+  CheckUsbDeviceTips: No USB drive found. Please check the connection.
+  NoSpaceForNewJob: Not enough space for new job
+  JobQueueIsFull: Job Queue is full
+  GoJoblib2FreeSpace: Please delete some jobs in the job queue to free up space.
+  GoJoblib2MakeroomForNewJobs: Please delete some jobs in the job queue to make room for new jobs.
+  GoPrintRegularJobTips: Continue to print the current regular jobs?
+  RecommendUsingAitModTips: A device with a pulsing release module can print pulsing release jobs better and more efficiently.
+  DoNotAskNextTime: Don't ask again
+  Click.Refresh: Refresh
+  EnterVerficationCodeTips: "Please enter the verification code on Blueprint Studio: #34BAEF %1%"
+  UnableToGetCodeTips: "Unable to receive the code. Please check the network! #34BAEF %1%"
+  DownloadAppTips: Or download the app Blueprint Go, then scan the Device QR Code in the app.
+  osAndroid: Android
+  osIOS: iOS
+  DeviceQrCode: Device QR Code
+  InvalidText: Invalid
+  EnvCheckingTips: Checking the environment...
+  EnvCheckCanelling: "Please wait for a moment while\n\
+    canceling..."
+  ResinLowCheckTips: Remaining resin low. Please check.
+  LabelWarn: Warning
+  Click.CancelJob: Cancel job
+  ZeroingPressureAbnormal: Abnormal zeroing pressure
+  ResidueDangerTips: There’s a risk of prints falling off. Please check if there’s any residue on the resin tank or the build platform. If no, perform leveling and then try again.
+  ZeroingExceptionTips: 1. Abnormal zeroing pressure. There’s a risk of prints falling off. Please clean the residue on the resin tank or the build platform before trying again.\n2. Remaining resin low. Please check.
+  Job.Cancelled: Job canceled!
+  EnvChecking.WaitTips: "Please wait for a moment while\n\
+    checking..."
+  AirModCheckingTips: "Checking atmospheric pressure in \n\
+    pulsing release module..."
+  ResinAutoFeeding: Feeding resin automatically...
+  Print.Preparing: Please wait for a moment to print...
+  Job.StartFailTips: Job start failed!
+  Job.Reprint.FailTips: start repaint failed
+  Heating.Skip: Skipping ...
+  FileExportSuccess: File transfer completed.
+  PrintJob.Finished: Print Finished
+  PrintJob.Fail: Job Failed
+  PrintJob.Cancelled: Job Canceled
+  DiskCleanWarnTips: "The data to be cleaned includes:\n\
+    (1) Cache data;\n\
+    (2) Temp and redundant files;\n\
+    (3) History files, except the queued job(s) ."
+  ResinHeating: Resin Heating
+  ResinHeatEnableTips: When enabled, it will automatically heat the resin to a proper temperature.
+  Zero.Canceled: Zeroing canceled
+  Zero.Success: Zeroed successfully
+  Zero.Failed: Zeroing failed
+  Reset.Canceled: Reset canceled
+  Reset.Success: Reset successfully
+  Reset.Fail: Reset failed
+  Ascend.Canceled: Ascending canceled
+  Ascend.Success: Ascended successfully
+  Ascend.Fail: Ascending failed
+  Descend.Canceled: Descending canceled
+  Descend.Success: Descended successfully
+  Descend.Fail: Descending failed
+  Precise.Ctrl.Fail: precise ctrl failed!
+  Zero.TurnOffElectronMagnetTips: Please turn off the electromagnet before zeroing.
+  SetArgsTips: please set args first!
+  Zeroing: Zeroing
+  Zeroing.Fast: Fast-zero
+  Zeroing.Status: Zeroing
+  Reseting: Platform Reset
+  Reseting.Status: Reseting
+  KeepRising: Raise
+  KeepRising.Status: Raising...
+  KeepDescending: Lower
+  KeepDescending.Status: Lowering...
+  Print.Prepare.Heating: Heating is in progress. Printing will start automatically after completed!
+  Print.Prepare.SkipHeating: Sure to skip heating？
+  Click.No: No
+  Click.Yes: Yes
+  Current.Resin.Temp: "Current Resin Temp:"
+  Current.Carbin.Temp: "Current Temp:"
+  Platform.Reset: Platform Reset
+  Platform.Reseting.Tips: Platform resetting. Please do not operate...
+  ElectromagnetControl: Electromagnet Control
+  Status.Off: Off
+  CurrentControl: Current Control
+  SetValueFail: set value failed!
+  Status.On: On
+  LCDLightControl: LCD Light Control
+  AdjustCurrentTips: To adjust the current, turn off the control switch
+  CurrentValue: Current
+  CurrentRange: 0~1000
+  CurrentValueInvalid: current is invalid!
+  SetCurrent: Current
+  SetLCDFailTips: set lcd info failed!
+  "UniformityCalibration:": "Uniformity Calibration:"
+  ReplaceLCDTips: Every time you replace the LCD screen, please perform uniformity calibration. The instructions will guide you to cover 60 spots one by one with the probe. The process will take around 15 min.
+  Click.Exit: Exit
+  UniformityCalibrationStepTips: "Please follow these steps:"
+  Click.StartCalib: Start
+  UniformityVerification: Uniformity Verification
+  AutomaticCalibrationTest: Automatic Calibration Test
+  AutoCalibration: Automatic Calibration
+  LED.Calib.ModuleNotConn: LED calibration module is not connected!
+  Module.Error: Module error
+  GetInfoFailTips: get info failed!
+  Click.Active: Active
+  PlatformWillStartZeroing: Platform will start zeroing
+  CleanPlatfromTrayTips: "Please make sure: no matters on platform or in resin tank; stoppers removed; platform installed and locked."
+  ResinTempTooLow: "Low resin temperature might cause:"
+  ResinTempTooLowCase1:
+    "1. heating taking too long, potentially over 1 hour; \n\
+    2. viscosity too high, potentially leading to a print fail."
+  Wifi.Available: Available
+  Wifi.Scaning: Searching...
+  Wifi.Scan.Fail: Wi-Fi searching failed. Please try again.
+  Record.Delete.Tips: Confirm to delete the selected task?
+  Wifi.Connectting: Connecting..
+  Wifi.ErrorPassword: Failure, Wrong Password
+  Wifi.Connect.Sucess: Connect Successful!
+  Wifi.ErrorCheckNet: Failure, Please check the network
+  NoSelectedJobsTips: Please select jobs first!
+  ResponderSimulation: Responder simulation
+  LightengineSimulation: Light engine simulation
+  Net.WLAN: WLAN
+  Net.Wire: Ethernet
+  UnderDevelop: Not Fullfilled
+  HeatOpenTips: Resin Heating Opened
+  HeatCloseTips: Resin Heating Closed
+  AutoFillOpenTips: Auto Filling Opened
+  AutoFillCloseTips: Auto Filling Closed
+  CheckFillModTips: Check Filling Mod!
+  HeatScraperNotInstalled: Heating Scraper Not Installed
+  SetCastCurrent: Set the cast photo current
+  InvalidArg: arg is invalid!
+  CastSetting: Cast Args
+  Current: current
+  Power: power
+  Time: Time
+  CastTimeSet: Set the casting time
+  Net.Connected: Connected
+  Net.Disconnected: Disconnected
+  IpInfo: Address
+  IpAddress: IP Address
+  IpMask: Mask
+  Gateway: Gateway
+  WeightSensorCalib: Weight Sensor Calibration
+  SensorCalib: Sensor Calibration
+  CalibWeightTips: |
+    1. Please confirm NO resin cartridge is installed, and hit [Reset].
+    2. Set up a standard cartridge, enter its weight (an integer between 0 and 10000) and hit [Calibrate].
+  CurValue: Current Value
+  StandardBottleWeight: Standard Weight
+  Calibrate: Calibrate
+  CalibWeightRange: between(1-10000)
+  EnterWeightTip: Please enter the weight
+  Calibrating: Calibrating...
+  Calibration.Done: Calibration done.
+  TheWeightIsResetToZero: The weight is reset to zero.
+  Calibration.Failed: Calibration failed.
+  Zeroing.Done: Zeroing done
+  Zeroing.Failed: Zeroing failed
+  Setting.Print: Print Settings
+  WearingOut: Wearing out
+  PleaseReplace: Please replace
+  Password: Password
+  PasswordLimitTips: password at least 8 characters!
+  HeatingModule: Heating Module
+  HeatingScraper: Heating Scraper
+  Pause: Pause
+  PeelOffScreenTips: Please peel off the screen protector
+  Systemimage: System image
+  Commander: Commander
+  Responder: Responder
+  FPGA: FPGA
+  LFS: LFS
+  Bootloader: Bootloader
+  Click.Download: Download
+  Ultra Core: Ultra Core
+  Click.Redownload: Download
+  UpdatepackOutdated: Update pack outdated
+  NewerVersionDected: New version detected! Please download
+  Ota.Download.Failed: Download failed
+  CheckNetworkAndTry: Please check your network and try again.
+  WifiSearchFailed: Wi-Fi searching failed
+  ConnectInSettingsAfterGuide: Please connect again in Settings after the guide process.
+  GyroscopeCalibration: Gyroscope Calibration
+  LightIntensityCalibration: Calibration
+  AutoCalibPrepared.Failed: Auto calib prepared failed!
+  SureToQuit?: Sure to quit?
+  UniCalibTips: |
+    1. Make sure the resin tank is empty and
+       clean. Place the LED calibration 
+       module’s probe on the resin tank.
+    2. Connect the module to the USB port.
+  StartUniformityFailed: start uniformity failed!
+  UniformityCalibrationDone: Uniformity Calibration done!
+  CalibrationModuleTestAdvised: It's advised to perform LED Calibration Module Test.
+  CheckAperture: Check if there is an aperture...
+  Next: Next
+  InvalidCurrent: current is invalid!
+  InvalidPower: power is invalid!
+  EmptyPicture: picture is empty!
+  FailedCastFigure: start cast figure failed!
+  SetCcastPhotoPower: Set the cast photo power
+  StartCast: Start
+  Click.Finish: Finish
+  CastingImage: Casting image...
+  Click.Stop: Stop
+  LightIntensity: Light Intensity
+  UnitCastingImage: W/m², Casting image...
+  BindDevice2Blueprint: CLOUD ACCOUNT
+  DeviceModel: Device Model
+  DeviceName: Device Name
+  ManufactureDate: Manufacture Date
+  More: More
+  LiquidLevelSensorCalibration: Liquid Level Sensor Calibration
+  LiquidLevelSensorErrorTitle: Sensor connection error.
+  LiquidLevelDataInvalid: Sensor reading error.
+  LiquidLevelOpenTips: Please open the liquid level sensor as the image shows.
+  LiquidLevelSensorNoAuto: Cannot enable Resin Refill.
+  LiquidLevel.RetryWipeSensor: Please wipe clean the sensor probe (at the bottom). Then if this error still shows up, please skip.
+  ButtonOpened: Opened
+  Click.Next: Next
+  Click.Skip: Skip
+  CheckScreenValidTips: Make sure the resin tank has been removed and the screen is clean. Put a piece of blank A4 paper on the screen.
+  Comfirm.ChangeCobFile: File already exists. Would you love to overwrite it?
+  File.transferring: File transferring.
+  LightIntensityCalibrationTips: Uniformity calibration finished, please perform light intensity calibration. Cover the indicated spot with the probe, and start calibration.
+  DiscCleaner: Disc Cleaner
+  CacheClean: Cache cleaner
+  Click.Clear: Clear
+  HardDisk: Hard disk
+  MemoryCard: Memory card
+  CleanDiscTips: Cleaning the disk will erase permanently the data mentioned just now, and they will not be able to restored. Sure to continue?
+  CleanCacheConfirmTips: Cleaning the cache will erase permanently the data mentioned just now, and they will not be able to restored. Sure to continue?
+  CleanCacheTips: |
+    The following data will be deleted:
+    (1) Cached data;
+    (2) Temporary data and redundant files;
+  Cleaning: Cleaning...
+  DiscHasBeenCleaned: Disc has been cleaned.
+  DiscClean.Failed: Disc clean failed.
+  DonotOpenDoorWhilePrinting: Please don't open the door while printing.
+  TimeRemaining: Remaining
+  ForceN: Force(N)
+  Screen.Resolution: Resolution
+  Screen.Size: Size
+  Screen.SN: SN
+  ReplaceMaterialTrayTips: Please replace the resin tank in time.
+  Leveling: Leveling
+  BeforeLeveling: Before leveling
+  LevelAdjustTips: |
+    1. Put the device on a stable, level table;
+    2. The device must stay powered on (it'll take about 3 mins);
+  LevelAdjustFail: Zeroing failed
+  LevelAdjusting: Platform zeroing. Please do not operate...
+  LevelAdjustSuccess: Leveling succeeded
+  LevelAdjustSuccessMark: Leveling succeeded!
+  LevelAdjustFailure: Leveling failed
+  LevelAdjustFailureMark: Leveling failed!
+  LevelAdjustPassed: Passed the test!
+  LevelAdjustNotPassed: Failed the test!
+  LevelAdjustHorNotPassed: Leveling test failed!
+  ManualLevelingIsRecommendedForPrintability: Manual leveling is recommended for printability. If still failed, please contact Support.
+  LevelingPassedTips: Leveling passed! No need for manual leveling.
+  PutbackTwoStoppersAndLockPlatform: Remember to put back the two stoppers, and lock the platform well.
+  LevelTestConfirm: Please hit [Test] to do leveling test.
+  PutbackStoppersLockPlatformTips: Remember to put back the two stoppers.
+  FailTooMuchTimeTips: Please perform Build Platform Leveling again. If still failed, please contact Support.
+  Level.BackAndRetry: Please perform Build Platform Leveling again.
+  LevelAdjustFailureTuto: |
+    1. Be prepared with the provided T-type wrench.
+    2. Remove the two rubber stoppers on the platform base.
+    3. Confirm the build platform and the resin tank are clean with no matters on them.
+  NoForeignMattersOnPlatformOrInResinTank: no foreign matters on platform or in resin tank.
+  ZeroingFailed: Leveling failed
+  Click.Restart: Start again
+  ConnectedAccount: Connected Account
+  LevelAdjust.Quit: "Quit leveling?"
+  LevelAdjust.Quit.Tips: |
+    1. Put back the stoppers and lock the platform well;
+    2. Hit [Yes] and wait until the platform resets.
+  Platform.Leveling: The build platform is leveling...
+  FineTuningTips: It may need more fine tuning. Please be patient...
+  IndicatorsTurnedGreen: Both indicators have turned green!
+  PlatformWillZeroing: Platform will start zeroing
+  TuningTotorial: |
+    1. Adjust screws in the indicated direction, until yellow numbers both turn green (within 0.2N).
+    2. Then hit [Confirm] to validate.
+  PlaceTheDeviceHorizontally: Place the device horizontally.
+  AmbientTempOutOfRangeTips: Ambient temp out of 20-25°C. Unable to detect the device's level. Please adjust it yourself.
+  Click.Help: Help
+  PhotosourceCheck: Light Source Validation
+  PhotosourceCheckProTips: Please confirm NO resin tank is installed and hit [Test], the device will sequentially light up all the LEDs to check their working condition.
+  PhotosourceCheck2.0Tips: |
+    Confirm NO resin tank is set up, hit [Test], and inspect the LEDs’ status through the projection glass.
+    · Normal: All light up.
+    · Abnormal: Certain LEDs fail. 
+      Please contact Support.
+  Click.Test: Test
+  ProjectCheckingTips: Validating the light source ...
+  ProjectCheckingNote: Please inspect through the glass if all the LEDs light up. If any failed, please contact Support.
+  ProjectChecking.Success: Light source normal.
+  ProjectChecking.Success2.0: Light source validation finished.
+  ProjectChecking.Failure: Light source abnormal.
+  ProjectChecking.ConSupporter: Please contact Support.
+  Initial.Step.NetConfig: NETWORKS
+  Initial.Step.ResinTank: RESIN TANK
+  Initial.Step.ResinTank.Tips: Please set up the resin tank as the image shows.
+  Initial.Step.LightSource: LIGHT SOURCE
+  Initial.Step.Platform: BUILD PLATFORM
+  Initial.Step.BuildPlatform: Build Platform
+  Initial.Step.PlatformLevelTest: PLATFORM LEVELING TEST
+  Initial.Step.ScraperInstall: SCRAPER
+  Initial.Step.LevelCheckTips: Please hit [Test] to do leveling test.
+  Initial.Step.ResinInstall.Title: RESIN CARTRIDGE
+  Initial.Step.ResinInstall.Resin: Resin Cartridge
+  Initial.Step.ResinInstall.Tips1: Before installing, please replace the cartridge lid with the provided resin-refill lid.
+  Initial.Step.ResinInstall.Tips2: Do not install it if you use PAM10, the DIY-color material.
+  Initial.Finished.Title: Initialization done. Shape your ideas now!
+  Initial.Finished.Desc: Print jobs are sent to the printer via Blueprint Studio. Please download it on HeyGears.com.
+  Scraper.TitleName: Scraper
+  ScraperNormal: Regular scraper
+  Scraper.InstallTips: Please set up and lock the scraper as the image shows.
+  CancelJobTips: Cancel the job?
+  CancelJobFailure: cancel job failed!
+  Debug.Device.ON: Debugging mode on.
+  Debug.Device.OFF: Debugging mode off.
+  CheckHeatModCon: Heating Module unconnected. Please check.
+  LiquidSensorCalibTips: |
+    Before calibrating, please confirm:
+    1. Resin tank set up in place;
+    2. No resin or foreign matters in the resin tank or on the sensor probe (at the bottom).
+  Sensor.Calib.Zero: |
+    Please confirm NO resin cartridge is installed. Hit [Calibrate], the weight will reset to zero after calibration.
+  Platform.Install.Comfirm: |
+    Please set up and lock the build platform as the image shows.
+    Confirming it has been locked, please ignore the prompt and move on.
+  Mainaxle.Paused: Main axle paused
+  LiquidSensorCalibWarn: Ensure the tank and the sensor installed, clean with no resin or foreign matters.
+  SensorUnInstall: The sensor is not installed in place.
+  LiquidSensorCalibrating: Calibrating ...
+  CalibrationPointIndexError: page index error!
+  MinValue: is min value!
+  MaxValue: is max value!
+  CalibGrayValue: Gray value
+  InvalidGrayValue: Grayscale value is invalid!
+  SpodUnit: Spot unit
+  SpodUnitRange: between(1~
+  TimeisInvalid: time is invalid!
+  Screen.MissingScreenInfo: Missing some screen info.
+  Screen.FailWriteScreenInfo: Failed to write the screen info.
+  Screen.ReplaceWin: Screen replaced succeesfully!
+  Screen.Replaced: Screen replaced
+  Screen.RebootToUpgrade: Please reboot to udpate to this screen version.
+  Screen.RelaceFail: Screen replacement failed.
+  Screen.RetryInstall: Please try to install the screen again.
+  Screen.NewVersionNotFound: Screen version not found.
+  Screen.RetryAfterReboot: Please perform Software Update before trying again.
+  DoNotOperateHint: Please do not operate...
+  SEPERATE_LINE0: ==================================
+  SEPERATE_LINE1: =           分割线               =
+  SEPERATE_LINE2: ==================================
+  CODE.10004: Failed to copy model
+  CODE.10013: Exceeded maximum limit of tasks
+  CODE.10019: Import task canceled
+  CODE.10020: Slice File Not Exists
+  CODE.10021: Slice File Format Wrong
+  CODE.10022: Slice File Not Match Machine
+  CODE.10023: TF card not found, please check the TF card
+  CODE.10024: Print failed, please check the TF card
+  CODE.10025: TF card file damaged, please format the TF card and try again!
+  CODE.10099: Insufficient disk space
+  CODE.30001: Export error.USB flash drive has ejected
+  CODE.30002: Export error.file operation failed
+  CODE.30003: Export error.create directory failed
+  CODE.30004: Export error.write file failed
+  CODE.30005: Export error.directory illegal, already occupied by same file
+  CODE.30006: Export error.file not exists
+  CODE.30007: Export error.copy error
+  CODE.30008: Export error.file already exists
+  CODE.30009: Export error.file may be damaged
+  CODE.30010: SN not activated
+  CODE.60001: Upgrade package damaged
+  CODE.60002: Disk space not enough
+  CODE.60003: LED calibration data error.
+  CODE.60004: Upgrade package mismatch
+  CODE.60005: Insufficient memory. Please restart and upgrade again
+  CODE.60006: Upgrade package MD5 error. Please download again
+  CODE.80001: Light source launching. Please try again after 3 min. Reboot the device if this pop-up still shows.
+  CODE.80002: Lower computer error
+  CODE.80003: Insufficient resin
+  CODE.80004: Resin refill failed
+  CODE.80005: Heating failed
+  CODE.80006: Tank not installed
+  CODE.80007: Resin cartridge not installed
+  CODE.80008: Estimated remaining use of FEP film insufficient
+  CODE.80009: Temperature too low
+  CODE.80010: Resin level too low
+  CODE.80011: The Heating module is not installed properly
+  CODE.80012: Build platform error
+  CODE.80013: Resin does not match
+  CODE.80014: Printer is not placed horizontally
+  CODE.80015: Disk space not enough
+  CODE.80016: Pulsing release resin tank not installed
+  CODE.80021: Decompress fail
+  CODE.80022: Slice file not exists
+  CODE.80023: Fail to open slice file
+  CODE.80024: Model's layer error
+  CODE.80025: Fail to clean dir
+  CODE.80026: Cannot find techpack
+  CODE.80027: Cannot get temp dir
+  CODE.80028: Cannot create temp dir
+  CODE.80029: Cannot find buildscript.ini
+  CODE.80030: Cannot find parameters.ini
+  CODE.80031: Cannot parse buildscript.ini
+  CODE.80032: Cannot find matched key
+  CODE.80033: Fail to delete temp dir
+  CODE.80034: pulsing release module configure error
+  CODE.80039: Unauthorized slice file
+  CODE.80100: Air path abnormality in the pulsing release module. Please check tube connection and try again
+  CODE.80101: No connection to the pulsing release module
+  CODE.80200: There is a risk of plate loss.Manual leveling is recommended
+  CODE.80524: Techbag md5 error
+  CODE.80525: Techbag md5 file not found
+  CODE.80526: Techbag md5 check fail
+  CODE.80540: The use of unofficial process packages may result in equipment damage, for which HeyGears will not provide after-sales service.
+  CODE.80601: Auto Calib canceled
+  CODE.80602: Invalid spot position
+  CODE.80603: Failed to set grayscale
+  CODE.80604: Uniformity calibration failed
+  CODE.80605: Intensity calibration failed
+  CODE.80608: Uniformity calibration failed. Please try again. If still fails, please contact Support.
+  CODE.80609: Light intensity calibration failed. Please try again. If still fails, please contact Support.
+  CODE.80610: Uniformity calibration failed in the fixture.
+  CODE.80611: Light intensity calibration failed in the fixture.
+  CODE.80612: The workstation is not connected.
+  CODE.80613: The workstation direction is wrong.
+  CODE.80614: The workstation recheck failed.
+  CODE.80615: The recheck forward uniformity result is not qualified.
+  CODE.80616: The recheck forward intensity result is not qualified.
+  CODE.80617: The recheck backward uniformity result is not qualified.
+  CODE.80618: The recheck backward intensity result is not qualified.
+  CODE.80631: Uniformity recheck canceled
+  CODE.81000: Error opening file
+  CODE.81001: Error loading process package
+  CODE.81002: Invalid printing parameters error
+  CODE.81003: Error parsing model
+  CODE.81004: Error parsing process package
+  CODE.81005: Process package not found
+  CODE.81006: Process package does not match
+  CODE.81007: Error converting parameters
+  CODE.81008: Error printing
+  CODE.81009: Error creating thread
+  CODE.81010: Zeroing failed! Please check the platform and resin tank. If there is any residue, please clean it up and retry.
+  CODE.81011: Error pre-processing
+  CODE.81012: Error exposure
+  CODE.81013: Error peeling
+  CODE.81014: Error waiting for peel
+  CODE.81015: Error reseting build platform
+  CODE.81016: Null handle error
+  CODE.81017: Interruption error
+  CODE.81018: Error loading cache
+  CODE.81019: Abnormal current value of light source.
+  CODE.81020: Error peeling up
+  CODE.81021: Error peeling down
+  CODE.81022: Error switching magnet
+  CODE.81023: Exposure time error
+  CODE.81024: Error switching on led
+  CODE.81025: Error switching off led
+  CODE.81026: Error clearing screen
+  CODE.81027: Temperature and liquid level sensor error
+  CODE.81028: Resin feeding failed. Please check the temperature and liquid level sensor
+  CODE.81029: Resin margin is insufficient.please replace the resin bottle
+  CODE.81030: Filling error.Please check the resin filling gate and the position of the resin cartridge.
+  CODE.81031: Resin Filling Working
+  CODE.81032: Fail control valve
+  CODE.81037: Temperature and liquid level sensor error
+  CODE.81038: Resin feeding failed. Please check the temperature and liquid level sensor
+  CODE.81039: Resin margin is insufficient.please replace the resin bottle
+  CODE.81040: Filling error.Please check the resin filling gate and the position of the resin cartridge.
+  CODE.81042: The USB flash drive connection is unstable
+  CODE.81045: Force Sensor Over 2N
+  CODE.81046: Resin temp low
+  CODE.81047: Heating timeout before printing
+  CODE.81048: Heating failed before printing
+  CODE.81050: Infrared liquid level sensor abnormal
+  CODE.81051: Zeroing failed when heating resin before printing.
+  CODE.81052: Unable to print. Temperature is too low. Please increase ambient temperature and try again.
+  CODE.81053: Printout suspected to be misaligned, please take a look.
+  CODE.81054: The platform is not installed or shoveled
+  CODE.81055: Layer param error
+  CODE.81056: Expose param error
+  CODE.81057: Rise param error
+  CODE.81058: Down param error
+  CODE.81059: Rise speed param error
+  CODE.81060: Down speed param error
+  CODE.81061: Wait param error
+  CODE.81062: opencv process error
+  CODE.81063: STD standard process error
+  CODE.81064: Read image failed
+  CODE.81065: Support image process error
+  CODE.81066: Entity image process error
+  CODE.81067: Force check warning
+  CODE.81068: Fast peeling configuration failed
+  CODE.81069: Printing failed. Please check the connection of the TF card / UDisk
+  CODE.81070: Uncompressed space not enough，please clean the disk
+  CODE.81071: Main axis force sensor abnormal
+  CODE.81072: Set adaptive strategy parameter error
+  CODE.81073: Slice file not applicable to this device.
+  CODE.81074: Force abnormal warning & heating liquid level warning
+  CODE.81300: System running continuously, resource usage too high. Please reboot before printing.
+  CODE.83000: Update files not exists. Please download again.
+  CODE.83002: MD5 not matching. Please contact support.
+  CODE.83003: Module not connected. Please connect before trying again.
+  CODE.83004: Temperature control module update file does not exist
+  CODE.83005: Temperature control module MD5 not matching
+  CODE.83006: Temperature control module upgrade offline error
+  CODE.83007: NFC module read failure
+  CODE.83008: NFC module CRC not matching
+  CODE.83009: NFC module device ID not matching
+  CODE.83010: NFC screen calibration file invalid
+  CODE.83011: MASK file is all 255
+  CODE.84001: "Zeroing failed: Pressure too large, Please check the platform and resin tank. If there is any residue, please clean it up and retry."
+  CODE.84002: Zeroing failed:Downward pressure too large
+  CODE.84003: Zeroing failed:Unexpected hit of the main axle upper limit
+  CODE.84004: Zeroing failed:Unexpected hit of the main axle down limit
+  CODE.84005: Zeroing failed:Cannot found the axle upper limit
+  CODE.84006: Zeroing failed:Cannot found the axle down limit
+  CODE.84007: Zeroing failed:Cannot exit the axle upper limit
+  CODE.84008: "Zeroing failed: Part falling detection abnormal. Please check the platform and resin tank. If there is any residue, please clean it up and retry."
+  CODE.84009: Zeroing failed:Pressure sensor not reset
+  CODE.84010: Zeroing failed:Zeroing timed out
+  CODE.84011: Zeroing failed:Cannot find the zero position.
+  CODE.84012: Zeroing failed:Exceeded the maximum travel distance of the main axle
+  CODE.84013: Zeroing warning:Zeroing force value abnormal changes
+  CODE.84014: Zeroing warning:Liquid level insufficient
+  CODE.84997: Frame data error
+  CODE.84998: The device is busy
+  CODE.84999: Unknown error. Please contact support.
+  CODE.89999: Unknown error. Please contact support.
+  CODE.110001: Http request failure
+  CODE.110003: Http return parameter error
+  CODE.110009: Activation failed and needs to be reset
+  CODE.110010: File Download Error
+  CODE.110011: Slice Format Not Match
+  CODE.110012: Storage Space Not Enough
+  CODE.110013: LFS File Not Exists
+  CODE.110014: Task Library Is Full
+  CODE.110015: Md5 Not Match
+  CODE.110050: Net Not Connected
+  CODE.110051: Cloud Not Connected
+  CODE.110052: Current Has Download Task, Can Not Download Immediately
+  CODE.110100: Udisk Not Found
+  CODE.110101: Screen NFC read timeout
+  CODE.110300: Environment temperature is low, printing may be affected

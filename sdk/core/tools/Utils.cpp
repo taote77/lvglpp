@@ -1,19 +1,19 @@
 
 #include "Utils.h"
+#include "base64.h"
 #include "core/sys/Application.h"
 #include "trTranslateImpl.h"
 #include <boost/algorithm/string.hpp>
+#include <boost/archive/iterators/binary_from_base64.hpp>
+#include <boost/archive/iterators/transform_width.hpp>
 #include <boost/format.hpp>
 #include <codecvt>
 #include <locale>
-#include <boost/archive/iterators/binary_from_base64.hpp>
-#include <boost/archive/iterators/transform_width.hpp>
 #include <sstream>
-#include "base64.h"
 
 namespace lvglpp {
 namespace tools {
-char Utils::g_asset_letter = 'G';
+char Utils::g_asset_letter     = 'G';
 char Utils::g_mem_asset_letter = 'M';
 
 std::string Utils::getAssetDirRoot()
@@ -26,7 +26,8 @@ std::string Utils::getAssetDirRoot()
 
 std::string Utils::convertAssetResToGlobal(const std::string &asset_res)
 {
-    if (isAssetResUrl(asset_res)) {
+    if (isAssetResUrl(asset_res))
+    {
         return getAssetDirRoot() + "/" + asset_res.substr(2);
     }
     return asset_res;
@@ -34,23 +35,27 @@ std::string Utils::convertAssetResToGlobal(const std::string &asset_res)
 
 std::string Utils::readAllText(const std::string &path)
 {
-    FILE *fp = fopen(path.c_str(), "rb");
+    FILE       *fp = fopen(path.c_str(), "rb");
     std::string result_str;
-    if (fp == nullptr) {
+    if (fp == nullptr)
+    {
         return result_str;
     }
-    int buff_size = 256;
-    const int read_size = 256;
-    int current_pos = 0;
-    char *res_buf = new char[buff_size];
-    char temp_buf[read_size] = { 0 };
+    int       buff_size           = 256;
+    const int read_size           = 256;
+    int       current_pos         = 0;
+    char     *res_buf             = new char[buff_size];
+    char      temp_buf[read_size] = {0};
     memset(res_buf, 0, buff_size);
-    while (1) {
+    while (1)
+    {
         int n = fread(&temp_buf, 1, read_size, fp);
-        if (n <= 0) {
+        if (n <= 0)
+        {
             break;
         }
-        if (current_pos + n > buff_size) {
+        if (current_pos + n > buff_size)
+        {
             buff_size *= 2;
             char *new_res_buf = new char[buff_size];
             memset(new_res_buf, 0, buff_size);
@@ -74,11 +79,11 @@ bool Utils::isAssetResUrl(const std::string &asset_res)
 
 std::string Utils::convertSecToTimeLabel(int secRemain, const std::string &boost_fmt)
 {
-    std::string str_reply;
-    int sec = secRemain % 60;
-    int totalMin = secRemain / 60;
-    int totalHour = totalMin / 60;
-    int showMin = totalMin % 60;
+    std::string   str_reply;
+    int           sec       = secRemain % 60;
+    int           totalMin  = secRemain / 60;
+    int           totalHour = totalMin / 60;
+    int           showMin   = totalMin % 60;
     boost::format fmt(boost_fmt);
     fmt % totalHour;
     fmt % showMin;
@@ -89,9 +94,9 @@ std::string Utils::convertSecToTimeLabel(int secRemain, const std::string &boost
 
 std::string Utils::convertTimeStampToTimeStr(time_t ts, const std::string &fmt)
 {
-    struct tm time_info = { 0 };
+    struct tm time_info = {0};
     localtime_r(&ts, &time_info);
-    char buffer[256] = { 0 };
+    char buffer[256] = {0};
     strftime(buffer, 256, fmt.c_str(), &time_info);
     return buffer;
 }
@@ -138,9 +143,11 @@ bool Utils::base64Encode(const std::string &input, std::string &output)
 
 std::string tr(const std::string &str_src)
 {
-    if (sys::Application::getLanguageType() == sys::Application::Chinese) {
+    if (sys::Application::getLanguageType() == sys::Application::Chinese)
+    {
         return trTranslateImpl::getInstance(trTranslateImpl::English)->translate(str_src);
-    } else if (sys::Application::getLanguageType() == sys::Application::Chinese2English) {
+    } else if (sys::Application::getLanguageType() == sys::Application::English)
+    {
         return trTranslateImpl::getInstance(trTranslateImpl::Chinese)->translate(str_src);
     }
     return str_src;

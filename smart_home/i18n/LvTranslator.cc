@@ -97,4 +97,14 @@ const char *LvTranslator::getI18nText(const char *text)
     return lv_i18n_get_text(text);
 }
 
+const char *lvTr(const char *text)
+{
+    return _(text);
+}
+
+const std::string lvTrStr(const char *text)
+{
+    return _(text);
+}
+
 } // namespace lvglpp
