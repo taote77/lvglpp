@@ -18,7 +18,7 @@ class Activity
 public:
     virtual ~Activity() = default;
 
-protected:
+    // protected:
     virtual void onCreate(void *arg) = 0;
 
     virtual void onResume() = 0;
@@ -27,7 +27,7 @@ protected:
 
     virtual void onDestroy() = 0;
 
-    virtual widgets::BaseItem *getRootItem() const = 0;
+    virtual widgets::BaseItem *getRoot() const = 0;
 
     virtual void onNotifyUI(const Event &e) = 0;
 

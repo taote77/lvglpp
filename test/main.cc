@@ -14,9 +14,9 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    lvglpp::sys::Navigators::getInstance()->pushView(std::make_shared<Home>());
+    lvglpp::sys::TaskStack::getInstance()->pushView(std::make_shared<Home>());
 
-    // lvglpp::sys::Navigators::getInstance()->pushView(std::make_shared<BindDemo>());
+    // lvglpp::sys::TaskStack::getInstance()->pushView(std::make_shared<BindDemo>());
 
     return app.exec();
 }

@@ -10,16 +10,16 @@
 
 namespace lvglpp {
 namespace sys {
-class Navigators
+class TaskStack
 {
 public:
-    Navigators(const Navigators &) = delete;
+    TaskStack(const TaskStack &) = delete;
 
-    Navigators &operator=(const Navigators &) = delete;
+    TaskStack &operator=(const TaskStack &) = delete;
 
-    ~Navigators();
+    ~TaskStack();
 
-    static Navigators *getInstance();
+    static TaskStack *getInstance();
 
     void start();
 
@@ -82,7 +82,7 @@ protected:
     virtual void popAnim(const Activity *act);
 
 private:
-    static Navigators                     *instance_;
+    static TaskStack                      *instance_;
     bool                                   working_       = false;
     const int                              enter_anim_ms_ = 250;
     const int                              pop_anim_ms_   = 250;
@@ -90,7 +90,7 @@ private:
     std::vector<std::shared_ptr<Activity>> delete_view_manager_;
     Application                           *app_ = nullptr;
 
-    Navigators();
+    TaskStack();
 
     void popViewAndRunCb();
 };

@@ -5,8 +5,7 @@
 #include "MouseArea.h"
 #include <memory>
 
-namespace lvglpp {
-namespace widgets {
+namespace lvglpp::widgets {
 
 class CheckBox : public BaseItem
 {
@@ -25,7 +24,6 @@ private:
     bool check_state_ = false;
 };
 
-} // namespace widgets
-} // namespace lvglpp
+} // namespace lvglpp::widgets
 
 #endif // LV_CHECKBOX_H

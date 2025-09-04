@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 
     thorvg_init();
 
-    lvglpp::sys::Navigators::getInstance()->pushView(std::make_shared<Widget>());
+    lvglpp::sys::TaskStack::getInstance()->pushView(std::make_shared<Widget>());
 
     return app.exec();
 }

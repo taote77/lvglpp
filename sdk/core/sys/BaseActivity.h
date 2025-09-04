@@ -26,7 +26,7 @@ public:
 
     BaseActivity &operator=(const BaseActivity &) = delete;
 
-protected:
+    // protected:
     /**
      * @brief 首次调用时回调创建界面
      * @param arg
@@ -54,7 +54,7 @@ protected:
      * @brief  返回根屏幕的指针
      * @return
      */
-    widgets::BaseItem *getRootItem() const override;
+    widgets::BaseItem *getRoot() const override;
 
 private:
     widgets::BaseItem *_root_win{};

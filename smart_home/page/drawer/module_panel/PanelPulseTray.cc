@@ -15,7 +15,7 @@ constexpr lv_coord_t DIALOG_CONTENT_RADIUS{20};
 
 ModuleDetailPulseTrayDialog::ModuleDetailPulseTrayDialog(const double progress, const int status) : BaseDialog(true), _change_dir_cb(nullptr), _cancel_cb(nullptr)
 {
-    _dialog_bg_item = std::make_shared<BaseItem>(this->getRootItem());
+    _dialog_bg_item = std::make_shared<BaseItem>(this->getRoot());
     _dialog_bg_item->setSize(DIALOG_CONTENT_WIDTH, DIALOG_CONTENT_HEIGHT);
     _dialog_bg_item->setRadius(DIALOG_CONTENT_RADIUS);
     _dialog_bg_item->setBgColor(ThemeColor(CLR_SURFACE_CONTAINER));
@@ -75,7 +75,7 @@ ModuleDetailPulseTrayDialog::ModuleDetailPulseTrayDialog(const double progress, 
     ;
     _temperature_value_label->setAligmentTo(*_temperature_tag_label, LV_ALIGN_OUT_RIGHT_MID, 4, 0);
 
-    _warn_bar_bg = std::make_shared<BaseItem>(this->getRootItem());
+    _warn_bar_bg = std::make_shared<BaseItem>(this->getRoot());
     _warn_bar_bg->setSize(512, 48);
     _warn_bar_bg->setRadius(RADIUS_12);
     _warn_bar_bg->setBgColor(ThemeColor(CLR_SURFACE_CONTAINER));

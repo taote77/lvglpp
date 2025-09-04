@@ -1,6 +1,6 @@
 #include "SensorActivity.h"
+#include "color_sheet.h"
 #include "core/sys/Navigators.h"
-#include "core/widgets/color_sheet.h"
 #include "page/sensor/TempCurveDlg.h"
 #include <boost/format.hpp>
 #include <random>
@@ -13,12 +13,12 @@ SensorActivity::SensorActivity() : BaseActivity()
 void SensorActivity::onCreate(void *arg)
 {
     BaseActivity::onCreate(arg);
-    getRootItem()->setBgColor(CLR_SURFACE);
+    getRoot()->setBgColor(CLR_SURFACE);
 
     force_dlg_ = new TempCurveDlg(); // std::make_shared<ui::dialogs::TempCurveDlg>();
     force_dlg_->setAutoDel(false);
 
-    btn_ = std::make_shared<widgets::RoundedButton>(200, 64, widgets::RoundedButton::Dark, "开始显示曲线", getRootItem());
+    btn_ = std::make_shared<widgets::RoundedButton>(200, 64, widgets::RoundedButton::Dark, "开始显示曲线", getRoot());
     btn_->setPos(30, 200);
 
     btn_->setOnClickedListener([this]() {

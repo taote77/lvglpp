@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
 
     WebsocketSession::Instance().Init();
 
-    lvglpp::sys::Navigators::getInstance()->pushView(std::make_shared<RemoteClient>());
+    lvglpp::sys::TaskStack::getInstance()->pushView(std::make_shared<RemoteClient>());
 
     return app.exec();
 }

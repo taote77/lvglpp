@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    lvglpp::sys::Navigators::getInstance()->pushView(std::make_shared<HomePage>());
+    lvglpp::sys::TaskStack::getInstance()->pushView(std::make_shared<HomePage>());
 
     return app.exec();
 }

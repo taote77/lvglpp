@@ -1,9 +1,8 @@
 
 #include "CheckBox.h"
-#include "GlobalVar.h"
+#include "color_sheet.h"
 
-namespace lvglpp {
-namespace widgets {
+namespace lvglpp::widgets {
 
 CheckBox::CheckBox(int width, int height, uint32_t bg_clr, uint32_t check_clr, BaseItem *parent) : BaseItem(parent)
 {
@@ -17,7 +16,7 @@ CheckBox::CheckBox(int width, int height, uint32_t bg_clr, uint32_t check_clr, B
     setSize(width, height);
     setBgColor(bg_clr);
     setRadius(4);
-    setBorder(2, CLR_PRIMARY_DIS_BG);
+    setBorder(2, form::design::CLR_SURFACE_CONTAINER_LOWEST);
 
     init();
 }
@@ -39,5 +38,4 @@ void CheckBox::init()
         check_item_->setVisible(check_state_);
     });
 }
-} // namespace widgets
-} // namespace lvglpp
+} // namespace lvglpp::widgets

@@ -1,6 +1,6 @@
 
-#ifndef ULTRACORE_FOR_MAKERS_IMAGEMANAGER_H
-#define ULTRACORE_FOR_MAKERS_IMAGEMANAGER_H
+#ifndef IMAGEMANAGER_H
+#define IMAGEMANAGER_H
 #include "lvgl.h"
 #include <string>
 namespace lvglpp {
@@ -17,4 +17,4 @@ private:
 } // namespace tools
 } // namespace lvglpp
 
-#endif // ULTRACORE_FOR_MAKERS_IMAGEMANAGER_H
+#endif // IMAGEMANAGER_H

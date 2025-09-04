@@ -17,7 +17,7 @@ Application::LanguageType Application::language_type_ = Application::Chinese;
 
 Application::Application(int argc, char *argv[])
 {
-    Navigators::getInstance()->setApplication(this);
+    TaskStack::getInstance()->setApplication(this);
 }
 
 bool Application::initApp()
@@ -167,10 +167,10 @@ int Application::exec()
     {
         initApp();
     }
-    Navigators::getInstance()->start();
-    if (Navigators::getInstance()->depth() == 0)
+    TaskStack::getInstance()->start();
+    if (TaskStack::getInstance()->depth() == 0)
     {
-        Navigators::getInstance()->pushView(std::shared_ptr<Activity>(new BaseActivity()));
+        TaskStack::getInstance()->pushView(std::shared_ptr<Activity>(new BaseActivity()));
     }
 
     while (true)
@@ -195,7 +195,7 @@ void Application::handleEvent()
 {
     std::lock_guard<std::mutex> lock(mutex_);
 
-    Navigators::getInstance()->clearDeleteVec();
+    TaskStack::getInstance()->clearDeleteVec();
 
     // 需要注意
     if (event_queue_.empty())
@@ -206,6 +206,6 @@ void Application::handleEvent()
     Event event_ref = event_queue_.front();
 
     event_queue_.pop();
-    Navigators::getInstance()->notifyAllUi(event_ref);
+    TaskStack::getInstance()->notifyAllUi(event_ref);
 }
 } // namespace lvglpp::sys

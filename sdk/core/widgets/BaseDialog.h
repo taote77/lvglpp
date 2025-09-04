@@ -4,8 +4,7 @@
 #include "BaseItem.h"
 #include <memory>
 
-namespace lvglpp {
-namespace widgets {
+namespace lvglpp::widgets {
 
 class BaseDialog
 {
@@ -35,7 +34,7 @@ public:
     }
 
 protected:
-    BaseItem *getRootItem() const;
+    BaseItem *getRoot() const;
     virtual ~BaseDialog() = default;
 
 private:
@@ -43,7 +42,6 @@ private:
     bool                      auto_del_ = true;
 };
 
-} // namespace widgets
-} // namespace lvglpp
+} // namespace lvglpp::widgets
 
 #endif // LV_BASE_DIALOG_H

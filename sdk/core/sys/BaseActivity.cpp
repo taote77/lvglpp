@@ -52,7 +52,7 @@ void BaseActivity::onDestroy()
     }
 }
 
-widgets::BaseItem *BaseActivity::getRootItem() const
+widgets::BaseItem *BaseActivity::getRoot() const
 {
     return _root_win;
 }

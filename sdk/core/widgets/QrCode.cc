@@ -1,9 +1,8 @@
 
 #include "QrCode.h"
-#include "GlobalVar.h"
+#include "color_sheet.h"
 
-namespace lvglpp {
-namespace widgets {
+namespace lvglpp::widgets {
 
 QrCode::QrCode(uint32_t length, lv_color_t back_color, lv_color_t front_color, BaseItem *parent) : BaseItem(parent), _length(length)
 {
@@ -47,5 +46,4 @@ void QrCode::setImgSrc(const std::string &src)
     _img_icon->setImageSrcPath(src);
 }
 
-} // namespace widgets
-} // namespace lvglpp
+} // namespace lvglpp::widgets

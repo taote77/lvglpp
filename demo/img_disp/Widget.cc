@@ -11,10 +11,10 @@ Widget::~Widget()
 
 void Widget::onCreate(void *arg)
 {
-    _gif = std::make_shared<widgets::GifImage>("G:/gif/bird.gif", getRootItem());
+    _gif = std::make_shared<widgets::GifImage>("G:/gif/bird.gif", getRoot());
     _gif->setPos(0, 0);
 
-    _img = std::make_shared<widgets::Image>(":/image/400x300/sky.png", getRootItem());
+    _img = std::make_shared<widgets::Image>(":/image/400x300/sky.png", getRoot());
     // _img->setSize(200, 200);
     _img->setAligment(LV_ALIGN_TOP_RIGHT, 0, 0);
 }

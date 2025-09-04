@@ -184,15 +184,15 @@ void RemoteClient::onCreate(void *arg)
             std::clamp(pos_y, 0, 480); // ensure y in range [0, 480]
 
             last_time = now;
-            lvglpp::sys::Navigators::getInstance()->getApplication()->postEvent(lvglpp::sys::Event(ComTopic::MOUSE_EVENT, 0, std::pair<int, int>(pos_x, pos_y)));
+            lvglpp::sys::TaskStack::getInstance()->getApplication()->postEvent(lvglpp::sys::Event(ComTopic::MOUSE_EVENT, 0, std::pair<int, int>(pos_x, pos_y)));
         }
     });
 
-    _label = std::make_shared<lvglpp::widgets::LvText>(("Demo"), CLR_SUCCESS_CONTAINER, getRootItem());
+    _label = std::make_shared<lvglpp::widgets::LvText>(("Demo"), CLR_SUCCESS_CONTAINER, getRoot());
 
     _label->setAligment(LV_ALIGN_CENTER, 0, -120);
 
-    _btn_test = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "截图", getRootItem());
+    _btn_test = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "截图", getRoot());
     _btn_test->setPos(480, 300);
     _btn_test->setAligment(LV_ALIGN_CENTER, 0, 150);
     _btn_test->setOnClickedListener([this]() {
@@ -202,7 +202,7 @@ void RemoteClient::onCreate(void *arg)
 
     Object::connect(_btn_test.get(), "snapshoot", [this]() {
         lv_obj_t *screen = lv_scr_act();
-        // getRootItem()->getLvglItem();
+        // getRoot()->getLvglItem();
         if (takeScreenshot(screen, "screenshot.png"))
         {
             std::ifstream file("./screenshot.jpg", std::ios::binary); // 读取文件内容到缓冲区
@@ -222,7 +222,7 @@ void RemoteClient::onCreate(void *arg)
         }
     });
 
-    _btn_simu = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "重置", getRootItem());
+    _btn_simu = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "重置", getRoot());
 
     _btn_simu->setAligment(LV_ALIGN_TOP_RIGHT, 0, 0);
     _btn_simu->setOnClickedListener([this]() {

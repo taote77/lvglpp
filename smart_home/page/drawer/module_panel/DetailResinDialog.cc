@@ -15,7 +15,7 @@ constexpr lv_coord_t DIALOG_CONTENT_RADIUS{20};
 
 ModuleDetailResinDialog::ModuleDetailResinDialog(const std::string &resin_name, bool mod_switch) : BaseDialog(true), _change_dir_cb(nullptr), _cancel_cb(nullptr)
 {
-    _dialog_bg_item = std::make_shared<BaseItem>(this->getRootItem());
+    _dialog_bg_item = std::make_shared<BaseItem>(this->getRoot());
     _dialog_bg_item->setSize(DIALOG_CONTENT_WIDTH, DIALOG_CONTENT_HEIGHT);
     _dialog_bg_item->setRadius(DIALOG_CONTENT_RADIUS);
     _dialog_bg_item->setBgColor(ThemeColor(CLR_SURFACE_CONTAINER));

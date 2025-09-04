@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
 
     thorvg_init();
 
-    lvglpp::sys::Navigators::getInstance()->pushView(std::make_shared<BindDemo>());
+    lvglpp::sys::TaskStack::getInstance()->pushView(std::make_shared<BindDemo>());
 
     return app.exec();
 }

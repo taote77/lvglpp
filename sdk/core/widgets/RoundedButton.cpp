@@ -1,13 +1,14 @@
 
 #include "RoundedButton.h"
-#include "GlobalVar.h"
+#include "color_sheet.h"
 #include "core/tools/ImageManager.h"
 #include "core/tools/LvglUtils.h"
 #include "core/tools/Utils.h"
 #include <boost/algorithm/string/predicate.hpp>
 
-namespace lvglpp {
-namespace widgets {
+namespace lvglpp::widgets {
+
+using namespace form::design;
 
 RoundedButton::RoundedButton(int width, int height, RoundedButton::ColorStyle type, const std::string &strMsg, BaseItem *parent) : BaseItem(parent), type_(type)
 {
@@ -54,13 +55,33 @@ void RoundedButton::setColorType(ColorStyle type)
     {
         return;
     }
-    if (type == RoundedButton::Gray)
+    if (type == RoundedButton::Blue)
     {
-        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(0xD8DCE2), LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_PRIMARY_BLACK_HOVER), LV_STATE_PRESSED);
-        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(0xD8DCE2), LV_STATE_DISABLED);
+        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_WIDGET_BUTTON_BLUE), LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_WIDGET_BUTTON_BLUE_DIS), LV_STATE_PRESSED);
+        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_SURFACE_DIS_CONTAINER_1), LV_STATE_DISABLED);
         if (label_ != nullptr)
-            label_->setTextClr(CLR_PRIMARY_BLACK);
+        {
+            label_->setTextClr(CLR_ON_SURFACE);
+        }
+    } else if (type == RoundedButton::Gray)
+    {
+        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_SECONDARY), LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_WIDGET_BUTTON_GRAY_DIS), LV_STATE_PRESSED);
+        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_SURFACE_DIS_CONTAINER_1), LV_STATE_DISABLED);
+        if (label_ != nullptr)
+        {
+            label_->setTextClr(CLR_ON_SURFACE);
+        }
+    } else if (type == RoundedButton::DarkGray)
+    {
+        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_SECONDARY_CONTAINER), LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_PRIMARY_BLACK_HOVER), LV_STATE_PRESSED);
+        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_SURFACE_DIS_CONTAINER_1), LV_STATE_DISABLED);
+        if (label_ != nullptr)
+        {
+            label_->setTextClr(CLR_ON_SURFACE);
+        }
     } else if (type == RoundedButton::Dark)
     {
         lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_PRIMARY_DARK_BG), LV_STATE_DEFAULT);
@@ -68,7 +89,9 @@ void RoundedButton::setColorType(ColorStyle type)
         lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_PRIMARY_BLACK_HOVER), LV_STATE_DISABLED);
 
         if (label_ != nullptr)
-            label_->setTextClr(CLR_PRIMARY_BRIGHT);
+        {
+            label_->setTextClr(CLR_ON_SURFACE);
+        }
     } else if (type == RoundedButton::LightBlue)
     {
         lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(0xF7F9FF), LV_STATE_DEFAULT);
@@ -76,7 +99,9 @@ void RoundedButton::setColorType(ColorStyle type)
         lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(0xF7F9FF), LV_STATE_DISABLED);
 
         if (label_ != nullptr)
+        {
             label_->setTextClr(CLR_PRIMARY_BLUE);
+        }
     } else if (type == RoundedButton::BlackBroder)
     {
         lv_obj_set_style_bg_opa(getLvglItem(), LV_OPA_TRANSP, LV_STATE_DEFAULT);
@@ -84,7 +109,9 @@ void RoundedButton::setColorType(ColorStyle type)
         lv_obj_set_style_border_color(getLvglItem(), lv_color_hex(CLR_PRIMARY_DIS_BG), LV_STATE_DEFAULT);
 
         if (label_ != nullptr)
+        {
             label_->setTextClr(CLR_PRIMARY_BLACK);
+        }
     } else if (type == RoundedButton::Red)
     {
         lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_WARNING_DARK), LV_STATE_DEFAULT);
@@ -92,15 +119,19 @@ void RoundedButton::setColorType(ColorStyle type)
         lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_PRIMARY_BLACK_HOVER), LV_STATE_DISABLED);
 
         if (label_ != nullptr)
-            label_->setTextClr(CLR_PRIMARY_BRIGHT);
+        {
+            label_->setTextClr(CLR_ON_SURFACE);
+        }
     } else
     {
-        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_PRIMARY_BLUE), LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_WIDGET_BUTTON_BLUE), LV_STATE_DEFAULT);
         lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_PRIMARY_DARK_BLUE), LV_STATE_PRESSED);
         lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_PRIMARY_BLUE_DIS_TEXT), LV_STATE_DISABLED);
 
         if (label_ != nullptr)
-            label_->setTextClr(CLR_PRIMARY_BRIGHT);
+        {
+            label_->setTextClr(CLR_ON_SURFACE);
+        }
     }
 }
 
@@ -208,5 +239,4 @@ void RoundedButton::handleButtonClicked()
         onButtonClicked_cb_();
     }
 }
-} // namespace widgets
-} // namespace lvglpp
+} // namespace lvglpp::widgets

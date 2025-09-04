@@ -5,8 +5,7 @@
 #include "Image.h"
 #include <memory>
 
-namespace lvglpp {
-namespace widgets {
+namespace lvglpp::widgets {
 
 class QrCode : public BaseItem
 {
@@ -26,7 +25,6 @@ private:
     uint32_t                        _length = 0;
 };
 
-} // namespace widgets
-} // namespace lvglpp
+} // namespace lvglpp::widgets
 
 #endif // LV_QR_CODE_H

@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 
     lvglpp::LvTranslator::load(lvglpp::LANGUAGE::RUSSIAN);
 
-    lvglpp::sys::Navigators::getInstance()->pushView(std::make_shared<LangChangePage>());
+    lvglpp::sys::TaskStack::getInstance()->pushView(std::make_shared<LangChangePage>());
 
     return app.exec();
 }

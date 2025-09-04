@@ -1,7 +1,7 @@
 #include "TempCurveDlg.h"
+#include "color_sheet.h"
 #include "core/log/log.h"
 #include "core/tools/Utils.h"
-#include "core/widgets/color_sheet.h"
 #include "i18n/LvTranslator.h"
 #include <boost/format.hpp>
 #include <memory>
@@ -19,9 +19,9 @@ TempCurveDlg::TempCurveDlg() : BaseDialog()
 
 void TempCurveDlg::init()
 {
-    bg_ = std::make_shared<widgets::BaseItem>(this->getRootItem());
+    bg_ = std::make_shared<widgets::BaseItem>(this->getRoot());
     bg_->setSize(800, 480);
-    bg_->setBgColor(CLR_SURFACE_DIM);
+    // bg_->setBgColor(CLR_SURFACE_DIM);
     bg_->setPos(0, 0);
     bg_->setOpacity(1);
 

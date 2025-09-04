@@ -1,17 +1,15 @@
 #include "BaseDialog.h"
-#include "GlobalVar.h"
+#include "color_sheet.h"
 #include <unistd.h>
 
-namespace lvglpp {
-namespace widgets {
-BaseItem *BaseDialog::getRootItem() const
+namespace lvglpp::widgets {
+BaseItem *BaseDialog::getRoot() const
 {
     return background_item_ptr_.get();
 }
 
 BaseDialog::BaseDialog(bool is_sys_dialog) : background_item_ptr_(new BaseItem(is_sys_dialog ? BaseItem::SysDialog : BaseItem::Dialog))
 {
-    background_item_ptr_->setBgColor(CLR_PRIMARY_BLACK);
     background_item_ptr_->setOpacity(1);
     background_item_ptr_->setSize(800, 480);
     background_item_ptr_->setRadius(0);
@@ -36,5 +34,4 @@ bool BaseDialog::isOpen()
 {
     return background_item_ptr_->getVisible();
 }
-} // namespace widgets
-} // namespace lvglpp
+} // namespace lvglpp::widgets

@@ -14,13 +14,20 @@ Description:圆角按钮
 #include <functional>
 #include <memory>
 
-namespace lvglpp {
-namespace widgets {
+namespace lvglpp::widgets {
+
 class RoundedButton : public BaseItem
 {
 public:
-    enum ColorStyle { Blue, Dark, Gray, LightBlue, BlackBroder, Red };
-
+    enum ColorStyle {
+        Blue,
+        Dark,
+        Gray,
+        LightBlue,
+        BlackBroder,
+        Red,
+        DarkGray,
+    };
     RoundedButton(int width, int height, ColorStyle type, const std::string &strMsg, BaseItem *parent);
 
     RoundedButton(int width, int height, ColorStyle type, const std::string &strMsg, const std::string &strImgPath, BaseItem *parent);
@@ -66,7 +73,6 @@ private:
 
     void handleButtonClicked();
 };
-} // namespace widgets
-} // namespace lvglpp
+} // namespace lvglpp::widgets
 
 #endif // LV_ROUNDED_BUTTON_H

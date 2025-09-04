@@ -12,11 +12,11 @@ SnapShot::~SnapShot()
 
 void SnapShot::onCreate(void *arg)
 {
-    _label = std::make_shared<lvglpp::widgets::LvText>(_txt, CLR_SUCCESS_CONTAINER, getRootItem());
+    _label = std::make_shared<lvglpp::widgets::LvText>(_txt, CLR_SUCCESS_CONTAINER, getRoot());
 
     _label->setAligment(LV_ALIGN_CENTER, 0, -80);
 
-    _btn = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "Click", getRootItem());
+    _btn = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "Click", getRoot());
 
     _btn->setPos(480, 300);
     _btn->setAligment(LV_ALIGN_CENTER, 0, 0);
@@ -34,7 +34,7 @@ void SnapShot::onDestroy()
 
 void SnapShot::takeShot()
 {
-    auto widget = getRootItem()->getLvglItem();
+    auto widget = getRoot()->getLvglItem();
 
     lv_color_format_t cf;
 

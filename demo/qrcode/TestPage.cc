@@ -16,7 +16,7 @@ void TestPage::onCreate(void *arg)
     lv_color_t bg_color = lv_palette_lighten(LV_PALETTE_LIGHT_BLUE, 5);
     lv_color_t fg_color = lv_palette_darken(LV_PALETTE_BLUE, 4);
 
-    _qr_code = std::make_shared<lvglpp::widgets::QrCode>(200, bg_color, fg_color, getRootItem());
+    _qr_code = std::make_shared<lvglpp::widgets::QrCode>(200, bg_color, fg_color, getRoot());
 
     const std::string info = "https://www.baidu.com";
     _qr_code->setData(info);

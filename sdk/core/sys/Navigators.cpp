@@ -6,18 +6,18 @@
 
 namespace lvglpp {
 namespace sys {
-Navigators *Navigators::instance_ = nullptr;
+TaskStack *TaskStack::instance_ = nullptr;
 
-Navigators *Navigators::getInstance()
+TaskStack *TaskStack::getInstance()
 {
     if (instance_ == nullptr)
     {
-        instance_ = new Navigators();
+        instance_ = new TaskStack();
     }
     return instance_;
 }
 
-void Navigators::pushView(const std::shared_ptr<Activity> &view, void *arg)
+void TaskStack::pushView(const std::shared_ptr<Activity> &view, void *arg)
 {
     if (working_)
     {
@@ -36,7 +36,7 @@ void Navigators::pushView(const std::shared_ptr<Activity> &view, void *arg)
     }
 }
 
-void Navigators::popView()
+void TaskStack::popView()
 {
     if (view_manager_.size() <= 1)
     {
@@ -51,7 +51,7 @@ void Navigators::popView()
     }
 }
 
-void Navigators::start()
+void TaskStack::start()
 {
     if (!view_manager_.empty())
     {
@@ -63,14 +63,14 @@ void Navigators::start()
     working_ = true;
 }
 
-Navigators::Navigators()
+TaskStack::TaskStack()
 {
     view_manager_.reserve(10);
 }
 
-void Navigators::enterAnim(const Activity *act)
+void TaskStack::enterAnim(const Activity *act)
 {
-    auto root_item = act->getRootItem();
+    auto root_item = act->getRoot();
     if (root_item == nullptr)
     {
         return;
@@ -97,9 +97,9 @@ void Navigators::enterAnim(const Activity *act)
     lv_anim_start(&a_enter);
 }
 
-void Navigators::popAnim(const Activity *act)
+void TaskStack::popAnim(const Activity *act)
 {
-    auto root_item = act->getRootItem();
+    auto root_item = act->getRoot();
     if (root_item == nullptr)
     {
         return;
@@ -117,7 +117,7 @@ void Navigators::popAnim(const Activity *act)
         // hDebug() << "pop anim finished!!";
         if (an_t->user_data != nullptr)
         {
-            ((Navigators *)an_t->user_data)->popViewAndRunCb();
+            ((TaskStack *)an_t->user_data)->popViewAndRunCb();
         }
     });
     lv_anim_set_time(&a_pop, pop_anim_ms_);
@@ -132,7 +132,7 @@ void Navigators::popAnim(const Activity *act)
     lv_anim_start(&a_pop);
 }
 
-void Navigators::popViewAndRunCb()
+void TaskStack::popViewAndRunCb()
 {
     view_manager_.back()->onPause();
     delete_view_manager_.push_back(view_manager_.back());
@@ -140,7 +140,7 @@ void Navigators::popViewAndRunCb()
     view_manager_.back()->onResume();
 }
 
-void Navigators::pushViewImmediately(const std::shared_ptr<Activity> &view, void *arg)
+void TaskStack::pushViewImmediately(const std::shared_ptr<Activity> &view, void *arg)
 {
     if (view_manager_.size() >= 1)
     {
@@ -151,7 +151,7 @@ void Navigators::pushViewImmediately(const std::shared_ptr<Activity> &view, void
     view_manager_.back()->onResume();
 }
 
-void Navigators::popViewImmediately()
+void TaskStack::popViewImmediately()
 {
     if (view_manager_.size() <= 1)
     {
@@ -163,7 +163,7 @@ void Navigators::popViewImmediately()
     view_manager_.back()->onResume();
 }
 
-void Navigators::pushViewAndReplaced(const std::shared_ptr<Activity> &view, void *arg)
+void TaskStack::pushViewAndReplaced(const std::shared_ptr<Activity> &view, void *arg)
 {
     if (!working_)
     {
@@ -182,7 +182,7 @@ void Navigators::pushViewAndReplaced(const std::shared_ptr<Activity> &view, void
     enterAnim(view_manager_.back().get());
 }
 
-void Navigators::pushViewAndReplacedImmediately(const std::shared_ptr<Activity> &view, void *arg)
+void TaskStack::pushViewAndReplacedImmediately(const std::shared_ptr<Activity> &view, void *arg)
 {
     if (!working_)
     {
@@ -200,9 +200,9 @@ void Navigators::pushViewAndReplacedImmediately(const std::shared_ptr<Activity> 
     view_manager_.back()->onResume();
 }
 
-Navigators::~Navigators() = default;
+TaskStack::~TaskStack() = default;
 
-void Navigators::notifyAllUi(const Event &e)
+void TaskStack::notifyAllUi(const Event &e)
 {
     for (auto &it : view_manager_)
     {
@@ -210,7 +210,7 @@ void Navigators::notifyAllUi(const Event &e)
     }
 }
 
-void Navigators::clearDeleteVec()
+void TaskStack::clearDeleteVec()
 {
     if (delete_view_manager_.empty())
         return;

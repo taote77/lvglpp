@@ -1,6 +1,6 @@
 
 #include "PageIndicator.h"
-#include "GlobalVar.h"
+#include "color_sheet.h"
 
 namespace lvglpp {
 namespace widgets {
@@ -33,10 +33,10 @@ void PageIndicator::update()
     {
         if (current_index_ == i)
         {
-            indicator_vec_[i]->setBgColor(CLR_PRIMARY_DARK_BG);
+            indicator_vec_[i]->setBgColor(form::design::CLR_SURFACE_CONTAINER_HIGH);
         } else
         {
-            indicator_vec_[i]->setBgColor(CLR_PRIMARY_BLACK_HOVER);
+            indicator_vec_[i]->setBgColor(form::design::CLR_SURFACE_DIS_CONTAINER_1);
         }
     }
 }

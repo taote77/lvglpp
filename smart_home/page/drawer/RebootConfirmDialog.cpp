@@ -13,7 +13,7 @@ using namespace lvglpp;
 
 RebootConfirmDialog::RebootConfirmDialog() : BaseDialog(true), change_dir_cb_(nullptr), cancel_cb_(nullptr)
 {
-    dialog_bg_item_ = std::make_shared<BaseItem>(this->getRootItem());
+    dialog_bg_item_ = std::make_shared<BaseItem>(this->getRoot());
     dialog_bg_item_->setSize(800, 480);
     dialog_bg_item_->setRadius(16);
 
@@ -44,7 +44,7 @@ RebootConfirmDialog::RebootConfirmDialog() : BaseDialog(true), change_dir_cb_(nu
     cancel_btn_->setOnClickedListener([this]() -> void {
         LogDebug << "====cancel====";
         this->close();
-        // Navigators::getInstance()->popViewImmediately();
+        // TaskStack::getInstance()->popViewImmediately();
     });
 }
 

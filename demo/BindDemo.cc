@@ -14,19 +14,19 @@ BindDemo::~BindDemo()
 
 void BindDemo::onCreate(void *arg)
 {
-    // _label = std::make_shared<lvglpp::widgets::LvText>(_txt, CLR_SUCCESS_CONTAINER, getRootItem());
+    // _label = std::make_shared<lvglpp::widgets::LvText>(_txt, CLR_SUCCESS_CONTAINER, getRoot());
 
     // _label->setAligment(LV_ALIGN_CENTER, 0, -80);
 
-    // _gif = std::make_shared<widgets::GifImage>("G:/gif/bird.gif", getRootItem());
+    // _gif = std::make_shared<widgets::GifImage>("G:/gif/bird.gif", getRoot());
     // _gif->setPos(0, 0);
 
-    _lottie = std::make_shared<widgets::LottieCanvas>("asset/lottie/camera.json", getRootItem());
+    _lottie = std::make_shared<widgets::LottieCanvas>("asset/lottie/camera.json", getRoot());
     // _lottie->setPos(0, 0);
     _lottie->setCacheSize(190, 120);
     _lottie->setAligment(LV_ALIGN_CENTER, 0, 0);
 
-    // _btn = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "Click", getRootItem());
+    // _btn = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "Click", getRoot());
 
     // char buf[100]     = {0};
     // char pre_buf[100] = {0};
@@ -49,13 +49,13 @@ void BindDemo::onCreate(void *arg)
     //     lv_subject_copy_string(&_subject, _txt.c_str());
     // });
 
-    // _img = std::make_shared<widgets::Image>(":/image/400x300/sky.png", getRootItem());
+    // _img = std::make_shared<widgets::Image>(":/image/400x300/sky.png", getRoot());
     // // _img->setSize(200, 200);
     // _img->setAligment(LV_ALIGN_TOP_RIGHT, 0, 0);
 
-    // widgets::BaseItem *src = new widgets::BaseItem(getRootItem());
+    // widgets::BaseItem *src = new widgets::BaseItem(getRoot());
     // src->setSize(256, 217);
-    // lv_example_lottie(getRootItem()->getLvglItem()); // 创建演示
+    // lv_example_lottie(getRoot()->getLvglItem()); // 创建演示
 
     // src->setAligment(LV_ALIGN_BOTTOM_LEFT, -60, 60);
 }

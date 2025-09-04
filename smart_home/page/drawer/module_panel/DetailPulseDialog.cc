@@ -16,7 +16,7 @@ constexpr lv_coord_t DIALOG_CONTENT_RADIUS{20};
 
 ModuleDetailPulseDialog::ModuleDetailPulseDialog(const int progress, const int status) : BaseDialog(true), _change_dir_cb(nullptr), _cancel_cb(nullptr)
 {
-    _dialog_bg_item = std::make_shared<BaseItem>(this->getRootItem());
+    _dialog_bg_item = std::make_shared<BaseItem>(this->getRoot());
     _dialog_bg_item->setSize(DIALOG_CONTENT_WIDTH, DIALOG_CONTENT_HEIGHT);
     _dialog_bg_item->setRadius(DIALOG_CONTENT_RADIUS);
     _dialog_bg_item->setBgColor(ThemeColor(CLR_SURFACE_CONTAINER));
@@ -99,28 +99,6 @@ void ModuleDetailPulseDialog::updatePulseFilmInfo(double usedtime, int32_t tank_
     }
 
     _title_status_label->setText(lvTr(status_str.c_str()));
-
-    // const float EPSINON = 0.00001;
-    // if (std::abs(sensor_data_.pidkey_sensor_pulse_strip_mod_connt() - 1) <= EPSINON)
-    // {
-    //     p_num = GenPidforNum();
-    //     p_num->set_pid("reflexprinter.sensor.pulse.stripping.total.lifespan");
-    //     p_num->set_valnum(3000.0 * 60 * 60 * 1000);
-
-    //     p_num = GenPidforNum();
-    //     p_num->set_pid("reflexprinter.sensor.pulse.stripping.work.threshold.value");
-    //     p_num->set_valnum(2500.0 * 60 * 60 * 1000);
-    // }
-    // else
-    // {
-    //     p_num = GenPidforNum();
-    //     p_num->set_pid("reflexprinter.sensor.pulse.stripping.total.lifespan");
-    //     p_num->set_valnum(-1000);
-
-    //     p_num = GenPidforNum();
-    //     p_num->set_pid("reflexprinter.sensor.pulse.stripping.work.threshold.value");
-    //     p_num->set_valnum(-1000);
-    // }
 }
 
 ModuleDetailPulseDialog::~ModuleDetailPulseDialog()

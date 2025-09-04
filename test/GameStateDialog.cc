@@ -9,11 +9,11 @@ using namespace tools;
 
 GameStateDialog::GameStateDialog() : widgets::BaseDialog()
 {
-    this->getRootItem()->setOpacity(1);
+    this->getRoot()->setOpacity(1);
 
-    _bg_item = std::make_shared<widgets::BaseItem>(getRootItem());
+    _bg_item = std::make_shared<widgets::BaseItem>(getRoot());
     _bg_item->setSize(800, 480);
-    _bg_item->setBgColor(CLR_PRIMARY_BRIGHT);
+    // _bg_item->setBgColor(CLR_PRIMARY_BRIGHT);
     _bg_item->setOpacity(1);
 
     _score_lbl = std::make_shared<lvglpp::widgets::LvText>("Game Over!!", CLR_SUCCESS_CONTAINER, _bg_item.get());

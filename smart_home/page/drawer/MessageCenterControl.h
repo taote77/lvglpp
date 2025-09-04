@@ -1,6 +1,5 @@
-
-#ifndef ULTRACORE_REFLEX_PRO_NOTIFY_CENTER_H
-#define ULTRACORE_REFLEX_PRO_NOTIFY_CENTER_H
+#ifndef MESSAGE_CENTER_H
+#define MESSAGE_CENTER_H
 
 #include "NoticeDelegate.h"
 #include "RebootConfirmDialog.h"
@@ -132,4 +131,4 @@ private:
 
 } // namespace lvglpp::ui::page
 
-#endif // ULTRACORE_REFLEX_PRO_NOTIFY_CENTER_H
+#endif // MESSAGE_CENTER_H

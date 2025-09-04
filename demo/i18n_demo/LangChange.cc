@@ -131,17 +131,17 @@ LangChangePage::~LangChangePage()
 
 void LangChangePage::onCreate(void *arg)
 {
-    _label = std::make_shared<lvglpp::widgets::LvText>(("中文😀1"), CLR_SUCCESS_CONTAINER, getRootItem(), lvglpp::widgets::LvText::TextStyle::FontSize20);
+    _label = std::make_shared<lvglpp::widgets::LvText>(("中文😀1"), CLR_SUCCESS_CONTAINER, getRoot(), lvglpp::widgets::LvText::TextStyle::FontSize20);
 
     _label->setAligment(LV_ALIGN_CENTER, 0, -120);
 
     static auto createLabel = [this]() {
-        _label1 = std::make_shared<lvglpp::widgets::LvText>(lvglpp::LvTranslator::tr("ChangeLangWarnText"), CLR_SUCCESS_CONTAINER, getRootItem());
+        _label1 = std::make_shared<lvglpp::widgets::LvText>(lvglpp::LvTranslator::tr("ChangeLangWarnText"), CLR_SUCCESS_CONTAINER, getRoot());
 
         _label->setAligment(LV_ALIGN_CENTER, 0, -140);
     };
 
-    auto btn = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "中文😀 Button", getRootItem());
+    auto btn = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "中文😀 Button", getRoot());
     btn->setPos(480, 300);
     btn->setAligment(LV_ALIGN_CENTER, 0, -50);
     btn->setOnClickedListener([this]() {
@@ -158,7 +158,7 @@ void LangChangePage::onCreate(void *arg)
     });
     _btn_chinese = btn;
 
-    btn = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "英文", getRootItem());
+    btn = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "英文", getRoot());
     btn->setPos(480, 300);
     btn->setAligment(LV_ALIGN_CENTER, 0, 0);
     btn->setOnClickedListener([this]() {
@@ -172,7 +172,7 @@ void LangChangePage::onCreate(void *arg)
     });
     _btn_english = btn;
 
-    btn = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "日文", getRootItem());
+    btn = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "日文", getRoot());
     btn->setPos(480, 300);
     btn->setAligment(LV_ALIGN_CENTER, 0, 50);
     btn->setOnClickedListener([this]() {
@@ -185,7 +185,7 @@ void LangChangePage::onCreate(void *arg)
 
     _btn_japanese = btn;
 
-    btn = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "俄语", getRootItem());
+    btn = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "俄语", getRoot());
     btn->setPos(480, 300);
     btn->setAligment(LV_ALIGN_CENTER, 0, 100);
     btn->setOnClickedListener([this]() {
@@ -198,7 +198,7 @@ void LangChangePage::onCreate(void *arg)
     });
     _btn_russian = btn;
 
-    btn = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "测试", getRootItem());
+    btn = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "测试", getRoot());
     btn->setPos(480, 300);
     btn->setAligment(LV_ALIGN_CENTER, 0, 150);
     btn->setOnClickedListener([this, btn]() {
@@ -218,7 +218,7 @@ void LangChangePage::onCreate(void *arg)
         //
 
         lv_obj_t *screen = lv_scr_act();
-        // getRootItem()->getLvglItem();
+        // getRoot()->getLvglItem();
         if (takeScreenshot(screen, "screenshot.png"))
         {
             std::cout << "Screenshot saved successfully." << std::endl;
@@ -245,7 +245,7 @@ void LangChangePage::onCreate(void *arg)
 
     _btn_test = btn;
 
-    _btn_simu = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "模拟", getRootItem());
+    _btn_simu = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "模拟", getRoot());
     _btn_simu->setPos(480, 300);
 
     _btn_simu->setAligment(LV_ALIGN_TOP_RIGHT, 0, 0);
