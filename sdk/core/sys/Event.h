@@ -1,4 +1,3 @@
-
 #ifndef LVGLPP_EVENT_H
 #define LVGLPP_EVENT_H
 
@@ -8,8 +7,8 @@
 #include <boost/optional.hpp>
 #include <boost/utility/string_view.hpp>
 
-namespace lvglpp {
-namespace sys {
+namespace lvglpp::sys {
+
 class Event
 {
 public:
@@ -55,7 +54,7 @@ boost::optional<T> Event::convertData(const nostd::source_location &l) const noe
     }
     return boost::none;
 }
-} // namespace sys
-} // namespace lvglpp
+
+} // namespace lvglpp::sys
 
 #endif // LVGLPP_EVENT_H

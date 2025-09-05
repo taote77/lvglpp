@@ -11,8 +11,7 @@ Description:一个空白页的基础实现界面
 
 #include "Activity.h"
 
-namespace lvglpp {
-namespace sys {
+namespace lvglpp::sys {
 
 class BaseActivity : public Activity
 {
@@ -59,7 +58,6 @@ public:
 private:
     widgets::BaseItem *_root_win{};
 };
-} // namespace sys
-} // namespace lvglpp
+} // namespace lvglpp::sys
 
 #endif // BASE_ACTIVITY_H

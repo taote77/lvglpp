@@ -1,5 +1,5 @@
-#include "core/sys/Navigators.h"
 #include "core/sys/SdlSimulateApplication.h"
+#include "core/sys/TaskStack.h"
 #include "page/home/HomePage.h"
 #include <unistd.h>
 

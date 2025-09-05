@@ -1,6 +1,6 @@
 
-#ifndef LVGLPP_NAVIGATORS_H
-#define LVGLPP_NAVIGATORS_H
+#ifndef LVGLPP_TASK_STACK_H
+#define LVGLPP_TASK_STACK_H
 
 #include "Activity.h"
 #include "Application.h"
@@ -8,8 +8,8 @@
 #include <memory>
 #include <vector>
 
-namespace lvglpp {
-namespace sys {
+namespace lvglpp::sys {
+
 class TaskStack
 {
 public:
@@ -94,7 +94,7 @@ private:
 
     void popViewAndRunCb();
 };
-} // namespace sys
-} // namespace lvglpp
 
-#endif // LVGLPP_NAVIGATORS_H
+} // namespace lvglpp::sys
+
+#endif // LVGLPP_TASK_STACK_H

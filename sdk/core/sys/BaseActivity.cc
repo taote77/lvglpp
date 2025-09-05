@@ -1,10 +1,9 @@
 
 #include "BaseActivity.h"
-#include "Navigators.h"
+#include "TaskStack.h"
 #include <lvgl.h>
 
-namespace lvglpp {
-namespace sys {
+namespace lvglpp::sys {
 BaseActivity::~BaseActivity() noexcept
 {
     if (_root_win != nullptr)
@@ -61,5 +60,4 @@ void BaseActivity::onNotifyUI(const Event &e)
 {
     // LV_LOG_USER("notify index:%d",(int)et);
 }
-} // namespace sys
-} // namespace lvglpp
+} // namespace lvglpp::sys

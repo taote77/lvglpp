@@ -1,7 +1,7 @@
 #include "RemoteClient.h"
 #include "core/sys/Application.h"
-#include "core/sys/Navigators.h"
 #include "core/sys/SdlSimulateApplication.h"
+#include "core/sys/TaskStack.h"
 #include "core/widgets/GlobalVar.h"
 // #include "lodepng.h"
 #include "session.h"

@@ -1,6 +1,6 @@
 #include "HomePage.h"
 #include "core/sys/Activity.h"
-#include "core/sys/Navigators.h"
+#include "core/sys/TaskStack.h"
 #include "core/widgets/BaseItem.h"
 #include "core/widgets/Toast.h"
 #include "page/sensor/SensorActivity.h"

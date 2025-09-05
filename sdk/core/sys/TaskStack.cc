@@ -1,11 +1,10 @@
-
-#include "Navigators.h"
+#include "TaskStack.h"
 #include "Activity.h"
-#include <iostream>
+// #include <iostream>
 #include <lvgl.h>
 
-namespace lvglpp {
-namespace sys {
+namespace lvglpp::sys {
+
 TaskStack *TaskStack::instance_ = nullptr;
 
 TaskStack *TaskStack::getInstance()
@@ -222,5 +221,5 @@ void TaskStack::clearDeleteVec()
         delete_view_manager_.pop_back();
     }
 }
-} // namespace sys
-} // namespace lvglpp
+
+} // namespace lvglpp::sys

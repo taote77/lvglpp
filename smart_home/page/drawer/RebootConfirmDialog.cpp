@@ -1,6 +1,6 @@
 #include "RebootConfirmDialog.h"
 #include "core/log/log.h"
-#include "core/sys/Navigators.h"
+#include "core/sys/TaskStack.h"
 #include "core/tools/Utils.h"
 #include "core/widgets/Toast.h"
 #include "i18n/LvTranslator.h"

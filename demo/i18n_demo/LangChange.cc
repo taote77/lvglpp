@@ -1,7 +1,7 @@
 #include "LangChange.h"
 #include "LvTranslator.h"
-#include "core/sys/Navigators.h"
 #include "core/sys/SdlSimulateApplication.h"
+#include "core/sys/TaskStack.h"
 #include "core/widgets/GlobalVar.h"
 #include "core/widgets/LvText.h"
 #include "session.h"

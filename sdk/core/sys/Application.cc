@@ -1,7 +1,7 @@
 
 #include "Application.h"
 #include "BaseActivity.h"
-#include "Navigators.h"
+#include "TaskStack.h"
 #include "core/log/log.h"
 #include "core/tools/MemoryResManager.h"
 #include "core/tools/Utils.h"

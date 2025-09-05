@@ -1,6 +1,6 @@
 #include "SensorActivity.h"
 #include "color_sheet.h"
-#include "core/sys/Navigators.h"
+#include "core/sys/TaskStack.h"
 #include "page/sensor/TempCurveDlg.h"
 #include <boost/format.hpp>
 #include <random>

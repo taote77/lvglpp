@@ -1,6 +1,6 @@
 #include "RemoteClient.h"
-#include "core/sys/Navigators.h"
 #include "core/sys/SdlSimulateApplication.h"
+#include "core/sys/TaskStack.h"
 #include "session.h"
 #include <pthread.h>
 #include <unistd.h>

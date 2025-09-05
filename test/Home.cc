@@ -1,6 +1,6 @@
 #include "Home.h"
 #include "GameActivity.h"
-#include "core/sys/Navigators.h"
+#include "core/sys/TaskStack.h"
 #include "core/widgets/GlobalVar.h"
 #include <iostream>
 #include <src/others/observer/lv_observer.h>
