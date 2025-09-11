@@ -1,11 +1,10 @@
 #include "GameActivity.h"
 #include "GameStateDialog.h"
-#include "core/widgets/GlobalVar.h"
+#include "color_sheet.h"
 #include <cstddef>
 #include <iostream>
 #include <memory>
 #include <random>
-#include <src/misc/lv_area.h>
 
 GameActivity::GameActivity() : sys::BaseActivity()
 {

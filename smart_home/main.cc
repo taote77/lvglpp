@@ -1,7 +1,7 @@
 #include "core/sys/SdlSimulateApplication.h"
 #include "core/sys/TaskStack.h"
+#include "i18n/LvTranslator.h"
 #include "page/home/HomePage.h"
-#include <unistd.h>
 
 int main(int argc, char *argv[])
 {
@@ -11,6 +11,9 @@ int main(int argc, char *argv[])
     {
         return -1;
     }
+
+    LvTranslator::Instance().init();
+    LvTranslator::Instance().load(LANGUAGE::CHINESE);
 
     lvglpp::sys::TaskStack::getInstance()->pushView(std::make_shared<HomePage>());
 

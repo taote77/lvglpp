@@ -19,7 +19,7 @@ en-US:
   ChangeLangWarnText: The device will restart to change the language.
   Start: Start
   EMPTY_INFO: --
-  PulseReleaseModLabel: Pulsing Release Module
+  ElectronStack: Pulsing Release Module
   MTLModLabel: LED
   LCDScreenLable: LCD Screen
   PulsingReleaseResinTank: Pulsing release resin tank

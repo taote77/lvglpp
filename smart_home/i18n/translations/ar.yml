@@ -4,6 +4,6 @@ ar:
   Start: 开始
   EMPTY_INFO: --
   HeatModLabel: وحدة التدفئة
-  PulseReleaseModLabel: وحدة تجريد النبض
+  ElectronStack: وحدة تجريد النبض
   LCDScreenLable: شاشة LCD
   PulsingReleaseResinTank: خزان راتنج التجريد النبضي

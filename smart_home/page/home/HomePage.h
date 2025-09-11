@@ -31,11 +31,11 @@ private:
     std::shared_ptr<lvglpp::ui::page::TopDrawer> _drawer;
 
     std::string                             _txt{"Start"};
-    std::shared_ptr<widgets::LvText>        _label;
-    std::shared_ptr<widgets::GifImage>      _gif;
-    std::shared_ptr<widgets::RoundedButton> _btn;
+    std::unique_ptr<widgets::LvText>        _label;
+    std::unique_ptr<widgets::GifImage>      _gif;
+    std::unique_ptr<widgets::RoundedButton> _btn;
 
-    std::shared_ptr<widgets::RoundedButton> _btn_air_temp;
+    std::unique_ptr<widgets::RoundedButton> _btn_air_temp;
 };
 
 #endif // _HOME_PAGE_H

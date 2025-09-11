@@ -27,11 +27,11 @@ endif ()
 
 add_subdirectory(sdk)
 
-set(ENABLE_DEMO OFF CACHE BOOL "Enable demo application")
+set(ENABLE_DEMO ON CACHE BOOL "Enable demo application")
 if (ENABLE_DEMO)
     add_subdirectory(demo)
 endif ()
 
 add_subdirectory(smart_home)
 
-# add_subdirectory(test)
+add_subdirectory(test)

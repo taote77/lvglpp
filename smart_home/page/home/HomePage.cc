@@ -19,7 +19,7 @@ void HomePage::onCreate(void *arg)
     BaseActivity::onCreate(arg);
     getRoot()->setBgColor(form::design::CLR_SURFACE);
 
-    _btn = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "Light On", getRoot());
+    _btn = std::make_unique<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "Light On", getRoot());
 
     _btn->setPos(480, 300);
     _btn->setAligment(LV_ALIGN_CENTER, 0, 0);
@@ -33,7 +33,7 @@ void HomePage::onCreate(void *arg)
         widgets::Toast::success(light_status ? "点击，灯光已打开" : "点击，灯光已关闭");
     });
 
-    _btn_air_temp = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "Temp Curve", getRoot());
+    _btn_air_temp = std::make_unique<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "Temp Curve", getRoot());
     _btn_air_temp->setPos(480, 400);
     _btn_air_temp->setAligment(LV_ALIGN_CENTER, 0, 0);
 

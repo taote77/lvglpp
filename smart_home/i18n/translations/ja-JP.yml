@@ -19,7 +19,7 @@ ja-JP:
   ChangeLangWarnText: システム言語を切り替えると、デバイスは自動的に再起動します。
   Start: 開始
   EMPTY_INFO: --
-  PulseReleaseModLabel: パルス剥離モジュール
+  ElectronStack: パルス剥離モジュール
   LCDScreenLable: LCD画面
   PulsingReleaseResinTank: パルス剥離用樹脂タンク
   HeatMod.Open.Tips: 加熱モジュールを起動すると、デバイスは自動的に検出し、印刷中の樹脂温度を維持します。

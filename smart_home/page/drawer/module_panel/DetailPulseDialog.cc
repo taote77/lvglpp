@@ -23,7 +23,7 @@ ModuleDetailPulseDialog::ModuleDetailPulseDialog(const int progress, const int s
 
     _dialog_bg_item->setAligment(LV_ALIGN_TOP_MID, 0, 72);
 
-    _title_label = std::make_shared<ConsumeText>(lvTr("PulseReleaseModLabel"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24Bold);
+    _title_label = std::make_shared<ConsumeText>(lvTr("ElectronStack"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24Bold);
     _title_label->setAligment(LV_ALIGN_TOP_LEFT, 24, 20);
 
     _title_status_label = std::make_shared<ConsumeText>(lvTr("Status.Abnormal"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24Bold);
@@ -61,7 +61,7 @@ void ModuleDetailPulseDialog::updatePulseFilmInfo(double usedtime, int32_t tank_
 {
     if (tank_type == 1)
     {
-        _title_label->setText(lvTr("PulseReleaseModLabel"));
+        _title_label->setText(lvTr("ElectronStack"));
     } else
     {
         _title_label->setText(lvTr("EMPTY_INFO"));

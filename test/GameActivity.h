@@ -11,7 +11,6 @@
 #include <iterator>
 #include <list>
 #include <memory>
-#include <src/misc/lv_area.h>
 
 using namespace lvglpp;
 

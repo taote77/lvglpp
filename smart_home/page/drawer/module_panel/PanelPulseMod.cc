@@ -70,7 +70,7 @@ PanelPusleMod::PanelPusleMod(BaseItem *parent) : BaseItem(parent)
     _label_mod_pulse->setPos(lv_coord_t(mod_item_edge_x + offset), lv_coord_t(18));
     // _label_mod_pulse->setAligment(LV_ALIGN_BOTTOM_LEFT, 16, -12);
 
-    _label_mod_pulse->setText(lvTr("PulseReleaseModLabel"));
+    _label_mod_pulse->setText(lvTr("ElectronStack"));
     // _label_mod_pulse->setLongMode(1);
     constexpr int panel_text_max_length{270};
     _label_mod_pulse->setLongMode(panel_text_max_length, ConsumeText::LongMode::MiddleEllipsis);

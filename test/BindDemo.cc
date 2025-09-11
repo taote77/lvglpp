@@ -1,6 +1,6 @@
 #include "BindDemo.h"
+#include "color_sheet.h"
 #include "core/sys/TaskStack.h"
-#include "core/widgets/GlobalVar.h"
 #include <iostream>
 #include <src/others/observer/lv_observer.h>
 
@@ -12,7 +12,7 @@ BindDemo::~BindDemo()
 
 void BindDemo::onCreate(void *arg)
 {
-    _label = std::make_shared<lvglpp::widgets::Text>(_txt, CLR_SUCCESS_CONTAINER, getRoot());
+    _label = std::make_shared<lvglpp::widgets::Text>(_txt, form::design::CLR_SURFACE_CONTAINER, getRoot());
 
     _label->setAligment(LV_ALIGN_CENTER, 0, -80);
 

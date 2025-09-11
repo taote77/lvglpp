@@ -1,11 +1,11 @@
 #include "GameStateDialog.h"
-
+#include "color_sheet.h"
 #include "core/tools/Utils.h"
-#include "core/widgets/GlobalVar.h"
 
 namespace lvglpp {
 
 using namespace tools;
+using namespace form::design;
 
 GameStateDialog::GameStateDialog() : widgets::BaseDialog()
 {
