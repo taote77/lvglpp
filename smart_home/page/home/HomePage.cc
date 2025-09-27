@@ -4,9 +4,11 @@
 #include "core/widgets/BaseItem.h"
 #include "core/widgets/Toast.h"
 #include "page/sensor/SensorActivity.h"
-#include <iostream>
+#include "theme/form_design.h"
+#include <i18n/LvTranslator.h>
 
 using namespace lvglpp;
+using namespace form::design;
 
 HomePage::HomePage() : sys::BaseActivity()
 {}
@@ -19,30 +21,19 @@ void HomePage::onCreate(void *arg)
     BaseActivity::onCreate(arg);
     getRoot()->setBgColor(form::design::CLR_SURFACE);
 
-    _btn = std::make_unique<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "Light On", getRoot());
+    _bg_img = std::make_unique<widgets::Image>(":/image/800x480/home_card.png", getRoot());
+    _bg_img->setAligment(LV_ALIGN_CENTER, 0, 0);
 
-    _btn->setPos(480, 300);
-    _btn->setAligment(LV_ALIGN_CENTER, 0, 0);
+    _label = std::make_unique<LvText>(lvTr("Home Page"), ThemeColor(CLR_ON_SURFACE), getRoot(), LvText::FontSize24Bold);
+    _label->setAligment(LV_ALIGN_CENTER, 0, -40);
 
-    _btn->setOnClickedListener([this]() {
-        bool light_status = (_txt == "Light On");
-        _txt              = light_status ? "Light Off" : "Light On";
-        _btn->setTextMsg(_txt);
+    // RoundedButton(int width, int height, ColorStyle type, const std::string &strMsg, BaseItem *parent);
 
-        // Simulate a light toggle action
-        widgets::Toast::success(light_status ? "点击，灯光已打开" : "点击，灯光已关闭");
-    });
-
-    _btn_air_temp = std::make_unique<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "Temp Curve", getRoot());
-    _btn_air_temp->setPos(480, 400);
-    _btn_air_temp->setAligment(LV_ALIGN_CENTER, 0, 0);
-
-    _btn_air_temp->setOnClickedListener([this]() {
-        std::cout << "Temp Curve\n";
-        // openActivity<AppPage>("AppPage");
-
-        auto page = std::make_shared<SensorActivity>();
-        sys::TaskStack::getInstance()->pushView(page);
+    _toast_btn = std::make_unique<RoundedButton>(140, 40, RoundedButton::ColorStyle::Blue, lvTr("Toast"), getRoot());
+    _toast_btn->setAligment(LV_ALIGN_CENTER, 0, 40);
+    _toast_btn->setOnClickedListener([this]() {
+        // sys::TaskStack::getInstance()->push(std::make_shared<ToastActivity>());
+        widgets::Toast::success(lvTr("Click Success!"));
     });
 
     _drawer = std::make_shared<lvglpp::ui::page::TopDrawer>(this->getRoot());

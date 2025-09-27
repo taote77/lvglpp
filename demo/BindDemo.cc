@@ -1,7 +1,7 @@
 #include "BindDemo.h"
+#include "color_sheet.h"
 #include "core/sys/TaskStack.h"
 #include "core/widgets/BaseItem.h"
-#include "core/widgets/GlobalVar.h"
 #include "thorvg.h"
 #include <iostream>
 #include <src/others/observer/lv_observer.h>

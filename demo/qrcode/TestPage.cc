@@ -1,6 +1,6 @@
 #include "TestPage.h"
+#include "color_sheet.h"
 #include "core/sys/TaskStack.h"
-#include "core/widgets/GlobalVar.h"
 #include <iostream>
 
 using namespace lvglpp::core;

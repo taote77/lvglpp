@@ -1,8 +1,9 @@
 #include "SnapShot.h"
+#include "color_sheet.h"
 #include "core/sys/TaskStack.h"
-#include "core/widgets/GlobalVar.h"
 #include <iostream>
-#include <src/others/observer/lv_observer.h>
+
+using namespace form::design;
 
 SnapShot::SnapShot() : sys::BaseActivity()
 {}

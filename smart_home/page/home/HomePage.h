@@ -30,12 +30,13 @@ protected:
 private:
     std::shared_ptr<lvglpp::ui::page::TopDrawer> _drawer;
 
-    std::string                             _txt{"Start"};
-    std::unique_ptr<widgets::LvText>        _label;
-    std::unique_ptr<widgets::GifImage>      _gif;
-    std::unique_ptr<widgets::RoundedButton> _btn;
+    std::unique_ptr<widgets::Image> _bg_img;
 
-    std::unique_ptr<widgets::RoundedButton> _btn_air_temp;
+    std::string                        _txt{"Start"};
+    std::unique_ptr<widgets::LvText>   _label;
+    std::unique_ptr<widgets::GifImage> _gif;
+
+    std::unique_ptr<widgets::RoundedButton> _toast_btn;
 };
 
 #endif // _HOME_PAGE_H

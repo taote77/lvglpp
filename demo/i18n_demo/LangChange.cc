@@ -1,8 +1,8 @@
 #include "LangChange.h"
 #include "LvTranslator.h"
+#include "color_sheet.h"
 #include "core/sys/SdlSimulateApplication.h"
 #include "core/sys/TaskStack.h"
-#include "core/widgets/GlobalVar.h"
 #include "core/widgets/LvText.h"
 #include "session.h"
 #include <core/log/log.h>
@@ -18,6 +18,8 @@
 #include "core/tools/stb/stb_image_write.h"
 
 using namespace lvglpp::core;
+
+using namespace form::design;
 
 uint8_t *extract_argb8888_to_rgba(const lv_draw_buf_t *draw_buf)
 {

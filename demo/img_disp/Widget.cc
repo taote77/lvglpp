@@ -1,6 +1,6 @@
 #include "Widget.h"
+#include "color_sheet.h"
 #include "core/widgets/BaseItem.h"
-#include "core/widgets/GlobalVar.h"
 #include <iostream>
 
 Widget::Widget() : sys::BaseActivity()

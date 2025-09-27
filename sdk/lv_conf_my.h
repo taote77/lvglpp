@@ -15,9 +15,9 @@
 // #define LV_USE_FREETYPE 1
 
 // option
-#define LV_WAYLAND_WINDOW_DECORATIONS 1
+// #define LV_WAYLAND_WINDOW_DECORATIONS 1
 
-#define LV_WAYLAND_WL_SHELL 1
+// #define LV_WAYLAND_WL_SHELL 1
 
 #define LV_USE_LOTTIE 1
 
