@@ -116,6 +116,14 @@ other hardware should be used to transfer data to the display so the MCU
 can continue drawing.  Doing so allows *rendering* and *refreshing* the
 display to become parallel operations.
 
+Three Buffers
+-------------
+
+Triple buffering enhances parallelism between rendering and data transfer compared
+to double buffering. When one buffer has completed rendering and another is actively
+undergoing DMA transfer, the third buffer enables immediate rendering of the next frame,
+eliminating CPU/GPU idle time caused by waiting for DMA completion.
+The third buffer is configured using the :cpp:func:`lv_display_set_3rd_draw_buffer` function.
 
 
 .. _flush_callback:
@@ -190,4 +198,15 @@ However, if a Flush-Wait Callback is not set, LVGL assumes that
 :cpp:func:`lv_display_flush_ready` is called after the flush has completed.
 
 
+API
+***
 
+.. API equals:
+    lv_display_create,
+    lv_display_flush_is_last,
+    lv_display_flush_ready,
+    lv_display_set_buffers,
+    lv_display_set_default,
+    lv_display_set_flush_cb,
+    lv_display_set_flush_wait_cb
+    lv_display_t,

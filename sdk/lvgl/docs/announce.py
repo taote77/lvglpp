@@ -25,12 +25,31 @@ It is the designer's intention that:
 import os
 import datetime
 
-__all__ = ('announce', 'announce_start', 'announce_finish', 'announce_set_silent_mode')
+__all__ = ('announce', 'announce_colored', 'announce_start', 'announce_finish', 'announce_set_silent_mode')
 _announce_start_time: datetime.datetime
 _announce_silent_mode: bool = False
+_console_color_commands = {
+    'default'       : '\x1b[0m',
+    'black'         : '\x1b[30m',
+    'red'           : '\x1b[31m',
+    'green'         : '\x1b[32m',
+    'yellow'        : '\x1b[33m',
+    'blue'          : '\x1b[34m',
+    'majenta'       : '\x1b[35m',
+    'cyan'          : '\x1b[36m',
+    'white'         : '\x1b[37m',
+    'bright_black'  : '\x1b[90m',
+    'bright_red'    : '\x1b[91m',
+    'bright_green'  : '\x1b[92m',
+    'bright_yellow' : '\x1b[93m',
+    'bright_blue'   : '\x1b[94m',
+    'bright_majenta': '\x1b[95m',
+    'bright_cyan'   : '\x1b[96m',
+    'bright_white'  : '\x1b[97m'
+}
 
 
-def _announce(file: str, args: tuple, start=False):
+def _announce(file: str, args: tuple, start: bool, box: bool, box_char: str):
     if _announce_silent_mode:
         return
 
@@ -43,24 +62,43 @@ def _announce(file: str, args: tuple, start=False):
         else:
             _args.append(repr(arg))
 
+    msg = f'{os.path.basename(file)}: ' + ' '.join(_args)
+    msg_len = len(msg)
+
+    # `start` takes precedence over `box` argument.
     if start:
-        _end = ''
+        print(msg, end='', flush=True)
     else:
-        _end = '\n'
+        if box:
+            line = box_char * msg_len
+            print(line)
+            print(msg)
+            print(line, flush=True)
+        else:
+            print(msg, flush=True)
 
-    print(f'{os.path.basename(file)}: ', ' '.join(_args), end=_end, flush=True)
 
-
-def announce(file: str, *args, start=False, finish=False):
+def announce(file: str, *args, box: bool = False, box_char: str = '*'):
     global _announce_start_time
     _announce_start_time = None
-    _announce(file, args)
+    _announce(file, args, False, box, box_char)
 
 
-def announce_start(file: str, *args, start=False, finish=False):
+def announce_colored(file: str, clr: str, *args, box: bool = False, box_char: str = '*'):
+    global _announce_start_time
+    _announce_start_time = None
+    if len(args) > 0 and clr in _console_color_commands:
+        # Tuples are non-mutable so we have to build a new one -- can't insert new elements.
+        new_args_tuple = (_console_color_commands[clr],) + args + (_console_color_commands['default'],)
+        _announce(file, new_args_tuple, False, box, box_char)
+    else:
+        _announce(file, args, False, box, box_char)
+
+
+def announce_start(file: str, *args, box: bool = False, box_char: str = '*'):
     global _announce_start_time
     _announce_start_time = datetime.datetime.now()
-    _announce(file, args, start=True)
+    _announce(file, args, True, box, box_char)
 
 
 def announce_finish():

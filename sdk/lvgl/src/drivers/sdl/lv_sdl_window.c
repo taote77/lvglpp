@@ -3,6 +3,10 @@
  *
  */
 
+/**
+ * Modified by NXP in 2025
+ */
+
 /*********************
  *      INCLUDES
  *********************/
@@ -20,7 +24,11 @@
 #ifndef __USE_ISOC11
     #define __USE_ISOC11
 #endif
-#include <stdlib.h>
+#ifndef _WIN32
+    #include <stdlib.h>
+#else
+    #include <malloc.h>
+#endif /* _WIN32 */
 
 #define SDL_MAIN_HANDLED /*To fix SDL's "undefined reference to WinMain" issue*/
 #include "lv_sdl_private.h"
@@ -185,6 +193,15 @@ void lv_sdl_window_set_title(lv_display_t * disp, const char * title)
     SDL_SetWindowTitle(dsc->window, title);
 }
 
+void lv_sdl_window_set_icon(lv_display_t * disp, void * icon, int32_t width, int32_t height)
+{
+    lv_sdl_window_t * dsc = lv_display_get_driver_data(disp);
+    SDL_Surface * iconSurface = SDL_CreateRGBSurfaceWithFormatFrom(icon, width, height, 32, width * 4,
+                                                                   SDL_PIXELFORMAT_ARGB8888);
+    SDL_SetWindowIcon(dsc->window, iconSurface);
+    SDL_FreeSurface(iconSurface);
+}
+
 void * lv_sdl_window_get_renderer(lv_display_t * disp)
 {
     lv_sdl_window_t * dsc = lv_display_get_driver_data(disp);
@@ -218,6 +235,12 @@ static void flush_cb(lv_display_t * disp, const lv_area_t * area, uint8_t * px_m
     uint32_t * argb_px_map = NULL;
 
     if(sdl_render_mode() == LV_DISPLAY_RENDER_MODE_PARTIAL) {
+
+        if(cf == LV_COLOR_FORMAT_RGB565_SWAPPED) {
+            uint32_t width = lv_area_get_width(area);
+            uint32_t height = lv_area_get_height(area);
+            lv_draw_sw_rgb565_swap(px_map, width * height);
+        }
         /*Update values in a special OLED I1 --> ARGB8888 case
           We render everything in I1, but display it in ARGB8888*/
         if(cf == LV_COLOR_FORMAT_I1) {
@@ -363,9 +386,8 @@ static void window_create(lv_display_t * disp)
 
     uint32_t px_size = lv_color_format_get_size(lv_display_get_color_format(disp));
     lv_memset(dsc->fb1, 0xff, hor_res * ver_res * px_size);
-#if LV_SDL_BUF_COUNT == 2
-    lv_memset(dsc->fb2, 0xff, hor_res * ver_res * px_size);
-#endif
+    if(dsc->fb2) lv_memset(dsc->fb2, 0xff, hor_res * ver_res * px_size);
+
 #endif /*LV_USE_DRAW_SDL == 0*/
     /*Some platforms (e.g. Emscripten) seem to require setting the size again */
     SDL_SetWindowSize(dsc->window, hor_res, ver_res);

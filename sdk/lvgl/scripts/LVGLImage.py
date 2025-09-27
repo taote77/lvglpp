@@ -26,6 +26,8 @@ def uint8_t(val) -> bytes:
 def uint16_t(val) -> bytes:
     return val.to_bytes(2, byteorder='little')
 
+def swap_uint16_t(val) -> bytes:
+    return val.to_bytes(2, byteorder='big')
 
 def uint24_t(val) -> bytes:
     return val.to_bytes(3, byteorder='little')
@@ -118,9 +120,11 @@ class ColorFormat(Enum):
     ARGB8888 = 0x10
     XRGB8888 = 0x11
     RGB565 = 0x12
+    RGB565_SWAPPED = 0x1B
     ARGB8565 = 0x13
     RGB565A8 = 0x14
     RGB888 = 0x0F
+    ARGB8888_PREMULTIPLIED = 0x1A
 
     @property
     def bpp(self) -> int:
@@ -140,9 +144,11 @@ class ColorFormat(Enum):
             ColorFormat.ARGB8888: 32,
             ColorFormat.XRGB8888: 32,
             ColorFormat.RGB565: 16,
+            ColorFormat.RGB565_SWAPPED: 16,
             ColorFormat.RGB565A8: 16,  # 16bpp + a8 map
             ColorFormat.ARGB8565: 24,
             ColorFormat.RGB888: 24,
+            ColorFormat.ARGB8888_PREMULTIPLIED: 32,
         }
 
         return cf_map[self] if self in cf_map else 0
@@ -179,13 +185,16 @@ class ColorFormat(Enum):
             ColorFormat.ARGB8888,
             ColorFormat.XRGB8888,  # const alpha: 0xff
             ColorFormat.ARGB8565,
-            ColorFormat.RGB565A8)
+            ColorFormat.RGB565A8,
+            ColorFormat.ARGB8888_PREMULTIPLIED)
 
     @property
     def is_colormap(self) -> bool:
         return self in (ColorFormat.ARGB8888, ColorFormat.RGB888,
                         ColorFormat.XRGB8888, ColorFormat.RGB565A8,
-                        ColorFormat.ARGB8565, ColorFormat.RGB565)
+                        ColorFormat.ARGB8565, ColorFormat.RGB565,
+                        ColorFormat.RGB565_SWAPPED,
+                        ColorFormat.ARGB8888_PREMULTIPLIED)
 
     @property
     def is_luma_only(self) -> bool:
@@ -251,14 +260,23 @@ def unpack_colors(data: bytes, cf: ColorFormat, w) -> List:
                 if len(ret) % w == 0:
                     break
     elif bpp == 16:
-        #  This is RGB565
-        pixels = [(data[2 * i + 1] << 8) | data[2 * i]
-                  for i in range(len(data) // 2)]
-
-        for p in pixels:
-            ret.append(bit_extend((p >> 11) & 0x1f, 5))  # R
-            ret.append(bit_extend((p >> 5) & 0x3f, 6))  # G
-            ret.append(bit_extend((p >> 0) & 0x1f, 5))  # B
+        if cf == ColorFormat.RGB565:
+            #  This is RGB565
+            pixels = [(data[2 * i + 1] << 8) | data[2 * i]
+                    for i in range(len(data) // 2)]
+            for p in pixels:
+                ret.append(bit_extend((p >> 11) & 0x1f, 5))  # R
+                ret.append(bit_extend((p >> 5) & 0x3f, 6))  # G
+                ret.append(bit_extend((p >> 0) & 0x1f, 5))  # B
+        elif cf == ColorFormat.RGB565_SWAPPED:
+            #  This is RGB565_SWAPPED
+            pixels = [(data[2 * i] << 8) | data[2 * i + 1]
+                    for i in range(len(data) // 2)]
+            for p in pixels:
+                ret.append(bit_extend((p >> 11) & 0x1f, 5))  # R
+                ret.append(bit_extend((p >> 5) & 0x3f, 6))  # G
+                ret.append(bit_extend((p >> 0) & 0x1f, 5))  # B
+        
     elif bpp == 24:
         if cf == ColorFormat.RGB888:
             B = data[0::3]
@@ -295,8 +313,15 @@ def unpack_colors(data: bytes, cf: ColorFormat, w) -> List:
         G = data[1::4]
         R = data[2::4]
         A = data[3::4]
-        for r, g, b, a in zip(R, G, B, A):
-            ret += [r, g, b, a]
+        if cf == ColorFormat.ARGB8888_PREMULTIPLIED:
+            for r, g, b, a in zip(R, G, B, A):
+                r = (r * a // 255)
+                g = (g * a // 255)
+                b = (b * a // 255)
+                ret += [r, g, b, a]
+        else:
+            for r, g, b, a in zip(R, G, B, A):
+                ret += [r, g, b, a]
     else:
         assert 0
 
@@ -308,12 +333,11 @@ def write_c_array_file(
         stride: int,
         cf: ColorFormat,
         filename: str,
+        outputname: str,
         premultiplied: bool,
         compress: CompressMethod,
         data: bytes):
-    varname = path.basename(filename).split('.')[0]
-    varname = varname.replace("-", "_")
-    varname = varname.replace(".", "_")
+    varname = path.basename(filename).split('.')[0].replace("-", "_").replace(".", "_") if outputname is None else outputname
 
     flags = "0"
     if compress is not CompressMethod.NONE:
@@ -325,12 +349,13 @@ def write_c_array_file(
     header = f'''
 #if defined(LV_LVGL_H_INCLUDE_SIMPLE)
 #include "lvgl.h"
+#elif defined(LV_LVGL_H_INCLUDE_SYSTEM)
+#include <lvgl.h>
 #elif defined(LV_BUILD_TEST)
 #include "../lvgl.h"
 #else
 #include "lvgl/lvgl.h"
 #endif
-
 
 #ifndef LV_ATTRIBUTE_MEM_ALIGN
 #define LV_ATTRIBUTE_MEM_ALIGN
@@ -349,14 +374,18 @@ uint8_t {varname}_map[] = {{
 }};
 
 const lv_image_dsc_t {varname} = {{
-  .header.magic = LV_IMAGE_HEADER_MAGIC,
-  .header.cf = LV_COLOR_FORMAT_{cf.name},
-  .header.flags = {flags},
-  .header.w = {w},
-  .header.h = {h},
-  .header.stride = {stride},
+  .header = {{
+    .magic = LV_IMAGE_HEADER_MAGIC,
+    .cf = LV_COLOR_FORMAT_{cf.name},
+    .flags = {flags},
+    .w = {w},
+    .h = {h},
+    .stride = {stride},
+    .reserved_2 = 0,
+  }},
   .data_size = sizeof({varname}_map),
   .data = {varname}_map,
+  .reserved = NULL,
 }};
 
 '''
@@ -773,7 +802,8 @@ class LVGLImage:
 
     def to_c_array(self,
                    filename: str,
-                   compress: CompressMethod = CompressMethod.NONE):
+                   compress: CompressMethod = CompressMethod.NONE,
+                   outputname: str = None):
         self._check_ext(filename, ".c")
         self._check_dir(filename)
 
@@ -781,7 +811,7 @@ class LVGLImage:
             data = LVGLCompressData(self.cf, compress, self.data).compressed
         else:
             data = self.data
-        write_c_array_file(self.w, self.h, self.stride, self.cf, filename,
+        write_c_array_file(self.w, self.h, self.stride, self.cf, filename, outputname,
                            self.premultiplied,
                            compress, data)
 
@@ -986,6 +1016,16 @@ class LVGLImage:
 
             def pack(r, g, b, a):
                 return uint32_t((a << 24) | (r << 16) | (g << 8) | (b << 0))
+        elif cf == ColorFormat.ARGB8888_PREMULTIPLIED:
+
+            def pack(r, g, b, a):
+                # Premultiply RGB by Alpha
+                r = (r * a // 255)
+                g = (g * a // 255)
+                b = (b * a // 255)
+
+                # Pack into ARGB8888 format
+                return uint32_t((a << 24) | (r << 16) | (g << 8) | (b << 0))
         elif cf == ColorFormat.XRGB8888:
 
             def pack(r, g, b, a):
@@ -1004,6 +1044,14 @@ class LVGLImage:
                 color |= (g >> 2) << 5
                 color |= (b >> 3) << 0
                 return uint16_t(color)
+        elif cf == ColorFormat.RGB565_SWAPPED:
+
+            def pack(r, g, b, a):
+                r, g, b, a = color_pre_multiply(r, g, b, a, self.background)
+                color = (r >> 3) << 11
+                color |= (g >> 2) << 5
+                color |= (b >> 3) << 0
+                return swap_uint16_t(color)
 
         elif cf == ColorFormat.RGB565A8:
 
@@ -1037,7 +1085,7 @@ class LVGLImage:
 
                 if (
                     self.rgb565_dither and
-                    cf in (ColorFormat.RGB565, ColorFormat.RGB565A8, ColorFormat.ARGB8565)
+                    cf in (ColorFormat.RGB565, ColorFormat.RGB565_SWAPPED, ColorFormat.RGB565A8, ColorFormat.ARGB8565)
                 ):
                     treshold_id = ((y & 7) << 3) + (x & 7)
 
@@ -1231,10 +1279,11 @@ class RAWImage():
         self.data = data
 
     def to_c_array(self,
-                   filename: str):
+                   filename: str,
+                   outputname: str = None):
         # Image size is set to zero, to let PNG or JPEG decoder to handle it
         # Stride is meaningless for RAW image
-        write_c_array_file(0, 0, 0, self.cf, filename,
+        write_c_array_file(0, 0, 0, self.cf, filename, outputname,
                            False, CompressMethod.NONE, self.data)
 
     def from_file(self,
@@ -1282,22 +1331,30 @@ class PNGConverter:
         self.rgb565_dither = rgb565_dither
         self.nema_gfx = nema_gfx
 
-    def _replace_ext(self, input, ext):
+    def _replace_ext(self, input, ext, outputname: str = None):
         if self.keep_folder:
             name, _ = path.splitext(input)
         else:
             name, _ = path.splitext(path.basename(input))
+
+        # change output name to 'outputname', if specified
+        if outputname is not None:
+            name = path.join(path.dirname(name), outputname)
+
         output = name + ext
         output = path.join(self.output, output)
         return output
 
-    def convert(self):
+    def convert(self, outputname: str):
+        if len(self.files) > 1 and outputname is not None:
+            raise BaseException(f"Cannot specify output name when converting more than one file.")
+
         output = []
         for f in self.files:
             if self.cf in (ColorFormat.RAW, ColorFormat.RAW_ALPHA):
                 # Process RAW image explicitly
                 img = RAWImage().from_file(f, self.cf)
-                img.to_c_array(self._replace_ext(f, ".c"))
+                img.to_c_array(self._replace_ext(f, ".c", outputname), outputname=outputname)
             else:
                 img = LVGLImage().from_png(f, self.cf, background=self.background, rgb565_dither=self.rgb565_dither, nema_gfx=self.nema_gfx)
                 img.adjust_stride(align=self.align)
@@ -1309,8 +1366,9 @@ class PNGConverter:
                     img.to_bin(self._replace_ext(f, ".bin"),
                                compress=self.compress)
                 elif self.ofmt == OutputFormat.C_ARRAY:
-                    img.to_c_array(self._replace_ext(f, ".c"),
-                                   compress=self.compress)
+                    img.to_c_array(self._replace_ext(f, ".c", outputname),
+                                   compress=self.compress,
+                                   outputname=outputname)
                 elif self.ofmt == OutputFormat.PNG_FILE:
                     img.to_png(self._replace_ext(f, ".png"))
 
@@ -1330,8 +1388,8 @@ def main():
         default="I8",
         choices=[
             "L8", "I1", "I2", "I4", "I8", "A1", "A2", "A4", "A8", "ARGB8888",
-            "XRGB8888", "RGB565", "RGB565A8", "ARGB8565", "RGB888", "AUTO",
-            "RAW", "RAW_ALPHA"
+            "XRGB8888", "RGB565", "RGB565_SWAPPED", "RGB565A8", "ARGB8565", "RGB888", "AUTO",
+            "RAW", "RAW_ALPHA", "ARGB8888_PREMULTIPLIED"
         ])
 
     parser.add_argument('--rgb565dither', action='store_true',
@@ -1363,6 +1421,9 @@ def main():
                         '--output',
                         default="./output",
                         help="Select the output folder, default to ./output")
+    parser.add_argument('--name',
+                        default=None,
+                        help="Specify name for output file. Only applies when input is a file, not a directory. (Also used for variable name inside .c file when format is 'C')")
     parser.add_argument('-v', '--verbose', action='store_true')
     parser.add_argument(
         'input', help="the filename or folder to be recursively converted")
@@ -1373,6 +1434,9 @@ def main():
         files = [args.input]
     elif path.isdir(args.input):
         files = list(Path(args.input).rglob("*.[pP][nN][gG]"))
+
+        if args.name is not None:
+            raise BaseException(f"invalid input: cannot specify --name when input is a directory")
     else:
         raise BaseException(f"invalid input: {args.input}")
 
@@ -1401,7 +1465,7 @@ def main():
                              keep_folder=False,
                              rgb565_dither=args.rgb565dither,
                              nema_gfx=args.nemagfx)
-    output = converter.convert()
+    output = converter.convert(args.name)
     for f, img in output:
         logging.info(f"len: {img.data_len} for {path.basename(f)} ")
 

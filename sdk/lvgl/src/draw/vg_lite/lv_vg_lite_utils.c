@@ -570,6 +570,9 @@ vg_lite_buffer_format_t lv_vg_lite_vg_fmt(lv_color_format_t cf)
         case LV_COLOR_FORMAT_RGB565:
             return VG_LITE_BGR565;
 
+        case LV_COLOR_FORMAT_RGB565_SWAPPED:
+            return VG_LITE_RGB565;
+
         case LV_COLOR_FORMAT_ARGB8565:
             return VG_LITE_BGRA5658;
 
@@ -578,6 +581,8 @@ vg_lite_buffer_format_t lv_vg_lite_vg_fmt(lv_color_format_t cf)
 
         case LV_COLOR_FORMAT_ARGB8888:
             return VG_LITE_BGRA8888;
+        case LV_COLOR_FORMAT_ARGB8888_PREMULTIPLIED:
+            return VG_sBGRA_8888_PRE;
 
         case LV_COLOR_FORMAT_XRGB8888:
             return VG_LITE_BGRX8888;
@@ -640,6 +645,7 @@ void lv_vg_lite_buffer_format_bytes(
         case VG_LITE_BGRX8888:
         case VG_LITE_XBGR8888:
         case VG_LITE_XRGB8888:
+        case VG_sBGRA_8888_PRE:
             *mul = 4;
             break;
         case VG_LITE_NV12:
@@ -820,13 +826,20 @@ vg_lite_color_t lv_vg_lite_image_recolor(vg_lite_buffer_t * buffer, const lv_dra
     LV_ASSERT_NULL(buffer);
     LV_ASSERT_NULL(dsc);
 
-    if((buffer->format == VG_LITE_A4 || buffer->format == VG_LITE_A8) || dsc->recolor_opa > LV_OPA_TRANSP) {
-        /* alpha image and image recolor */
+    /* alpha image and image recolor */
+    if(buffer->format == VG_LITE_A4 || buffer->format == VG_LITE_A8) {
+        /*Alpha only image ignore recolor opa*/
         buffer->image_mode = VG_LITE_MULTIPLY_IMAGE_MODE;
-        return lv_vg_lite_color(dsc->recolor, LV_OPA_MIX2(dsc->opa, dsc->recolor_opa), true);
+        return lv_vg_lite_color(dsc->recolor, dsc->opa, true);
     }
-
-    if(dsc->opa < LV_OPA_COVER) {
+    else if(dsc->recolor_opa > LV_OPA_TRANSP) {
+        buffer->image_mode = VG_LITE_MULTIPLY_IMAGE_MODE;
+        /** The 0xff value in a color channel (R/G/B) maintains that channel's maximum intensity,
+         *  effectively preserving its original color contribution when used in blending operations.*/
+        lv_color_t recolor = lv_color_mix(dsc->recolor, lv_color_make(0xff, 0xff, 0xff), dsc->recolor_opa);
+        return lv_vg_lite_color(recolor, dsc->opa, true);
+    }
+    else if(dsc->opa < LV_OPA_COVER) {
         /* normal image opa */
         buffer->image_mode = VG_LITE_MULTIPLY_IMAGE_MODE;
         vg_lite_color_t color;
@@ -1166,7 +1179,7 @@ bool lv_vg_lite_16px_align(void)
 
 void lv_vg_lite_matrix_multiply(vg_lite_matrix_t * matrix, const vg_lite_matrix_t * mult)
 {
-    vg_lite_matrix_t temp;
+    lv_matrix_t temp;
     int row, column;
     vg_lite_float_t (*m)[3] = matrix->m;
 
@@ -1181,8 +1194,8 @@ void lv_vg_lite_matrix_multiply(vg_lite_matrix_t * matrix, const vg_lite_matrix_
         }
     }
 
-    /* Copy temporary matrix into result. */
-    *matrix = temp;
+    /* Copy temporary 3x3 matrix into result. */
+    *(lv_matrix_t *)matrix = temp;
 }
 
 bool lv_vg_lite_matrix_inverse(vg_lite_matrix_t * result, const vg_lite_matrix_t * matrix)
@@ -1319,12 +1332,14 @@ void lv_vg_lite_flush(struct _lv_draw_vg_lite_unit_t * u)
 
     LV_VG_LITE_CHECK_ERROR(vg_lite_flush(), {});
 
-    /* Rremove all old caches reference and swap new caches reference */
-    if(u->grad_pending) {
-        lv_vg_lite_pending_swap(u->grad_pending);
-    }
+    /* Remove all old caches reference and swap new caches reference */
+#if LV_USE_VECTOR_GRAPHIC
+    lv_vg_lite_pending_swap(lv_vg_lite_grad_ctx_get_pending(u->grad_ctx));
+#endif
 
     lv_vg_lite_pending_swap(u->image_dsc_pending);
+
+    lv_vg_lite_pending_swap(u->bitmap_font_pending);
 
     u->flush_count = 0;
     LV_PROFILER_DRAW_END;
@@ -1337,13 +1352,17 @@ void lv_vg_lite_finish(struct _lv_draw_vg_lite_unit_t * u)
 
     LV_VG_LITE_CHECK_ERROR(vg_lite_finish(), {});
 
+#if LV_USE_VECTOR_GRAPHIC
     /* Clear all gradient caches reference */
-    if(u->grad_pending) {
-        lv_vg_lite_pending_remove_all(u->grad_pending);
-    }
+    lv_vg_lite_pending_remove_all(lv_vg_lite_grad_ctx_get_pending(u->grad_ctx));
+#endif
 
     /* Clear image decoder dsc reference */
     lv_vg_lite_pending_remove_all(u->image_dsc_pending);
+
+    /* Clear bitmap font dsc reference */
+    lv_vg_lite_pending_remove_all(u->bitmap_font_pending);
+
     u->flush_count = 0;
     u->letter_count = 0;
     LV_PROFILER_DRAW_END;

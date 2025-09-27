@@ -21,6 +21,7 @@ void setUp(void);
 void tearDown(void);
 void test_animimg_successful_create(void);
 void test_animimg_set_src(void);
+void test_animimg_set_src_reverse(void);
 void test_animimg_get_src_count(void);
 void test_animimg_set_duration(void);
 void test_animimg_set_repeat_count_infinite(void);
@@ -45,6 +46,13 @@ void test_animimg_successful_create(void)
 void test_animimg_set_src(void)
 {
     lv_animimg_set_src(animimg, (const void **) anim_imgs, 3);
+
+    TEST_ASSERT_NOT_NULL(animimg);
+}
+
+void test_animimg_set_src_reverse(void)
+{
+    lv_animimg_set_src_reverse(animimg, (const void **) anim_imgs, 3);
 
     TEST_ASSERT_NOT_NULL(animimg);
 }

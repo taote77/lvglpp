@@ -164,16 +164,37 @@ void test_calendar_get_highlighted_dates_num(void)
 
 void test_calendar_header_dropdown_create_gui(void)
 {
-    lv_calendar_header_dropdown_create(g_calendar);
+    lv_calendar_add_header_dropdown(g_calendar);
 
     lv_calendar_set_month_shown(g_calendar, 2022, 9);
 
     TEST_ASSERT_EQUAL_SCREENSHOT("widgets/calendar_05.png");
 }
 
+void test_calendar_header_dropdown_ascending_year_order(void)
+{
+    const char * years =  "2020\n2021\n2022\n2023\n2024\n";
+    lv_calendar_header_dropdown_create(g_calendar);
+    lv_calendar_header_dropdown_set_year_list(g_calendar, years);
+    lv_calendar_set_month_shown(g_calendar, 2022, 9);
+
+    TEST_ASSERT_EQUAL_SCREENSHOT("widgets/calendar_05.png");
+}
+
+void test_calendar_header_dropdown_descending_year_order(void)
+{
+    const char * years =  "2024\n2023\n2022\n2021\n2020\n";
+    lv_calendar_header_dropdown_create(g_calendar);
+    lv_calendar_header_dropdown_set_year_list(g_calendar, years);
+    lv_calendar_set_month_shown(g_calendar, 2022, 9);
+
+    TEST_ASSERT_EQUAL_SCREENSHOT("widgets/calendar_05.png");
+}
+
+
 void test_calendar_header_arrow_create_gui(void)
 {
-    lv_calendar_header_arrow_create(g_calendar);
+    lv_calendar_add_header_arrow(g_calendar);
 
     lv_calendar_set_month_shown(g_calendar, 2022, 10);    // Use October to avoid month name sliding
 
@@ -213,7 +234,7 @@ void test_calendar_custom_year_list(void)
 {
     lv_obj_t  * calendar = lv_calendar_create(lv_screen_active());
 
-    lv_calendar_header_dropdown_create(calendar);
+    lv_calendar_add_header_dropdown(calendar);
 
     const char * years = "2024\n2023\n2022\n2021\n2020\n2019";
     lv_calendar_header_dropdown_set_year_list(calendar, years);
@@ -228,7 +249,7 @@ void test_calendar_chinese_calendar(void)
     lv_calendar_set_today_date(g_calendar, 2024, 03, 22);
     lv_calendar_set_month_shown(g_calendar, 2024, 03);
 
-    lv_obj_set_style_text_font(g_calendar, &lv_font_simsun_14_cjk, LV_PART_MAIN);
+    lv_obj_set_style_text_font(g_calendar, &lv_font_source_han_sans_sc_14_cjk, LV_PART_MAIN);
     lv_calendar_set_chinese_mode(g_calendar, true);
 
     TEST_ASSERT_EQUAL_SCREENSHOT("widgets/calendar_09.png");

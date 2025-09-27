@@ -99,7 +99,7 @@ void lv_draw_dave2d_init(void)
     lv_ll_init(&_ll_Dave2D_Tasks, 4);
 
 #if LV_USE_OS
-    lv_thread_init(&draw_dave2d_unit->thread, "dave2d", LV_THREAD_PRIO_HIGH, _dave2d_render_thread_cb, 8 * 1024,
+    lv_thread_init(&draw_dave2d_unit->thread, "dave2d", LV_DRAW_THREAD_PRIO, _dave2d_render_thread_cb, 8 * 1024,
                    draw_dave2d_unit);
 #endif
 
@@ -251,7 +251,8 @@ static int32_t _dave2d_evaluate(lv_draw_unit_t * u, lv_draw_task_t * t)
 
         case LV_DRAW_TASK_TYPE_IMAGE: {
                 lv_draw_image_dsc_t * dsc = t->draw_dsc;
-                if((dsc->header.cf >= LV_COLOR_FORMAT_PROPRIETARY_START) || (dsc->header.cf == LV_COLOR_FORMAT_RGB888)) {
+                if((dsc->header.cf >= LV_COLOR_FORMAT_PROPRIETARY_START) || (dsc->header.cf == LV_COLOR_FORMAT_RGB888) ||
+                   (dsc->header.cf == LV_COLOR_FORMAT_RGB565A8)) {
                     ret = 0;
                     break;
                 }
@@ -357,10 +358,10 @@ static int32_t lv_draw_dave2d_dispatch(lv_draw_unit_t * draw_unit, lv_layer_t * 
     if(draw_dave2d_unit->task_act) return 0;
 
     lv_draw_task_t * t = NULL;
-    t = lv_draw_get_next_available_task(layer, NULL, DRAW_UNIT_ID_DAVE2D);
+    t = lv_draw_get_available_task(layer, NULL, DRAW_UNIT_ID_DAVE2D);
     while(t && t->preferred_draw_unit_id != DRAW_UNIT_ID_DAVE2D) {
         t->state = LV_DRAW_TASK_STATE_READY;
-        t = lv_draw_get_next_available_task(layer, NULL, DRAW_UNIT_ID_DAVE2D);
+        t = lv_draw_get_available_task(layer, NULL, DRAW_UNIT_ID_DAVE2D);
     }
 
     if(t == NULL) {
@@ -459,8 +460,8 @@ static void execute_drawing(lv_draw_dave2d_unit_t * u)
 
     lv_area_intersect(&clipped_area,  &t->area, &t->clip_area);
 
-    x = 0 - u->base_unit.target_layer->buf_area.x1;
-    y = 0 - u->base_unit.target_layer->buf_area.y1;
+    x = 0 - t->target_layer->buf_area.x1;
+    y = 0 - t->target_layer->buf_area.y1;
 
     lv_area_move(&clipped_area, x, y);
 

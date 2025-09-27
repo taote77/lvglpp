@@ -122,7 +122,7 @@ const lv_obj_class_t lv_dropdown_class = {
     .editable = LV_OBJ_CLASS_EDITABLE_TRUE,
     .group_def = LV_OBJ_CLASS_GROUP_DEF_TRUE,
     .base_class = &lv_obj_class,
-    .name = "dropdown",
+    .name = "lv_dropdown",
 #if LV_USE_OBJ_PROPERTY
     .prop_index_start = LV_PROPERTY_DROPDOWN_START,
     .prop_index_end = LV_PROPERTY_DROPDOWN_END,
@@ -142,7 +142,7 @@ const lv_obj_class_t lv_dropdownlist_class = {
     .event_cb = lv_dropdown_list_event,
     .instance_size = sizeof(lv_dropdown_list_t),
     .base_class = &lv_obj_class,
-    .name = "dropdown-list",
+    .name = "lv_dropdown-list",
 };
 
 /**********************
@@ -336,7 +336,7 @@ void lv_dropdown_clear_options(lv_obj_t * obj)
     if(dropdown->list) lv_obj_invalidate(dropdown->list);
 }
 
-void lv_dropdown_set_selected(lv_obj_t * obj, uint32_t sel_opt, lv_anim_enable_t anim)
+void lv_dropdown_set_selected(lv_obj_t * obj, uint32_t sel_opt)
 {
     LV_ASSERT_OBJ(obj, MY_CLASS);
 
@@ -347,7 +347,7 @@ void lv_dropdown_set_selected(lv_obj_t * obj, uint32_t sel_opt, lv_anim_enable_t
     dropdown->sel_opt_id_orig = dropdown->sel_opt_id;
 
     if(dropdown->list) {
-        position_to_selected(obj, anim);
+        position_to_selected(obj, LV_ANIM_OFF);
     }
 
     lv_obj_invalidate(obj);

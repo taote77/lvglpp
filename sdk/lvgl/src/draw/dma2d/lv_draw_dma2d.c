@@ -69,7 +69,7 @@ void lv_draw_dma2d_init(void)
 #if LV_DRAW_DMA2D_ASYNC
     g_unit = draw_dma2d_unit;
 
-    lv_result_t res = lv_thread_init(&draw_dma2d_unit->thread, "dma2d", LV_THREAD_PRIO_HIGH, thread_cb, 2 * 1024,
+    lv_result_t res = lv_thread_init(&draw_dma2d_unit->thread, "dma2d", LV_DRAW_THREAD_PRIO, thread_cb, 2 * 1024,
                                      draw_dma2d_unit);
     LV_ASSERT(res == LV_RESULT_OK);
 #endif
@@ -79,6 +79,8 @@ void lv_draw_dma2d_init(void)
     RCC->AHB1ENR |= RCC_AHB1ENR_DMA2DEN;
 #elif defined(STM32H7)
     RCC->AHB3ENR |= RCC_AHB3ENR_DMA2DEN;
+#elif defined(STM32H7RS)
+    RCC->AHB5ENR |= RCC_AHB5ENR_DMA2DEN;
 #else
 #warning "LVGL can't enable the clock for DMA2D"
 #endif
@@ -100,6 +102,8 @@ void lv_draw_dma2d_deinit(void)
     RCC->AHB1ENR &= ~RCC_AHB1ENR_DMA2DEN;
 #elif defined(STM32H7)
     RCC->AHB3ENR &= ~RCC_AHB3ENR_DMA2DEN;
+#elif defined(STM32H7RS)
+    RCC->AHB5ENR &= ~RCC_AHB5ENR_DMA2DEN;
 #endif
 
 #if LV_DRAW_DMA2D_ASYNC
@@ -349,7 +353,7 @@ static int32_t dispatch_cb(lv_draw_unit_t * draw_unit, lv_layer_t * layer)
 #endif
     }
 
-    lv_draw_task_t * t = lv_draw_get_next_available_task(layer, NULL, DRAW_UNIT_ID_DMA2D);
+    lv_draw_task_t * t = lv_draw_get_available_task(layer, NULL, DRAW_UNIT_ID_DMA2D);
     if(t == NULL) {
         return LV_DRAW_UNIT_IDLE;
     }

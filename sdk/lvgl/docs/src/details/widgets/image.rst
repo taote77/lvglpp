@@ -4,8 +4,12 @@
 Image (lv_image)
 ================
 
+.. |deg|    unicode:: U+000B0 .. DEGREE SIGN
+
 Overview
 ********
+
+.. |deg|    unicode:: U+000B0 .. DEGREE SIGN
 
 Images are Widgets that display images from flash (as arrays) or
 from files. Images can display symbols (``LV_SYMBOL_...``) as well.
@@ -128,7 +132,7 @@ set the horizontal and vertical scaling independently.  They can be different va
 
 To rotate the image use :cpp:expr:`lv_image_set_rotation(img, angle_x10)`.
 The ``angle_x10`` argument is an ``int32_t`` containing the angle (in degrees)
-multiplied by 10.  This gives 0.1-degree resolution.  Example:  458 means 45.8°.
+multiplied by 10.  This gives 0.1-degree resolution.  Example:  458 means 45.8\ |deg|\ .
 
 By default, the pivot point of the rotation is the center of the image.
 This can be changed with :cpp:expr:`lv_image_set_pivot(img, pivot_x, pivot_y)` where
@@ -179,6 +183,8 @@ the image source is aligned inside the Widget.
 - :cpp:enumerator:`LV_IMAGE_ALIGN_CENTER`
 - :cpp:enumerator:`LV_IMAGE_ALIGN_STRETCH`
 - :cpp:enumerator:`LV_IMAGE_ALIGN_TILE`
+- :cpp:enumerator:`LV_IMAGE_ALIGN_CONTAIN`
+- :cpp:enumerator:`LV_IMAGE_ALIGN_COVER`
 
 Any ``offset`` value is applied after the image source is aligned. For example setting
 an offset of ``y=-10`` with ``align`` == :cpp:enumerator:`LV_IMAGE_ALIGN_CENTER` will
@@ -188,6 +194,8 @@ To automatically scale or tile the image, pass one of these ``align`` values:
 
 - :cpp:enumerator:`LV_IMAGE_ALIGN_STRETCH` Set X and Y scale to fill the Widget's area
 - :cpp:enumerator:`LV_IMAGE_ALIGN_TILE` Tile image to fill Widget's area. Offset is applied to shift the tiling.
+- :cpp:enumerator:`LV_IMAGE_ALIGN_CONTAIN` The image keeps its aspect ratio, but is resized to the maximum size that fits within the Widget's area.
+- :cpp:enumerator:`LV_IMAGE_ALIGN_COVER` The image keeps its aspect ratio and fills the Widget's area.
 
 
 
