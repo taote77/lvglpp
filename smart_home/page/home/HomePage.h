@@ -11,6 +11,8 @@
 #include <core/widgets/Image.h>
 #include <memory>
 
+#include "qgl/timer/Timer.h"
+
 using namespace lvglpp;
 
 class HomePage : public ::sys::BaseActivity
@@ -36,6 +38,9 @@ private:
     std::unique_ptr<widgets::LvText>   _label;
     std::unique_ptr<widgets::GifImage> _gif;
 
+    std::unique_ptr<QGL::Timer> _timer; // Changed from std::unique_ptr<QGL::Timer> to std::unique_ptr<qgl::Timer>
+    
+    
     std::unique_ptr<widgets::RoundedButton> _toast_btn;
 };
 

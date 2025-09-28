@@ -1,0 +1,233 @@
+#include "MouseEvent.h"
+#include <cmath>
+#include <sstream>
+
+namespace QGL {
+
+MouseEvent::MouseEvent(EventType type, const Point& position, MouseButton button, ModifierKey modifiers)
+    : Event(type), m_position(position), m_lastPosition(position), m_globalPosition(position),
+      m_button(button), m_buttons(button), m_modifiers(modifiers) {
+    setTimestamp(getCurrentTimestamp());
+}
+
+MouseEvent::MouseEvent(const Point& position, const Point& lastPosition, ModifierKey modifiers)
+    : Event(EventType::MouseMove), m_position(position), m_lastPosition(lastPosition), 
+      m_globalPosition(position), m_button(MouseButton::NoButton), 
+      m_buttons(MouseButton::NoButton), m_modifiers(modifiers) {
+    setTimestamp(getCurrentTimestamp());
+}
+
+double MouseEvent::distance() const {
+    Point delta = m_position - m_lastPosition;
+    return std::sqrt(delta.x * delta.x + delta.y * delta.y);
+}
+
+double MouseEvent::angle() const {
+    Point delta = m_position - m_lastPosition;
+    if (delta.x == 0 && delta.y == 0) {
+        return 0.0;
+    }
+    return std::atan2(delta.y, delta.x) * 180.0 / M_PI;
+}
+
+std::unique_ptr<MouseEvent> MouseEvent::createPressEvent(const Point& pos, MouseButton button, ModifierKey modifiers) {
+    return std::make_unique<MousePressEvent>(pos, button, modifiers);
+}
+
+std::unique_ptr<MouseEvent> MouseEvent::createReleaseEvent(const Point& pos, MouseButton button, ModifierKey modifiers) {
+    return std::make_unique<MouseReleaseEvent>(pos, button, modifiers);
+}
+
+std::unique_ptr<MouseEvent> MouseEvent::createClickEvent(const Point& pos, MouseButton button, int clickCount, ModifierKey modifiers) {
+    auto event = std::make_unique<MouseClickEvent>(pos, button, clickCount, modifiers);
+    event->setClickTime(getCurrentTimestamp());
+    return event;
+}
+
+std::unique_ptr<MouseEvent> MouseEvent::createDoubleClickEvent(const Point& pos, MouseButton button, ModifierKey modifiers) {
+    auto event = std::make_unique<MouseDoubleClickEvent>(pos, button, modifiers);
+    event->setClickTime(getCurrentTimestamp());
+    return event;
+}
+
+std::unique_ptr<MouseEvent> MouseEvent::createMoveEvent(const Point& pos, const Point& lastPos, MouseButton buttons, ModifierKey modifiers) {
+    auto event = std::make_unique<MouseMoveEvent>(pos, lastPos, buttons, modifiers);
+    return event;
+}
+
+std::unique_ptr<MouseEvent> MouseEvent::createWheelEvent(const Point& pos, const Point& wheelDelta, ModifierKey modifiers) {
+    auto event = std::make_unique<WheelEvent>(pos, wheelDelta, modifiers);
+    return event;
+}
+
+std::unique_ptr<MouseEvent> MouseEvent::createDragEvent(const Point& pos, const Point& startPos, MouseButton button, ModifierKey modifiers) {
+    auto event = std::make_unique<MouseEvent>(EventType::Input, pos, button, modifiers);
+    event->setDragEvent(true);
+    event->setDragStartPosition(startPos);
+    return event;
+}
+
+std::unique_ptr<Event> MouseEvent::clone() const {
+    auto cloned = std::make_unique<MouseEvent>(type(), m_position, m_button, m_modifiers);
+    
+    // 复制所有属性
+    cloned->setLastPosition(m_lastPosition);
+    cloned->setGlobalPosition(m_globalPosition);
+    cloned->setButtons(m_buttons);
+    cloned->setClickCount(m_clickCount);
+    cloned->setClickTime(m_clickTime);
+    cloned->setDragEvent(m_isDragEvent);
+    cloned->setDragStartPosition(m_dragStartPosition);
+    cloned->setWheelDelta(m_wheelDelta);
+    cloned->setTouchEvent(m_isTouchEvent);
+    cloned->setTouchId(m_touchId);
+    cloned->setPressure(m_pressure);
+    cloned->setTilt(m_tilt);
+    
+    // 复制基类属性
+    cloned->setTimestamp(timestamp());
+    cloned->setSource(source());
+    cloned->setPriority(priority());
+    cloned->setHandled(handled());
+    cloned->setPayload(payload());
+    cloned->setEventName(eventName());
+    
+    return std::unique_ptr<Event>(cloned.release());
+}
+
+String MouseEvent::toString() const {
+    std::ostringstream oss;
+    oss << className() << "{"
+        << "type=" << static_cast<uint32_t>(type())
+        << ", pos=(" << m_position.x << "," << m_position.y << ")"
+        << ", lastPos=(" << m_lastPosition.x << "," << m_lastPosition.y << ")"
+        << ", button=" << static_cast<int>(m_button)
+        << ", buttons=" << static_cast<int>(m_buttons)
+        << ", modifiers=" << static_cast<int>(m_modifiers);
+    
+    if (m_clickCount > 0) {
+        oss << ", clickCount=" << m_clickCount;
+    }
+    
+    if (m_isDragEvent) {
+        oss << ", drag=true"
+            << ", dragStart=(" << m_dragStartPosition.x << "," << m_dragStartPosition.y << ")";
+    }
+    
+    if (m_wheelDelta.x != 0 || m_wheelDelta.y != 0) {
+        oss << ", wheelDelta=(" << m_wheelDelta.x << "," << m_wheelDelta.y << ")";
+    }
+    
+    if (m_isTouchEvent) {
+        oss << ", touchId=" << m_touchId << ", pressure=" << m_pressure;
+    }
+    
+    oss << ", timestamp=" << timestamp() << "}";
+    return oss.str();
+}
+
+std::map<String, Variant> MouseEvent::serialize() const {
+    auto data = Event::serialize();
+    
+    // 位置信息
+    data["position_x"] = Variant(m_position.x());
+    data["position_y"] = Variant(m_position.y());
+    data["last_position_x"] = Variant(m_lastPosition.x());
+    data["last_position_y"] = Variant(m_lastPosition.y());
+    data["global_position_x"] = Variant(m_globalPosition.x());
+    data["global_position_y"] = Variant(m_globalPosition.y());
+    
+    // 按钮和修饰键
+    data["button"] = Variant(static_cast<int>(m_button));
+    data["buttons"] = Variant(static_cast<int>(m_buttons));
+    data["modifiers"] = Variant(static_cast<int>(m_modifiers));
+    
+    // 点击信息
+    data["click_count"] = Variant(m_clickCount);
+    data["click_time"] = Variant(static_cast<int64_t>(m_clickTime));
+    
+    // 拖拽信息
+    data["is_drag_event"] = Variant(m_isDragEvent);
+    data["drag_start_x"] = Variant(m_dragStartPosition.x());
+    data["drag_start_y"] = Variant(m_dragStartPosition.y());
+    
+    // 滚轮信息
+    data["wheel_delta_x"] = Variant(m_wheelDelta.x());
+    data["wheel_delta_y"] = Variant(m_wheelDelta.y());
+    
+    // 触摸信息
+    data["is_touch_event"] = Variant(m_isTouchEvent);
+    data["touch_id"] = Variant(m_touchId);
+    data["pressure"] = Variant(static_cast<double>(m_pressure));
+    
+    // 倾斜信息
+    data["tilt_x"] = Variant(m_tilt.x());
+    data["tilt_y"] = Variant(m_tilt.y());
+    
+    return data;
+}
+
+void MouseEvent::deserialize(const std::map<String, Variant>& data) {
+    Event::deserialize(data);
+    
+    // 位置信息
+    if (data.count("position_x") && data.count("position_y")) {
+        m_position = Point(data.at("position_x").toInt(), data.at("position_y").toInt());
+    }
+    if (data.count("last_position_x") && data.count("last_position_y")) {
+        m_lastPosition = Point(data.at("last_position_x").toInt(), data.at("last_position_y").toInt());
+    }
+    if (data.count("global_position_x") && data.count("global_position_y")) {
+        m_globalPosition = Point(data.at("global_position_x").toInt(), data.at("global_position_y").toInt());
+    }
+    
+    // 按钮和修饰键
+    if (data.count("button")) {
+        m_button = static_cast<MouseButton>(data.at("button").toInt());
+    }
+    if (data.count("buttons")) {
+        m_buttons = static_cast<MouseButton>(data.at("buttons").toInt());
+    }
+    if (data.count("modifiers")) {
+        m_modifiers = static_cast<ModifierKey>(data.at("modifiers").toInt());
+    }
+    
+    // 点击信息
+    if (data.count("click_count")) {
+        m_clickCount = data.at("click_count").toInt();
+    }
+    if (data.count("click_time")) {
+        m_clickTime = static_cast<uint64_t>(data.at("click_time").toInt64());
+    }
+    
+    // 拖拽信息
+    if (data.count("is_drag_event")) {
+        m_isDragEvent = data.at("is_drag_event").toBool();
+    }
+    if (data.count("drag_start_x") && data.count("drag_start_y")) {
+        m_dragStartPosition = Point(data.at("drag_start_x").toInt(), data.at("drag_start_y").toInt());
+    }
+    
+    // 滚轮信息
+    if (data.count("wheel_delta_x") && data.count("wheel_delta_y")) {
+        m_wheelDelta = Point(data.at("wheel_delta_x").toInt(), data.at("wheel_delta_y").toInt());
+    }
+    
+    // 触摸信息
+    if (data.count("is_touch_event")) {
+        m_isTouchEvent = data.at("is_touch_event").toBool();
+    }
+    if (data.count("touch_id")) {
+        m_touchId = data.at("touch_id").toInt();
+    }
+    if (data.count("pressure")) {
+        m_pressure = static_cast<float>(data.at("pressure").toDouble());
+    }
+    
+    // 倾斜信息
+    if (data.count("tilt_x") && data.count("tilt_y")) {
+        m_tilt = Point(data.at("tilt_x").toInt(), data.at("tilt_y").toInt());
+    }
+}
+
+} // namespace QGL

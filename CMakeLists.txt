@@ -27,6 +27,8 @@ endif ()
 
 add_subdirectory(sdk)
 
+add_subdirectory(qgl)
+
 set(ENABLE_DEMO ON CACHE BOOL "Enable demo application")
 if (ENABLE_DEMO)
     add_subdirectory(demo)

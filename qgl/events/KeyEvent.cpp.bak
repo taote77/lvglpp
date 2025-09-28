@@ -1,0 +1,403 @@
+#include "KeyEvent.h"
+#include <sstream>
+#include <unordered_map>
+
+namespace QGL {
+
+// 键码到字符串的映射表
+static const std::unordered_map<Key, String> keyToStringMap = {
+    {Key::Key_Unknown, "Unknown"},
+    {Key::Key_Escape, "Escape"}, {Key::Key_Tab, "Tab"}, {Key::Key_Backtab, "Backtab"},
+    {Key::Key_Backspace, "Backspace"}, {Key::Key_Return, "Return"}, {Key::Key_Enter, "Enter"},
+    {Key::Key_Insert, "Insert"}, {Key::Key_Delete, "Delete"}, {Key::Key_Pause, "Pause"},
+    {Key::Key_Print, "Print"}, {Key::Key_SysReq, "SysReq"}, {Key::Key_Clear, "Clear"},
+    
+    // 导航键
+    {Key::Key_Home, "Home"}, {Key::Key_End, "End"}, {Key::Key_Left, "Left"},
+    {Key::Key_Up, "Up"}, {Key::Key_Right, "Right"}, {Key::Key_Down, "Down"},
+    {Key::Key_PageUp, "PageUp"}, {Key::Key_PageDown, "PageDown"},
+    
+    // 修饰键
+    {Key::Key_Shift, "Shift"}, {Key::Key_Control, "Ctrl"}, {Key::Key_Meta, "Meta"},
+    {Key::Key_Alt, "Alt"}, {Key::Key_AltGr, "AltGr"}, {Key::Key_CapsLock, "CapsLock"},
+    {Key::Key_NumLock, "NumLock"}, {Key::Key_ScrollLock, "ScrollLock"},
+    
+    // 功能键
+    {Key::Key_F1, "F1"}, {Key::Key_F2, "F2"}, {Key::Key_F3, "F3"}, {Key::Key_F4, "F4"},
+    {Key::Key_F5, "F5"}, {Key::Key_F6, "F6"}, {Key::Key_F7, "F7"}, {Key::Key_F8, "F8"},
+    {Key::Key_F9, "F9"}, {Key::Key_F10, "F10"}, {Key::Key_F11, "F11"}, {Key::Key_F12, "F12"},
+    
+    // 数字键
+    {Key::Key_0, "0"}, {Key::Key_1, "1"}, {Key::Key_2, "2"}, {Key::Key_3, "3"},
+    {Key::Key_4, "4"}, {Key::Key_5, "5"}, {Key::Key_6, "6"}, {Key::Key_7, "7"},
+    {Key::Key_8, "8"}, {Key::Key_9, "9"},
+    
+    // 字母键
+    {Key::Key_A, "A"}, {Key::Key_B, "B"}, {Key::Key_C, "C"}, {Key::Key_D, "D"},
+    {Key::Key_E, "E"}, {Key::Key_F, "F"}, {Key::Key_G, "G"}, {Key::Key_H, "H"},
+    {Key::Key_I, "I"}, {Key::Key_J, "J"}, {Key::Key_K, "K"}, {Key::Key_L, "L"},
+    {Key::Key_M, "M"}, {Key::Key_N, "N"}, {Key::Key_O, "O"}, {Key::Key_P, "P"},
+    {Key::Key_Q, "Q"}, {Key::Key_R, "R"}, {Key::Key_S, "S"}, {Key::Key_T, "T"},
+    {Key::Key_U, "U"}, {Key::Key_V, "V"}, {Key::Key_W, "W"}, {Key::Key_X, "X"},
+    {Key::Key_Y, "Y"}, {Key::Key_Z, "Z"},
+    
+    // 标点符号
+    {Key::Key_Space, "Space"}, {Key::Key_Exclam, "!"}, {Key::Key_QuoteDbl, "\""},
+    {Key::Key_NumberSign, "#"}, {Key::Key_Dollar, "$"}, {Key::Key_Percent, "%"},
+    {Key::Key_Ampersand, "&"}, {Key::Key_Apostrophe, "'"}, {Key::Key_ParenLeft, "("},
+    {Key::Key_ParenRight, ")"}, {Key::Key_Asterisk, "*"}, {Key::Key_Plus, "+"},
+    {Key::Key_Comma, ","}, {Key::Key_Minus, "-"}, {Key::Key_Period, "."},
+    {Key::Key_Slash, "/"}, {Key::Key_Colon, ":"}, {Key::Key_Semicolon, ";"},
+    {Key::Key_Less, "<"}, {Key::Key_Equal, "="}, {Key::Key_Greater, ">"},
+    {Key::Key_Question, "?"}, {Key::Key_At, "@"}, {Key::Key_BracketLeft, "["},
+    {Key::Key_Backslash, "\\"}, {Key::Key_BracketRight, "]"}, {Key::Key_AsciiCircum, "^"},
+    {Key::Key_Underscore, "_"}, {Key::Key_QuoteLeft, "`"}, {Key::Key_BraceLeft, "{"},
+    {Key::Key_Bar, "|"}, {Key::Key_BraceRight, "}"}, {Key::Key_AsciiTilde, "~"}
+};
+
+// 字符串到键码的映射表（反向映射）
+static std::unordered_map<String, Key> stringToKeyMap;
+
+// 初始化反向映射表
+static void initializeStringToKeyMap() {
+    if (stringToKeyMap.empty()) {
+        for (const auto& pair : keyToStringMap) {
+            stringToKeyMap[pair.second] = pair.first;
+        }
+    }
+}
+
+KeyEvent::KeyEvent(EventType type, Key key, ModifierKey modifiers, const String& text)
+    : Event(type), m_key(key), m_modifiers(modifiers), m_text(text) {
+    setTimestamp(getCurrentTimestamp());
+    initializeKeyProperties();
+}
+
+KeyEvent::KeyEvent(const String& text, ModifierKey modifiers)
+    : Event(EventType::Input), m_key(Key::Key_Unknown), m_modifiers(modifiers), m_text(text) {
+    setTimestamp(getCurrentTimestamp());
+    initializeKeyProperties();
+}
+
+void KeyEvent::initializeKeyProperties() {
+    // 根据键码设置一些默认属性
+    if (isModifierKey()) {
+        m_text.clear(); // 修饰键通常不产生文本
+    }
+}
+
+bool KeyEvent::isModifierKey() const {
+    return m_key == Key::Key_Shift || m_key == Key::Key_Control ||
+           m_key == Key::Key_Alt || m_key == Key::Key_Meta ||
+           m_key == Key::Key_AltGr || m_key == Key::Key_CapsLock ||
+           m_key == Key::Key_NumLock || m_key == Key::Key_ScrollLock;
+}
+
+bool KeyEvent::isFunctionKey() const {
+    return m_key >= Key::Key_F1 && m_key <= Key::Key_F24;
+}
+
+bool KeyEvent::isNavigationKey() const {
+    return m_key == Key::Key_Home || m_key == Key::Key_End ||
+           m_key == Key::Key_Left || m_key == Key::Key_Up ||
+           m_key == Key::Key_Right || m_key == Key::Key_Down ||
+           m_key == Key::Key_PageUp || m_key == Key::Key_PageDown;
+}
+
+bool KeyEvent::isNumericKey() const {
+    return (m_key >= Key::Key_0 && m_key <= Key::Key_9) ||
+           (m_key >= Key::Key_NumPad0 && m_key <= Key::Key_NumPad9);
+}
+
+bool KeyEvent::isAlphabeticKey() const {
+    return m_key >= Key::Key_A && m_key <= Key::Key_Z;
+}
+
+bool KeyEvent::isPunctuationKey() const {
+    return (m_key >= Key::Key_Exclam && m_key <= Key::Key_AsciiTilde) ||
+           (m_key >= Key::Key_NumPadMultiply && m_key <= Key::Key_NumPadEqual);
+}
+
+bool KeyEvent::isWhitespaceKey() const {
+    return m_key == Key::Key_Space || m_key == Key::Key_Tab ||
+           m_key == Key::Key_Return || m_key == Key::Key_Enter;
+}
+
+bool KeyEvent::isMultimediaKey() const {
+    return m_key >= Key::Key_VolumeDown && m_key <= Key::Key_MediaTogglePlayPause;
+}
+
+bool KeyEvent::matches(Key key, ModifierKey modifiers) const {
+    return m_key == key && m_modifiers == modifiers;
+}
+
+bool KeyEvent::matches(const String& keySequence) const {
+    return this->keySequence() == keySequence;
+}
+
+String KeyEvent::keySequence() const {
+    if (!m_keySequence.empty()) {
+        return m_keySequence;
+    }
+    
+    String sequence;
+    
+    // 添加修饰键
+    if (hasModifier(ModifierKey::ControlModifier)) {
+        sequence += "Ctrl+";
+    }
+    if (hasModifier(ModifierKey::AltModifier)) {
+        sequence += "Alt+";
+    }
+    if (hasModifier(ModifierKey::ShiftModifier)) {
+        sequence += "Shift+";
+    }
+    if (hasModifier(ModifierKey::MetaModifier)) {
+        sequence += "Meta+";
+    }
+    
+    // 添加主键
+    sequence += keyToString(m_key);
+    
+    return sequence;
+}
+
+std::unique_ptr<KeyEvent> KeyEvent::createPressEvent(Key key, ModifierKey modifiers, const String& text) {
+    return std::make_unique<KeyPressEvent>(key, modifiers, text);
+}
+
+std::unique_ptr<KeyEvent> KeyEvent::createReleaseEvent(Key key, ModifierKey modifiers, const String& text) {
+    return std::make_unique<KeyReleaseEvent>(key, modifiers, text);
+}
+
+std::unique_ptr<KeyEvent> KeyEvent::createTextEvent(const String& text, ModifierKey modifiers) {
+    return std::make_unique<TextInputEvent>(text, modifiers);
+}
+
+std::unique_ptr<KeyEvent> KeyEvent::createShortcutEvent(Key key, ModifierKey modifiers) {
+    auto event = std::make_unique<KeyPressEvent>(key, modifiers);
+    return std::unique_ptr<KeyEvent>(event.release());
+}
+
+String KeyEvent::keyToString(Key key) {
+    auto it = keyToStringMap.find(key);
+    if (it != keyToStringMap.end()) {
+        return it->second;
+    }
+    
+    // 对于未找到的键，返回键码
+    std::ostringstream oss;
+    oss << "Key_" << static_cast<int>(key);
+    return oss.str();
+}
+
+Key KeyEvent::stringToKey(const String& keyString) {
+    initializeStringToKeyMap();
+    
+    auto it = stringToKeyMap.find(keyString);
+    if (it != stringToKeyMap.end()) {
+        return it->second;
+    }
+    
+    // 尝试解析 "Key_数字" 格式
+    if (keyString.find("Key_") == 0) {
+        try {
+            int keyCode = std::stoi(keyString.substr(4));
+            return static_cast<Key>(keyCode);
+        } catch (...) {
+            // 解析失败，返回未知键
+        }
+    }
+    
+    return Key::Key_Unknown;
+}
+
+String KeyEvent::modifiersToString(ModifierKey modifiers) {
+    String result;
+    
+    if (static_cast<int>(modifiers) & static_cast<int>(ModifierKey::ControlModifier)) {
+        if (!result.empty()) result += "+";
+        result += "Ctrl";
+    }
+    if (static_cast<int>(modifiers) & static_cast<int>(ModifierKey::AltModifier)) {
+        if (!result.empty()) result += "+";
+        result += "Alt";
+    }
+    if (static_cast<int>(modifiers) & static_cast<int>(ModifierKey::ShiftModifier)) {
+        if (!result.empty()) result += "+";
+        result += "Shift";
+    }
+    if (static_cast<int>(modifiers) & static_cast<int>(ModifierKey::MetaModifier)) {
+        if (!result.empty()) result += "+";
+        result += "Meta";
+    }
+    
+    return result;
+}
+
+ModifierKey KeyEvent::stringToModifiers(const String& modifierString) {
+    int modifiers = static_cast<int>(ModifierKey::NoModifier);
+    
+    if (modifierString.find("Ctrl") != String::npos) {
+        modifiers |= static_cast<int>(ModifierKey::ControlModifier);
+    }
+    if (modifierString.find("Alt") != String::npos) {
+        modifiers |= static_cast<int>(ModifierKey::AltModifier);
+    }
+    if (modifierString.find("Shift") != String::npos) {
+        modifiers |= static_cast<int>(ModifierKey::ShiftModifier);
+    }
+    if (modifierString.find("Meta") != String::npos) {
+        modifiers |= static_cast<int>(ModifierKey::MetaModifier);
+    }
+    
+    return static_cast<ModifierKey>(modifiers);
+}
+
+std::unique_ptr<Event> KeyEvent::clone() const {
+    auto cloned = std::make_unique<KeyEvent>(type(), m_key, m_modifiers, m_text);
+    
+    // 复制所有属性
+    cloned->setKeySequence(m_keySequence);
+    cloned->setNativeKeyCode(m_nativeKeyCode);
+    cloned->setNativeScanCode(m_nativeScanCode);
+    cloned->setNativeVirtualKey(m_nativeVirtualKey);
+    cloned->setAutoRepeat(m_autoRepeat);
+    cloned->setRepeatCount(m_repeatCount);
+    cloned->setIMEComposition(m_hasIMEComposition);
+    cloned->setCompositionText(m_compositionText);
+    cloned->setCompositionStart(m_compositionStart);
+    cloned->setCompositionLength(m_compositionLength);
+    cloned->setDeadKey(m_isDeadKey);
+    
+    // 复制基类属性
+    cloned->setTimestamp(timestamp());
+    cloned->setSource(source());
+    cloned->setPriority(priority());
+    cloned->setHandled(handled());
+    cloned->setPayload(payload());
+    cloned->setEventName(eventName());
+    
+    return std::unique_ptr<Event>(cloned.release());
+}
+
+String KeyEvent::toString() const {
+    std::ostringstream oss;
+    oss << className() << "{"
+        << "type=" << static_cast<uint32_t>(type())
+        << ", key=" << keyToString(m_key)
+        << ", keyCode=" << static_cast<int>(m_key)
+        << ", modifiers=" << modifiersToString(m_modifiers);
+    
+    if (!m_text.empty()) {
+        oss << ", text=\"" << m_text << "\"";
+    }
+    
+    if (!m_keySequence.empty()) {
+        oss << ", sequence=\"" << m_keySequence << "\"";
+    }
+    
+    if (m_autoRepeat) {
+        oss << ", autoRepeat=true, repeatCount=" << m_repeatCount;
+    }
+    
+    if (m_hasIMEComposition) {
+        oss << ", IME=true, composition=\"" << m_compositionText << "\""
+            << ", start=" << m_compositionStart << ", length=" << m_compositionLength;
+    }
+    
+    if (m_isDeadKey) {
+        oss << ", deadKey=true";
+    }
+    
+    oss << ", timestamp=" << timestamp() << "}";
+    return oss.str();
+}
+
+std::map<String, Variant> KeyEvent::serialize() const {
+    auto data = Event::serialize();
+    
+    // 基本键盘信息
+    data["key"] = Variant(static_cast<int>(m_key));
+    data["modifiers"] = Variant(static_cast<int>(m_modifiers));
+    data["text"] = Variant(m_text);
+    data["key_sequence"] = Variant(m_keySequence);
+    
+    // 原生键码
+    data["native_key_code"] = Variant(m_nativeKeyCode);
+    data["native_scan_code"] = Variant(m_nativeScanCode);
+    data["native_virtual_key"] = Variant(m_nativeVirtualKey);
+    
+    // 自动重复
+    data["auto_repeat"] = Variant(m_autoRepeat);
+    data["repeat_count"] = Variant(m_repeatCount);
+    
+    // IME支持
+    data["has_ime_composition"] = Variant(m_hasIMEComposition);
+    data["composition_text"] = Variant(m_compositionText);
+    data["composition_start"] = Variant(m_compositionStart);
+    data["composition_length"] = Variant(m_compositionLength);
+    
+    // 死键
+    data["is_dead_key"] = Variant(m_isDeadKey);
+    
+    return data;
+}
+
+void KeyEvent::deserialize(const std::map<String, Variant>& data) {
+    Event::deserialize(data);
+    
+    // 基本键盘信息
+    if (data.count("key")) {
+        m_key = static_cast<Key>(data.at("key").toInt());
+    }
+    if (data.count("modifiers")) {
+        m_modifiers = static_cast<ModifierKey>(data.at("modifiers").toInt());
+    }
+    if (data.count("text")) {
+        m_text = data.at("text").toString();
+    }
+    if (data.count("key_sequence")) {
+        m_keySequence = data.at("key_sequence").toString();
+    }
+    
+    // 原生键码
+    if (data.count("native_key_code")) {
+        m_nativeKeyCode = data.at("native_key_code").toInt();
+    }
+    if (data.count("native_scan_code")) {
+        m_nativeScanCode = data.at("native_scan_code").toInt();
+    }
+    if (data.count("native_virtual_key")) {
+        m_nativeVirtualKey = data.at("native_virtual_key").toInt();
+    }
+    
+    // 自动重复
+    if (data.count("auto_repeat")) {
+        m_autoRepeat = data.at("auto_repeat").toBool();
+    }
+    if (data.count("repeat_count")) {
+        m_repeatCount = data.at("repeat_count").toInt();
+    }
+    
+    // IME支持
+    if (data.count("has_ime_composition")) {
+        m_hasIMEComposition = data.at("has_ime_composition").toBool();
+    }
+    if (data.count("composition_text")) {
+        m_compositionText = data.at("composition_text").toString();
+    }
+    if (data.count("composition_start")) {
+        m_compositionStart = data.at("composition_start").toInt();
+    }
+    if (data.count("composition_length")) {
+        m_compositionLength = data.at("composition_length").toInt();
+    }
+    
+    // 死键
+    if (data.count("is_dead_key")) {
+        m_isDeadKey = data.at("is_dead_key").toBool();
+    }
+}
+
+} // namespace QGL

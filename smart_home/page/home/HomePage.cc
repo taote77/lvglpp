@@ -1,4 +1,5 @@
 #include "HomePage.h"
+#include "core/log/log.h"
 #include "core/sys/Activity.h"
 #include "core/sys/TaskStack.h"
 #include "core/widgets/BaseItem.h"
@@ -6,6 +7,8 @@
 #include "page/sensor/SensorActivity.h"
 #include "theme/form_design.h"
 #include <i18n/LvTranslator.h>
+
+#include "qgl/signals/Signal.h"
 
 using namespace lvglpp;
 using namespace form::design;
@@ -37,6 +40,37 @@ void HomePage::onCreate(void *arg)
     });
 
     _drawer = std::make_shared<lvglpp::ui::page::TopDrawer>(this->getRoot());
+
+
+    //  Timer(int interval = 1000, TimerType type = TimerType::Repeating, Object* parent = nullptr);
+    // Timer(std::function<void()> callback, int interval = 1000, TimerType type = TimerType::Repeating, Object* parent = nullptr);
+
+    _timer = std::make_unique<QGL::Timer>(
+        [this]() -> void {
+            // _drawer->updateDeviceInfo(nullptr);
+
+            static int count = 0;
+            if (count >= 15)
+            {
+                _timer->stop();
+                // print stop info
+                LOG_INFO() << "HomePage::_timer stop";
+            }
+
+            LOG_INFO() << "HomePage::_timer callback" << count;
+            count++;
+        },
+        1000, QGL::TimerType::Repeating, nullptr);
+
+        // 1000, QGL::TimerType::SingleShot, nullptr);
+    
+    
+    // CONNECT(_timer.get(), &QGL::Timer::timeout, this, [this]() {
+    //     LOG_INFO() << "HomePage::_timer callback";
+    //     });
+    
+    _timer->start();
+    
 }
 
 void HomePage::onNotifyUI(const sys::Event &evt)

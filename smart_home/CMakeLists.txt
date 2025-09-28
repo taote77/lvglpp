@@ -80,13 +80,14 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 target_link_libraries(${PROJECT_NAME} PRIVATE
     lvglpp
     sqlite3 ${SDL2_LIBRARIES} ${Boost_LIBRARIES}
-    # lvgl
+    qgl_framework
 )
 
 
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/../lvgl/
     ${CMAKE_CURRENT_LIST_DIR}/../lvgl/src/
+    ${CMAKE_CURRENT_LIST_DIR}/../
 )
 
 
