@@ -2,7 +2,7 @@ project(smart-home-ui)
 
 include(CheckCXXCompilerFlag)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 add_executable(${PROJECT_NAME})
 
