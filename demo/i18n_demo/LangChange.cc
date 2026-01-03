@@ -3,6 +3,7 @@
 #include "color_sheet.h"
 #include "core/sys/SdlSimulateApplication.h"
 #include "core/sys/TaskStack.h"
+#include "core/widgets/ButtonBuilder.h"
 #include "core/widgets/LvText.h"
 #include "session.h"
 #include <core/log/log.h>
@@ -133,17 +134,23 @@ LangChangePage::~LangChangePage()
 
 void LangChangePage::onCreate(void *arg)
 {
-    _label = std::make_shared<lvglpp::widgets::LvText>(("中文😀1"), CLR_SUCCESS_CONTAINER, getRoot(), lvglpp::widgets::LvText::TextStyle::FontSize20);
+    _label = std::make_unique<lvglpp::widgets::LvText>(("中文😀1"), CLR_SUCCESS_CONTAINER, getRoot(), lvglpp::widgets::LvText::TextStyle::FontSize20);
 
     _label->setAligment(LV_ALIGN_CENTER, 0, -120);
 
     static auto createLabel = [this]() {
-        _label1 = std::make_shared<lvglpp::widgets::LvText>(lvglpp::LvTranslator::tr("ChangeLangWarnText"), CLR_SUCCESS_CONTAINER, getRoot());
+        _label1 = std::make_unique<lvglpp::widgets::LvText>(lvglpp::LvTranslator::tr("ChangeLangWarnText"), CLR_SUCCESS_CONTAINER, getRoot());
 
         _label->setAligment(LV_ALIGN_CENTER, 0, -140);
     };
 
-    auto btn = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "中文😀 Button", getRoot());
+    auto btn = widgets::ButtonBuilder() //
+                   .setWidth(200)
+                   .setHeight(40)
+                   .setColorStyle(widgets::PushButton::ColorStyle::Gray)
+                   .setText("中文😀 Button")
+                   .build(getRoot());
+
     btn->setPos(480, 300);
     btn->setAligment(LV_ALIGN_CENTER, 0, -50);
     btn->setOnClickedListener([this]() {
@@ -158,9 +165,14 @@ void LangChangePage::onCreate(void *arg)
 
         _label->setText(msg);
     });
-    _btn_chinese = btn;
+    _btn_chinese = std::move(btn);
 
-    btn = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "英文", getRoot());
+    btn = widgets::ButtonBuilder() //
+              .setWidth(200)
+              .setHeight(40)
+              .setColorStyle(widgets::PushButton::ColorStyle::Gray)
+              .setText("English Button")
+              .build(getRoot());
     btn->setPos(480, 300);
     btn->setAligment(LV_ALIGN_CENTER, 0, 0);
     btn->setOnClickedListener([this]() {
@@ -172,9 +184,14 @@ void LangChangePage::onCreate(void *arg)
 
         createLabel();
     });
-    _btn_english = btn;
+    _btn_english = std::move(btn);
 
-    btn = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "日文", getRoot());
+    btn = widgets::ButtonBuilder() //
+              .setWidth(200)
+              .setHeight(40)
+              .setColorStyle(widgets::PushButton::ColorStyle::Gray)
+              .setText("日文 Button")
+              .build(getRoot());
     btn->setPos(480, 300);
     btn->setAligment(LV_ALIGN_CENTER, 0, 50);
     btn->setOnClickedListener([this]() {
@@ -185,9 +202,15 @@ void LangChangePage::onCreate(void *arg)
         createLabel();
     });
 
-    _btn_japanese = btn;
+    _btn_japanese = std::move(btn);
 
-    btn = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "俄语", getRoot());
+    btn = widgets::ButtonBuilder() //
+              .setWidth(200)
+              .setHeight(40)
+              .setColorStyle(widgets::PushButton::ColorStyle::Gray)
+              .setText("Русский Button")
+              .build(getRoot());
+
     btn->setPos(480, 300);
     btn->setAligment(LV_ALIGN_CENTER, 0, 100);
     btn->setOnClickedListener([this]() {
@@ -198,24 +221,31 @@ void LangChangePage::onCreate(void *arg)
 
         createLabel();
     });
-    _btn_russian = btn;
+    _btn_russian = std::move(btn);
 
-    btn = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "测试", getRoot());
+    btn = widgets::ButtonBuilder() //
+              .setWidth(200)
+              .setHeight(40)
+              .setColorStyle(widgets::PushButton::ColorStyle::Gray)
+              .setText("测试 Button")
+              .build(getRoot());
     btn->setPos(480, 300);
     btn->setAligment(LV_ALIGN_CENTER, 0, 150);
-    btn->setOnClickedListener([this, btn]() {
+    _btn_test = std::move(btn);
+
+    _btn_test->setOnClickedListener([this]() {
         _txt = (_txt == "Start") ? "Stop" : "Start";
 
         LOG_DEBUG() << "Test lang";
 
         createLabel();
 
-        btn->emitSignal("hello");
+        _btn_test->emitSignal("hello");
 
         sys::SdlSimulateApplication::simulate_click_at(780, 4);
     });
 
-    Object::connect(btn.get(), "hello", [this]() {
+    Object::connect(_btn_test.get(), "hello", [this]() {
         LOG_DEBUG() << "onHello";
         //
 
@@ -245,9 +275,13 @@ void LangChangePage::onCreate(void *arg)
         }
     });
 
-    _btn_test = btn;
+    _btn_simu = widgets::ButtonBuilder() //
+                    .setWidth(200)
+                    .setHeight(40)
+                    .setColorStyle(widgets::PushButton::ColorStyle::Gray)
+                    .setText("模拟")
+                    .build(getRoot());
 
-    _btn_simu = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "模拟", getRoot());
     _btn_simu->setPos(480, 300);
 
     _btn_simu->setAligment(LV_ALIGN_TOP_RIGHT, 0, 0);

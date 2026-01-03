@@ -7,10 +7,13 @@
 #include "Application.h"
 
 namespace lvglpp::sys {
+
 class DrmApplication : public Application
 {
 public:
     DrmApplication(int argc, char *argv[]);
+
+    ~DrmApplication();
 
     virtual bool initApp() override;
 

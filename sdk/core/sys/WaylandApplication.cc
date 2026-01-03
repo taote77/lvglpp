@@ -1,8 +1,9 @@
-
 #ifdef USED_WAYLAND
+
 #include "WaylandApplication.h"
 // #include "lv_drivers/wayland/wayland.h"
 #include "lvgl.h"
+
 namespace lvglpp {
 namespace sys {
 WaylandApplication::WaylandApplication(int argc, char **argv) : Application(argc, argv)

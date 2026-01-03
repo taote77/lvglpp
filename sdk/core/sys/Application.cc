@@ -6,6 +6,7 @@
 #include "core/tools/MemoryResManager.h"
 #include "core/tools/Utils.h"
 #include <boost/dll.hpp>
+#include <memory>
 #include <thread>
 
 namespace lvglpp::sys {
@@ -170,7 +171,7 @@ int Application::exec()
     TaskStack::getInstance()->start();
     if (TaskStack::getInstance()->depth() == 0)
     {
-        TaskStack::getInstance()->pushView(std::shared_ptr<Activity>(new BaseActivity()));
+        TaskStack::getInstance()->pushView(std::make_shared<BaseActivity>());
     }
 
     while (true)

@@ -2,14 +2,9 @@
 
 #include "core/sys/SdlSimulateApplication.h"
 #include "core/sys/TaskStack.h"
-#include "thorvg.h"
-#include <pthread.h>
-#include <unistd.h>
 
-void thorvg_init()
-{
-    tvg::Initializer::init(tvg::CanvasEngine::Sw, 0); // 使用软件渲染引擎
-}
+// #include <pthread.h>
+// #include <unistd.h>
 
 int main(int argc, char *argv[])
 {
@@ -19,8 +14,6 @@ int main(int argc, char *argv[])
     {
         return -1;
     }
-
-    thorvg_init();
 
     lvglpp::sys::TaskStack::getInstance()->pushView(std::make_shared<BindDemo>());
 

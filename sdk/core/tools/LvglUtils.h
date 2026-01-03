@@ -3,8 +3,14 @@
 
 #include "lvgl.h"
 
-namespace lvglpp {
-namespace tools {
+/*******************************************************************************
+ * @brief lvgl工具类
+ * @note Factory Pattern, 用于创建各种控件
+ * @details
+ ******************************************************************************/
+
+namespace lvglpp::tools {
+
 class LvglUtils
 {
 public:
@@ -53,7 +59,6 @@ public:
 
     static lv_obj_t *createLvglLottie(lv_obj_t *parent);
 };
-} // namespace tools
-} // namespace lvglpp
+} // namespace lvglpp::tools
 
 #endif // LVPP_UTILS_H

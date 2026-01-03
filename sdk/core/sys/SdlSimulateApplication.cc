@@ -14,12 +14,19 @@
 
 #include <unistd.h>
 
+#include "thorvg.h"
+
 // 定义输入设备句柄和状态
 
 static lv_indev_t *_simu_touch_indev{nullptr};
 
 static lv_point_t click_pos;
 static bool       is_pressed = false;
+
+void thorvg_init()
+{
+    tvg::Initializer::init(tvg::CanvasEngine::Sw, 0); // 使用软件渲染引擎
+}
 
 // 输入设备读取回调
 static void mouse_read(lv_indev_t *indev, lv_indev_data_t *data)
@@ -177,6 +184,9 @@ bool SdlSimulateApplication::initApp()
         LV_LOG_WARN("Application init failed!");
     }
     halInit();
+
+    thorvg_init();
+
     return true;
 }
 

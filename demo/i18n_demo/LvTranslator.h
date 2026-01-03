@@ -2,6 +2,13 @@
 #define LV_TRANSLATOR_H
 
 #include <string>
+
+/*******************************************************************************
+ * @brief lvgl多语言翻译类
+ * @note Singleton Pattern
+ * @details
+ ******************************************************************************/
+
 namespace lvglpp {
 
 enum LANGUAGE {

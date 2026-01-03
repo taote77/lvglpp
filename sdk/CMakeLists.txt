@@ -33,7 +33,7 @@ endif ()
 add_compile_definitions(USED_SDL ON)
 
     
-# add_compile_definitions(DLV_USE_SDL ON)
+add_compile_definitions(DLV_USE_SDL ON)
 
 
 # Main include files of the project

@@ -5,9 +5,11 @@ if (CMAKE_SYSTEM_PROCESSOR MATCHES "arm" OR CMAKE_SYSTEM_PROCESSOR MATCHES "aarc
     add_definitions(-DUSED_FRAMEBUFF)
     #add_definitions(-DUSED_WAYLAND)
 else ()
-    find_package(SDL2 REQUIRED SDL2)
-    add_definitions(-DUSED_SDL)
-    include_directories(${SDL2_INCLUDE_DIRS})
+    add_definitions(-DUSE_LINUX_DRM)
+
+    # find_package(SDL2 REQUIRED SDL2)
+    # add_definitions(-DUSED_SDL)
+    # include_directories(${SDL2_INCLUDE_DIRS})
 endif ()
 
 

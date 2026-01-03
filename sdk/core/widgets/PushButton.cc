@@ -1,16 +1,17 @@
-
-#include "RoundedButton.h"
+#include "PushButton.h"
 #include "color_sheet.h"
 // #include "core/tools/ImageManager.h"
 // #include "core/tools/LvglUtils.h"
 // #include "core/tools/Utils.h"
 #include <boost/algorithm/string/predicate.hpp>
+#include <memory>
+// #include <memory>
 
 namespace lvglpp::widgets {
 
 using namespace form::design;
 
-RoundedButton::RoundedButton(int width, int height, RoundedButton::ColorStyle type, const std::string &strMsg, BaseItem *parent) : BaseItem(parent), type_(type)
+PushButton::PushButton(int width, int height, PushButton::ColorStyle type, const std::string &strMsg, BaseItem *parent) : BaseItem(parent), type_(type)
 {
     init(width, height, type);
     if (boost::starts_with(strMsg, ":/"))
@@ -24,7 +25,7 @@ RoundedButton::RoundedButton(int width, int height, RoundedButton::ColorStyle ty
     setColorType(type);
 }
 
-RoundedButton::RoundedButton(int width, int height, RoundedButton::ColorStyle type, const std::string &strMsg, const std::string &strImgPath, BaseItem *parent) :
+PushButton::PushButton(int width, int height, PushButton::ColorStyle type, const std::string &strMsg, const std::string &strImgPath, BaseItem *parent) :
     BaseItem(parent), type_(type)
 {
     init(width, height, type);
@@ -33,13 +34,13 @@ RoundedButton::RoundedButton(int width, int height, RoundedButton::ColorStyle ty
     setColorType(type);
 }
 
-void RoundedButton::init(int width, int height, RoundedButton::ColorStyle type)
+void PushButton::init(int width, int height, PushButton::ColorStyle type)
 {
     setSize((lv_coord_t)width, (lv_coord_t)height);
     setRadius(8);
 }
 
-void RoundedButton::initLabel(const std::string &msg, RoundedButton::ColorStyle type)
+void PushButton::initLabel(const std::string &msg, PushButton::ColorStyle type)
 {
     if (getLvglItem() == nullptr)
     {
@@ -49,13 +50,13 @@ void RoundedButton::initLabel(const std::string &msg, RoundedButton::ColorStyle 
     label_->setAligment(LV_ALIGN_CENTER, 0, 0);
 }
 
-void RoundedButton::setColorType(ColorStyle type)
+void PushButton::setColorType(ColorStyle type)
 {
     if (getLvglItem() == nullptr)
     {
         return;
     }
-    if (type == RoundedButton::Blue)
+    if (type == PushButton::Blue)
     {
         lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_WIDGET_BUTTON_BLUE), LV_STATE_DEFAULT);
         lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_WIDGET_BUTTON_BLUE_DIS), LV_STATE_PRESSED);
@@ -64,7 +65,7 @@ void RoundedButton::setColorType(ColorStyle type)
         {
             label_->setTextClr(CLR_ON_SURFACE);
         }
-    } else if (type == RoundedButton::Gray)
+    } else if (type == PushButton::Gray)
     {
         lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_SECONDARY), LV_STATE_DEFAULT);
         lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_WIDGET_BUTTON_GRAY_DIS), LV_STATE_PRESSED);
@@ -73,7 +74,7 @@ void RoundedButton::setColorType(ColorStyle type)
         {
             label_->setTextClr(CLR_ON_SURFACE);
         }
-    } else if (type == RoundedButton::DarkGray)
+    } else if (type == PushButton::DarkGray)
     {
         lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_SECONDARY_CONTAINER), LV_STATE_DEFAULT);
         lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_PRIMARY_BLACK_HOVER), LV_STATE_PRESSED);
@@ -82,7 +83,7 @@ void RoundedButton::setColorType(ColorStyle type)
         {
             label_->setTextClr(CLR_ON_SURFACE);
         }
-    } else if (type == RoundedButton::Dark)
+    } else if (type == PushButton::Dark)
     {
         lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_PRIMARY_DARK_BG), LV_STATE_DEFAULT);
         lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_PRIMARY_BLACK), LV_STATE_PRESSED);
@@ -92,7 +93,7 @@ void RoundedButton::setColorType(ColorStyle type)
         {
             label_->setTextClr(CLR_ON_SURFACE);
         }
-    } else if (type == RoundedButton::LightBlue)
+    } else if (type == PushButton::LightBlue)
     {
         lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(0xF7F9FF), LV_STATE_DEFAULT);
         lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(0xEAEFFF), LV_STATE_PRESSED);
@@ -102,7 +103,7 @@ void RoundedButton::setColorType(ColorStyle type)
         {
             label_->setTextClr(CLR_PRIMARY_BLUE);
         }
-    } else if (type == RoundedButton::BlackBroder)
+    } else if (type == PushButton::BlackBroder)
     {
         lv_obj_set_style_bg_opa(getLvglItem(), LV_OPA_TRANSP, LV_STATE_DEFAULT);
         lv_obj_set_style_border_width(getLvglItem(), 1, LV_STATE_DEFAULT);
@@ -112,7 +113,7 @@ void RoundedButton::setColorType(ColorStyle type)
         {
             label_->setTextClr(CLR_PRIMARY_BLACK);
         }
-    } else if (type == RoundedButton::Red)
+    } else if (type == PushButton::Red)
     {
         lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_WARNING_DARK), LV_STATE_DEFAULT);
         lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(0x661616), LV_STATE_PRESSED);
@@ -135,17 +136,17 @@ void RoundedButton::setColorType(ColorStyle type)
     }
 }
 
-void RoundedButton::initImage(const std::string &url)
+void PushButton::initImage(const std::string &url)
 {
     if (getLvglItem() == nullptr)
     {
         return;
     }
-    img_obj_.reset(new widgets::Image(url, this));
+    img_obj_ = std::make_unique<widgets::Image>(url, this);
     img_obj_->setAligment(LV_ALIGN_CENTER, 0, 0);
 }
 
-void RoundedButton::setImagePos(int x, int y)
+void PushButton::setImagePos(int x, int y)
 {
     if (img_obj_ == nullptr)
     {
@@ -154,7 +155,7 @@ void RoundedButton::setImagePos(int x, int y)
     img_obj_->setPos(x, y);
 }
 
-void RoundedButton::setTextPos(int x, int y)
+void PushButton::setTextPos(int x, int y)
 {
     if (label_ == nullptr)
     {
@@ -163,7 +164,7 @@ void RoundedButton::setTextPos(int x, int y)
     label_->setPos((lv_coord_t)x, (lv_coord_t)y);
 }
 
-void RoundedButton::setImagePos(lv_align_t align, int x, int y)
+void PushButton::setImagePos(lv_align_t align, int x, int y)
 {
     if (img_obj_ == nullptr)
     {
@@ -172,7 +173,7 @@ void RoundedButton::setImagePos(lv_align_t align, int x, int y)
     img_obj_->setAligment(align, (lv_coord_t)x, (lv_coord_t)y);
 }
 
-void RoundedButton::setTextPos(lv_align_t align, int x, int y)
+void PushButton::setTextPos(lv_align_t align, int x, int y)
 {
     if (label_ == nullptr)
     {
@@ -181,12 +182,12 @@ void RoundedButton::setTextPos(lv_align_t align, int x, int y)
     label_->setAligment(align, (lv_coord_t)x, (lv_coord_t)y);
 }
 
-void RoundedButton::setTextAlignment(lv_text_align_t align_type)
+void PushButton::setTextAlignment(lv_text_align_t align_type)
 {
     lv_style_set_text_align(label_->getTextStyle(), align_type);
 }
 
-void RoundedButton::setTextMsg(const std::string &str)
+void PushButton::setTextMsg(const std::string &str)
 {
     if (label_ == nullptr)
     {
@@ -195,10 +196,10 @@ void RoundedButton::setTextMsg(const std::string &str)
     label_->setText(str);
 }
 
-void RoundedButton::setEnable(bool enable)
+void PushButton::setEnable(bool enable)
 {
     BaseItem::setEnable(enable);
-    if (type_ == RoundedButton::Gray)
+    if (type_ == PushButton::Gray)
     {
         if (label_ != nullptr)
         {
@@ -207,7 +208,7 @@ void RoundedButton::setEnable(bool enable)
     }
 }
 
-void RoundedButton::changeImageUrl(const std::string &url)
+void PushButton::changeImageUrl(const std::string &url)
 {
     if (img_obj_ != nullptr)
     {
@@ -215,13 +216,13 @@ void RoundedButton::changeImageUrl(const std::string &url)
     }
 }
 
-void RoundedButton::setOnClickedListener(const std::function<void()> &l)
+void PushButton::setOnClickedListener(const std::function<void()> &l)
 {
     onButtonClicked_cb_ = l;
-    BaseItem::setOnClickedListener(std::bind(&RoundedButton::handleButtonClicked, this));
+    BaseItem::setOnClickedListener(std::bind(&PushButton::handleButtonClicked, this));
 }
 
-void RoundedButton::handleButtonClicked()
+void PushButton::handleButtonClicked()
 {
     if (repeat_ms_ > 0)
     {

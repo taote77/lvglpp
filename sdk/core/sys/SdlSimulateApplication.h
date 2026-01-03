@@ -8,6 +8,12 @@
 #include "Application.h"
 
 namespace lvglpp::sys {
+
+/**
+ * @brief SDL模拟程序
+ * @note facade Pattern, 隐藏底层复杂的初始化流程
+         包括lvgl 渲染，驱动注册，定时器, png处理, 字体等
+ */
 class SdlSimulateApplication : public Application
 {
 public:

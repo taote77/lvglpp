@@ -1,8 +1,7 @@
 
 #include "LvglUtils.h"
 
-namespace lvglpp {
-namespace tools {
+namespace lvglpp::tools {
 
 lv_obj_t *LvglUtils::createLvglItem(lv_obj_t *parent)
 {
@@ -87,5 +86,4 @@ lv_obj_t *LvglUtils::createLvglLottie(lv_obj_t *parent)
     return lv_lottie_create(parent);
 }
 
-} // namespace tools
-} // namespace lvglpp
+} // namespace lvglpp::tools

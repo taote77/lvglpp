@@ -5,7 +5,8 @@
 #include "core/sys/BaseActivity.h"
 #include "core/sys/Event.h"
 #include "core/widgets/LvText.h"
-#include "core/widgets/RoundedButton.h"
+#include "core/widgets/PushButton.h"
+// #include "core/widgets/RoundedButton.h"
 #include "core/widgets/Text.h"
 #include <memory>
 
@@ -28,15 +29,15 @@ private:
     lv_subject_t _subject;
 
     std::string                      _txt{"Start"};
-    std::shared_ptr<widgets::LvText> _label;
-    std::shared_ptr<widgets::LvText> _label1;
+    std::unique_ptr<widgets::LvText> _label;
+    std::unique_ptr<widgets::LvText> _label1;
 
-    std::shared_ptr<widgets::RoundedButton> _btn_chinese;
-    std::shared_ptr<widgets::RoundedButton> _btn_english;
-    std::shared_ptr<widgets::RoundedButton> _btn_japanese;
-    std::shared_ptr<widgets::RoundedButton> _btn_russian;
-    std::shared_ptr<widgets::RoundedButton> _btn_test;
-    std::shared_ptr<widgets::RoundedButton> _btn_simu;
+    std::unique_ptr<widgets::PushButton> _btn_chinese;
+    std::unique_ptr<widgets::PushButton> _btn_english;
+    std::unique_ptr<widgets::PushButton> _btn_japanese;
+    std::unique_ptr<widgets::PushButton> _btn_russian;
+    std::unique_ptr<widgets::PushButton> _btn_test;
+    std::unique_ptr<widgets::PushButton> _btn_simu;
 };
 
 #endif // _LANG_CHANGE_PAGE_H
