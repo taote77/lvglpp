@@ -2,7 +2,7 @@
 
 #if (defined(USED_SDL)) || (defined(USED_SDL_GPU))
 
-#include "SdlSimulateApplication.h"
+#include "SdlApplication.h"
 #include "lvgl/src/core/lv_global.h"
 #include <lvgl.h>
 
@@ -167,17 +167,17 @@ void lv_linux_run_loop()
 }
 
 namespace lvglpp::sys {
-SdlSimulateApplication::SdlSimulateApplication(int argc, char **argv) : Application(argc, argv)
+SdlApplication::SdlApplication(int argc, char **argv) : Application(argc, argv)
 {
     configure_simulator(argc, argv);
 }
 
-lv_display_t *SdlSimulateApplication::getDisplay()
+lv_display_t *SdlApplication::getDisplay()
 {
     return _display;
 }
 
-bool SdlSimulateApplication::initApp()
+bool SdlApplication::initApp()
 {
     if (!Application::initApp())
     {
@@ -190,7 +190,7 @@ bool SdlSimulateApplication::initApp()
     return true;
 }
 
-void SdlSimulateApplication::simulate_click_at(int32_t x, int32_t y)
+void SdlApplication::simulate_click_at(int32_t x, int32_t y)
 {
     //
     // 设置坐标和按下状态
@@ -216,7 +216,7 @@ void SdlSimulateApplication::simulate_click_at(int32_t x, int32_t y)
     lv_tick_inc(10);
 }
 
-void SdlSimulateApplication::simulate_click_at(lv_obj_t *obj, int32_t x, int32_t y)
+void SdlApplication::simulate_click_at(lv_obj_t *obj, int32_t x, int32_t y)
 {
     // TODO
     lv_point_t pos{0, 0};
@@ -229,7 +229,7 @@ void SdlSimulateApplication::simulate_click_at(lv_obj_t *obj, int32_t x, int32_t
     }
 }
 
-void SdlSimulateApplication::setTheme(lv_theme_t *theme)
+void SdlApplication::setTheme(lv_theme_t *theme)
 {
     if (!theme)
     {
@@ -243,12 +243,12 @@ void SdlSimulateApplication::setTheme(lv_theme_t *theme)
     }
 }
 
-void SdlSimulateApplication::exit(int code)
+void SdlApplication::exit(int code)
 {
     quick_exit(code);
 }
 
-void SdlSimulateApplication::lv_linux_disp_init()
+void SdlApplication::lv_linux_disp_init()
 {
     _display = lv_sdl_window_create(LV_HOR_RES_MAX, LV_VER_RES_MAX);
 
@@ -274,7 +274,7 @@ void SdlSimulateApplication::lv_linux_disp_init()
  * Initialize the Hardware Abstraction Layer (HAL) for the LVGL graphics
  * library
  */
-void SdlSimulateApplication::halInit()
+void SdlApplication::halInit()
 {
     /* Use the 'monitor' driver which creates window on PC's monitor to simulate a display*/
     lv_linux_disp_init();

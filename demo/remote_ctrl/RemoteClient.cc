@@ -1,7 +1,7 @@
 #include "RemoteClient.h"
 #include "color_sheet.h"
 #include "core/sys/Application.h"
-#include "core/sys/SdlSimulateApplication.h"
+#include "core/sys/SdlApplication.h"
 #include "core/sys/TaskStack.h"
 
 #include "session.h"
@@ -262,7 +262,7 @@ void RemoteClient::onNotifyUI(const sys::Event &evt)
         {
             auto pos = *data;
             LOG_DEBUG() << "MOUSE_EVENT pos: " << pos.first << pos.second;
-            sys::SdlSimulateApplication::simulate_click_at(pos.first, pos.second);
+            sys::SdlApplication::simulate_click_at(pos.first, pos.second);
         }
     }
 }

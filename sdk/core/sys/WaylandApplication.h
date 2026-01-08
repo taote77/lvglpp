@@ -1,10 +1,9 @@
 #ifndef LVGLPP_WAYLANDAPPLICATION_H
 #define LVGLPP_WAYLANDAPPLICATION_H
-#ifdef USED_WAYLAND
 
 #include "Application.h"
-namespace lvglpp {
-namespace sys {
+
+namespace lvglpp::sys {
 class WaylandApplication : public Application
 {
 public:
@@ -15,7 +14,6 @@ public:
     virtual void exit(int c) override;
 };
 
-} // namespace sys
-} // namespace lvglpp
-#endif
+} // namespace lvglpp::sys
+
 #endif // LVGLPP_WAYLANDAPPLICATION_H

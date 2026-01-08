@@ -1,24 +1,24 @@
-#ifndef LVPP_UTILS_H
-#define LVPP_UTILS_H
+#ifndef LVOBJ_FACTORY_H
+#define LVOBJ_FACTORY_H
 
 #include "lvgl.h"
 
 /*******************************************************************************
- * @brief lvgl工具类
+ * @brief lvgl对象工厂类
  * @note Factory Pattern, 用于创建各种控件
  * @details
  ******************************************************************************/
 
 namespace lvglpp::tools {
 
-class LvglUtils
+class LvObjFactory
 {
 public:
-    LvglUtils() = delete;
+    LvObjFactory() = delete;
 
-    LvglUtils(const LvglUtils &) = delete;
+    LvObjFactory(const LvObjFactory &) = delete;
 
-    LvglUtils operator=(const LvglUtils &) = delete;
+    LvObjFactory operator=(const LvObjFactory &) = delete;
 
     /**
      * 创建一个不可滑动的lvgl对象
@@ -58,7 +58,9 @@ public:
     static lv_obj_t *createLvglVideo(lv_obj_t *parent);
 
     static lv_obj_t *createLvglLottie(lv_obj_t *parent);
+
+    // static lv_obj_t *createLvglQrCode(lv_obj_t *parent);
 };
 } // namespace lvglpp::tools
 
-#endif // LVPP_UTILS_H
+#endif // LVOBJ_FACTORY_H

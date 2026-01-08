@@ -1,5 +1,5 @@
 #include "BaseItem.h"
-#include "core/tools/LvglUtils.h"
+#include "core/kernel/LvObjFactory.h"
 
 namespace lvglpp::widgets {
 
@@ -41,37 +41,37 @@ void BaseItem::createElement(ItemType type)
     switch (type)
     {
     case ItemType::NormalItem:
-        lv_base_ptr_ = tools::LvglUtils::createLvglItem(parent_lvgl_obj);
+        lv_base_ptr_ = tools::LvObjFactory::createLvglItem(parent_lvgl_obj);
         break;
     case ItemType::Image:
-        lv_base_ptr_ = tools::LvglUtils::createLvglImage(parent_lvgl_obj);
+        lv_base_ptr_ = tools::LvObjFactory::createLvglImage(parent_lvgl_obj);
         break;
     case ItemType::Text:
-        lv_base_ptr_ = tools::LvglUtils::createLvglLabel(parent_lvgl_obj);
+        lv_base_ptr_ = tools::LvObjFactory::createLvglLabel(parent_lvgl_obj);
         break;
     case ItemType::SpinBox:
-        lv_base_ptr_ = tools::LvglUtils::createLvglSpinBox(parent_lvgl_obj);
+        lv_base_ptr_ = tools::LvObjFactory::createLvglSpinBox(parent_lvgl_obj);
         break;
     case ItemType::GIF:
-        lv_base_ptr_ = tools::LvglUtils::createLvglGif(parent_lvgl_obj);
+        lv_base_ptr_ = tools::LvObjFactory::createLvglGif(parent_lvgl_obj);
         break;
     case ItemType::Dialog:
-        lv_base_ptr_ = tools::LvglUtils::createLvglDialog();
+        lv_base_ptr_ = tools::LvObjFactory::createLvglDialog();
         break;
     case ItemType::Progress:
-        lv_base_ptr_ = tools::LvglUtils::createLvglProgress(parent_lvgl_obj);
+        lv_base_ptr_ = tools::LvObjFactory::createLvglProgress(parent_lvgl_obj);
         break;
     case ItemType::SysDialog:
-        lv_base_ptr_ = tools::LvglUtils::createLvglSysDialog();
+        lv_base_ptr_ = tools::LvObjFactory::createLvglSysDialog();
         break;
     case ItemType::Chart:
-        lv_base_ptr_ = tools::LvglUtils::createLvglChart(parent_lvgl_obj);
+        lv_base_ptr_ = tools::LvObjFactory::createLvglChart(parent_lvgl_obj);
         break;
     case ItemType::Video:
-        lv_base_ptr_ = tools::LvglUtils::createLvglVideo(parent_lvgl_obj);
+        lv_base_ptr_ = tools::LvObjFactory::createLvglVideo(parent_lvgl_obj);
         break;
     case ItemType::LottieCanvas:
-        lv_base_ptr_ = tools::LvglUtils::createLvglLottie(parent_lvgl_obj);
+        lv_base_ptr_ = tools::LvObjFactory::createLvglLottie(parent_lvgl_obj);
         break;
     default:
         break;

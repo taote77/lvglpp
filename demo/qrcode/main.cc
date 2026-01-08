@@ -1,5 +1,5 @@
 #include "TestPage.h"
-#include "core/sys/SdlSimulateApplication.h"
+#include "core/sys/SdlApplication.h"
 #include "core/sys/TaskStack.h"
 #include "core/tools/fonts/LvFontManager.h"
 
@@ -7,7 +7,7 @@ using namespace lvglpp;
 
 int main(int argc, char *argv[])
 {
-    lvglpp::sys::SdlSimulateApplication app(argc, argv);
+    lvglpp::sys::SdlApplication app(argc, argv);
 
     if (!app.initApp())
     {

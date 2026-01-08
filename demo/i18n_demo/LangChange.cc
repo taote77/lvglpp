@@ -1,7 +1,7 @@
 #include "LangChange.h"
 #include "LvTranslator.h"
 #include "color_sheet.h"
-#include "core/sys/SdlSimulateApplication.h"
+// #include "core/sys/SdlApplication.h"
 #include "core/sys/TaskStack.h"
 #include "core/widgets/ButtonBuilder.h"
 #include "core/widgets/LvText.h"
@@ -145,10 +145,10 @@ void LangChangePage::onCreate(void *arg)
     };
 
     auto btn = widgets::ButtonBuilder() //
-                   .setWidth(200)
-                   .setHeight(40)
-                   .setColorStyle(widgets::PushButton::ColorStyle::Gray)
-                   .setText("中文😀 Button")
+                   .withWidth(200)
+                   .withHeight(40)
+                   .withColorStyle(widgets::PushButton::ColorStyle::Gray)
+                   .withText("中文😀 Button")
                    .build(getRoot());
 
     btn->setPos(480, 300);
@@ -168,10 +168,10 @@ void LangChangePage::onCreate(void *arg)
     _btn_chinese = std::move(btn);
 
     btn = widgets::ButtonBuilder() //
-              .setWidth(200)
-              .setHeight(40)
-              .setColorStyle(widgets::PushButton::ColorStyle::Gray)
-              .setText("English Button")
+              .withWidth(200)
+              .withHeight(40)
+              .withColorStyle(widgets::PushButton::ColorStyle::Gray)
+              .withText("English Button")
               .build(getRoot());
     btn->setPos(480, 300);
     btn->setAligment(LV_ALIGN_CENTER, 0, 0);
@@ -187,10 +187,10 @@ void LangChangePage::onCreate(void *arg)
     _btn_english = std::move(btn);
 
     btn = widgets::ButtonBuilder() //
-              .setWidth(200)
-              .setHeight(40)
-              .setColorStyle(widgets::PushButton::ColorStyle::Gray)
-              .setText("日文 Button")
+              .withWidth(200)
+              .withHeight(40)
+              .withColorStyle(widgets::PushButton::ColorStyle::Gray)
+              .withText("日文 Button")
               .build(getRoot());
     btn->setPos(480, 300);
     btn->setAligment(LV_ALIGN_CENTER, 0, 50);
@@ -205,10 +205,10 @@ void LangChangePage::onCreate(void *arg)
     _btn_japanese = std::move(btn);
 
     btn = widgets::ButtonBuilder() //
-              .setWidth(200)
-              .setHeight(40)
-              .setColorStyle(widgets::PushButton::ColorStyle::Gray)
-              .setText("Русский Button")
+              .withWidth(200)
+              .withHeight(40)
+              .withColorStyle(widgets::PushButton::ColorStyle::Gray)
+              .withText("Русский Button")
               .build(getRoot());
 
     btn->setPos(480, 300);
@@ -224,10 +224,10 @@ void LangChangePage::onCreate(void *arg)
     _btn_russian = std::move(btn);
 
     btn = widgets::ButtonBuilder() //
-              .setWidth(200)
-              .setHeight(40)
-              .setColorStyle(widgets::PushButton::ColorStyle::Gray)
-              .setText("测试 Button")
+              .withWidth(200)
+              .withHeight(40)
+              .withColorStyle(widgets::PushButton::ColorStyle::Gray)
+              .withText("测试 Button")
               .build(getRoot());
     btn->setPos(480, 300);
     btn->setAligment(LV_ALIGN_CENTER, 0, 150);
@@ -242,7 +242,7 @@ void LangChangePage::onCreate(void *arg)
 
         _btn_test->emitSignal("hello");
 
-        sys::SdlSimulateApplication::simulate_click_at(780, 4);
+        // sys::SdlSimulateApplication::simulate_click_at(780, 4);
     });
 
     Object::connect(_btn_test.get(), "hello", [this]() {
@@ -276,10 +276,10 @@ void LangChangePage::onCreate(void *arg)
     });
 
     _btn_simu = widgets::ButtonBuilder() //
-                    .setWidth(200)
-                    .setHeight(40)
-                    .setColorStyle(widgets::PushButton::ColorStyle::Gray)
-                    .setText("模拟")
+                    .withWidth(200)
+                    .withHeight(40)
+                    .withColorStyle(widgets::PushButton::ColorStyle::Gray)
+                    .withText("模拟")
                     .build(getRoot());
 
     _btn_simu->setPos(480, 300);

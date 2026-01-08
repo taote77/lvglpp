@@ -12,19 +12,20 @@ class ButtonBuilder
 public:
     ButtonBuilder() = default;
 
-    ButtonBuilder &setWidth(int width);
+    ButtonBuilder &withSize(int width, int height);
 
-    ButtonBuilder &setHeight(int height);
+    ButtonBuilder &withWidth(int width);
 
-    ButtonBuilder &setColorStyle(PushButton::ColorStyle type);
+    ButtonBuilder &withHeight(int height);
 
-    ButtonBuilder &setText(const std::string &text);
+    ButtonBuilder &withColorStyle(PushButton::ColorStyle type);
+    ButtonBuilder &withText(const std::string &text);
 
-    ButtonBuilder &setImagePath(const std::string &path);
+    ButtonBuilder &withImagePath(const std::string &path);
 
-    ButtonBuilder &setRepeatMs(int ms);
+    ButtonBuilder &withRepeatMs(int ms);
 
-    ButtonBuilder &setOnClickedListener(const std::function<void()> &cb);
+    ButtonBuilder &withOnClickedListener(const std::function<void()> &cb);
 
     // 创建并返回 PushButton 对象
     std::unique_ptr<PushButton> build(BaseItem *parent);

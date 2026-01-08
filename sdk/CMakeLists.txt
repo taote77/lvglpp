@@ -11,29 +11,19 @@ project(lvglpp C CXX)
 add_compile_options(-fPIC)
 
 
-# -DUSED_WAYLAND = ON
-
 enable_language(ASM)
 
-set(LV_CONF_BUILD_DISABLE_EXAMPLES 1)
-set(LV_CONF_BUILD_DISABLE_DEMOS 1)
+# set(LV_CONF_BUILD_DISABLE_EXAMPLES 1)
+# set(LV_CONF_BUILD_DISABLE_DEMOS 1)
 
 
-if (CMAKE_SYSTEM_PROCESSOR MATCHES "arm" OR CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
-    add_definitions(-DUSED_FRAMEBUFF)
-    #add_definitions(-DUSED_WAYLAND)
-else ()
-    find_package(SDL2 REQUIRED SDL2)
-    add_definitions(-DUSED_SDL)
-    add_definitions(-DLV_USE_SDL)
+# if (CMAKE_SYSTEM_PROCESSOR MATCHES "arm" OR CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
+#     # add_definitions(-DUSED_FRAMEBUFF)
+#     add_definitions(-DUSE_LINUX_DRM)
 
-    include_directories(${SDL2_INCLUDE_DIRS})
-endif ()
-
-add_compile_definitions(USED_SDL ON)
-
-    
-add_compile_definitions(DLV_USE_SDL ON)
+add_definitions(-DUSE_LINUX_DRM)
+add_definitions(-DLV_USE_LINUX_DRM=1)
+include_directories(/usr/include/drm)
 
 
 # Main include files of the project
@@ -55,8 +45,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 set(WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 
-# Find and include SDL2 library
-find_package(SDL2 REQUIRED)
 
 # Remove ARM-specific compile and linker options
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -march=native")
@@ -85,13 +73,13 @@ add_library(${PROJECT_NAME}  SHARED
 add_subdirectory(net)
 
 
-
 target_link_libraries(${PROJECT_NAME} 
-    wayland-cursor
-    wayland-client
-    wayland-server
-    wayland-egl
+    # wayland-cursor
+    # wayland-client
+    # wayland-server
+    # wayland-egl
     xkbcommon
+    drm
 )
 
 
@@ -109,10 +97,8 @@ find_package(Boost REQUIRED COMPONENTS log  log_setup filesystem json)
 
 target_link_libraries(${PROJECT_NAME}
     lvgl
-    # lvgl::examples
-    # lvgl::demos
     lvgl::thorvg
-    ${SDL2_LIBRARIES}
+    # ${SDL2_LIBRARIES}
     ${Boost_LIBRARIES}
     sqlite3
     m
@@ -124,7 +110,6 @@ target_link_libraries(${PROJECT_NAME}
 target_compile_definitions(${PROJECT_NAME} PUBLIC
     BOOST_ALL_DYN_LINK
 )
-
 
 
 # Custom target to run the executable
@@ -209,7 +194,6 @@ else()
     message(STATUS "AddressSanitizer disabled")
 endif()
 endif()
-
 
 
 add_subdirectory(tools/lvrc)

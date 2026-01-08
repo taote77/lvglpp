@@ -2,8 +2,6 @@
 #ifndef LVGLPP_DRM_APPLICATION_H
 #define LVGLPP_DRM_APPLICATION_H
 
-#ifdef USE_LINUX_DRM
-
 #include "Application.h"
 
 namespace lvglpp::sys {
@@ -33,5 +31,4 @@ private:
 
 } // namespace lvglpp::sys
 
-#endif
 #endif // LVGLPP_DRM_APPLICATION_H

@@ -1,11 +1,7 @@
-#ifdef USE_LINUX_DRM
-
 #include "DrmApplication.h"
 
 #include "lvgl.h"
 #include "lvgl/src/core/lv_global.h"
-
-#define DISABLE_CURSOR 1
 
 static void configure_simulator(int argc, char **argv);
 
@@ -72,5 +68,3 @@ void DrmApplication::setTheme(lv_theme_t *theme)
 }
 
 } // namespace lvglpp::sys
-
-#endif //

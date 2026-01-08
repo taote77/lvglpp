@@ -1,7 +1,5 @@
 #ifdef USED_FRAMEBUFF
-#include "LinuxFramebufApplication.h"
-// #include "lv_drivers/display/fbdev.h"
-// #include "lv_drivers/indev/evdev.h"
+#include "FramebufApplication.h"
 #include "lvgl/src/core/lv_global.h"
 
 // #define DISP_BUF_SIZE (128 * 1024)

@@ -1,11 +1,7 @@
-#ifdef USED_WAYLAND
-
 #include "WaylandApplication.h"
-// #include "lv_drivers/wayland/wayland.h"
 #include "lvgl.h"
 
-namespace lvglpp {
-namespace sys {
+namespace lvglpp::sys {
 WaylandApplication::WaylandApplication(int argc, char **argv) : Application(argc, argv)
 {}
 
@@ -20,9 +16,9 @@ bool WaylandApplication::initApp()
 
     // lv_wayland_init();
     // disp = lv_wayland_create_window(LV_HOR_RES_MAX, LV_VER_RES_MAX, "Window Title", NULL);
-
+#ifdef USED_WAYLAND
     disp = lv_wayland_window_create(LV_HOR_RES_MAX, LV_VER_RES_MAX, "Window Title", NULL);
-
+#endif
     if (disp != NULL)
     {
         // lv_wayland_window_set_fullscreen(disp, true);
@@ -38,6 +34,4 @@ void WaylandApplication::exit(int c)
 {
     // lv_wayland_deinit();
 }
-} // namespace sys
-} // namespace lvglpp
-#endif
+} // namespace lvglpp::sys

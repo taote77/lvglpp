@@ -1,6 +1,6 @@
 
-#ifndef SDL_SIMULATE_APPLICATION_H
-#define SDL_SIMULATE_APPLICATION_H
+#ifndef SDL_APPLICATION_H
+#define SDL_APPLICATION_H
 
 // #include "misc/lv_types.h"
 #if (defined(USED_SDL)) || (defined(USED_SDL_GPU))
@@ -14,10 +14,10 @@ namespace lvglpp::sys {
  * @note facade Pattern, 隐藏底层复杂的初始化流程
          包括lvgl 渲染，驱动注册，定时器, png处理, 字体等
  */
-class SdlSimulateApplication : public Application
+class SdlApplication : public Application
 {
 public:
-    SdlSimulateApplication(int argc, char *argv[]);
+    SdlApplication(int argc, char *argv[]);
 
     lv_display_t *getDisplay();
     /**
@@ -51,4 +51,4 @@ private:
 
 #endif
 
-#endif // SDL_SIMULATE_APPLICATION_H
+#endif // SDL_APPLICATION_H

@@ -3,43 +3,50 @@
 
 namespace lvglpp::widgets {
 
-ButtonBuilder &ButtonBuilder::setWidth(int width)
+ButtonBuilder &ButtonBuilder::withSize(int width, int height)
+{
+    width_  = width;
+    height_ = height;
+    return *this;
+}
+
+ButtonBuilder &ButtonBuilder::withWidth(int width)
 {
     width_ = width;
     return *this;
 }
 
-ButtonBuilder &ButtonBuilder::setHeight(int height)
+ButtonBuilder &ButtonBuilder::withHeight(int height)
 {
     height_ = height;
     return *this;
 }
 
-ButtonBuilder &ButtonBuilder::setColorStyle(PushButton::ColorStyle type)
+ButtonBuilder &ButtonBuilder::withColorStyle(PushButton::ColorStyle type)
 {
     type_ = type;
     return *this;
 }
 
-ButtonBuilder &ButtonBuilder::setText(const std::string &text)
+ButtonBuilder &ButtonBuilder::withText(const std::string &text)
 {
     text_ = text;
     return *this;
 }
 
-ButtonBuilder &ButtonBuilder::setImagePath(const std::string &path)
+ButtonBuilder &ButtonBuilder::withImagePath(const std::string &path)
 {
     image_path_ = path;
     return *this;
 }
 
-ButtonBuilder &ButtonBuilder::setRepeatMs(int ms)
+ButtonBuilder &ButtonBuilder::withRepeatMs(int ms)
 {
     repeat_ms_ = ms;
     return *this;
 }
 
-ButtonBuilder &ButtonBuilder::setOnClickedListener(const std::function<void()> &cb)
+ButtonBuilder &ButtonBuilder::withOnClickedListener(const std::function<void()> &cb)
 {
     on_click_cb_ = cb;
     return *this;
