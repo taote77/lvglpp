@@ -111,7 +111,20 @@ protected:
         lv_base_ptr_ = ptr;
     }
 
-    enum ItemType { NormalItem, Image, Text, SpinBox, GIF, Dialog, Progress, SysDialog, Chart, Video, LottieCanvas };
+    enum ItemType {
+        NormalItem, //
+        Image,
+        Text,
+        SpinBox,
+        GIF,
+        Dialog,
+        Progress,
+        SysDialog,
+        Chart,
+        Video,
+        LottieCanvas,
+        QrWidget
+    };
 
     explicit BaseItem(ItemType type, BaseItem *parentItem = nullptr);
 
@@ -129,7 +142,7 @@ private:
     /**
      * 生成控件
      */
-    void createElement(ItemType type);
+    void createLvObj(ItemType type);
 
     /**
      * 注册监听事件

@@ -86,9 +86,9 @@ lv_obj_t *LvObjFactory::createLvglLottie(lv_obj_t *parent)
     return lv_lottie_create(parent);
 }
 
-// lv_obj_t *LvObjFactory::createLvglQrCode(lv_obj_t *parent)
-// {
-//     return lv_qrcode_create(parent);
-// }
+lv_obj_t *LvObjFactory::createLvglQrCode(lv_obj_t *parent)
+{
+    return lv_qrcode_create(parent);
+}
 
 } // namespace lvglpp::tools

@@ -59,7 +59,7 @@ public:
 
     static lv_obj_t *createLvglLottie(lv_obj_t *parent);
 
-    // static lv_obj_t *createLvglQrCode(lv_obj_t *parent);
+    static lv_obj_t *createLvglQrCode(lv_obj_t *parent);
 };
 } // namespace lvglpp::tools
 

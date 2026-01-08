@@ -24,7 +24,7 @@ BaseItem::~BaseItem()
     }
 }
 
-void BaseItem::createElement(ItemType type)
+void BaseItem::createLvObj(ItemType type)
 {
     lv_obj_t *parent_lvgl_obj{nullptr};
 
@@ -72,6 +72,9 @@ void BaseItem::createElement(ItemType type)
         break;
     case ItemType::LottieCanvas:
         lv_base_ptr_ = tools::LvObjFactory::createLvglLottie(parent_lvgl_obj);
+        break;
+    case ItemType::QrWidget:
+        lv_base_ptr_ = tools::LvObjFactory::createLvglQrCode(parent_lvgl_obj);
         break;
     default:
         break;
@@ -142,7 +145,7 @@ void BaseItem::registerEvent()
 
 void BaseItem::initItem(ItemType type)
 {
-    createElement(type);
+    createLvObj(type);
     registerEvent();
 }
 
