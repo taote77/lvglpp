@@ -1,7 +1,7 @@
 #include "HomePage.h"
 #include "core/log/log.h"
 #include "core/sys/Activity.h"
-#include "core/sys/TaskStack.h"
+#include "core/sys/StackView.h"
 #include "core/widgets/BaseItem.h"
 #include "core/widgets/Toast.h"
 #include "page/sensor/SensorActivity.h"
@@ -35,7 +35,7 @@ void HomePage::onCreate(void *arg)
     _toast_btn = std::make_unique<RoundedButton>(140, 40, RoundedButton::ColorStyle::Blue, lvTr("Toast"), getRoot());
     _toast_btn->setAligment(LV_ALIGN_CENTER, 0, 40);
     _toast_btn->setOnClickedListener([this]() {
-        // sys::TaskStack::getInstance()->push(std::make_shared<ToastActivity>());
+        // sys::StackView::getInstance()->push(std::make_shared<ToastActivity>());
         widgets::Toast::success(lvTr("Click Success!"));
     });
 

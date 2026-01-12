@@ -2,7 +2,7 @@
 #include "color_sheet.h"
 #include "core/sys/Application.h"
 #include "core/sys/SdlApplication.h"
-#include "core/sys/TaskStack.h"
+#include "core/sys/StackView.h"
 
 #include "session.h"
 #include <boost/beast/core/detail/base64.hpp>
@@ -186,7 +186,7 @@ void RemoteClient::onCreate(void *arg)
             std::clamp(pos_y, 0, 480); // ensure y in range [0, 480]
 
             last_time = now;
-            lvglpp::sys::TaskStack::getInstance()->getApplication()->postEvent(lvglpp::sys::Event(ComTopic::MOUSE_EVENT, 0, std::pair<int, int>(pos_x, pos_y)));
+            lvglpp::sys::StackView::getInstance()->getApplication()->postEvent(lvglpp::sys::Event(ComTopic::MOUSE_EVENT, 0, std::pair<int, int>(pos_x, pos_y)));
         }
     });
 

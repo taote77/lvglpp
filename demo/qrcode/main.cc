@@ -1,6 +1,6 @@
 #include "TestPage.h"
 #include "core/sys/SdlApplication.h"
-#include "core/sys/TaskStack.h"
+#include "core/sys/StackView.h"
 #include "core/tools/fonts/LvFontManager.h"
 
 using namespace lvglpp;
@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
 
     lvglpp::tools::LvFontManager::enableFreetype(false);
 
-    lvglpp::sys::TaskStack::getInstance()->pushView(std::make_shared<TestPage>());
+    lvglpp::sys::StackView::getInstance()->pushView(std::make_shared<TestPage>());
 
     return app.exec();
 }

@@ -1,7 +1,7 @@
 #include "LangChange.h"
 #include "LvTranslator.h"
 #include "core/sys/SdlApplication.h"
-#include "core/sys/TaskStack.h"
+#include "core/sys/StackView.h"
 #include "session.h"
 #include <pthread.h>
 #include <unistd.h>
@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 
     lvglpp::LvTranslator::load(lvglpp::LANGUAGE::RUSSIAN);
 
-    lvglpp::sys::TaskStack::getInstance()->pushView(std::make_shared<LangChangePage>());
+    lvglpp::sys::StackView::getInstance()->pushView(std::make_shared<LangChangePage>());
 
     return app.exec();
 }

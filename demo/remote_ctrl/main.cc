@@ -1,6 +1,6 @@
 #include "RemoteClient.h"
 #include "core/sys/SdlApplication.h"
-#include "core/sys/TaskStack.h"
+#include "core/sys/StackView.h"
 #include "session.h"
 #include <pthread.h>
 #include <unistd.h>
@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
 
     WebsocketSession::Instance().Init();
 
-    lvglpp::sys::TaskStack::getInstance()->pushView(std::make_shared<RemoteClient>());
+    lvglpp::sys::StackView::getInstance()->pushView(std::make_shared<RemoteClient>());
 
     return app.exec();
 }

@@ -1,7 +1,7 @@
 #include "Home.h"
 #include "GameActivity.h"
 #include "color_sheet.h"
-#include "core/sys/TaskStack.h"
+#include "core/sys/StackView.h"
 #include <iostream>
 #include <src/others/observer/lv_observer.h>
 
@@ -20,7 +20,7 @@ void Home::onCreate(void *arg)
 
     _btn->setOnClickedListener([this]() {
         //
-        lvglpp::sys::TaskStack::getInstance()->pushView(std::make_shared<GameActivity>());
+        lvglpp::sys::StackView::getInstance()->pushView(std::make_shared<GameActivity>());
     });
 }
 

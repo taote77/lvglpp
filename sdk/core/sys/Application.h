@@ -51,6 +51,13 @@ public:
         return language_type_;
     }
 
+    void setEnableStackView(bool enable)
+    {
+        enable_stack_view_ = enable;
+    }
+
+    void initStackView();
+
     virtual int exec();
 
     void postEvent(const Event &evt);
@@ -81,6 +88,8 @@ private:
     std::mutex          mutex_;
     lv_fs_drv_t         file_assert_fs_drv_;
     lv_fs_drv_t         mem_assert_fs_drv_;
+
+    bool enable_stack_view_ = true;
 };
 } // namespace lvglpp::sys
 

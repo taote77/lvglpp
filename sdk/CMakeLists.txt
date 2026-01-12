@@ -13,6 +13,9 @@ add_compile_options(-fPIC)
 
 enable_language(ASM)
 
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(LUA REQUIRED lua-5.2)
+
 # set(LV_CONF_BUILD_DISABLE_EXAMPLES 1)
 # set(LV_CONF_BUILD_DISABLE_DEMOS 1)
 
@@ -26,8 +29,9 @@ add_definitions(-DLV_USE_LINUX_DRM=1)
 include_directories(/usr/include/drm)
 
 
-# Main include files of the project
+# Main include files of project
 include_directories(${PROJECT_SOURCE_DIR}/main/inc)
+include_directories(${LUA_INCLUDE_DIRS})
 
 # Define options for LVGL with default values (OFF)
 option(LV_USE_DRAW_SDL "Use SDL draw unit" OFF)
@@ -71,6 +75,7 @@ add_library(${PROJECT_NAME}  SHARED
 )
 
 add_subdirectory(net)
+add_subdirectory(lua)
 
 
 target_link_libraries(${PROJECT_NAME} 
@@ -80,12 +85,14 @@ target_link_libraries(${PROJECT_NAME}
     # wayland-egl
     xkbcommon
     drm
+    ${LUA_LIBRARIES}
 )
 
 
 target_include_directories(${PROJECT_NAME} PRIVATE
     lvgl/src/
     lvgl/src/core
+    ${CMAKE_SOURCE_DIR}/demo/clua/include
 )
 
 # Define LVGL configuration as a simple include

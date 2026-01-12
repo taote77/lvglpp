@@ -1,7 +1,7 @@
 
 #include "Application.h"
 #include "BaseActivity.h"
-#include "TaskStack.h"
+#include "StackView.h"
 #include "core/log/log.h"
 #include "core/tools/MemoryResManager.h"
 #include "core/tools/Utils.h"
@@ -18,7 +18,7 @@ Application::LanguageType Application::language_type_ = Application::Chinese;
 
 Application::Application(int argc, char *argv[])
 {
-    TaskStack::getInstance()->setApplication(this);
+    StackView::getInstance()->setApplication(this);
 }
 
 bool Application::initApp()
@@ -162,17 +162,28 @@ bool Application::initApp()
     return true;
 }
 
+
+void Application::initStackView()
+{
+    StackView::getInstance()->start();
+    if (StackView::getInstance()->depth() == 0)
+    {
+        StackView::getInstance()->pushView(std::make_shared<BaseActivity>());
+    }
+}
+
 int Application::exec()
 {
     if (!isInit())
     {
         initApp();
     }
-    TaskStack::getInstance()->start();
-    if (TaskStack::getInstance()->depth() == 0)
+
+    if(enable_stack_view_)
     {
-        TaskStack::getInstance()->pushView(std::make_shared<BaseActivity>());
+        initStackView();
     }
+
 
     while (true)
     {
@@ -196,7 +207,10 @@ void Application::handleEvent()
 {
     std::lock_guard<std::mutex> lock(mutex_);
 
-    TaskStack::getInstance()->clearDeleteVec();
+    if(enable_stack_view_)
+    {
+        StackView::getInstance()->clearDeleteVec();
+    }
 
     // 需要注意
     if (event_queue_.empty())
@@ -207,6 +221,10 @@ void Application::handleEvent()
     Event event_ref = event_queue_.front();
 
     event_queue_.pop();
-    TaskStack::getInstance()->notifyAllUi(event_ref);
+
+    if(enable_stack_view_)
+    {
+        StackView::getInstance()->notifyAllUi(event_ref);
+    }
 }
 } // namespace lvglpp::sys

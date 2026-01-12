@@ -1,6 +1,6 @@
 #include "RebootConfirmDialog.h"
 #include "core/log/log.h"
-#include "core/sys/TaskStack.h"
+#include "core/sys/StackView.h"
 #include "core/tools/Utils.h"
 #include "core/widgets/Toast.h"
 #include "i18n/LvTranslator.h"
@@ -44,7 +44,7 @@ RebootConfirmDialog::RebootConfirmDialog() : BaseDialog(true), change_dir_cb_(nu
     cancel_btn_->setOnClickedListener([this]() -> void {
         LogDebug << "====cancel====";
         this->close();
-        // TaskStack::getInstance()->popViewImmediately();
+        // StackView::getInstance()->popViewImmediately();
     });
 }
 

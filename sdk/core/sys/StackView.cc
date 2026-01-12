@@ -1,22 +1,22 @@
-#include "TaskStack.h"
+#include "StackView.h"
 #include "Activity.h"
 // #include <iostream>
 #include <lvgl.h>
 
 namespace lvglpp::sys {
 
-TaskStack *TaskStack::instance_ = nullptr;
+StackView *StackView::instance_ = nullptr;
 
-TaskStack *TaskStack::getInstance()
+StackView *StackView::getInstance()
 {
     if (instance_ == nullptr)
     {
-        instance_ = new TaskStack();
+        instance_ = new StackView();
     }
     return instance_;
 }
 
-void TaskStack::pushView(const std::shared_ptr<Activity> &view, void *arg)
+void StackView::pushView(const std::shared_ptr<Activity> &view, void *arg)
 {
     if (working_)
     {
@@ -35,7 +35,7 @@ void TaskStack::pushView(const std::shared_ptr<Activity> &view, void *arg)
     }
 }
 
-void TaskStack::popView()
+void StackView::popView()
 {
     if (view_manager_.size() <= 1)
     {
@@ -50,7 +50,7 @@ void TaskStack::popView()
     }
 }
 
-void TaskStack::start()
+void StackView::start()
 {
     if (!view_manager_.empty())
     {
@@ -62,12 +62,12 @@ void TaskStack::start()
     working_ = true;
 }
 
-TaskStack::TaskStack()
+StackView::StackView()
 {
     view_manager_.reserve(10);
 }
 
-void TaskStack::enterAnim(const Activity *act)
+void StackView::enterAnim(const Activity *act)
 {
     auto root_item = act->getRoot();
     if (root_item == nullptr)
@@ -96,7 +96,7 @@ void TaskStack::enterAnim(const Activity *act)
     lv_anim_start(&a_enter);
 }
 
-void TaskStack::popAnim(const Activity *act)
+void StackView::popAnim(const Activity *act)
 {
     auto root_item = act->getRoot();
     if (root_item == nullptr)
@@ -116,7 +116,7 @@ void TaskStack::popAnim(const Activity *act)
         // hDebug() << "pop anim finished!!";
         if (an_t->user_data != nullptr)
         {
-            ((TaskStack *)an_t->user_data)->popViewAndRunCb();
+            ((StackView *)an_t->user_data)->popViewAndRunCb();
         }
     });
     lv_anim_set_time(&a_pop, pop_anim_ms_);
@@ -131,7 +131,7 @@ void TaskStack::popAnim(const Activity *act)
     lv_anim_start(&a_pop);
 }
 
-void TaskStack::popViewAndRunCb()
+void StackView::popViewAndRunCb()
 {
     view_manager_.back()->onPause();
     delete_view_manager_.push_back(view_manager_.back());
@@ -139,7 +139,7 @@ void TaskStack::popViewAndRunCb()
     view_manager_.back()->onResume();
 }
 
-void TaskStack::pushViewImmediately(const std::shared_ptr<Activity> &view, void *arg)
+void StackView::pushViewImmediately(const std::shared_ptr<Activity> &view, void *arg)
 {
     if (view_manager_.size() >= 1)
     {
@@ -150,7 +150,7 @@ void TaskStack::pushViewImmediately(const std::shared_ptr<Activity> &view, void 
     view_manager_.back()->onResume();
 }
 
-void TaskStack::popViewImmediately()
+void StackView::popViewImmediately()
 {
     if (view_manager_.size() <= 1)
     {
@@ -162,7 +162,7 @@ void TaskStack::popViewImmediately()
     view_manager_.back()->onResume();
 }
 
-void TaskStack::pushViewAndReplaced(const std::shared_ptr<Activity> &view, void *arg)
+void StackView::pushViewAndReplaced(const std::shared_ptr<Activity> &view, void *arg)
 {
     if (!working_)
     {
@@ -181,7 +181,7 @@ void TaskStack::pushViewAndReplaced(const std::shared_ptr<Activity> &view, void 
     enterAnim(view_manager_.back().get());
 }
 
-void TaskStack::pushViewAndReplacedImmediately(const std::shared_ptr<Activity> &view, void *arg)
+void StackView::pushViewAndReplacedImmediately(const std::shared_ptr<Activity> &view, void *arg)
 {
     if (!working_)
     {
@@ -199,9 +199,9 @@ void TaskStack::pushViewAndReplacedImmediately(const std::shared_ptr<Activity> &
     view_manager_.back()->onResume();
 }
 
-TaskStack::~TaskStack() = default;
+StackView::~StackView() = default;
 
-void TaskStack::notifyAllUi(const Event &e)
+void StackView::notifyAllUi(const Event &e)
 {
     for (auto &it : view_manager_)
     {
@@ -209,7 +209,7 @@ void TaskStack::notifyAllUi(const Event &e)
     }
 }
 
-void TaskStack::clearDeleteVec()
+void StackView::clearDeleteVec()
 {
     if (delete_view_manager_.empty())
         return;

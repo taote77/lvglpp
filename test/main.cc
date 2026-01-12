@@ -1,7 +1,7 @@
 #include "BindDemo.h"
 #include "Home.h"
 #include "core/sys/SdlApplication.h"
-#include "core/sys/TaskStack.h"
+#include "core/sys/StackView.h"
 #include <pthread.h>
 #include <unistd.h>
 
@@ -14,9 +14,9 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    lvglpp::sys::TaskStack::getInstance()->pushView(std::make_shared<Home>());
+    lvglpp::sys::StackView::getInstance()->pushView(std::make_shared<Home>());
 
-    // lvglpp::sys::TaskStack::getInstance()->pushView(std::make_shared<BindDemo>());
+    // lvglpp::sys::StackView::getInstance()->pushView(std::make_shared<BindDemo>());
 
     return app.exec();
 }

@@ -10,16 +10,16 @@
 
 namespace lvglpp::sys {
 
-class TaskStack
+class StackView
 {
 public:
-    TaskStack(const TaskStack &) = delete;
+    StackView(const StackView &) = delete;
 
-    TaskStack &operator=(const TaskStack &) = delete;
+    StackView &operator=(const StackView &) = delete;
 
-    ~TaskStack();
+    ~StackView();
 
-    static TaskStack *getInstance();
+    static StackView *getInstance();
 
     void start();
 
@@ -82,7 +82,7 @@ protected:
     virtual void popAnim(const Activity *act);
 
 private:
-    static TaskStack                      *instance_;
+    static StackView                      *instance_;
     bool                                   working_       = false;
     const int                              enter_anim_ms_ = 250;
     const int                              pop_anim_ms_   = 250;
@@ -90,11 +90,11 @@ private:
     std::vector<std::shared_ptr<Activity>> delete_view_manager_;
     Application                           *app_ = nullptr;
 
-    TaskStack();
+    StackView();
 
     void popViewAndRunCb();
 };
 
 } // namespace lvglpp::sys
 
-#endif // LVGLPP_TASK_STACK_H
+#endif // LVGLPP_STACK_VIEW_H

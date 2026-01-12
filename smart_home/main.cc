@@ -1,5 +1,5 @@
 #include "core/sys/SdlApplication.h"
-#include "core/sys/TaskStack.h"
+#include "core/sys/StackView.h"
 #include "i18n/LvTranslator.h"
 #include "page/home/HomePage.h"
 
@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     LvTranslator::Instance().init();
     LvTranslator::Instance().load(LANGUAGE::CHINESE);
 
-    lvglpp::sys::TaskStack::getInstance()->pushView(std::make_shared<HomePage>());
+    lvglpp::sys::StackView::getInstance()->pushView(std::make_shared<HomePage>());
 
     return app.exec();
 }
