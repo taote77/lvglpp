@@ -31,3 +31,13 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 if (TARGET SDL2::SDL2)
     target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2)
 endif ()
+
+# Copy Lua scripts to build directory
+file(GLOB LUA_SCRIPTS ${CMAKE_CURRENT_SOURCE_DIR}/*.lua)
+foreach(SCRIPT ${LUA_SCRIPTS})
+    get_filename_component(SCRIPT_NAME ${SCRIPT} NAME)
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${SCRIPT} ${CMAKE_CURRENT_BINARY_DIR}/../../target/bin/${SCRIPT_NAME}
+        COMMENT "Copying Lua script ${SCRIPT_NAME} to build directory")
+endforeach()
