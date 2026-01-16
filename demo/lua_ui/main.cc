@@ -30,7 +30,11 @@ protected:
         std::cout << "Lua UI Application initialized" << std::endl;
         std::cout << "Loading Lua script..." << std::endl;
 
-        if (!lua_bind_->executeFile("simple_demo.lua")) {
+        // Get the directory where the executable is located
+        std::string exe_path = Application::applicationDirPath();
+        std::string script_path = exe_path + "/simple_demo.lua";
+        
+        if (!lua_bind_->executeFile(script_path)) {
             std::cerr << "Failed to load Lua script" << std::endl;
             return false;
         }

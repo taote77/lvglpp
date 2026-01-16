@@ -50,7 +50,8 @@ void HomePage::onCreate(void *arg)
                 _timer->stop();
             }
 
-            std::string msg = std::format("Click Success! {}", count);
+            // std::string msg = std::format("Click Success! {}", count);
+            std::string msg = (boost::format("Click Success! %1%") % count).str();
             // widgets::Toast::success(msg);
             LOG_INFO() << "HomePage::_timer callback" << count;
             count++;

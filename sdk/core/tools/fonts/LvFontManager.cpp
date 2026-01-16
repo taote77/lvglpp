@@ -17,7 +17,7 @@ LV_FONT_DECLARE(NotoSC_36_Bold)
 
 namespace lvglpp::tools {
 
-bool LvFontManager::kEnableFreetype = true;
+bool LvFontManager::kEnableFreetype = false;
 
 void LvFontManager::enableFreetype(bool enable)
 {
