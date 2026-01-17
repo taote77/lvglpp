@@ -4,8 +4,8 @@
 
 #include "Delegate.hpp"
 
-namespace lvglpp {
-namespace widgets {
+namespace lvglpp::widgets {
+
 template <typename T>
 class ListViewDelegate : public Delegate<T>
 {
@@ -16,7 +16,7 @@ public:
 protected:
     int index_;
 };
-} // namespace widgets
-} // namespace lvglpp
+
+} // namespace lvglpp::widgets
 
 #endif // LV_LISTVIEW_DELEGATE_H

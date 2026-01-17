@@ -22,7 +22,7 @@ public:
     }
 
 private:
-    std::string src_path_;
+    std::string          src_path_;
     std::vector<uint8_t> cache_;
 };
 

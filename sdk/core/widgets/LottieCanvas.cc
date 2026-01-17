@@ -1,7 +1,6 @@
 #include "LottieCanvas.h"
 
-namespace lvglpp {
-namespace widgets {
+namespace lvglpp::widgets {
 
 LottieCanvas::LottieCanvas(const std::string &path, BaseItem *parent) : BaseItem(BaseItem::ItemType::LottieCanvas, parent)
 {
@@ -32,5 +31,4 @@ void LottieCanvas::setCacheSize(int32_t width, int32_t height)
 #endif
 }
 
-} // namespace widgets
-} // namespace lvglpp
+} // namespace lvglpp::widgets

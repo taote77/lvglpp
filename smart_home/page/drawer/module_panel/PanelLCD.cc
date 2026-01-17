@@ -177,7 +177,7 @@ PanelLCD::PanelLCD(BaseItem *parent) : BaseItem(parent)
         {
             _info_card = std::make_shared<LCDInfoCard>(2, 2);
 
-            _info_card->setAutoDel(false);
+            // _info_card->setAutoDel(false);
         }
 
         _info_card->UpdateLCDInfo(2, 2);

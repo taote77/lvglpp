@@ -5,8 +5,7 @@
 #include "BaseItem.h"
 #include <string>
 
-namespace lvglpp {
-namespace widgets {
+namespace lvglpp::widgets {
 
 class Image : public BaseItem
 {
@@ -22,12 +21,10 @@ public:
 
     void setEnable(bool enable) override;
 
-protected:
 private:
     std::string src_path_;
 };
 
-} // namespace widgets
-} // namespace lvglpp
+} // namespace lvglpp::widgets
 
 #endif // LVPP_IMAGE_H

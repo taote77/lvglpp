@@ -1,7 +1,6 @@
 #include "MouseArea.h"
 
-namespace lvglpp {
-namespace widgets {
+namespace lvglpp::widgets {
 MouseArea::MouseArea(BaseItem *parent) : BaseItem(parent), pressing_cb_(nullptr), released_cb_(nullptr)
 {
     this->setOpacity(0);
@@ -45,5 +44,4 @@ MouseArea::MouseArea(BaseItem *parent) : BaseItem(parent), pressing_cb_(nullptr)
         },
         LV_EVENT_RELEASED, this);
 }
-} // namespace widgets
-} // namespace lvglpp
+} // namespace lvglpp::widgets

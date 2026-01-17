@@ -4,8 +4,7 @@
 #include "BaseItem.h"
 #include <functional>
 
-namespace lvglpp {
-namespace widgets {
+namespace lvglpp::widgets {
 
 struct Point {
     int32_t x;
@@ -43,7 +42,6 @@ private:
     MouseReleaseCB  released_cb_;
 };
 
-} // namespace widgets
-} // namespace lvglpp
+} // namespace lvglpp::widgets
 
 #endif // LV_MOUSEAREA_H

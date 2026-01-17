@@ -8,7 +8,8 @@ BaseItem *BaseDialog::getRoot() const
     return background_item_ptr_.get();
 }
 
-BaseDialog::BaseDialog(bool is_sys_dialog) : background_item_ptr_(new BaseItem(is_sys_dialog ? BaseItem::SysDialog : BaseItem::Dialog))
+BaseDialog::BaseDialog(bool is_sys_dialog) //
+    : background_item_ptr_(new BaseItem(is_sys_dialog ? BaseItem::SysDialog : BaseItem::Dialog))
 {
     background_item_ptr_->setOpacity(1);
     background_item_ptr_->setSize(800, 480);
@@ -24,10 +25,6 @@ void BaseDialog::open()
 void BaseDialog::close()
 {
     background_item_ptr_->setVisible(false);
-    if (auto_del_)
-    {
-        delete this;
-    }
 }
 
 bool BaseDialog::isOpen()

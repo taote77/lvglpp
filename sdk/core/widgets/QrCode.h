@@ -21,7 +21,7 @@ public:
 private:
     lv_obj_t *_qr;
 
-    std::shared_ptr<widgets::Image> _img_icon;
+    std::unique_ptr<widgets::Image> _img_icon;
     uint32_t                        _length = 0;
 };
 

@@ -10,17 +10,12 @@ class BaseDialog
 {
 public:
     explicit BaseDialog(bool is_sys_dialog = false);
+
     virtual void open();
+
     virtual void close();
-    bool         isOpen();
-    void         setAutoDel(bool b)
-    {
-        auto_del_ = b;
-    }
-    bool getAutoDel() const
-    {
-        return auto_del_;
-    }
+
+    bool isOpen();
 
     void setOnClicked(const std::function<void()> &func)
     {
@@ -38,8 +33,7 @@ protected:
     virtual ~BaseDialog() = default;
 
 private:
-    std::shared_ptr<BaseItem> background_item_ptr_;
-    bool                      auto_del_ = true;
+    std::unique_ptr<BaseItem> background_item_ptr_;
 };
 
 } // namespace lvglpp::widgets

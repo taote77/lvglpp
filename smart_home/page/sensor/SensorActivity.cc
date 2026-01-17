@@ -16,7 +16,7 @@ void SensorActivity::onCreate(void *arg)
     getRoot()->setBgColor(CLR_SURFACE);
 
     force_dlg_ = new TempCurveDlg(); // std::make_shared<ui::dialogs::TempCurveDlg>();
-    force_dlg_->setAutoDel(false);
+    // force_dlg_->setAutoDel(false);
 
     btn_ = std::make_shared<widgets::RoundedButton>(200, 64, widgets::RoundedButton::Dark, "开始显示曲线", getRoot());
     btn_->setPos(30, 200);

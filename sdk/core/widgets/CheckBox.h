@@ -15,9 +15,9 @@ public:
     bool getCheckState();
 
 private:
-    std::shared_ptr<BaseItem> check_item_;
+    std::unique_ptr<BaseItem> check_item_;
 
-    std::shared_ptr<MouseArea> check_mouse_area_;
+    std::unique_ptr<MouseArea> check_mouse_area_;
 
     void init();
 

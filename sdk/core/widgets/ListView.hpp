@@ -6,11 +6,9 @@
 #include "ScrollItem.h"
 #include "lvgl/src/misc/lv_timer.h"
 #include <memory>
-// #include "lv_timer.h"
-// #include <chrono>
 
-namespace lvglpp {
-namespace widgets {
+namespace lvglpp::widgets {
+
 template <typename T, typename T2 = ListViewDelegate<T>>
 class ListView : public ScrollItem
 {
@@ -249,7 +247,6 @@ bool ListView<T, T2>::changeModelData(int index, const T &data)
     }
     return true;
 }
-} // namespace widgets
-} // namespace lvglpp
+} // namespace lvglpp::widgets
 
 #endif // LV_LISTVIEW_H

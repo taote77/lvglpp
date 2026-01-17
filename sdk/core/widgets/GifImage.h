@@ -5,8 +5,7 @@
 
 #include <string>
 
-namespace lvglpp {
-namespace widgets {
+namespace lvglpp::widgets {
 
 class GifImage : public BaseItem
 {
@@ -20,12 +19,10 @@ public:
         return src_path_;
     }
 
-protected:
 private:
     std::string src_path_;
 };
 
-} // namespace widgets
-} // namespace lvglpp
+} // namespace lvglpp::widgets
 
 #endif // LV_GIF_IMAGE_H

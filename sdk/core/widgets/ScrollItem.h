@@ -4,8 +4,7 @@
 
 #include "BaseItem.h"
 
-namespace lvglpp {
-namespace widgets {
+namespace lvglpp::widgets {
 
 class ScrollItem : public BaseItem
 {
@@ -32,7 +31,6 @@ public:
 
     void setScrollToY(lv_coord_t y, bool animEnable);
 };
-} // namespace widgets
-} // namespace lvglpp
+} // namespace lvglpp::widgets
 
 #endif // LV_SCROLL_ITEM_H

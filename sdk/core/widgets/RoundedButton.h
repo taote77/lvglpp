@@ -58,8 +58,8 @@ public:
     }
 
 private:
-    std::shared_ptr<LvText>               label_;
-    std::shared_ptr<widgets::Image>       img_obj_;
+    std::unique_ptr<LvText>               label_;
+    std::unique_ptr<widgets::Image>       img_obj_;
     RoundedButton::ColorStyle             type_;
     int                                   repeat_ms_ = 500;
     std::chrono::system_clock::time_point prev_time_point_;

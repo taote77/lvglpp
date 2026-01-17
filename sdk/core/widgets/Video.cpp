@@ -5,8 +5,8 @@
 #include "Video.h"
 #include "core/log/log.h"
 
-namespace lvglpp {
-namespace widgets {
+namespace lvglpp::widgets {
+
 Video::Video(const std::string &path, BaseItem *parent) : BaseItem(ItemType::Video, parent)
 {
     setVideoSrcPath(path);
@@ -81,7 +81,6 @@ Video::~Video()
     }
 }
 
-} // namespace widgets
-} // namespace lvglpp
+} // namespace lvglpp::widgets
 
 #endif // LV_USE_FFMPEG

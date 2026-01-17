@@ -1,9 +1,13 @@
 #include "Text.h"
 
-namespace lvglpp {
-namespace widgets {
+namespace lvglpp::widgets {
 
-Text::Text(const std::string &strMsg, uint32_t clr, BaseItem *parent, LvText::TextStyle style, FontType type) : lvglpp::widgets::LvText(strMsg, clr, parent, style, type)
+Text::Text(const std::string &strMsg, //
+           uint32_t           clr,    //
+           BaseItem          *parent, //
+           LvText::TextStyle  style,  //
+           FontType           type)             //
+    : lvglpp::widgets::LvText(strMsg, clr, parent, style, type)
 {}
 
 void Text::setText(const std::string &text)
@@ -11,5 +15,4 @@ void Text::setText(const std::string &text)
     LvText::setText(text);
 }
 
-} // namespace widgets
-} // namespace lvglpp
+} // namespace lvglpp::widgets

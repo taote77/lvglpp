@@ -5,6 +5,7 @@
 #include <memory>
 
 namespace lvglpp::widgets {
+
 class SwitchButton : public BaseItem
 {
 public:
@@ -32,7 +33,7 @@ private:
     lv_coord_t                height_{32};
     lv_coord_t                radius_{14};
     bool                      check_state_;
-    std::shared_ptr<BaseItem> round_item_;
+    std::unique_ptr<BaseItem> round_item_;
 };
 
 } // namespace lvglpp::widgets

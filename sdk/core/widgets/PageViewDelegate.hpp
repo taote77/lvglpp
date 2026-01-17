@@ -4,8 +4,8 @@
 
 #include "Delegate.hpp"
 
-namespace lvglpp {
-namespace widgets {
+namespace lvglpp::widgets {
+
 template <typename T>
 class PageViewDelegate : public Delegate<T>
 {
@@ -15,6 +15,6 @@ public:
 
 private:
 };
-} // namespace widgets
-} // namespace lvglpp
+} // namespace lvglpp::widgets
+
 #endif // LV_PAGEVIEW_DELEGATE_H

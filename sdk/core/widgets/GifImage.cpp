@@ -1,7 +1,6 @@
 #include "GifImage.h"
 
-namespace lvglpp {
-namespace widgets {
+namespace lvglpp::widgets {
 GifImage::GifImage(const std::string &path, BaseItem *parent) : BaseItem(ItemType::GIF, parent)
 {
     setImageSrcPath(path);
@@ -15,5 +14,4 @@ void GifImage::setImageSrcPath(const std::string &path)
         lv_gif_set_src(getLvglItem(), src_path_.c_str());
     }
 }
-} // namespace widgets
-} // namespace lvglpp
+} // namespace lvglpp::widgets

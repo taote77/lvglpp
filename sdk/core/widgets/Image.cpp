@@ -2,8 +2,7 @@
 #include "Image.h"
 #include "core/tools/ImageManager.h"
 
-namespace lvglpp {
-namespace widgets {
+namespace lvglpp::widgets {
 
 Image::Image(const std::string &path, BaseItem *parent) : BaseItem(BaseItem::ItemType::Image, parent)
 {
@@ -33,5 +32,4 @@ void Image::setEnable(bool enable)
         lv_obj_set_ext_click_area(getLvglItem(), 15);
     }
 }
-} // namespace widgets
-} // namespace lvglpp
+} // namespace lvglpp::widgets

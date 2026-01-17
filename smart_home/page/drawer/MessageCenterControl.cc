@@ -51,7 +51,7 @@ void MessageCenterControl::init()
     constexpr short tool_bar_height = 368;
 
     _reboot_confirm_dialog = std::make_shared<RebootConfirmDialog>();
-    _reboot_confirm_dialog->setAutoDel(false);
+    // _reboot_confirm_dialog->setAutoDel(false);
 
     this->setOpacity(1);
     _toolbar_layout = std::make_shared<Layout>(this);

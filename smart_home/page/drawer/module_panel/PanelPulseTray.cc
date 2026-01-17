@@ -344,7 +344,7 @@ PanelPulseTray::PanelPulseTray(BaseItem *parent) : BaseItem(parent)
         if (!_pulse_tray_detail_dialog)
         {
             _pulse_tray_detail_dialog = std::make_shared<ModuleDetailPulseTrayDialog>(_last_peeled_count, _last_tank_type);
-            _pulse_tray_detail_dialog->setAutoDel(false);
+            // _pulse_tray_detail_dialog->setAutoDel(false);
         }
 
         _pulse_tray_detail_dialog->UpdatePulseTrayInfo(_lastest_percent, _last_resin_level, _last_tank_type, _last_tank_state, _last_sensor_resin, _last_resin_remain,

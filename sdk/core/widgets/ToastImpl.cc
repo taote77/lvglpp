@@ -5,12 +5,14 @@ namespace lvglpp::widgets {
 ToastImpl::ToastImpl() : BaseItem(BaseItem::Dialog)
 {
     lv_obj_clear_flag(getLvglItem(), LV_OBJ_FLAG_SCROLLABLE);
-    setBgColor(0x2C3138);
+    setBgColor(form::design::CLR_PRIMARY_DARK_BG);
     setRadius(8);
     setAligment(LV_ALIGN_TOP_MID, 0, 70);
-    icon_ = std::make_shared<widgets::Image>("", this);
+
+    icon_ = std::make_unique<widgets::Image>("", this);
     icon_->setAligment(LV_ALIGN_LEFT_MID, 8, 0);
-    desc_ = std::make_shared<LvText>("", 0xFFFFFF, this, LvText::FontSize24, LvText::SansSC);
+
+    desc_ = std::make_unique<LvText>("", form::design::CLR_ON_SURFACE, this, LvText::FontSize24, LvText::SansSC);
     desc_->setAligment(LV_ALIGN_LEFT_MID, 64, 0);
 }
 

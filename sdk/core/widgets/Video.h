@@ -6,8 +6,7 @@
 #include "BaseItem.h"
 #include <string>
 
-namespace lvglpp {
-namespace widgets {
+namespace lvglpp::widgets {
 
 class Video : public BaseItem
 {
@@ -29,7 +28,6 @@ public:
 
     ~Video() override;
 
-protected:
 private:
     std::string src_path_;
 
@@ -38,8 +36,7 @@ private:
     lv_timer_t *lv_time_update_visible_ = nullptr;
 };
 
-} // namespace widgets
-} // namespace lvglpp
+} // namespace lvglpp::widgets
 
 #endif // LV_USE_FFMPEG
 #endif // LV_VIDEO_H

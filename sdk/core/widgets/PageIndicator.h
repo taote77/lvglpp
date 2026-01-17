@@ -4,8 +4,8 @@
 #include <memory>
 #include <vector>
 
-namespace lvglpp {
-namespace widgets {
+namespace lvglpp::widgets {
+
 class PageIndicator : public BaseItem
 {
 public:
@@ -17,10 +17,9 @@ public:
 private:
     int                                    count_;
     int                                    current_index_;
-    std::vector<std::shared_ptr<BaseItem>> indicator_vec_;
+    std::vector<std::unique_ptr<BaseItem>> indicator_vec_;
     void                                   update();
 };
-} // namespace widgets
-} // namespace lvglpp
+} // namespace lvglpp::widgets
 
 #endif // LV_PAGE_INDICATOR_H

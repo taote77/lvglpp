@@ -3,20 +3,22 @@
 
 #include "core/widgets/LvText.h"
 
-namespace lvglpp {
-namespace widgets {
+namespace lvglpp::widgets {
 
 class Text : public LvText
 {
 public:
-    Text(const std::string &strMsg, uint32_t clr, lvglpp::widgets::BaseItem *parent, TextStyle style = TextStyle::FontSize20, FontType type = FontType::Auto);
+    Text(const std::string         &strMsg,                        //
+         uint32_t                   clr,                           //
+         lvglpp::widgets::BaseItem *parent,                        //
+         TextStyle                  style = TextStyle::FontSize20, //
+         FontType                   type  = FontType::Auto);
 
     void setText(const std::string &text);
 
 private:
 };
 
-} // namespace widgets
-} // namespace lvglpp
+} // namespace lvglpp::widgets
 
 #endif // _LVPP_BIND_TEXT_H_

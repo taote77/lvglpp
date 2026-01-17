@@ -4,9 +4,7 @@
 #include "core/widgets/LvText.h"
 #include <string>
 
-namespace lvglpp {
-
-namespace widgets {
+namespace lvglpp::widgets {
 
 class LvButton : public LvText
 {
@@ -16,7 +14,6 @@ public:
     ~LvButton();
 };
 
-} // namespace widgets
-} // namespace lvglpp
+} // namespace lvglpp::widgets
 
 #endif // _LVPP_BUTTON_H

@@ -3,13 +3,11 @@
 #define LV_TOAST_H
 
 #include "ToastImpl.h"
-#include <functional>
 #include <lvgl.h>
 #include <memory>
 #include <string>
 
-namespace lvglpp {
-namespace widgets {
+namespace lvglpp::widgets {
 
 class Toast
 {
@@ -31,12 +29,12 @@ private:
     static void showToast(const std::string &info, Type type);
 
     std::unique_ptr<ToastImpl> toast_impl_;
-    lv_anim_t                  anim_show_t_{};
-    lv_anim_t                  anim_hide_t_{};
-    bool                       is_running_{false};
+
+    lv_anim_t anim_show_t_{};
+    lv_anim_t anim_hide_t_{};
+    bool      is_running_{false};
 };
 
-} // namespace widgets
-} // namespace lvglpp
+} // namespace lvglpp::widgets
 
 #endif // LV_TOAST_H

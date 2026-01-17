@@ -1,9 +1,9 @@
 
 #include "PageIndicator.h"
 #include "color_sheet.h"
+#include <memory>
 
-namespace lvglpp {
-namespace widgets {
+namespace lvglpp::widgets {
 
 PageIndicator::PageIndicator(int count, BaseItem *parent) : BaseItem(parent), count_(count), current_index_(-1)
 {
@@ -13,7 +13,7 @@ PageIndicator::PageIndicator(int count, BaseItem *parent) : BaseItem(parent), co
     lv_obj_set_style_bg_opa(getLvglItem(), LV_OPA_TRANSP, LV_STATE_DEFAULT);
     for (int i = 0; i < count_; i++)
     {
-        indicator_vec_.emplace_back(std::make_shared<BaseItem>(this));
+        indicator_vec_.emplace_back(std::unique_ptr<BaseItem>(this));
         indicator_vec_[i]->setSize(12, 12);
         indicator_vec_[i]->setRadius(6);
     }
@@ -59,11 +59,10 @@ void PageIndicator::setPageCount(int n)
     indicator_vec_.clear();
     for (int i = 0; i < count_; i++)
     {
-        indicator_vec_.emplace_back(std::make_shared<BaseItem>(this));
+        indicator_vec_.emplace_back(std::make_unique<BaseItem>(this));
         indicator_vec_[i]->setSize(12, 12);
         indicator_vec_[i]->setRadius(6);
     }
     update();
 }
-} // namespace widgets
-} // namespace lvglpp
+} // namespace lvglpp::widgets

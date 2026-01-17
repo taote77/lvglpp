@@ -6,11 +6,12 @@ namespace lvglpp::widgets {
 
 using namespace form::design;
 
-SwitchButton::SwitchButton(lv_coord_t width, lv_coord_t height, BaseItem *parent) : BaseItem(parent), width_(width), height_(height), check_state_(false)
+SwitchButton::SwitchButton(lv_coord_t width, lv_coord_t height, BaseItem *parent) //
+    : BaseItem(parent), width_(width), height_(height), check_state_(false)
 {
     setSize(width, height);
     setRadius(18);
-    round_item_ = std::make_shared<BaseItem>(this);
+    round_item_ = std::make_unique<BaseItem>(this);
     round_item_->setSize(radius_ * 2, radius_ * 2);
     round_item_->setRadius(radius_);
     round_item_->setBgColor(CLR_PRIMARY_BRIGHT);

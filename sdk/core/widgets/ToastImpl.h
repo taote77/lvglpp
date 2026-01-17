@@ -8,6 +8,7 @@
 #include <memory>
 
 namespace lvglpp::widgets {
+
 class ToastImpl : public BaseItem
 {
 public:
@@ -16,8 +17,8 @@ public:
     void setMessage(const std::string &str_msg, IconType type);
 
 private:
-    std::shared_ptr<widgets::Image> icon_;
-    std::shared_ptr<LvText>         desc_;
+    std::unique_ptr<widgets::Image> icon_;
+    std::unique_ptr<LvText>         desc_;
 };
 
 } // namespace lvglpp::widgets

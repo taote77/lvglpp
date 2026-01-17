@@ -37,9 +37,9 @@ void QrCode::setData(const std::string &data)
 
 void QrCode::setImgSrc(const std::string &src)
 {
-    if (!_img_icon)
+    if (_img_icon == nullptr)
     {
-        _img_icon = std::make_shared<lvglpp::widgets::Image>("", this);
+        _img_icon = std::make_unique<lvglpp::widgets::Image>("", this);
         _img_icon->setSize(_length / 4, _length / 4);
         _img_icon->setAligment(LV_ALIGN_CENTER, 0, 0);
     }

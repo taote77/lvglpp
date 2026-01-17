@@ -6,8 +6,8 @@
 #include "ScrollItem.h"
 #include <memory>
 
-namespace lvglpp {
-namespace widgets {
+namespace lvglpp::widgets {
+
 template <typename T, typename T2 = PageViewDelegate<T>>
 class PageView : public ScrollItem
 {
@@ -173,7 +173,6 @@ void PageView<T, T2>::createDelegates()
         }
     }
 }
-} // namespace widgets
-} // namespace lvglpp
+} // namespace lvglpp::widgets
 
 #endif // LV_PAGEVIEW_HPP

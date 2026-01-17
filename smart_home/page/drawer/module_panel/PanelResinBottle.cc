@@ -110,7 +110,7 @@ PanelResinBottle::PanelResinBottle(BaseItem *parent) : BaseItem(parent)
         {
             _resin_detail_dialog = std::make_shared<ModuleDetailResinDialog>("", _switch_enable);
 
-            _resin_detail_dialog->setAutoDel(false);
+            // _resin_detail_dialog->setAutoDel(false);
         }
 
         _resin_detail_dialog->setSwitchStatus(_switch_enable, _fill_mod_equip);

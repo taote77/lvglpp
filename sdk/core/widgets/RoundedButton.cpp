@@ -5,6 +5,7 @@
 // #include "core/tools/LvglUtils.h"
 // #include "core/tools/Utils.h"
 #include <boost/algorithm/string/predicate.hpp>
+#include <memory>
 
 namespace lvglpp::widgets {
 
@@ -45,7 +46,7 @@ void RoundedButton::initLabel(const std::string &msg, RoundedButton::ColorStyle 
     {
         return;
     }
-    label_.reset(new LvText(msg, CLR_PRIMARY_BLACK, this, LvText::FontSize20));
+    label_ = std::make_unique<LvText>(msg, CLR_PRIMARY_BLACK, this, LvText::FontSize20);
     label_->setAligment(LV_ALIGN_CENTER, 0, 0);
 }
 
@@ -141,7 +142,7 @@ void RoundedButton::initImage(const std::string &url)
     {
         return;
     }
-    img_obj_.reset(new widgets::Image(url, this));
+    img_obj_ = std::make_unique<widgets::Image>(url, this);
     img_obj_->setAligment(LV_ALIGN_CENTER, 0, 0);
 }
 

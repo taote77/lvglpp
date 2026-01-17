@@ -89,7 +89,7 @@ PanelPusleMod::PanelPusleMod(BaseItem *parent) : BaseItem(parent)
         {
             _pulse_detail_dialog = std::make_shared<ModuleDetailPulseDialog>(_last_usesdtime, _last_airmod_state);
 
-            _pulse_detail_dialog->setAutoDel(false);
+            // _pulse_detail_dialog->setAutoDel(false);
         }
 
         _pulse_detail_dialog->updatePulseFilmInfo(_last_usesdtime, _last_tanktype, _last_airmod_state);
