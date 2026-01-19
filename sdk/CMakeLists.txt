@@ -65,7 +65,7 @@ add_subdirectory(lvgl)
 target_include_directories(lvgl PUBLIC ${PROJECT_SOURCE_DIR} ${SDL2_INCLUDE_DIRS})
 
 
-file(GLOB_RECURSE TOOLS_SRC ${CMAKE_CURRENT_SOURCE_DIR}/core/*.c *.cpp  *.cc *.hpp *.h)
+file(GLOB_RECURSE TOOLS_SRC ${CMAKE_CURRENT_SOURCE_DIR}/core/*.c ${CMAKE_CURRENT_SOURCE_DIR}/core/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/core/*.cc ${CMAKE_CURRENT_SOURCE_DIR}/core/*.hpp ${CMAKE_CURRENT_SOURCE_DIR}/core/*.h)
 
 
 add_library(${PROJECT_NAME}  SHARED 
@@ -75,7 +75,7 @@ add_library(${PROJECT_NAME}  SHARED
 )
 
 add_subdirectory(net)
-add_subdirectory(lua)
+add_subdirectory(wrappers)
 
 
 target_link_libraries(${PROJECT_NAME} 

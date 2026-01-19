@@ -9,9 +9,9 @@ pkg_check_modules(LUA REQUIRED lua-5.2)
 add_library(${PROJECT_NAME} STATIC)
 
 target_sources(${PROJECT_NAME} PRIVATE
-    LvglLuaBind.cpp
-    WidgetLuaBind.cpp
-    LuaUtils.cpp
+    LvglLuaBind.cc
+    WidgetLuaBind.cc
+    LuaUtils.cc
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC

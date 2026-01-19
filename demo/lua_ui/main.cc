@@ -1,6 +1,6 @@
 #include "core/sys/SdlApplication.h"
 #include "core/sys/BaseActivity.h"
-#include "lua/LvglLuaBind.h"
+#include "LvglLuaBind.h"
 #include <iostream>
 #include <memory>
 

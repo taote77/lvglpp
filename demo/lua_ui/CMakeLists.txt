@@ -15,7 +15,7 @@ target_sources(${PROJECT_NAME} PRIVATE
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_SOURCE_DIR}/sdk/core
-    ${CMAKE_SOURCE_DIR}/sdk/lua
+    ${CMAKE_SOURCE_DIR}/sdk/wrappers/lua
     ${CMAKE_SOURCE_DIR}/sdk/lvgl
     ${CMAKE_SOURCE_DIR}/demo/clua/include
     ${LUA_INCLUDE_DIRS}
