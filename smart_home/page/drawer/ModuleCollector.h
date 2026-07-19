@@ -9,7 +9,6 @@
 #include "module_panel/PanelPulseTray.h"
 #include "module_panel/PanelResinBottle.h"
 #include "module_panel/PanelTempHumi.h"
-#include <boost/format.hpp>
 
 namespace lvglpp::ui::page {
 using namespace widgets;
@@ -27,7 +26,7 @@ protected:
     void init();
 
 private:
-    boost::signals2::connection _slots_fill_status;
+    bool _slots_connected = false;
 
     bool _fill_switch_status{false};
 

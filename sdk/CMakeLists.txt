@@ -98,7 +98,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
     LV_CONF_INCLUDE_SIMPLE
 )
 
-find_package(Boost REQUIRED COMPONENTS log  log_setup filesystem json)
+find_package(Boost REQUIRED COMPONENTS log log_setup json)
 
 target_link_libraries(${PROJECT_NAME}
     lvgl

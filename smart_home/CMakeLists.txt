@@ -42,6 +42,8 @@ target_sources(${PROJECT_NAME} PRIVATE
     page/drawer/RebootConfirmDialog.h
     page/drawer/SwipeView.cc
     page/drawer/SwipeView.h
+    page/settings/SettingsPage.h
+    page/settings/SettingsPage.cpp
     i18n/LvTranslator.h
     i18n/LvTranslator.cc
     i18n/translations/lv_i18n.h

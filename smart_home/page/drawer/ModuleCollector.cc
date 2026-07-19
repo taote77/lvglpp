@@ -16,9 +16,7 @@ ModuleCollector::ModuleCollector(BaseItem *parent) : BaseItem(parent)
 }
 
 ModuleCollector::~ModuleCollector()
-{
-    _slots_fill_status.disconnect();
-}
+{}
 
 void ModuleCollector::updateDeviceInfo(void *data)
 {}

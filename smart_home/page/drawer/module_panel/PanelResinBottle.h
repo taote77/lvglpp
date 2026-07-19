@@ -7,7 +7,6 @@
 #include "core/widgets/LvText.h"
 #include "core/widgets/Image.h"
 #include "core/widgets/MouseArea.h"
-#include <boost/format.hpp>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
@@ -39,8 +38,6 @@ public:
     explicit PanelResinBottle(BaseItem *parent = nullptr);
 
 private:
-    boost::signals2::connection _slots_ProMachine;
-
     bool _switch_enable{false};
     bool _fill_mod_equip{false};
 
