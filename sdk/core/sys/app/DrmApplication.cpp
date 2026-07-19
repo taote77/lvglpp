@@ -1,5 +1,6 @@
 #include "DrmApplication.h"
 
+#include "core/sys/StackView.h"
 #include "lvgl.h"
 #include "lvgl/src/core/lv_global.h"
 
@@ -42,7 +43,10 @@ bool DrmApplication::initApp()
 }
 
 void DrmApplication::exit(int code)
-{}
+{
+    StackView::getInstance().shutdown();
+    std::exit(code);
+}
 
 lv_display_t *DrmApplication::getDisplay()
 {

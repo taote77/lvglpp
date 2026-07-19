@@ -193,7 +193,29 @@ void StackView::pushViewAndReplacedImmediately(const std::shared_ptr<Activity> &
     view_manager_.back()->onResume();
 }
 
-StackView::~StackView() = default;
+StackView::~StackView()
+{
+    shutdown();
+}
+
+void StackView::shutdown()
+{
+    working_ = false;
+
+    // Call onDestroy on pending deleted views
+    while (!delete_view_manager_.empty()) {
+        delete_view_manager_.back()->onDestroy();
+        delete_view_manager_.pop_back();
+    }
+
+    // Call onPause + onDestroy on all active views (bottom-up)
+    while (!view_manager_.empty()) {
+        auto act = view_manager_.back();
+        view_manager_.pop_back();
+        act->onPause();
+        act->onDestroy();
+    }
+}
 
 void StackView::notifyAllUi(const Event &e)
 {

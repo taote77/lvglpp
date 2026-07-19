@@ -69,6 +69,9 @@ public:
 
     void clearDeleteVec();
 
+    /// Gracefully shut down all views: call onDestroy on every activity
+    void shutdown();
+
 protected:
     /**
      * 页面进入动画

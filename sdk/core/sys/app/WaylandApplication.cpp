@@ -1,5 +1,6 @@
 #include "WaylandApplication.h"
 #include "lvgl.h"
+#include "core/sys/StackView.h"
 
 namespace lvglpp::sys {
 WaylandApplication::WaylandApplication(int argc, char **argv) : Application(argc, argv)
@@ -32,6 +33,7 @@ bool WaylandApplication::initApp()
 
 void WaylandApplication::exit(int c)
 {
-    // lv_wayland_deinit();
+    StackView::getInstance().shutdown();
+    std::exit(c);
 }
 } // namespace lvglpp::sys

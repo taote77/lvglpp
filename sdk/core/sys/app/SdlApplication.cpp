@@ -1,5 +1,6 @@
 #include "core/log/log.h"
 
+#include "core/sys/StackView.h"
 #if (defined(USED_SDL)) || (defined(USED_SDL_GPU))
 
 #include "SdlApplication.h"
@@ -244,7 +245,8 @@ void SdlApplication::setTheme(lv_theme_t *theme)
 
 void SdlApplication::exit(int code)
 {
-    quick_exit(code);
+    StackView::getInstance().shutdown();
+    std::exit(code);
 }
 
 void SdlApplication::lv_linux_disp_init()
