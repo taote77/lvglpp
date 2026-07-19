@@ -1,5 +1,5 @@
-#ifndef _LVPP_BUTTON_H
-#define _LVPP_BUTTON_H
+#ifndef LVGLPP_LVBUTTON_H
+#define LVGLPP_LVBUTTON_H
 
 #include "core/widgets/LvText.h"
 #include <string>
@@ -14,6 +14,9 @@ public:
     ~LvButton();
 };
 
+// Modern alias (use PushButton/Button for styled buttons)
+using TextButton = LvButton;
+
 } // namespace lvglpp::widgets
 
-#endif // _LVPP_BUTTON_H
+#endif // LVGLPP_LVBUTTON_H

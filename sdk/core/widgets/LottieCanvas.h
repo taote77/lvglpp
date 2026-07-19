@@ -1,6 +1,6 @@
 
-#ifndef LVPP_LOTTIE_CANVAS_H
-#define LVPP_LOTTIE_CANVAS_H
+#ifndef LVGLPP_LOTTIECANVAS_H
+#define LVGLPP_LOTTIECANVAS_H
 
 #include "BaseItem.h"
 #include <string>
@@ -28,4 +28,4 @@ private:
 
 } // namespace lvglpp::widgets
 
-#endif // LVPP_LOTTIE_CANVAS_H
+#endif // LVGLPP_LOTTIECANVAS_H

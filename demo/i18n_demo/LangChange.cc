@@ -132,7 +132,7 @@ LangChangePage::LangChangePage() : sys::BaseActivity()
 LangChangePage::~LangChangePage()
 {}
 
-void LangChangePage::onCreate(void *arg)
+void LangChangePage::onCreate(std::any arg)
 {
     _label = std::make_unique<lvglpp::widgets::LvText>(("中文😀1"), CLR_SUCCESS_CONTAINER, getRoot(), lvglpp::widgets::LvText::TextStyle::FontSize20);
 

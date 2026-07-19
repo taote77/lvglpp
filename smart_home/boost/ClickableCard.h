@@ -2,7 +2,7 @@
 #define CLICKABLE_CARD_H
 
 #include "core/widgets/BaseItem.h"
-#include "core/widgets/ConsumeText.h"
+#include "core/widgets/LvText.h"
 #include "core/widgets/Image.h"
 #include <memory>
 

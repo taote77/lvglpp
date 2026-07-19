@@ -2,6 +2,7 @@
 #define TRENGLISH_IMPL_H
 
 #include <map>
+#include <memory>
 #include <string>
 
 namespace lvglpp {
@@ -24,12 +25,13 @@ public:
      */
     std::string translate(const std::string &src_text);
 
-private:
+public:
     trTranslateImpl(LanguageType type);
 
+private:
     void init(LanguageType type);
 
-    static std::map<LanguageType, trTranslateImpl *> instance_;
+    static std::map<LanguageType, std::unique_ptr<trTranslateImpl>> instance_;
     std::map<std::string, std::string>               translate_map_;
 };
 } // namespace tools

@@ -47,9 +47,9 @@ public:
 
     static lv_obj_t *createLvglGif(lv_obj_t *parent);
 
-    static lv_obj_t *createLvglDialog();
+    static lv_obj_t *createLvglDialog(lv_obj_t *parent = nullptr);
 
-    static lv_obj_t *createLvglSysDialog();
+    static lv_obj_t *createLvglSysDialog(lv_obj_t *parent = nullptr);
 
     static lv_obj_t *createLvglProgress(lv_obj_t *parent);
 
@@ -61,6 +61,9 @@ public:
 
     static lv_obj_t *createLvglQrCode(lv_obj_t *parent);
 };
+// Modern alias
+using WidgetFactory = LvObjFactory;
+
 } // namespace lvglpp::tools
 
 #endif // LVOBJ_FACTORY_H

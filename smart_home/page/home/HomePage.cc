@@ -5,7 +5,6 @@
 #include "core/widgets/BaseItem.h"
 #include "core/widgets/Toast.h"
 #include "page/sensor/SensorActivity.h"
-#include "qgl/signals/Signal.h"
 #include "theme/form_design.h"
 #include <format>
 #include <i18n/LvTranslator.h>
@@ -19,7 +18,7 @@ HomePage::HomePage() : sys::BaseActivity()
 HomePage::~HomePage()
 {}
 
-void HomePage::onCreate(void *arg)
+void HomePage::onCreate(std::any arg)
 {
     BaseActivity::onCreate(arg);
     getRoot()->setBgColor(form::design::CLR_SURFACE);
@@ -35,36 +34,28 @@ void HomePage::onCreate(void *arg)
     _toast_btn = std::make_unique<RoundedButton>(140, 40, RoundedButton::ColorStyle::Blue, lvTr("Toast"), getRoot());
     _toast_btn->setAligment(LV_ALIGN_CENTER, 0, 40);
     _toast_btn->setOnClickedListener([this]() {
-        // sys::StackView::getInstance()->push(std::make_shared<ToastActivity>());
+        // sys::StackView::getInstance().push(std::make_shared<ToastActivity>());
         widgets::Toast::success(lvTr("Click Success!"));
     });
 
     _drawer = std::make_shared<lvglpp::ui::page::TopDrawer>(this->getRoot());
 
-    _timer = std::make_unique<QGL::Timer>(
-        [this]() -> void {
+    _timer = lv_timer_create(
+        [](lv_timer_t *t) {
+            auto *self = static_cast<HomePage *>(lv_timer_get_user_data(t));
             static int    count       = 0;
             constexpr int fixed_times = 15;
-            if (count >= fixed_times)
-            {
-                _timer->stop();
+            if (count >= fixed_times) {
+                lv_timer_del(t);
+                self->_timer = nullptr;
+                return;
             }
 
-            // std::string msg = std::format("Click Success! {}", count);
-            std::string msg = (boost::format("Click Success! %1%") % count).str();
             // widgets::Toast::success(msg);
             LOG_INFO() << "HomePage::_timer callback" << count;
             count++;
         },
-        1500, QGL::TimerType::Repeating, nullptr);
-
-    // 1000, QGL::TimerType::SingleShot, nullptr);
-
-    // CONNECT(_timer.get(), &QGL::Timer::timeout, this, [this]() {
-    //     LOG_INFO() << "HomePage::_timer callback";
-    //     });
-
-    _timer->start();
+        1500, this);
 }
 
 void HomePage::onNotifyUI(const sys::Event &evt)
@@ -74,4 +65,9 @@ void HomePage::onNotifyUI(const sys::Event &evt)
 }
 
 void HomePage::onDestroy()
-{}
+{
+    if (_timer) {
+        lv_timer_del(_timer);
+        _timer = nullptr;
+    }
+}

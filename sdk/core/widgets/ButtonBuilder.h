@@ -1,5 +1,5 @@
-#ifndef LV_BUTTON_BUILDER_H
-#define LV_BUTTON_BUILDER_H
+#ifndef LVGLPP_BUTTONBUILDER_H
+#define LVGLPP_BUTTONBUILDER_H
 
 #include "PushButton.h" // 确保包含 PushButton 的头文件
 #include <memory>
@@ -42,4 +42,4 @@ private:
 
 } // namespace lvglpp::widgets
 
-#endif // LV_BUTTON_BUILDER_H
+#endif // LVGLPP_BUTTONBUILDER_H

@@ -3,10 +3,10 @@
 
 #include "boost/progress_bar.h"
 #include "core/widgets/BaseDialog.h"
-#include "core/widgets/ConsumeText.h"
+#include "core/widgets/LvText.h"
 #include "core/widgets/Image.h"
 #include "core/widgets/MouseArea.h"
-#include "core/widgets/RoundedButton.h"
+#include "core/widgets/PushButton.h"
 #include <boost/format.hpp>
 #include <cstdint>
 #include <iomanip>

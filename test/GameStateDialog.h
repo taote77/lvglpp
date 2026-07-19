@@ -4,7 +4,7 @@
 #include "core/widgets/BaseDialog.h"
 #include "core/widgets/BaseItem.h"
 #include "core/widgets/LvText.h"
-#include "core/widgets/RoundedButton.h"
+#include "core/widgets/PushButton.h"
 
 namespace lvglpp {
 

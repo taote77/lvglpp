@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(LUA REQUIRED lua-5.2)
+pkg_check_modules(LUA REQUIRED lua-5.4)
 
 add_library(${PROJECT_NAME} STATIC)
 

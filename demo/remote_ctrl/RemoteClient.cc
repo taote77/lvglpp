@@ -152,7 +152,7 @@ RemoteClient::RemoteClient() : sys::BaseActivity()
 RemoteClient::~RemoteClient()
 {}
 
-void RemoteClient::onCreate(void *arg)
+void RemoteClient::onCreate(std::any arg)
 {
     WebsocketSession::Instance().OnMsgHandler([this](boost::json::object &req, boost::json::object &res) {
         auto topic     = req["topic"].as_string();
@@ -186,7 +186,7 @@ void RemoteClient::onCreate(void *arg)
             std::clamp(pos_y, 0, 480); // ensure y in range [0, 480]
 
             last_time = now;
-            lvglpp::sys::StackView::getInstance()->getApplication()->postEvent(lvglpp::sys::Event(ComTopic::MOUSE_EVENT, 0, std::pair<int, int>(pos_x, pos_y)));
+            lvglpp::sys::StackView::getInstance().getApplication()->postEvent(lvglpp::sys::Event(ComTopic::MOUSE_EVENT, 0, std::pair<int, int>(pos_x, pos_y)));
         }
     });
 

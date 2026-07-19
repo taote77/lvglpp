@@ -14,7 +14,7 @@ add_compile_options(-fPIC)
 enable_language(ASM)
 
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(LUA REQUIRED lua-5.2)
+pkg_check_modules(LUA REQUIRED lua-5.4)
 
 # set(LV_CONF_BUILD_DISABLE_EXAMPLES 1)
 # set(LV_CONF_BUILD_DISABLE_DEMOS 1)
@@ -29,8 +29,6 @@ add_definitions(-DLV_USE_LINUX_DRM=1)
 include_directories(/usr/include/drm)
 
 
-# Main include files of project
-include_directories(${PROJECT_SOURCE_DIR}/main/inc)
 include_directories(${LUA_INCLUDE_DIRS})
 
 # Define options for LVGL with default values (OFF)
@@ -65,7 +63,7 @@ add_subdirectory(lvgl)
 target_include_directories(lvgl PUBLIC ${PROJECT_SOURCE_DIR} ${SDL2_INCLUDE_DIRS})
 
 
-file(GLOB_RECURSE TOOLS_SRC ${CMAKE_CURRENT_SOURCE_DIR}/core/*.c ${CMAKE_CURRENT_SOURCE_DIR}/core/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/core/*.cc ${CMAKE_CURRENT_SOURCE_DIR}/core/*.hpp ${CMAKE_CURRENT_SOURCE_DIR}/core/*.h)
+file(GLOB_RECURSE TOOLS_SRC ${CMAKE_CURRENT_SOURCE_DIR}/core/*.c ${CMAKE_CURRENT_SOURCE_DIR}/core/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/core/*.h)
 
 
 add_library(${PROJECT_NAME}  SHARED 

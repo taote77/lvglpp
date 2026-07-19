@@ -1,6 +1,6 @@
 
-#ifndef LVPP_IMAGE_H
-#define LVPP_IMAGE_H
+#ifndef LVGLPP_IMAGE_H
+#define LVGLPP_IMAGE_H
 
 #include "BaseItem.h"
 #include <string>
@@ -27,4 +27,4 @@ private:
 
 } // namespace lvglpp::widgets
 
-#endif // LVPP_IMAGE_H
+#endif // LVGLPP_IMAGE_H

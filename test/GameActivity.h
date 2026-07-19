@@ -6,7 +6,7 @@
 #include "core/sys/Event.h"
 #include "core/widgets/LvButton.h"
 #include "core/widgets/LvText.h"
-#include "core/widgets/RoundedButton.h"
+#include "core/widgets/PushButton.h"
 #include <iostream>
 #include <iterator>
 #include <list>
@@ -54,7 +54,7 @@ public:
     ~GameActivity();
 
 protected:
-    void onCreate(void *arg) override;
+    void onCreate(std::any arg) override;
 
     void onNotifyUI(const sys::Event &evt) override;
 

@@ -1,3 +1,4 @@
+#include "core/kernel/LvObjFactory.h"
 #include "BaseDialog.h"
 #include "color_sheet.h"
 #include <unistd.h>
@@ -9,7 +10,7 @@ BaseItem *BaseDialog::getRoot() const
 }
 
 BaseDialog::BaseDialog(bool is_sys_dialog) //
-    : background_item_ptr_(new BaseItem(is_sys_dialog ? BaseItem::SysDialog : BaseItem::Dialog))
+    : background_item_ptr_(new BaseItem(is_sys_dialog ? tools::LvObjFactory::createLvglSysDialog : tools::LvObjFactory::createLvglDialog))
 {
     background_item_ptr_->setOpacity(1);
     background_item_ptr_->setSize(800, 480);

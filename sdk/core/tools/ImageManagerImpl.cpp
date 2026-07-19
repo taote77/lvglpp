@@ -2,19 +2,15 @@
 #include "ImageManagerImpl.h"
 #include "Utils.h"
 #include "core/log/log.h"
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <iostream>
 
 namespace lvglpp {
 namespace tools {
-ImageManagerImpl *ImageManagerImpl::instance_ = nullptr;
-ImageManagerImpl *ImageManagerImpl::getInstance()
+ImageManagerImpl &ImageManagerImpl::getInstance()
 {
-    if (instance_ == nullptr)
-    {
-        instance_ = new ImageManagerImpl();
-    }
-    return instance_;
+    static ImageManagerImpl instance;
+    return instance;
 }
 
 lv_img_dsc_t *ImageManagerImpl::getImageDscByUrl(const std::string &url)
@@ -60,15 +56,12 @@ lv_img_dsc_t *ImageManagerImpl::getImageDscByUrl(const std::string &url)
 
 ImageManagerImpl::ImageManagerImpl()
 {
-    if (boost::filesystem::exists(lvglpp::tools::Utils::getAssetDirRoot() + "/db/resource.db"))
+    if (std::filesystem::exists(lvglpp::tools::Utils::getAssetDirRoot() + "/db/resource.db"))
     {
-        asset_db_ = new db::AssetResDataBase();
+        asset_db_ = std::make_unique<db::AssetResDataBase>();
     }
 }
 
-ImageManagerImpl::~ImageManagerImpl()
-{
-    delete asset_db_;
-}
+ImageManagerImpl::~ImageManagerImpl() = default;
 } // namespace tools
 } // namespace lvglpp

@@ -1,7 +1,7 @@
 #include "DetailPulseDialog.h"
 #include "boost/progress_bar.h"
 #include "core/log/log.h"
-#include "core/widgets/RoundedButton.h"
+#include "core/widgets/PushButton.h"
 #include "i18n/LvTranslator.h"
 #include "theme/form_design.h"
 #include <cstdint>

@@ -10,7 +10,7 @@ BindDemo::BindDemo() : sys::BaseActivity()
 BindDemo::~BindDemo()
 {}
 
-void BindDemo::onCreate(void *arg)
+void BindDemo::onCreate(std::any arg)
 {
     _label = std::make_shared<lvglpp::widgets::Text>(_txt, form::design::CLR_SURFACE_CONTAINER, getRoot());
 

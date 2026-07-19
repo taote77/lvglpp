@@ -9,7 +9,7 @@ Widget::Widget() : sys::BaseActivity()
 Widget::~Widget()
 {}
 
-void Widget::onCreate(void *arg)
+void Widget::onCreate(std::any arg)
 {
     _gif = std::make_shared<widgets::GifImage>("G:/gif/bird.gif", getRoot());
     _gif->setPos(0, 0);

@@ -189,7 +189,7 @@ void TempCurveDlg::addChartIndex(int index)
     double max_index = *std::max_element(chart_vec_.begin(), chart_vec_.end());
     double min_index = *std::min_element(chart_vec_.begin(), chart_vec_.end());
 
-    peak_force_curve_label->setText((boost::format("Value     Max   %1%      Min  %2%") % max_index % min_index).str());
+    peak_force_curve_label->setText("Value     Max   " + std::to_string(max_index) + "      Min  " + std::to_string(min_index));
 
     zero_label_->setPos(85, peak_pos_y + 10 + (max_index / (max_index - min_index) * (trough_pos_y - peak_pos_y)));
 
@@ -198,8 +198,8 @@ void TempCurveDlg::addChartIndex(int index)
     double axis_y_low  = min_index < -10 ? min_index - 10 : -20;
     double axis_y_high = max_index > 15 ? max_index + 15 : 30;
 
-    peak_value_->setText((boost::format("%1% N") % axis_y_low).str());
-    trough_value_->setText((boost::format("%1% N") % max_index).str());
+    peak_value_->setText(std::to_string(axis_y_low) + " N");
+    trough_value_->setText(std::to_string(max_index) + " N");
 
     lv_chart_set_next_value(chart_->getLvglItem(), ser1_, index / 100.0);
     lv_chart_set_next_value(chart_->getLvglItem(), ser2_, 0);

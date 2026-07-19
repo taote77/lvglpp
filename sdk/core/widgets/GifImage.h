@@ -1,5 +1,5 @@
-#ifndef LV_GIF_IMAGE_H
-#define LV_GIF_IMAGE_H
+#ifndef LVGLPP_GIFIMAGE_H
+#define LVGLPP_GIFIMAGE_H
 
 #include "BaseItem.h"
 
@@ -25,4 +25,4 @@ private:
 
 } // namespace lvglpp::widgets
 
-#endif // LV_GIF_IMAGE_H
+#endif // LVGLPP_GIFIMAGE_H

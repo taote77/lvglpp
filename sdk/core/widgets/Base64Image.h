@@ -1,6 +1,6 @@
 
-#ifndef LV_BASE64_IMAGE_H
-#define LV_BASE64_IMAGE_H
+#ifndef LVGLPP_BASE64IMAGE_H
+#define LVGLPP_BASE64IMAGE_H
 
 #include "BaseItem.h"
 #include <string>
@@ -26,4 +26,4 @@ private:
 } // namespace widgets
 } // namespace lvglpp
 
-#endif // LV_BASE64_IMAGE_H
+#endif // LVGLPP_BASE64IMAGE_H

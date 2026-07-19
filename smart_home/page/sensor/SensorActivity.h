@@ -6,7 +6,7 @@
 #include "core/widgets/GifImage.h"
 #include "core/widgets/Image.h"
 #include "core/widgets/LvText.h"
-#include "core/widgets/RoundedButton.h"
+#include "core/widgets/PushButton.h"
 #include <memory>
 
 using namespace lvglpp;
@@ -18,7 +18,7 @@ public:
     explicit SensorActivity();
 
 protected:
-    void onCreate(void *arg) override;
+    void onCreate(std::any arg) override;
 
     void onNotifyUI(const Event &evt) override;
 

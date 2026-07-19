@@ -1,5 +1,5 @@
-#ifndef LV_MOUSEAREA_H
-#define LV_MOUSEAREA_H
+#ifndef LVGLPP_MOUSEAREA_H
+#define LVGLPP_MOUSEAREA_H
 
 #include "BaseItem.h"
 #include <functional>
@@ -44,4 +44,4 @@ private:
 
 } // namespace lvglpp::widgets
 
-#endif // LV_MOUSEAREA_H
+#endif // LVGLPP_MOUSEAREA_H

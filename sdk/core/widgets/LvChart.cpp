@@ -1,8 +1,9 @@
+#include "core/kernel/LvObjFactory.h"
 #include "LvChart.h"
 
 namespace lvglpp::widgets {
 
-LvChart::LvChart(BaseItem *parent) : BaseItem(BaseItem::ItemType::Chart, parent)
+LvChart::LvChart(BaseItem *parent) : BaseItem(tools::LvObjFactory::createLvglChart, parent)
 {}
 
 } // namespace lvglpp::widgets

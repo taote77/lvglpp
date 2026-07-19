@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-list(APPEND  ${CMAKE_CURRENT_LIST_DIR}/cmake)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake)
 project(lvgl_wrapper)
 
 include(cmake/build.cmake)
@@ -26,8 +26,6 @@ endif ()
 
 
 add_subdirectory(sdk)
-
-add_subdirectory(qgl)
 
 set(ENABLE_DEMO ON CACHE BOOL "Enable demo application")
 if (ENABLE_DEMO)

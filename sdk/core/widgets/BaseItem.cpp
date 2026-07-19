@@ -1,14 +1,17 @@
 #include "BaseItem.h"
 #include "core/kernel/LvObjFactory.h"
+#include <iostream>
 
 namespace lvglpp::widgets {
 
-BaseItem::BaseItem(BaseItem *parentItem) : BaseItem(BaseItem::NormalItem, parentItem)
+BaseItem::BaseItem(BaseItem *parentItem)
+    : BaseItem(tools::LvObjFactory::createLvglItem, parentItem)
 {}
 
-BaseItem::BaseItem(BaseItem::ItemType type, BaseItem *parentItem) : parent(parentItem)
+BaseItem::BaseItem(Creator creator, BaseItem *parentItem)
+    : parent(parentItem)
 {
-    initItem(type);
+    initItem(creator);
 }
 
 BaseItem::~BaseItem()
@@ -17,68 +20,17 @@ BaseItem::~BaseItem()
     {
         if (lv_base_ptr_ != nullptr)
         {
-            // LV_LOG_USER("remove!!%ld",lv_base_ptr_);
             lv_obj_del(lv_base_ptr_);
             lv_base_ptr_ = nullptr;
         }
     }
 }
 
-void BaseItem::createLvObj(ItemType type)
+void BaseItem::initItem(const Creator &creator)
 {
-    lv_obj_t *parent_lvgl_obj{nullptr};
-
-    if (parent == nullptr)
-    {
-        // lv_base_ptr_=tools::LvglUtils::createLvglItem(lv_scr_act());
-        parent_lvgl_obj = lv_scr_act();
-    } else
-    {
-        // lv_base_ptr_=tools::LvglUtils::createLvglItem(parent->getLvglItem());
-        parent_lvgl_obj = parent->getLvglItem();
-    }
-
-    switch (type)
-    {
-    case ItemType::NormalItem:
-        lv_base_ptr_ = tools::LvObjFactory::createLvglItem(parent_lvgl_obj);
-        break;
-    case ItemType::Image:
-        lv_base_ptr_ = tools::LvObjFactory::createLvglImage(parent_lvgl_obj);
-        break;
-    case ItemType::Text:
-        lv_base_ptr_ = tools::LvObjFactory::createLvglLabel(parent_lvgl_obj);
-        break;
-    case ItemType::SpinBox:
-        lv_base_ptr_ = tools::LvObjFactory::createLvglSpinBox(parent_lvgl_obj);
-        break;
-    case ItemType::GIF:
-        lv_base_ptr_ = tools::LvObjFactory::createLvglGif(parent_lvgl_obj);
-        break;
-    case ItemType::Dialog:
-        lv_base_ptr_ = tools::LvObjFactory::createLvglDialog();
-        break;
-    case ItemType::Progress:
-        lv_base_ptr_ = tools::LvObjFactory::createLvglProgress(parent_lvgl_obj);
-        break;
-    case ItemType::SysDialog:
-        lv_base_ptr_ = tools::LvObjFactory::createLvglSysDialog();
-        break;
-    case ItemType::Chart:
-        lv_base_ptr_ = tools::LvObjFactory::createLvglChart(parent_lvgl_obj);
-        break;
-    case ItemType::Video:
-        lv_base_ptr_ = tools::LvObjFactory::createLvglVideo(parent_lvgl_obj);
-        break;
-    case ItemType::LottieCanvas:
-        lv_base_ptr_ = tools::LvObjFactory::createLvglLottie(parent_lvgl_obj);
-        break;
-    case ItemType::QrWidget:
-        lv_base_ptr_ = tools::LvObjFactory::createLvglQrCode(parent_lvgl_obj);
-        break;
-    default:
-        break;
-    }
+    lv_obj_t *parent_lvgl_obj = (parent == nullptr) ? lv_scr_act() : parent->getLvglItem();
+    lv_base_ptr_ = creator(parent_lvgl_obj);
+    registerEvent();
 }
 
 void BaseItem::registerEvent()
@@ -141,12 +93,6 @@ void BaseItem::registerEvent()
             },
             LV_EVENT_RELEASED, this);
     }
-}
-
-void BaseItem::initItem(ItemType type)
-{
-    createLvObj(type);
-    registerEvent();
 }
 
 void BaseItem::setVisible(bool visible)
@@ -252,7 +198,7 @@ lv_coord_t BaseItem::getRadius() const
     return lv_obj_get_style_radius(lv_base_ptr_, LV_STATE_DEFAULT);
 }
 
-void BaseItem::setBorder(lv_coord_t width, uint32_t color) const
+void BaseItem::setBorder(lv_coord_t width, uint32_t color)
 {
     lv_obj_set_style_border_width(getLvglItem(), width, LV_STATE_DEFAULT);
     lv_obj_set_style_border_color(getLvglItem(), lv_color_hex(color), LV_STATE_DEFAULT);
@@ -286,6 +232,71 @@ void BaseItem::setPaddingTop(lv_coord_t padding)
 void BaseItem::setPaddingHor(lv_coord_t padding)
 {
     lv_obj_set_style_pad_hor(lv_base_ptr_, padding, LV_STATE_DEFAULT);
+}
+
+// ---- Introspection / Accessibility API ----
+
+uint32_t BaseItem::childCount() const
+{
+    return lv_obj_get_child_cnt(lv_base_ptr_);
+}
+
+BaseItem *BaseItem::childAt(uint32_t index) const
+{
+    auto *lv_child = lv_obj_get_child(lv_base_ptr_, index);
+    if (!lv_child) return nullptr;
+    // Walk through all BaseItems to find one wrapping this lv_obj
+    // Note: This is a limitation — we don't store a lv_obj → BaseItem mapping.
+    // For the AI agent use case, children are typically created through BaseItem(parent)
+    // and we can use lv_obj_get_user_data if set.
+    return static_cast<BaseItem *>(lv_obj_get_user_data(lv_child));
+}
+
+BaseItem *BaseItem::findChild(const std::string &n) const
+{
+    if (_name == n) return const_cast<BaseItem *>(this);
+    for (uint32_t i = 0; i < childCount(); i++) {
+        auto *child = childAt(i);
+        if (!child) continue;
+        if (auto *found = child->findChild(n))
+            return found;
+    }
+    return nullptr;
+}
+
+BaseItem::Rect BaseItem::bounds() const
+{
+    lv_area_t area;
+    lv_obj_get_coords(lv_base_ptr_, &area);
+    return {area.x1, area.y1, lv_area_get_width(&area), lv_area_get_height(&area)};
+}
+
+std::string BaseItem::describeState() const
+{
+    std::ostringstream os;
+    auto r = bounds();
+    os << "{"
+       << R"("name":")" << _name << "\","
+       << R"("type":")" << typeid(*this).name() << "\","
+       << R"("visible":)" << (getVisible() ? "true" : "false") << ","
+       << R"("enabled":)" << (getEnable() ? "true" : "false") << ","
+       << R"("rect":{"x":)" << r.x << ",\"y\":" << r.y
+       << ",\"w\":" << r.w << ",\"h\":" << r.h << "},"
+       << R"("children":)" << childCount()
+       << "}";
+    return os.str();
+}
+
+void BaseItem::dumpTree(int depth) const
+{
+    for (int i = 0; i < depth; i++) std::cout << "  ";
+    std::cout << (_name.empty() ? "(unnamed)" : _name) << " [" << typeid(*this).name() << "]"
+              << " visible=" << getVisible() << " pos=(" << getX() << "," << getY() << ")"
+              << " size=(" << getWidth() << "," << getHeight() << ")" << std::endl;
+    for (uint32_t i = 0; i < childCount(); i++) {
+        if (auto *child = childAt(i))
+            child->dumpTree(depth + 1);
+    }
 }
 
 } // namespace lvglpp::widgets

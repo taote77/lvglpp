@@ -1,5 +1,5 @@
-#ifndef _LVPP_BIND_TEXT_H_
-#define _LVPP_BIND_TEXT_H_
+#ifndef LVGLPP_TEXT_H
+#define LVGLPP_TEXT_H
 
 #include "core/widgets/LvText.h"
 
@@ -21,4 +21,4 @@ private:
 
 } // namespace lvglpp::widgets
 
-#endif // _LVPP_BIND_TEXT_H_
+#endif // LVGLPP_TEXT_H

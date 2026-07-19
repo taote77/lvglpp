@@ -2,7 +2,7 @@
 #define NOTICE_DELEGATE_H
 
 #include "core/widgets/BaseItem.h"
-#include "core/widgets/ConsumeText.h"
+#include "core/widgets/LvText.h"
 #include "core/widgets/Image.h"
 #include "core/widgets/ListViewDelegate.hpp"
 #include <boost/signals2/signal.hpp>

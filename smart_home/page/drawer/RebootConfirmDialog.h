@@ -2,8 +2,8 @@
 #define REBOOTCONFIRM_DIALOG_H
 
 #include "core/widgets/BaseDialog.h"
-#include "core/widgets/ConsumeText.h"
-#include "core/widgets/RoundedButton.h"
+#include "core/widgets/LvText.h"
+#include "core/widgets/PushButton.h"
 
 namespace lvglpp::ui::page {
 using namespace lvglpp::widgets;

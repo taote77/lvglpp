@@ -1,7 +1,7 @@
 #ifndef ASSETRES_DATABASE_H
 #define ASSETRES_DATABASE_H
-#include <boost/optional.hpp>
 #include <sqlite3.h>
+#include <optional>
 #include <string>
 namespace lvglpp {
 namespace db {
@@ -31,7 +31,7 @@ class AssetResDataBase
 public:
     AssetResDataBase();
     virtual ~AssetResDataBase();
-    boost::optional<AssetImageData> getImageDataByUrl(const std::string &url);
+    std::optional<AssetImageData> getImageDataByUrl(const std::string &url);
 
 private:
     sqlite3 *db_storage_;

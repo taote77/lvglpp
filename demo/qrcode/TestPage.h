@@ -5,7 +5,7 @@
 #include "core/sys/Event.h"
 #include "core/widgets/BaseItem.h"
 #include "core/widgets/LvText.h"
-#include "core/widgets/RoundedButton.h"
+#include "core/widgets/PushButton.h"
 #include "core/widgets/Text.h"
 #include <core/widgets/QrCode.h>
 #include <memory>
@@ -19,7 +19,7 @@ public:
     ~TestPage();
 
 protected:
-    void onCreate(void *arg) override;
+    void onCreate(std::any arg) override;
 
     void onNotifyUI(const sys::Event &evt) override;
 

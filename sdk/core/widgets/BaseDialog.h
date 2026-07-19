@@ -1,5 +1,5 @@
-#ifndef LV_BASE_DIALOG_H
-#define LV_BASE_DIALOG_H
+#ifndef LVGLPP_BASEDIALOG_H
+#define LVGLPP_BASEDIALOG_H
 
 #include "BaseItem.h"
 #include <memory>
@@ -38,4 +38,4 @@ private:
 
 } // namespace lvglpp::widgets
 
-#endif // LV_BASE_DIALOG_H
+#endif // LVGLPP_BASEDIALOG_H

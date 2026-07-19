@@ -1,6 +1,6 @@
 
-#ifndef LV_TOAST_H
-#define LV_TOAST_H
+#ifndef LVGLPP_TOAST_H
+#define LVGLPP_TOAST_H
 
 #include "ToastImpl.h"
 #include <lvgl.h>
@@ -37,4 +37,4 @@ private:
 
 } // namespace lvglpp::widgets
 
-#endif // LV_TOAST_H
+#endif // LVGLPP_TOAST_H

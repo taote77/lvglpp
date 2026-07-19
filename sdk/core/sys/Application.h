@@ -11,6 +11,7 @@ Description:应用程序管理虚基类
 
 #include "Event.h"
 #include <lvgl.h>
+#include <any>
 #include <map>
 #include <memory>
 #include <mutex>
@@ -86,10 +87,7 @@ private:
     static LanguageType language_type_;
     std::queue<Event>   event_queue_;
     std::mutex          mutex_;
-    lv_fs_drv_t         file_assert_fs_drv_;
-    lv_fs_drv_t         mem_assert_fs_drv_;
-
-    bool enable_stack_view_ = true;
+    bool                enable_stack_view_ = true;
 };
 } // namespace lvglpp::sys
 

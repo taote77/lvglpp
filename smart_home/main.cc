@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     LvTranslator::Instance().init();
     LvTranslator::Instance().load(LANGUAGE::CHINESE);
 
-    lvglpp::sys::StackView::getInstance()->pushView(std::make_shared<HomePage>());
+    lvglpp::sys::StackView::getInstance().pushView(std::make_shared<HomePage>());
 
     return app.exec();
 }

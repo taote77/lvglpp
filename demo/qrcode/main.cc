@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
 
     lvglpp::tools::LvFontManager::enableFreetype(false);
 
-    lvglpp::sys::StackView::getInstance()->pushView(std::make_shared<TestPage>());
+    lvglpp::sys::StackView::getInstance().pushView(std::make_shared<TestPage>());
 
     return app.exec();
 }

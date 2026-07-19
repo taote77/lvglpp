@@ -27,7 +27,9 @@ private:
     static bool kEnableFreetype;
 };
 
+// Modern alias
+using FontManager = LvFontManager;
+
 } // namespace lvglpp::tools
-  // tools
 
 #endif // LVFONTMANAGER_H

@@ -1,5 +1,6 @@
 #include "log.h"
 
+#include <filesystem>
 #include <fstream>
 #include <boost/log/utility/setup/common_attributes.hpp>
 #include <boost/log/utility/setup/from_stream.hpp>
@@ -7,13 +8,12 @@
 #include <boost/log/utility/setup/filter_parser.hpp>
 #include <boost/log/utility/setup/settings.hpp>
 #include <boost/log/utility/setup/from_settings.hpp>
-#include <boost/dll.hpp>
 
 
 namespace hglv{
 
 
-void Logger::Init(const boost::filesystem::path& filename, const boost::filesystem::path& folder,const std::string& level)
+void Logger::Init(const std::filesystem::path& filename, const std::filesystem::path& folder,const std::string& level)
 {
     boost::log::add_common_attributes();
     boost::log::register_simple_formatter_factory<boost::log::trivial::severity_level, char>("Severity");
@@ -42,7 +42,7 @@ void Logger::Init(const boost::filesystem::path& filename, const boost::filesyst
     boost::log::init_from_settings(settings);
 }
 
-void Logger::Configure(const boost::filesystem::path &setting)
+void Logger::Configure(const std::filesystem::path &setting)
 {
     try
     {

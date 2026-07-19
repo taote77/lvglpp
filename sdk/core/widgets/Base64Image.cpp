@@ -1,3 +1,4 @@
+#include "core/kernel/LvObjFactory.h"
 #include "Base64Image.h"
 #include "core/tools/Utils.h"
 #include <iostream>
@@ -108,7 +109,7 @@ void Base64Resize(const std::string &src, std::string &output, int width, int he
     }
 }
 
-Base64Image::Base64Image(std::string base64, int w, int h, BaseItem *parent) : BaseItem(BaseItem::Image, parent), w_(w), h_(h), base64Data_(std::move(base64))
+Base64Image::Base64Image(std::string base64, int w, int h, BaseItem *parent) : BaseItem(tools::LvObjFactory::createLvglImage, parent), w_(w), h_(h), base64Data_(std::move(base64))
 {
     updateImage(base64Data_);
 }

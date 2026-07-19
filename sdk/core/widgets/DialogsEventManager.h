@@ -1,5 +1,5 @@
-#ifndef LV_DIALOGS_EVENT_MANAGER_H
-#define LV_DIALOGS_EVENT_MANAGER_H
+#ifndef LVGLPP_DIALOGSEVENTMANAGER_H
+#define LVGLPP_DIALOGSEVENTMANAGER_H
 #include "lvgl/lvgl.h"
 
 namespace lvglpp {
@@ -32,4 +32,4 @@ private:
 } // namespace widgets
 } // namespace lvglpp
 
-#endif // LV_DIALOGS_EVENT_MANAGER_H
+#endif // LVGLPP_DIALOGSEVENTMANAGER_H

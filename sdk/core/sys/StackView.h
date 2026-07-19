@@ -5,6 +5,7 @@
 #include "Activity.h"
 #include "Application.h"
 #include "Event.h"
+#include <any>
 #include <memory>
 #include <vector>
 
@@ -19,15 +20,15 @@ public:
 
     ~StackView();
 
-    static StackView *getInstance();
+    static StackView &getInstance();
 
     void start();
 
-    void pushView(const std::shared_ptr<Activity> &view, void *arg = nullptr);
+    void pushView(const std::shared_ptr<Activity> &view, std::any arg = {});
 
-    void pushViewAndReplaced(const std::shared_ptr<Activity> &view, void *arg = nullptr);
+    void pushViewAndReplaced(const std::shared_ptr<Activity> &view, std::any arg = {});
 
-    void pushViewAndReplacedImmediately(const std::shared_ptr<Activity> &view, void *arg = nullptr);
+    void pushViewAndReplacedImmediately(const std::shared_ptr<Activity> &view, std::any arg = {});
 
     void popView();
 
@@ -36,7 +37,7 @@ public:
      */
     void popViewImmediately();
 
-    void pushViewImmediately(const std::shared_ptr<Activity> &view, void *arg = nullptr);
+    void pushViewImmediately(const std::shared_ptr<Activity> &view, std::any arg = {});
 
     int32_t depth() const
     {
@@ -82,7 +83,6 @@ protected:
     virtual void popAnim(const Activity *act);
 
 private:
-    static StackView                      *instance_;
     bool                                   working_       = false;
     const int                              enter_anim_ms_ = 250;
     const int                              pop_anim_ms_   = 250;

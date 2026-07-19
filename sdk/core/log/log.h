@@ -1,18 +1,17 @@
 #ifndef NAMESPACELESS_LOGGER_H
 #define NAMESPACELESS_LOGGER_H
 
-#include <boost/filesystem.hpp>
 #include <boost/log/trivial.hpp>
-#include <boost/current_function.hpp>
+#include <filesystem>
 
 namespace hglv{
 
 class Logger
 {
 public:
-    static void Init(const boost::filesystem::path& filename, const boost::filesystem::path& folder,const std::string& level);
+    static void Init(const std::filesystem::path& filename, const std::filesystem::path& folder,const std::string& level);
 
-    static void Configure(const boost::filesystem::path& setting);
+    static void Configure(const std::filesystem::path& setting);
 };
 
 }
@@ -20,19 +19,19 @@ public:
 
 
 #ifndef LOG_DEBUG
-#define LOG_DEBUG() BOOST_LOG_TRIVIAL(debug)<<BOOST_CURRENT_FUNCTION<<"|"
+#define LOG_DEBUG() BOOST_LOG_TRIVIAL(debug)<<__PRETTY_FUNCTION__<<"|"
 #endif
 
 #ifndef LOG_INFO
-#define LOG_INFO() BOOST_LOG_TRIVIAL(info)<<BOOST_CURRENT_FUNCTION<<"|"
+#define LOG_INFO() BOOST_LOG_TRIVIAL(info)<<__PRETTY_FUNCTION__<<"|"
 #endif
 
 #ifndef LOG_WARN
-#define LOG_WARN()  BOOST_LOG_TRIVIAL(warning)<<BOOST_CURRENT_FUNCTION<<"|"
+#define LOG_WARN()  BOOST_LOG_TRIVIAL(warning)<<__PRETTY_FUNCTION__<<"|"
 #endif
 
 #ifndef LOG_ERROR
-#define LOG_ERROR() BOOST_LOG_TRIVIAL(error)<<BOOST_CURRENT_FUNCTION<<"|"
+#define LOG_ERROR() BOOST_LOG_TRIVIAL(error)<<__PRETTY_FUNCTION__<<"|"
 #endif
 
 #ifndef LogDebug

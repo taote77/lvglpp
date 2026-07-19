@@ -4,8 +4,8 @@ Description:搭配Loader使用
 
 **************************************************************************/
 
-#ifndef LVPP_COMPONENT_H
-#define LVPP_COMPONENT_H
+#ifndef LVGLPP_COMPONENT_H
+#define LVGLPP_COMPONENT_H
 
 #include "core/sys/Event.h"
 
@@ -41,4 +41,4 @@ private:
 } // namespace widgets
 } // namespace lvglpp
 
-#endif // LVPP_COMPONENT_H
+#endif // LVGLPP_COMPONENT_H

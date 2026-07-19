@@ -1,7 +1,8 @@
+#include "core/kernel/LvObjFactory.h"
 #include "GifImage.h"
 
 namespace lvglpp::widgets {
-GifImage::GifImage(const std::string &path, BaseItem *parent) : BaseItem(ItemType::GIF, parent)
+GifImage::GifImage(const std::string &path, BaseItem *parent) : BaseItem(tools::LvObjFactory::createLvglGif, parent)
 {
     setImageSrcPath(path);
 }

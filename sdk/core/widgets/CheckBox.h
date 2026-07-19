@@ -1,5 +1,5 @@
-#ifndef LV_CHECKBOX_H
-#define LV_CHECKBOX_H
+#ifndef LVGLPP_CHECKBOX_H
+#define LVGLPP_CHECKBOX_H
 
 #include "BaseItem.h"
 #include "MouseArea.h"
@@ -26,4 +26,4 @@ private:
 
 } // namespace lvglpp::widgets
 
-#endif // LV_CHECKBOX_H
+#endif // LVGLPP_CHECKBOX_H

@@ -1,5 +1,5 @@
-#ifndef LVPP_SWITCH_BUTTON_H
-#define LVPP_SWITCH_BUTTON_H
+#ifndef LVGLPP_SWITCHBUTTON_H
+#define LVGLPP_SWITCHBUTTON_H
 
 #include "core/widgets/BaseItem.h"
 #include <memory>
@@ -38,4 +38,4 @@ private:
 
 } // namespace lvglpp::widgets
 
-#endif // LVPP_SWITCH_BUTTON_H
+#endif // LVGLPP_SWITCHBUTTON_H

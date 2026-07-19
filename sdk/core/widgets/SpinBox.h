@@ -1,6 +1,6 @@
 
-#ifndef LVPP_SPINBOX_H
-#define LVPP_SPINBOX_H
+#ifndef LVGLPP_SPINBOX_H
+#define LVGLPP_SPINBOX_H
 
 #include "BaseItem.h"
 
@@ -27,4 +27,4 @@ private:
 } // namespace widgets
 } // namespace lvglpp
 
-#endif // LVPP_SPINBOX_H
+#endif // LVGLPP_SPINBOX_H

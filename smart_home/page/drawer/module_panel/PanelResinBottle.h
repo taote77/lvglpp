@@ -4,7 +4,7 @@
 #include "DetailResinDialog.h"
 #include "boost/progress_bar.h"
 #include "core/widgets/BaseItem.h"
-#include "core/widgets/ConsumeText.h"
+#include "core/widgets/LvText.h"
 #include "core/widgets/Image.h"
 #include "core/widgets/MouseArea.h"
 #include <boost/format.hpp>

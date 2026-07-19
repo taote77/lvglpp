@@ -10,7 +10,7 @@ using namespace form::design;
 SensorActivity::SensorActivity() : BaseActivity()
 {}
 
-void SensorActivity::onCreate(void *arg)
+void SensorActivity::onCreate(std::any arg)
 {
     BaseActivity::onCreate(arg);
     getRoot()->setBgColor(CLR_SURFACE);

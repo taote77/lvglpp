@@ -1,5 +1,5 @@
-#ifndef LV_QR_CODE_H
-#define LV_QR_CODE_H
+#ifndef LVGLPP_QRCODE_H
+#define LVGLPP_QRCODE_H
 
 #include "BaseItem.h"
 #include "Image.h"
@@ -27,4 +27,4 @@ private:
 
 } // namespace lvglpp::widgets
 
-#endif // LV_QR_CODE_H
+#endif // LVGLPP_QRCODE_H

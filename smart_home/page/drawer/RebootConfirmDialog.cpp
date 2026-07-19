@@ -44,7 +44,7 @@ RebootConfirmDialog::RebootConfirmDialog() : BaseDialog(true), change_dir_cb_(nu
     cancel_btn_->setOnClickedListener([this]() -> void {
         LogDebug << "====cancel====";
         this->close();
-        // StackView::getInstance()->popViewImmediately();
+        // StackView::getInstance().popViewImmediately();
     });
 }
 

@@ -1,5 +1,5 @@
-#ifndef LVGLPP_TEXT_H
-#define LVGLPP_TEXT_H
+#ifndef LVGLPP_LVTEXT_H
+#define LVGLPP_LVTEXT_H
 
 #include "BaseItem.h"
 #include "lvgl.h"
@@ -10,7 +10,7 @@ namespace lvglpp::widgets {
 class LvText : public BaseItem
 {
 public:
-    enum TextStyle { FontSize20, FontSize24, FontSize28, FontSize32, FontSize36, FontSize20Bold, FontSize24Bold, FontSize28Bold, FontSize32Bold, FontSize36Bold, FontSize64Bold };
+    enum TextStyle { FontSize20, FontSize22, FontSize24, FontSize28, FontSize32, FontSize36, FontSize20Bold, FontSize22Bold, FontSize24Bold, FontSize28Bold, FontSize32Bold, FontSize36Bold, FontSize48Bold, FontSize64Bold };
 
     enum FontType { Auto, DMSans, SansSC, Oswald };
 
@@ -49,6 +49,8 @@ public:
     void setTextClr(uint32_t clr);
 
     void setTextAlign(lv_text_align_t align);
+
+    void setTextOpa(lv_opa_t opa);
     /**
      * 字体重渲染，用于局部文本显示不同的颜色
      * @param enable
@@ -74,6 +76,8 @@ public:
 
     void setLongMode(int maxWidth, LongMode longMode);
 
+    void setLongMode(int mode); // 1-LV_LABEL_LONG_WRAP, 2-LV_LABEL_LONG_SCROLL
+
 private:
     std::string getLongModeStr(std::string src);
 
@@ -85,6 +89,10 @@ private:
     lv_font_t      font_;
     LongModeStruct long_mode_;
 };
+// Modern aliases
+using Label = LvText;
+using ConsumeText = LvText; // backward compatibility
+
 } // namespace lvglpp::widgets
 
-#endif // LVGLPP_TEXT_H
+#endif // LVGLPP_LVTEXT_H

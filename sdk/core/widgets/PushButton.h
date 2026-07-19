@@ -3,8 +3,8 @@ Description:圆角按钮
 
 **************************************************************************/
 
-#ifndef LV_PUSH_BUTTON_H
-#define LV_PUSH_BUTTON_H
+#ifndef LVGLPP_PUSHBUTTON_H
+#define LVGLPP_PUSHBUTTON_H
 
 #include "BaseItem.h"
 #include "Image.h"
@@ -73,6 +73,10 @@ private:
 
     void handleButtonClicked();
 };
+// Modern aliases
+using Button = PushButton;
+using RoundedButton = PushButton; // backward compatibility
+
 } // namespace lvglpp::widgets
 
-#endif // LV_PUSH_BUTTON_H
+#endif // LVGLPP_PUSHBUTTON_H

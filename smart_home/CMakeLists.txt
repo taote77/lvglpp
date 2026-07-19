@@ -16,8 +16,6 @@ target_sources(${PROJECT_NAME} PRIVATE
     page/sensor/TempCurveDlg.cc
     page/drawer/TopDrawer.h
     page/drawer/TopDrawer.cc
-    page/drawer/SwipeView.cc
-    page/drawer/SwipeView.cc
     page/drawer/MessageCenterControl.cc
     page/drawer/MessageCenterControl.h
     page/drawer/ModuleCollector.cc
@@ -80,7 +78,6 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 target_link_libraries(${PROJECT_NAME} PRIVATE
     lvglpp
     sqlite3 ${SDL2_LIBRARIES} ${Boost_LIBRARIES}
-    qgl_framework
 )
 
 

@@ -4,7 +4,7 @@
 #include "NoticeDelegate.h"
 #include "RebootConfirmDialog.h"
 #include "core/widgets/BaseItem.h"
-#include "core/widgets/ConsumeText.h"
+#include "core/widgets/LvText.h"
 #include "core/widgets/Image.h"
 #include "core/widgets/ListView.hpp"
 #include "theme/form_design.h"

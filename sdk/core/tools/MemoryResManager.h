@@ -28,14 +28,13 @@ class MemoryResManager
 public:
     MemoryResManager(const MemoryResManager &) = delete;
     MemoryResManager operator=(const MemoryResManager &) = delete;
-    static MemoryResManager *getInstance();
+    static MemoryResManager &getInstance();
     void initResource(const std::map<std::string, std::string> &map);
     ResourceInfo *getResourceByUrl(const std::string &url);
     void freeResource(const ResourceInfo *info);
 
 private:
     MemoryResManager() = default;
-    static MemoryResManager *instance_;
     std::map<std::string, std::string> res_map_;
     std::vector<ResourceInfo> open_res_vec_;
 };

@@ -1,5 +1,5 @@
-#ifndef LV_PAGE_INDICATOR_H
-#define LV_PAGE_INDICATOR_H
+#ifndef LVGLPP_PAGEINDICATOR_H
+#define LVGLPP_PAGEINDICATOR_H
 #include "BaseItem.h"
 #include <memory>
 #include <vector>
@@ -22,4 +22,4 @@ private:
 };
 } // namespace lvglpp::widgets
 
-#endif // LV_PAGE_INDICATOR_H
+#endif // LVGLPP_PAGEINDICATOR_H

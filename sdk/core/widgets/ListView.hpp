@@ -5,6 +5,7 @@
 #include "ListViewDelegate.hpp"
 #include "ScrollItem.h"
 #include "lvgl/src/misc/lv_timer.h"
+#include <any>
 #include <memory>
 
 namespace lvglpp::widgets {
@@ -68,12 +69,12 @@ public:
         return async_load_;
     }
 
-    void setExtraData(void *p)
+    void setExtraData(std::any p)
     {
-        extra_data_ = p;
+        extra_data_ = std::move(p);
     }
 
-    void *getExtraData() const
+    std::any getExtraData() const
     {
         return extra_data_;
     }
@@ -89,7 +90,7 @@ private:
     int                              refresh_page_index_ = -1;
     bool                             async_load_         = false;
     lv_timer_t                      *async_load_timer_   = nullptr;
-    void                            *extra_data_         = nullptr;
+    std::any                        extra_data_{};
 
     void removeTimer()
     {

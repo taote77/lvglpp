@@ -1,13 +1,14 @@
 
 #include "trTranslateImpl.h"
 #include "Utils.h"
-#include <boost/filesystem.hpp>
-#include <boost/algorithm/string.hpp>
+#include <filesystem>
+#include <vector>
 #include <iostream>
+#include <sstream>
 
 namespace lvglpp {
 namespace tools {
-std::map<trTranslateImpl::LanguageType, trTranslateImpl *> trTranslateImpl::instance_;
+std::map<trTranslateImpl::LanguageType, std::unique_ptr<trTranslateImpl>> trTranslateImpl::instance_;
 
 trTranslateImpl::trTranslateImpl(LanguageType type)
 {
@@ -24,25 +25,35 @@ void trTranslateImpl::init(LanguageType type)
     } else {
         return;
     }
-    if (boost::filesystem::exists(asset_tr_file_path)) {
+    if (std::filesystem::exists(asset_tr_file_path)) {
         auto all_content_str = Utils::readAllText(asset_tr_file_path);
         if (!all_content_str.empty()) {
+            // Split by newlines
             std::vector<std::string> translate_data_vec;
-            boost::algorithm::split(translate_data_vec, all_content_str, boost::is_any_of("\n"),
-                                    boost::token_compress_on);
+            std::istringstream iss(all_content_str);
+            std::string line;
+            while (std::getline(iss, line)) {
+                if (!line.empty()) translate_data_vec.push_back(line);
+            }
             if (!translate_data_vec.empty()) {
                 for (auto &it : translate_data_vec) {
                     if (it.empty()) {
                         continue;
                     }
                     auto index = it.find("->");
-                    if (index != -1) {
+                    if (index != std::string::npos) {
                         std::string str_left = it.substr(0, index);
                         std::string str_right = it.substr(index + 2);
-                        // boost::algorithm::trim(str_left);
-                        boost::algorithm::replace_all(str_left, "\\n", "\n");
-                        // boost::algorithm::trim(str_right);
-                        boost::algorithm::replace_all(str_right, "\\n", "\n");
+                        // Replace escaped newlines
+                        auto replaceNewlines = [](std::string &s) {
+                            size_t pos = 0;
+                            while ((pos = s.find("\\n", pos)) != std::string::npos) {
+                                s.replace(pos, 2, "\n");
+                                pos += 1;
+                            }
+                        };
+                        replaceNewlines(str_left);
+                        replaceNewlines(str_right);
                         translate_map_.insert(std::make_pair<>(str_left, str_right));
                     } else {
                         std::cerr << "-> error:" << it << std::endl;
@@ -63,12 +74,10 @@ trTranslateImpl *trTranslateImpl::getInstance(LanguageType type)
 {
     auto find_it = instance_.find(type);
     if (find_it == instance_.end()) {
-        auto p = new trTranslateImpl(type);
-        instance_.insert(std::make_pair<>(type, p));
-        return p;
-    } else {
-        return find_it->second;
+        auto [it, _] = instance_.emplace(type, std::make_unique<trTranslateImpl>(type));
+        return it->second.get();
     }
+    return find_it->second.get();
 }
 
 std::string trTranslateImpl::translate(const std::string &src_text)

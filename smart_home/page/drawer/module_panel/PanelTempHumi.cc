@@ -18,13 +18,13 @@ void PanelTempHumi::updateSensor(int32_t senser_state, int32_t temp, int32_t hum
             if (temp != temp_last)
             {
                 sprintf(buf, "%.1f", static_cast<double>(temp) / 10000.0);
-                _text->setText((boost::format("%1%℃") % buf).str());
+                _text->setText(std::string(buf) + "℃");
             }
 
             if (humi_last != humi)
             {
                 sprintf(buf, "%.1f", static_cast<double>(humi) / 100.0);
-                _text1->setText((boost::format("%1%") % buf).str() + "RH%");
+                _text1->setText(std::string(buf) + "RH%");
                 humi_last = humi;
             }
         } else

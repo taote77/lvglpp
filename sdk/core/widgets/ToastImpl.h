@@ -1,6 +1,6 @@
 
-#ifndef LV_TOAST_IMPL_H
-#define LV_TOAST_IMPL_H
+#ifndef LVGLPP_TOASTIMPL_H
+#define LVGLPP_TOASTIMPL_H
 
 #include "BaseItem.h"
 #include "Image.h"
@@ -23,4 +23,4 @@ private:
 
 } // namespace lvglpp::widgets
 
-#endif // LV_TOAST_IMPL_H
+#endif // LVGLPP_TOASTIMPL_H

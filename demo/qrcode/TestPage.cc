@@ -11,7 +11,7 @@ TestPage::TestPage() : sys::BaseActivity()
 TestPage::~TestPage()
 {}
 
-void TestPage::onCreate(void *arg)
+void TestPage::onCreate(std::any arg)
 {
     lv_color_t bg_color = lv_palette_lighten(LV_PALETTE_LIGHT_BLUE, 5);
     lv_color_t fg_color = lv_palette_darken(LV_PALETTE_BLUE, 4);

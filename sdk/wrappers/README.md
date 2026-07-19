@@ -2,14 +2,13 @@
 
 ## 概述
 
-本项目提供了LVGL SDK的多语言包装器，支持Lua和Python语言，便于不同语言的开发者使用LVGL创建UI界面。
+本项目提供了LVGL SDK的多语言包装器，支持Lua语言，便于不同语言的开发者使用LVGL创建UI界面。
 
 ## 支持的语言
 
 | 语言 | 绑定库 | 状态 |
 |------|--------|------|
 | Lua  | sol2   | ✅ 已实现 |
-| Python | pybind11 | ✅ 已实现 |
 
 ## 目录结构
 
@@ -18,8 +17,6 @@ sdk/
 ├── core/           # 核心功能
 ├── wrappers/       # 统一包装器目录
 │   ├── lua/        # Lua包装器
-│   ├── python/     # Python包装器
-│   ├── common/     # 通用工具
 │   └── CMakeLists.txt
 ├── lvgl/           # LVGL库
 └── net/            # 网络相关
@@ -29,16 +26,9 @@ sdk/
 
 ### 依赖
 
-- **Lua**: Lua 5.2+ 和 sol2
-- **Python**: Python 3.6+ 和 pybind11
+- **Lua**: Lua 5.4+ 和 sol2
 - **CMake**: 3.16+
 - **C++ 编译器**: 支持C++17
-
-### 构建选项
-
-| 选项 | 描述 | 默认值 |
-|------|------|--------|
-| `BUILD_PYTHON_WRAPPER` | 构建Python包装器 | ON |
 
 ### 构建步骤
 
@@ -74,45 +64,6 @@ button:set_pos(50, 100)
 button:set_on_clicked(function()
     text:set_text("Button Clicked!")
 end)
-```
-
-### Python 示例
-
-```python
-import lvgl
-
-# 创建根控件
-root = lvgl.create_root()
-
-# 创建文本
-text = lvgl.create_text(root, "Hello Python!")
-text.set_pos(50, 50)
-
-# 创建按钮
-def on_click():
-    text.set_text("Button Clicked!")
-
-button = lvgl.create_button(root, "Click Me")
-button.set_pos(50, 100)
-button.set_on_clicked(on_click)
-```
-
-## Python 模块安装
-
-### 从源码安装
-
-```bash
-cd python
-pip install -e .
-```
-
-### 直接使用
-
-```bash
-# 运行Python示例
-cd python
-export PYTHONPATH=$PYTHONPATH:.
-python examples/simple_demo.py
 ```
 
 ## API 参考
@@ -154,13 +105,6 @@ cd lua
 examples/
 ```
 
-### Python 示例
-
-```bash
-cd python
-examples/
-```
-
 ## 测试
 
 ### Lua 测试
@@ -170,21 +114,12 @@ cd build
 ./target/bin/lua_ui
 ```
 
-### Python 测试
-
-```bash
-cd python
-export PYTHONPATH=$PYTHONPATH:.
-python -m pytest tests/
-```
-
 ## 开发
 
 ### 添加新控件
 
-1. 在 `WidgetPythonBind.h` 和 `WidgetPythonBind.cc` 中添加新控件的绑定
-2. 在 `WidgetLuaBind.h` 和 `WidgetLuaBind.cc` 中添加对应的Lua绑定
-3. 保持API风格一致
+1. 在 `WidgetLuaBind.h` 和 `WidgetLuaBind.cc` 中添加对应的Lua绑定
+2. 保持API风格一致
 
 ### 添加新语言
 

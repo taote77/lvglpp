@@ -16,7 +16,7 @@ GameActivity::~GameActivity()
     //
 }
 
-void GameActivity::onCreate(void *arg)
+void GameActivity::onCreate(std::any arg)
 {
     BaseActivity::onCreate(arg);
 

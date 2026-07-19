@@ -1,6 +1,6 @@
 
-#ifndef LV_SCROLL_ITEM_H
-#define LV_SCROLL_ITEM_H
+#ifndef LVGLPP_SCROLLITEM_H
+#define LVGLPP_SCROLLITEM_H
 
 #include "BaseItem.h"
 
@@ -33,4 +33,4 @@ public:
 };
 } // namespace lvglpp::widgets
 
-#endif // LV_SCROLL_ITEM_H
+#endif // LVGLPP_SCROLLITEM_H

@@ -1,5 +1,5 @@
-#ifndef LV_VIDEO_H
-#define LV_VIDEO_H
+#ifndef LVGLPP_VIDEO_H
+#define LVGLPP_VIDEO_H
 
 #if LV_USE_FFMPEG == 1
 
@@ -39,4 +39,4 @@ private:
 } // namespace lvglpp::widgets
 
 #endif // LV_USE_FFMPEG
-#endif // LV_VIDEO_H
+#endif // LVGLPP_VIDEO_H

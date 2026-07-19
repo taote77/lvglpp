@@ -1,6 +1,6 @@
 
-#ifndef LV_LOADER_H
-#define LV_LOADER_H
+#ifndef LVGLPP_LOADER_H
+#define LVGLPP_LOADER_H
 
 #include "BaseItem.h"
 #include "core/sys/Event.h"
@@ -28,4 +28,4 @@ private:
 
 } // namespace lvglpp::widgets
 
-#endif // LV_LOADER_H
+#endif // LVGLPP_LOADER_H

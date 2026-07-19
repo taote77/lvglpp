@@ -3,14 +3,10 @@
 
 namespace lvglpp {
 namespace tools {
-MemoryResManager *MemoryResManager::instance_ = nullptr;
-MemoryResManager *MemoryResManager::getInstance()
+MemoryResManager &MemoryResManager::getInstance()
 {
-    if (instance_ == nullptr)
-    {
-        instance_ = new MemoryResManager();
-    }
-    return instance_;
+    static MemoryResManager instance;
+    return instance;
 }
 
 void MemoryResManager::initResource(const std::map<std::string, std::string> &map)

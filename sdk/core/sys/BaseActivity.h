@@ -10,6 +10,7 @@ Description:一个空白页的基础实现界面
 #define BASE_ACTIVITY_H
 
 #include "Activity.h"
+#include <memory>
 
 namespace lvglpp::sys {
 
@@ -30,7 +31,7 @@ public:
      * @brief 首次调用时回调创建界面
      * @param arg
      */
-    void onCreate(void *arg) override;
+    void onCreate(std::any arg) override;
 
     /**
      * @brief 开始显示前调用
@@ -56,7 +57,7 @@ public:
     widgets::BaseItem *getRoot() const override;
 
 private:
-    widgets::BaseItem *_root_win{};
+    std::unique_ptr<widgets::BaseItem> _root_win;
 };
 } // namespace lvglpp::sys
 

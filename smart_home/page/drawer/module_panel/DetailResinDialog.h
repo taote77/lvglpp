@@ -2,8 +2,8 @@
 #define MODULE_DETAIL_RESIN_DIALOG_H
 
 #include "core/widgets/BaseDialog.h"
-#include "core/widgets/ConsumeText.h"
-#include "core/widgets/RoundedButton.h"
+#include "core/widgets/LvText.h"
+#include "core/widgets/PushButton.h"
 #include "core/widgets/SwitchButton.h"
 #include <boost/signals2/signal.hpp>
 
@@ -34,8 +34,6 @@ public:
     void close() override;
 
 private:
-    // boost::signals2::connection _slots_fill_heat_status;
-
     std::shared_ptr<BaseItem> _dialog_bg_item;
 
     std::shared_ptr<ConsumeText> _material_name_label;

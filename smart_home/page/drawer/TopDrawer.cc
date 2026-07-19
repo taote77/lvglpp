@@ -1,5 +1,6 @@
 #include "TopDrawer.h"
 #include "core/widgets/BaseItem.h"
+#include "core/kernel/LvObjFactory.h"
 #include "core/widgets/PageIndicator.h"
 #include "theme/form_design.h"
 #include <cmath>
@@ -10,7 +11,7 @@ using namespace form::design;
 constexpr int content_width{800};
 constexpr int content_height{480};
 
-TopDrawer::TopDrawer(BaseItem *parent) : BaseItem(BaseItem::ItemType::SysDialog, parent)
+TopDrawer::TopDrawer(BaseItem *parent) : BaseItem(tools::LvObjFactory::createLvglSysDialog, parent)
 {
     setSize(content_width, content_height);
     setOpacity(0);

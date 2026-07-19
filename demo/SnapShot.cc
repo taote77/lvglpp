@@ -11,7 +11,7 @@ SnapShot::SnapShot() : sys::BaseActivity()
 SnapShot::~SnapShot()
 {}
 
-void SnapShot::onCreate(void *arg)
+void SnapShot::onCreate(std::any arg)
 {
     _label = std::make_shared<lvglpp::widgets::LvText>(_txt, CLR_SUCCESS_CONTAINER, getRoot());
 

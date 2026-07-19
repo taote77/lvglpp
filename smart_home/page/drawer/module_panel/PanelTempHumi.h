@@ -2,7 +2,7 @@
 #define PANEL_TEMP_HUMI_H
 
 #include "core/widgets/BaseItem.h"
-#include "core/widgets/ConsumeText.h"
+#include "core/widgets/LvText.h"
 #include "core/widgets/Image.h"
 #include <boost/format.hpp>
 #include <boost/signals2/signal.hpp>

@@ -1,7 +1,6 @@
 #include "AssetResDataBase.h"
 #include "core/log/log.h"
 #include "core/tools/Utils.h"
-#include <boost/format.hpp>
 #include <iostream>
 
 namespace lvglpp {
@@ -19,16 +18,15 @@ AssetResDataBase::AssetResDataBase() : db_storage_(nullptr)
     }
 }
 
-boost::optional<AssetImageData> AssetResDataBase::getImageDataByUrl(const std::string &url)
+std::optional<AssetImageData> AssetResDataBase::getImageDataByUrl(const std::string &url)
 {
     if (db_storage_ == nullptr)
     {
-        return boost::none;
+        return std::nullopt;
     }
-    boost::format sql_fmt("select format,width,height,imageData from images where url='%1%'");
-    sql_fmt % url;
+    std::string sql_fmt = "select format,width,height,imageData from images where url='" + url + "'";
     sqlite3_stmt *stmt   = nullptr;
-    int           result = sqlite3_prepare_v2(db_storage_, sql_fmt.str().c_str(), -1, &stmt, nullptr);
+    int           result = sqlite3_prepare_v2(db_storage_, sql_fmt.c_str(), -1, &stmt, nullptr);
     if (result == SQLITE_OK)
     {
         if (sqlite3_step(stmt) == SQLITE_ROW)
@@ -49,7 +47,7 @@ boost::optional<AssetImageData> AssetResDataBase::getImageDataByUrl(const std::s
         LogWarn << "getImageDataByUrl error: " << result << sqlite3_errmsg(db_storage_);
     }
     sqlite3_finalize(stmt);
-    return boost::none;
+    return std::nullopt;
 }
 
 AssetResDataBase::~AssetResDataBase()

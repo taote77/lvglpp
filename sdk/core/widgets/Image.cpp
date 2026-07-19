@@ -1,10 +1,11 @@
+#include "core/kernel/LvObjFactory.h"
 
 #include "Image.h"
 #include "core/tools/ImageManager.h"
 
 namespace lvglpp::widgets {
 
-Image::Image(const std::string &path, BaseItem *parent) : BaseItem(BaseItem::ItemType::Image, parent)
+Image::Image(const std::string &path, BaseItem *parent) : BaseItem(tools::LvObjFactory::createLvglImage, parent)
 {
     setImageSrcPath(path);
 }

@@ -1,10 +1,11 @@
+#include "core/kernel/LvObjFactory.h"
 
 #include "SpinBox.h"
 
 namespace lvglpp {
 namespace widgets {
 
-SpinBox::SpinBox(BaseItem *parent) : BaseItem(BaseItem::SpinBox, parent)
+SpinBox::SpinBox(BaseItem *parent) : BaseItem(tools::LvObjFactory::createLvglSpinBox, parent)
 {
     lv_spinbox_step_prev(getLvglItem());
     lv_style_init(&font_style_);

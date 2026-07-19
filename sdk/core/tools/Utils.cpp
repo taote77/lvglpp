@@ -3,13 +3,8 @@
 #include "base64.h"
 #include "core/sys/Application.h"
 #include "trTranslateImpl.h"
-#include <boost/algorithm/string.hpp>
-#include <boost/archive/iterators/binary_from_base64.hpp>
-#include <boost/archive/iterators/transform_width.hpp>
-#include <boost/format.hpp>
 #include <codecvt>
 #include <locale>
-#include <sstream>
 
 namespace lvglpp {
 namespace tools {
@@ -74,22 +69,28 @@ std::string Utils::readAllText(const std::string &path)
 
 bool Utils::isAssetResUrl(const std::string &asset_res)
 {
-    return boost::starts_with(asset_res, "G:");
+    return asset_res.size() >= 2 && asset_res[0] == 'G' && asset_res[1] == ':';
 }
 
-std::string Utils::convertSecToTimeLabel(int secRemain, const std::string &boost_fmt)
+std::string Utils::convertSecToTimeLabel(int secRemain, const std::string &fmt)
 {
-    std::string   str_reply;
-    int           sec       = secRemain % 60;
-    int           totalMin  = secRemain / 60;
-    int           totalHour = totalMin / 60;
-    int           showMin   = totalMin % 60;
-    boost::format fmt(boost_fmt);
-    fmt % totalHour;
-    fmt % showMin;
-    fmt % sec;
-    str_reply = fmt.str();
-    return str_reply;
+    int sec       = secRemain % 60;
+    int totalMin  = secRemain / 60;
+    int totalHour = totalMin / 60;
+    int showMin   = totalMin % 60;
+
+    // Simple printf-style replacement for %1%, %2%, %3%
+    std::string result = fmt;
+    auto replace = [&result](const std::string &token, int value) {
+        size_t pos = result.find(token);
+        if (pos != std::string::npos) {
+            result.replace(pos, token.size(), std::to_string(value));
+        }
+    };
+    replace("%1%", totalHour);
+    replace("%2%", showMin);
+    replace("%3%", sec);
+    return result;
 }
 
 std::string Utils::convertTimeStampToTimeStr(time_t ts, const std::string &fmt)
@@ -115,24 +116,8 @@ std::string Utils::ws2s(const std::wstring &ws)
 
 bool Utils::base64Decode(const std::string &input, std::string &output)
 {
-#if 0
-            typedef boost::archive::iterators::transform_width<boost::archive::iterators::binary_from_base64<std::string::const_iterator>, 8, 6> Base64DecodeIterator;
-            std::stringstream result;
-            try
-            {
-                copy(Base64DecodeIterator(input.begin()), Base64DecodeIterator(input.end()),
-                     std::ostream_iterator<char>(result));
-            }
-            catch (...)
-            {
-                return false;
-            }
-            output = result.str();
-            return output.empty() == false;
-#else
     output = base64_decode(input);
     return !output.empty();
-#endif
 }
 
 bool Utils::base64Encode(const std::string &input, std::string &output)

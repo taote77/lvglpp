@@ -2,7 +2,6 @@
 #ifndef SDL_APPLICATION_H
 #define SDL_APPLICATION_H
 
-// #include "misc/lv_types.h"
 #if (defined(USED_SDL)) || (defined(USED_SDL_GPU))
 
 #include "Application.h"

@@ -2,7 +2,7 @@
 #define LINE_EDITOR_H
 
 #include "StringEditor.h"
-#include "core/widgets/ConsumeText.h"
+#include "core/widgets/LvText.h"
 #include <memory>
 
 namespace wrapper::widgets {

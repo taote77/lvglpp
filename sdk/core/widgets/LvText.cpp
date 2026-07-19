@@ -1,8 +1,10 @@
+#include "core/kernel/LvObjFactory.h"
 
 #include "LvText.h"
 #include "core/sys/Application.h"
 #include "core/tools/Utils.h"
 #include "core/tools/fonts/LvFontManager.h"
+#include <src/widgets/label/lv_label.h>
 #include <utility>
 
 namespace lvglpp::widgets {
@@ -34,6 +36,8 @@ static const lv_font_t *getFontByStyle(LvText::TextStyle style, LvText::FontType
     {
     case LvText::TextStyle::FontSize20:
         return tools::LvFontManager::getFontInfo(font_type, 20, tools::LvFontManager::Normal);
+    case LvText::TextStyle::FontSize22:
+        return tools::LvFontManager::getFontInfo(font_type, 22, tools::LvFontManager::Normal);
     case LvText::TextStyle::FontSize24:
         return tools::LvFontManager::getFontInfo(font_type, 24, tools::LvFontManager::Normal);
     case LvText::TextStyle::FontSize28:
@@ -44,6 +48,8 @@ static const lv_font_t *getFontByStyle(LvText::TextStyle style, LvText::FontType
         return tools::LvFontManager::getFontInfo(font_type, 36, tools::LvFontManager::Normal);
     case LvText::TextStyle::FontSize20Bold:
         return tools::LvFontManager::getFontInfo(font_type, 20, tools::LvFontManager::Bold);
+    case LvText::TextStyle::FontSize22Bold:
+        return tools::LvFontManager::getFontInfo(font_type, 22, tools::LvFontManager::Bold);
     case LvText::TextStyle::FontSize24Bold:
         return tools::LvFontManager::getFontInfo(font_type, 24, tools::LvFontManager::Bold);
     case LvText::TextStyle::FontSize28Bold:
@@ -52,6 +58,8 @@ static const lv_font_t *getFontByStyle(LvText::TextStyle style, LvText::FontType
         return tools::LvFontManager::getFontInfo(font_type, 32, tools::LvFontManager::Bold);
     case LvText::TextStyle::FontSize36Bold:
         return tools::LvFontManager::getFontInfo(font_type, 36, tools::LvFontManager::Bold);
+    case LvText::TextStyle::FontSize48Bold:
+        return tools::LvFontManager::getFontInfo(font_type, 48, tools::LvFontManager::Bold);
     case LvText::TextStyle::FontSize64Bold:
         return tools::LvFontManager::getFontInfo(font_type, 64, tools::LvFontManager::Bold);
     default:
@@ -69,6 +77,8 @@ static void setFontLineSpacing(lv_style_t *font_style_t, LvText::TextStyle style
             lv_style_set_text_line_space(font_style_t,36);
             break;
         case LvText::TextStyle::FontSize20:
+    case LvText::TextStyle::FontSize22:
+        return tools::LvFontManager::getFontInfo(font_type, 22, tools::LvFontManager::Normal);
         case LvText::TextStyle::SubHeading2Bold:
             lv_style_set_text_line_space(font_style_t,2);
             break;
@@ -83,7 +93,7 @@ static void setFontLineSpacing(lv_style_t *font_style_t, LvText::TextStyle style
 }
 
 LvText::LvText(const std::string &strMsg, uint32_t clr, BaseItem *parent, LvText::TextStyle style, FontType type) :
-    BaseItem(BaseItem::Text, parent), text_(strMsg), max_len_(-1), text_style_(style), font_type_(type)
+    BaseItem(tools::LvObjFactory::createLvglLabel, parent), text_(strMsg), max_len_(-1), text_style_(style), font_type_(type)
 {
     lv_style_init(&font_style_);
     // lv_style_set_text_font(&font_style_, getFontByStyle(style, type).font);
@@ -260,4 +270,18 @@ std::string LvText::getLongModeStr(std::string src)
     }
     return out_str;
 }
+void LvText::setTextOpa(lv_opa_t opa)
+{
+    lv_obj_set_style_text_opa(getLvglItem(), opa, 0);
+}
+
+void LvText::setLongMode(int mode) // 1-LV_LABEL_LONG_WRAP, 2-LV_LABEL_LONG_SCROLL
+{
+    if (mode == 1) {
+        lv_label_set_long_mode(getLvglItem(), lv_label_long_mode_t::LV_LABEL_LONG_MODE_WRAP);
+    } else {
+        lv_label_set_long_mode(getLvglItem(), lv_label_long_mode_t::LV_LABEL_LONG_MODE_SCROLL);
+    }
+}
+
 } // namespace lvglpp::widgets

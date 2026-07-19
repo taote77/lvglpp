@@ -12,7 +12,7 @@ BindDemo::BindDemo() : sys::BaseActivity()
 BindDemo::~BindDemo()
 {}
 
-void BindDemo::onCreate(void *arg)
+void BindDemo::onCreate(std::any arg)
 {
     // _label = std::make_shared<lvglpp::widgets::LvText>(_txt, CLR_SUCCESS_CONTAINER, getRoot());
 

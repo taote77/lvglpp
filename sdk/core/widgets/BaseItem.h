@@ -5,12 +5,16 @@ Class:BaseItem
 
 **************************************************************************/
 
-#ifndef LV_BASE_ITEM_H
-#define LV_BASE_ITEM_H
+#ifndef LVGLPP_BASEITEM_H
+#define LVGLPP_BASEITEM_H
 
 #include "core/kernel/Object.h"
+#include "core/log/log.h"
 #include "lvgl.h"
 #include <functional>
+#include <sstream>
+#include <string>
+#include <vector>
 
 namespace lvglpp::widgets {
 
@@ -19,7 +23,12 @@ using namespace lvglpp::core;
 class BaseItem : public Object
 {
 public:
+    /// Factory function type: takes parent lv_obj_t*, returns created lv_obj_t*
+    using Creator = std::function<lv_obj_t *(lv_obj_t *)>;
+
     explicit BaseItem(BaseItem *parentItem = nullptr);
+
+    explicit BaseItem(Creator creator, BaseItem *parentItem = nullptr);
 
     virtual ~BaseItem();
 
@@ -70,7 +79,7 @@ public:
      * @param b
      */
 
-    void setBorder(lv_coord_t width, uint32_t color) const;
+    void setBorder(lv_coord_t width, uint32_t color);
 
     BaseItem *getParent() const
     {
@@ -105,28 +114,47 @@ public:
 
     void setPaddingHor(lv_coord_t padding);
 
+    // ---- Introspection / Accessibility API (for AI agent, testing, automation) ----
+
+    /// Set a human-readable name for this widget (like HTML id attribute)
+    void setName(const std::string &n) { _name = n; }
+    const std::string &name() const { return _name; }
+
+    /// Number of direct child widgets
+    uint32_t childCount() const;
+
+    /// Get the nth child widget (0-indexed), or nullptr
+    BaseItem *childAt(uint32_t index) const;
+
+    /// Recursively find the first descendant with the given name, or nullptr
+    BaseItem *findChild(const std::string &n) const;
+
+    /// Find all descendants (optionally of type T). Returns self if matching.
+    template <typename T = BaseItem>
+    std::vector<T *> findChildrenByType() const
+    {
+        std::vector<T *> result;
+        _collectByType<T>(result);
+        return result;
+    }
+
+    /// Dump the widget tree to stdout (for debugging/AI observation)
+    void dumpTree(int depth = 0) const;
+
+    /// Get a JSON-like representation of this widget's state (for AI consumption)
+    std::string describeState() const;
+
+    /// Get the screen-relative bounding rectangle {x, y, w, h}
+    struct Rect { lv_coord_t x, y, w, h; };
+    Rect bounds() const;
+
 protected:
     void setLvglItem(lv_obj_t *ptr)
     {
         lv_base_ptr_ = ptr;
     }
 
-    enum ItemType {
-        NormalItem, //
-        Image,
-        Text,
-        SpinBox,
-        GIF,
-        Dialog,
-        Progress,
-        SysDialog,
-        Chart,
-        Video,
-        LottieCanvas,
-        QrWidget
-    };
-
-    explicit BaseItem(ItemType type, BaseItem *parentItem = nullptr);
+    void registerEvent();
 
 private:
     BaseItem             *parent       = nullptr;
@@ -136,21 +164,23 @@ private:
     std::function<void()> released_cb_ = nullptr;
     lv_coord_t            width_       = 0;
     lv_coord_t            height_      = 0;
+    std::string           _name;
 
-    void initItem(ItemType type);
+    void initItem(const Creator &creator);
 
-    /**
-     * 生成控件
-     */
-    void createLvObj(ItemType type);
-
-    /**
-     * 注册监听事件
-     */
-    void registerEvent();
+    template <typename T>
+    void _collectByType(std::vector<T *> &result) const
+    {
+        if (auto *p = dynamic_cast<T *>(const_cast<BaseItem *>(this)))
+            result.push_back(p);
+        for (uint32_t i = 0; i < childCount(); i++) {
+            if (auto *child = childAt(i))
+                child->_collectByType<T>(result);
+        }
+    }
 
     friend class BaseDialog;
 };
 } // namespace lvglpp::widgets
 
-#endif // LV_BASE_ITEM_H
+#endif // LVGLPP_BASEITEM_H

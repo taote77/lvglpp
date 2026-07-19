@@ -1,5 +1,5 @@
-#ifndef LV_LV_CHART_H
-#define LV_LV_CHART_H
+#ifndef LVGLPP_LVCHART_H
+#define LVGLPP_LVCHART_H
 
 #include "BaseItem.h"
 
@@ -10,6 +10,9 @@ class LvChart : public BaseItem
 public:
     explicit LvChart(BaseItem *parent = nullptr);
 };
+
+// Modern alias
+using Chart = LvChart;
 
 } // namespace lvglpp::widgets
 

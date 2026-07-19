@@ -1,3 +1,4 @@
+#include "core/kernel/LvObjFactory.h"
 #include <lvgl.h>
 
 #if LV_USE_FFMPEG == 1
@@ -7,7 +8,7 @@
 
 namespace lvglpp::widgets {
 
-Video::Video(const std::string &path, BaseItem *parent) : BaseItem(ItemType::Video, parent)
+Video::Video(const std::string &path, BaseItem *parent) : BaseItem(tools::LvObjFactory::createLvglVideo, parent)
 {
     setVideoSrcPath(path);
 }

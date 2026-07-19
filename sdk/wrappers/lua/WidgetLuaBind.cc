@@ -77,7 +77,7 @@ void WidgetLuaBind::bindLvText(sol::state& lua) {
     lvtext_type["set_recolor_enable"] = &widgets::LvText::setReColorEnable;
     lvtext_type["set_max_len"] = &widgets::LvText::setMaxLen;
     lvtext_type["get_display_text_width"] = &widgets::LvText::getDisplayTextWidth;
-    lvtext_type["set_long_mode"] = &widgets::LvText::setLongMode;
+    lvtext_type["set_long_mode"] = static_cast<void (widgets::LvText::*)(int, widgets::LvText::LongMode)>(&widgets::LvText::setLongMode);
     
     lvtext_type["TextStyle"] = lua.create_table();
     lvtext_type["TextStyle"]["FontSize20"] = widgets::LvText::TextStyle::FontSize20;

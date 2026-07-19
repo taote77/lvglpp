@@ -1,9 +1,10 @@
 #include "progress_bar.h"
 #include "core/widgets/BaseItem.h"
+#include "core/kernel/LvObjFactory.h"
 #include <algorithm>
 
 namespace wrapper::widgets {
-ProgressBar::ProgressBar(widgets::BaseItem *parent, int w, int h, int min, int max, int val) : BaseItem(BaseItem::Progress, parent), _max_value(max), _min_value(min)
+ProgressBar::ProgressBar(widgets::BaseItem *parent, int w, int h, int min, int max, int val) : BaseItem(tools::LvObjFactory::createLvglProgress, parent), _max_value(max), _min_value(min)
 {
     setSize(w, h);
     updateValue(val);

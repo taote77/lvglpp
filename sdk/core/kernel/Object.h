@@ -17,9 +17,9 @@ public:
     Object();
     virtual ~Object();
 
-    static void connect(const Object *sender, const std::string &signal_name, const Slot &slot);
+    static void connect(Object *sender, const std::string &signal_name, const Slot &slot);
 
-    static void connect(const Object *sender, const std::string &signal_name, const Object *receiver, const Slot &slot);
+    static void connect(Object *sender, const std::string &signal_name, const Object *receiver, const Slot &slot);
 
     void emitSignal(const std::string &signal_name);
 

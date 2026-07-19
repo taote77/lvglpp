@@ -11,7 +11,7 @@ Home::Home() : sys::BaseActivity()
 Home::~Home()
 {}
 
-void Home::onCreate(void *arg)
+void Home::onCreate(std::any arg)
 {
     _btn = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "Start", getRoot());
 
@@ -20,7 +20,7 @@ void Home::onCreate(void *arg)
 
     _btn->setOnClickedListener([this]() {
         //
-        lvglpp::sys::StackView::getInstance()->pushView(std::make_shared<GameActivity>());
+        lvglpp::sys::StackView::getInstance().pushView(std::make_shared<GameActivity>());
     });
 }
 

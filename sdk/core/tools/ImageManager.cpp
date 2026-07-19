@@ -5,7 +5,7 @@ namespace lvglpp {
 namespace tools {
 lv_img_dsc_t *ImageManager::getImageDscByUrl(const std::string &url)
 {
-    return ImageManagerImpl::getInstance()->getImageDscByUrl(url);
+    return ImageManagerImpl::getInstance().getImageDscByUrl(url);
 }
 
 } // namespace tools
