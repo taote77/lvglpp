@@ -1,7 +1,7 @@
 #ifndef PANEL_HEATER_H
 #define PANEL_HEATER_H
 
-#include "boost/progress_bar.h"
+#include "components/progress_bar.h"
 #include "core/widgets/BaseItem.h"
 #include "core/widgets/LvText.h"
 #include "core/widgets/Image.h"

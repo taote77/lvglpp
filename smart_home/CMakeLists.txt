@@ -51,20 +51,20 @@ target_sources(${PROJECT_NAME} PRIVATE
     theme/theme_keeper.h
     theme/theme_keeper.cc
     theme/form_design.h
-    boost/screen_shoot.h
-    boost/screen_shoot.cc
-    boost/progress_bar.h
-    boost/progress_bar.cc
-    boost/LineEditor.h
-    boost/LineEditor.cc
-    boost/StringEditor.h
-    boost/StringEditor.cc
-    boost/ClickableCard.h
-    boost/ClickableCard.cc
-    boost/GroupCheckButton.h
-    boost/GroupCheckButton.cc
-    boost/ColLayout.h
-    boost/ColLayout.cc
+    components/screen_shoot.h
+    components/screen_shoot.cc
+    components/progress_bar.h
+    components/progress_bar.cc
+    components/LineEditor.h
+    components/LineEditor.cc
+    components/StringEditor.h
+    components/StringEditor.cc
+    components/ClickableCard.h
+    components/ClickableCard.cc
+    components/GroupCheckButton.h
+    components/GroupCheckButton.cc
+    components/ColLayout.h
+    components/ColLayout.cc
 )
 
 

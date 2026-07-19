@@ -2,7 +2,7 @@
 #define MODULE_PULSE_TRAY_H
 
 // #include "DetailPulseTrayDialog.h"
-#include "boost/progress_bar.h"
+#include "components/progress_bar.h"
 #include "core/widgets/BaseDialog.h"
 #include "core/widgets/BaseItem.h"
 #include "core/widgets/LvText.h"

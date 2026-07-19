@@ -1,7 +1,7 @@
 #ifndef PANEL_LCD_H
 #define PANEL_LCD_H
 
-#include "boost/progress_bar.h"
+#include "components/progress_bar.h"
 #include "core/widgets/BaseDialog.h"
 #include "core/widgets/LvText.h"
 #include "core/widgets/Image.h"

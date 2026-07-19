@@ -1,7 +1,7 @@
 #ifndef MODULE_DETAIL_PULSE_DIALOG_H
 #define MODULE_DETAIL_PULSE_DIALOG_H
 
-#include "boost/progress_bar.h"
+#include "components/progress_bar.h"
 #include "core/widgets/BaseDialog.h"
 #include "core/widgets/LvText.h"
 #include "core/widgets/PushButton.h"

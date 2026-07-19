@@ -23,7 +23,7 @@
 #endif
 
 // #ifdef(__ASSEMBLY__)
-#include "lv_conf_my.h" // Note Shane
+#include "config/lv_conf_my.h" // Note Shane
 // #endif
 
 /*====================

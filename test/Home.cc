@@ -1,6 +1,6 @@
 #include "Home.h"
 #include "GameActivity.h"
-#include "color_sheet.h"
+#include "config/color_sheet.h"
 #include "core/sys/StackView.h"
 #include <iostream>
 #include <src/others/observer/lv_observer.h>

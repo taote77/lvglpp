@@ -1,6 +1,6 @@
 #include "core/kernel/LvObjFactory.h"
 #include "BaseDialog.h"
-#include "color_sheet.h"
+#include "config/color_sheet.h"
 #include <unistd.h>
 
 namespace lvglpp::widgets {

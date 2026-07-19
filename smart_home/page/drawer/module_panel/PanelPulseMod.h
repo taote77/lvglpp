@@ -2,7 +2,7 @@
 #define MODULE_PULSE_MOD_H
 
 #include "DetailPulseDialog.h"
-#include "boost/progress_bar.h"
+#include "components/progress_bar.h"
 #include "core/widgets/BaseItem.h"
 #include "core/widgets/LvText.h"
 #include "core/widgets/Image.h"

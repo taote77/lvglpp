@@ -1,5 +1,5 @@
 #include "DetailPulseDialog.h"
-#include "boost/progress_bar.h"
+#include "components/progress_bar.h"
 #include "core/log/log.h"
 #include "core/widgets/PushButton.h"
 #include "i18n/LvTranslator.h"

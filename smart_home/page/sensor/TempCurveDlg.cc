@@ -1,5 +1,5 @@
 #include "TempCurveDlg.h"
-#include "color_sheet.h"
+#include "config/color_sheet.h"
 #include "core/log/log.h"
 #include "core/tools/Utils.h"
 #include "i18n/LvTranslator.h"

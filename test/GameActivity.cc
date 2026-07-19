@@ -1,6 +1,6 @@
 #include "GameActivity.h"
 #include "GameStateDialog.h"
-#include "color_sheet.h"
+#include "config/color_sheet.h"
 #include <cstddef>
 #include <iostream>
 #include <memory>
