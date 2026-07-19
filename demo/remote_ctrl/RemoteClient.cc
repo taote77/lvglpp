@@ -1,7 +1,7 @@
 #include "RemoteClient.h"
 #include "config/color_sheet.h"
 #include "core/sys/Application.h"
-#include "core/sys/SdlApplication.h"
+#include "core/sys/app/SdlApplication.h"
 #include "core/sys/StackView.h"
 
 #include "session.h"

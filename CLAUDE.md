@@ -6,21 +6,31 @@ C++17 object-oriented wrapper around LVGL 9.x, designed for embedded Linux GUI a
 
 ```
 sdk/
+├── config/        lv_conf.h, color_sheet.h
 ├── core/
-│   ├── kernel/      Object, LvObjFactory   — base classes & widget factory
-│   ├── sys/         Activity, Application, StackView, Event, Timer, AutomationController, EventRecorder
-│   ├── widgets/     BaseItem + 20+ widget subclasses (LvText, PushButton, Image, ListView, ...)
-│   ├── layouts/     (reserved for layout managers)
-│   ├── tools/       Utils, ImageManager, MemoryResManager, fonts, base64
-│   ├── db/          AssetResDataBase (SQLite)
-│   └── log/         Boost.Log wrapper (hglv::Logger)
+│   ├── base/      Object, LvObjFactory        — base classes & widget factory
+│   ├── sys/       Activity, Application, StackView, Event, Timer, FileSystemManager
+│   │   ├── app/       Sdl/Drma/Framebuf/Wayland Application subclasses
+│   │   └── automation/  AutomationController, EventRecorder
+│   ├── widgets/   BaseItem + 20+ widget subclasses (LvText, PushButton, Image, ListView, ...)
+│   ├── tools/     Utils, ImageManager, MemoryResManager, fonts, stb, base64
+│   ├── db/        AssetResDataBase (SQLite)
+│   └── log/       Boost.Log wrapper (hglv::Logger)
 ├── wrappers/
-│   └── lua/         Lua bindings (sol2)
-├── net/ws_gw/       WebSocket gateway (Boost.Beast)
-└── lvgl/            LVGL submodule (9.x)
-smart_home/          Smart Home UI application
-demo/                Demo applications (i18n, qrcode, remote_ctrl, etc.)
-test/                Test application
+│   └── lua/       Lua bindings (sol2)
+├── net/ws_gw/     WebSocket gateway (Boost.Beast)
+└── lvgl/          LVGL submodule (9.x)
+smart_home/
+├── components/    Reusable UI widgets (ClickableCard, GroupCheckButton, LineEditor, ...)
+├── page/          Pages: home/, sensor/, drawer/, settings/
+├── i18n/          Translations
+└── theme/         Theme definitions (light/dark)
+demo/              Demo applications (i18n, qrcode, remote_ctrl, etc.)
+test/
+├── testd          Visual test app
+└── test_unit      Unit tests (17 tests, headless)
+docs/              Documentation (AI_CODING.md, LUA_BINDING_SUMMARY.md)
+.claude/skills/    Claude Code skills (add-widget, add-page, build-check, lua-bind, audit)
 ```
 
 ## Key Patterns

@@ -1,5 +1,5 @@
 #include "TestPage.h"
-#include "core/sys/SdlApplication.h"
+#include "core/sys/app/SdlApplication.h"
 #include "core/sys/StackView.h"
 #include "core/tools/fonts/LvFontManager.h"
 

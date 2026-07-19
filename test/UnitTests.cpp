@@ -1,5 +1,5 @@
 #include "TestFramework.h"
-#include "core/kernel/Object.h"
+#include "core/base/Object.h"
 #include "core/sys/Event.h"
 #include <any>
 #include <optional>

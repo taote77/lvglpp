@@ -1,4 +1,4 @@
-#include "core/sys/SdlApplication.h"
+#include "core/sys/app/SdlApplication.h"
 #include "core/sys/BaseActivity.h"
 #include "LvglLuaBind.h"
 #include <iostream>

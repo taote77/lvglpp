@@ -4,7 +4,7 @@
 
 #ifdef USED_FRAMEBUFF
 
-#include "Application.h"
+#include "../Application.h"
 #include "lvgl.h"
 
 namespace lvglpp {

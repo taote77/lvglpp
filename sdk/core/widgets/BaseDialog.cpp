@@ -1,4 +1,4 @@
-#include "core/kernel/LvObjFactory.h"
+#include "core/base/LvObjFactory.h"
 #include "BaseDialog.h"
 #include "config/color_sheet.h"
 #include <unistd.h>

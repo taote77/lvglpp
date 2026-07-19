@@ -8,7 +8,7 @@ Class:BaseItem
 #ifndef LVGLPP_BASEITEM_H
 #define LVGLPP_BASEITEM_H
 
-#include "core/kernel/Object.h"
+#include "core/base/Object.h"
 #include "core/log/log.h"
 #include "lvgl.h"
 #include <functional>

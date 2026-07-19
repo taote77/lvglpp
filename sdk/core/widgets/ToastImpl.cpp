@@ -1,4 +1,4 @@
-#include "core/kernel/LvObjFactory.h"
+#include "core/base/LvObjFactory.h"
 #include "ToastImpl.h"
 #include "config/color_sheet.h"
 

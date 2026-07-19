@@ -1,5 +1,5 @@
 #include "TestFramework.h"
-#include "core/kernel/LvObjFactory.h"
+#include "core/base/LvObjFactory.h"
 #include <lvgl.h>
 #include <memory>
 

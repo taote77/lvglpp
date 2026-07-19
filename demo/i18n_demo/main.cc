@@ -1,6 +1,6 @@
 #include "LangChange.h"
 #include "LvTranslator.h"
-#include "core/sys/SdlApplication.h"
+#include "core/sys/app/SdlApplication.h"
 #include "core/sys/StackView.h"
 #include "session.h"
 #include <pthread.h>

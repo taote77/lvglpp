@@ -1,4 +1,4 @@
-#include "core/kernel/LvObjFactory.h"
+#include "core/base/LvObjFactory.h"
 #include "Base64Image.h"
 #include "core/tools/Utils.h"
 #include <iostream>

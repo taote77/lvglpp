@@ -1,4 +1,4 @@
-#include "core/kernel/LvObjFactory.h"
+#include "core/base/LvObjFactory.h"
 #include <lvgl.h>
 
 #if LV_USE_FFMPEG == 1

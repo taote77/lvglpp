@@ -1,6 +1,6 @@
 #include "progress_bar.h"
 #include "core/widgets/BaseItem.h"
-#include "core/kernel/LvObjFactory.h"
+#include "core/base/LvObjFactory.h"
 #include <algorithm>
 
 namespace wrapper::widgets {

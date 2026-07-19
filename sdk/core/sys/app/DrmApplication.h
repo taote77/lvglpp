@@ -2,7 +2,7 @@
 #ifndef LVGLPP_DRM_APPLICATION_H
 #define LVGLPP_DRM_APPLICATION_H
 
-#include "Application.h"
+#include "../Application.h"
 
 namespace lvglpp::sys {
 

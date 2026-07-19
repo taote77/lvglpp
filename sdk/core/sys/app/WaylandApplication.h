@@ -1,7 +1,7 @@
 #ifndef LVGLPP_WAYLANDAPPLICATION_H
 #define LVGLPP_WAYLANDAPPLICATION_H
 
-#include "Application.h"
+#include "../Application.h"
 
 namespace lvglpp::sys {
 class WaylandApplication : public Application

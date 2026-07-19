@@ -4,7 +4,7 @@
 
 #if (defined(USED_SDL)) || (defined(USED_SDL_GPU))
 
-#include "Application.h"
+#include "../Application.h"
 
 namespace lvglpp::sys {
 

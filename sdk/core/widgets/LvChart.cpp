@@ -1,4 +1,4 @@
-#include "core/kernel/LvObjFactory.h"
+#include "core/base/LvObjFactory.h"
 #include "LvChart.h"
 
 namespace lvglpp::widgets {

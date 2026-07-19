@@ -1,6 +1,6 @@
 #include "TopDrawer.h"
 #include "core/widgets/BaseItem.h"
-#include "core/kernel/LvObjFactory.h"
+#include "core/base/LvObjFactory.h"
 #include "core/widgets/PageIndicator.h"
 #include "theme/form_design.h"
 #include <cmath>
