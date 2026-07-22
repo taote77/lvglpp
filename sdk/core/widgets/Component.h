@@ -1,6 +1,6 @@
 /**************************************************************************
 
-Description:搭配Loader使用
+Description: Component base class for use with Loader
 
 **************************************************************************/
 
@@ -20,17 +20,18 @@ public:
 
 protected:
     /**
-     * 加载控件时使用的回调
-     * @param parent 传入loader的指针
-     * @return
+     * @brief Called when the component is loaded into a parent
+     * @param parent the parent widget (passed from Loader)
+     * @return true on success
      */
     virtual bool onLoad(BaseItem *parent) = 0;
     /**
-     * 组件销毁前执行的回调
+     * @brief Called before the component is destroyed
      */
     virtual void onDestroy()
     {}
 
+    /// Receive notification events
     virtual void onNotifyUI(const Event &e)
     {}
 

@@ -17,15 +17,6 @@ struct AssetImageData {
     std::string metaData;
 };
 
-//#define CREATE_ASSET_TABLE_FUNCTION make_storage(lvglpp::tools::Utils::getAssetDirRoot()+"/db/resource.db",\
-//    make_table("maker_resource",\
-//    make_column("url",&AssetImageData::url,primary_key()),\
-//    make_column("format",&AssetImageData::format),\
-//    make_column("width",&AssetImageData::width),\
-//    make_column("height",&AssetImageData::height),\
-//    make_column("imageData",&AssetImageData::imageData),                                                     \
-//    make_column("imageFileData",&AssetImageData::imageFileData)))
-
 class AssetResDataBase
 {
 public:

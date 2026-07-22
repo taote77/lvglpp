@@ -66,17 +66,10 @@ public:
 
     void setEnable(bool enable) override;
 
-    //            void setPos(lv_coord_t x, lv_coord_t y) override;
-    //
-    //            void setAligment(lv_align_t align, lv_coord_t offsetX, lv_coord_t offsetY)
-    //            override;
-    //
-    //            void setAligmentTo(const BaseItem &item, lv_align_t align, lv_coord_t offsetX,
-    //            lv_coord_t offsetY) override;
-
     void setLongMode(int maxWidth, LongMode longMode);
 
-    void setLongMode(int mode); // 1-LV_LABEL_LONG_WRAP, 2-LV_LABEL_LONG_SCROLL
+    /// Set long mode by LVGL constant (e.g. LV_LABEL_LONG_WRAP, LV_LABEL_LONG_SCROLL)
+    void setLongMode(int mode);
 
 private:
     std::string getLongModeStr(std::string src);

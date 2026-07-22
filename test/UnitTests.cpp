@@ -39,6 +39,55 @@ TEST(Object_emit_empty_signal)
     return true;
 }
 
+TEST(Object_disconnect_signal)
+{
+    core::Object obj;
+    int count = 0;
+    core::Object::connect(&obj, "test", [&count]() { count++; });
+    obj.disconnect("test");
+    obj.emitSignal("test");
+    CHECK_EQ(count, 0);
+    return true;
+}
+
+TEST(Object_disconnect_all)
+{
+    core::Object obj;
+    int a = 0, b = 0;
+    core::Object::connect(&obj, "sig1", [&a]() { a++; });
+    core::Object::connect(&obj, "sig2", [&b]() { b++; });
+    obj.disconnect(); // disconnect all
+    obj.emitSignal("sig1");
+    obj.emitSignal("sig2");
+    CHECK_EQ(a, 0);
+    CHECK_EQ(b, 0);
+    return true;
+}
+
+TEST(Object_connect_with_receiver)
+{
+    core::Object sender;
+    core::Object receiver;
+    int count = 0;
+    core::Object::connect(&sender, "test", &receiver, [&count]() { count++; });
+    sender.emitSignal("test");
+    CHECK_EQ(count, 1);
+    // Disconnect by receiver
+    sender.disconnect("test", &receiver);
+    sender.emitSignal("test");
+    CHECK_EQ(count, 1); // should not have been called again
+    return true;
+}
+
+TEST(Object_signal_doesnt_call_dead_slots)
+{
+    // Verify that emitting a signal with nullptr callbacks doesn't crash
+    core::Object obj;
+    core::Object::connect(&obj, "test", core::Object::Slot{});
+    obj.emitSignal("test");
+    return true;
+}
+
 TEST(Object_property_set_get)
 {
     core::Object obj;
@@ -92,7 +141,7 @@ TEST(Event_empty_constructor)
     return true;
 }
 
-// ---- std::any Tests (verify replacement from boost::any) ----
+// ---- std::any Tests ----
 
 TEST(Any_basic_usage)
 {
@@ -119,5 +168,30 @@ TEST(Optional_basic)
     opt = 42;
     CHECK_TRUE(opt.has_value());
     CHECK_EQ(*opt, 42);
+    return true;
+}
+
+// ---- C++17 Feature Verification Tests ----
+
+TEST(Cpp17_structured_bindings)
+{
+    std::pair<int, std::string> p{42, "hello"};
+    auto [num, str] = p;
+    CHECK_EQ(num, 42);
+    CHECK(str == "hello");
+    return true;
+}
+
+TEST(Cpp17_string_view)
+{
+    std::string_view sv = "hello world";
+    CHECK(sv.substr(0, 5) == "hello");
+    return true;
+}
+
+TEST(Cpp17_filesystem)
+{
+    std::filesystem::path p = "/tmp/test";
+    CHECK(p.filename() == "test");
     return true;
 }

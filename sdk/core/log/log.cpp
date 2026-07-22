@@ -2,59 +2,77 @@
 
 #include <filesystem>
 #include <fstream>
-#include <boost/log/utility/setup/common_attributes.hpp>
-#include <boost/log/utility/setup/from_stream.hpp>
-#include <boost/log/utility/setup/formatter_parser.hpp>
-#include <boost/log/utility/setup/filter_parser.hpp>
-#include <boost/log/utility/setup/settings.hpp>
-#include <boost/log/utility/setup/from_settings.hpp>
+#include <iostream>
+#include <string>
 
+namespace hglv {
 
-namespace hglv{
+LogLevel               Logger::_minLevel    = LogLevel::Debug;
+std::mutex             Logger::_mutex;
+std::ofstream          Logger::_file;
+bool                   Logger::_initialized  = false;
+std::filesystem::path  Logger::_folder;
 
-
-void Logger::Init(const std::filesystem::path& filename, const std::filesystem::path& folder,const std::string& level)
+void Logger::Init(const std::filesystem::path &filename,
+                  const std::filesystem::path &folder,
+                  const std::string &level)
 {
-    boost::log::add_common_attributes();
-    boost::log::register_simple_formatter_factory<boost::log::trivial::severity_level, char>("Severity");
-    boost::log::register_simple_filter_factory<boost::log::trivial::severity_level, char>("Severity");
+    std::lock_guard<std::mutex> lock(_mutex);
 
-    boost::log::settings settings;
-    settings["Core"]["Filter"] = "%Severity% >= "+level;
-    settings["Core"]["DisableLogging"] = false;
+    if (level == "trace")   _minLevel = LogLevel::Trace;
+    else if (level == "debug")   _minLevel = LogLevel::Debug;
+    else if (level == "info")    _minLevel = LogLevel::Info;
+    else if (level == "warning") _minLevel = LogLevel::Warning;
+    else if (level == "error")   _minLevel = LogLevel::Error;
+    else                         _minLevel = LogLevel::Debug;
 
+    _folder = folder;
+    _initialized = true;
 
-    settings["Sinks.Console"]["Destination"] = "Console";
-    settings["Sinks.Console"]["Format"] = "[%TimeStamp%] [%Severity%] %Message% [%ThreadID%]";
-    settings["Sinks.Console"]["Filter"] = "%Severity% >= trace";
-    settings["Sinks.Console"]["AutoFlush"] = true;
+    // Create log folder if it doesn't exist
+    std::error_code ec;
+    std::filesystem::create_directories(folder, ec);
 
+    // Open log file
+    auto now = std::chrono::system_clock::now();
+    auto time = std::chrono::system_clock::to_time_t(now);
+    auto *tm = std::localtime(&time);
+    char timeBuf[64];
+    std::strftime(timeBuf, sizeof(timeBuf), "_%Y%m%d_%H%M%S.log", tm);
 
-    settings["Sinks.File"]["Destination"] = "TextFile";
-    settings["Sinks.File"]["Format"] = "[%TimeStamp%] [%Severity%] %Message% [%ThreadID%]";
-    settings["Sinks.File"]["FileName"] = (folder/filename).string()+"_%Y%m%d_%H%M%S_%3N.log";
-    settings["Sinks.File"]["Target"] = folder.string();
-    settings["Sinks.File"]["Filter"] = "%Severity% >= trace";
-    settings["Sinks.File"]["AutoFlush"] = true;
-    settings["Sinks.File"]["RotationSize"] = 10 * 1024 * 1024; // 10 MiB
-    settings["Sinks.File"]["ScanForFiles"] = "Matching";
-    settings["Sinks.File"]["RotationTimePoint"] = "00:00:00";
-    boost::log::init_from_settings(settings);
+    auto logPath = folder / (filename.string() + timeBuf);
+    _file.open(logPath, std::ios::out | std::ios::app);
+    if (!_file.is_open()) {
+        std::cerr << "[WARN] Failed to open log file: " << logPath << std::endl;
+    } else {
+        std::cerr << "[INFO] Log file: " << logPath << std::endl;
+    }
 }
 
 void Logger::Configure(const std::filesystem::path &setting)
 {
-    try
-    {
-        std::ifstream ifs(setting.string());
-        boost::log::init_from_stream(ifs);
+    std::ifstream ifs(setting);
+    if (!ifs.is_open()) {
+        std::cerr << "[WARN] Cannot open log config: " << setting << std::endl;
+        return;
     }
-    catch (const std::exception& e)
-    {
-        LOG_ERROR()<<e.what();
+
+    std::string line;
+    while (std::getline(ifs, line)) {
+        // Simple key=value parsing
+        auto pos = line.find('=');
+        if (pos == std::string::npos) continue;
+        auto key = line.substr(0, pos);
+        auto value = line.substr(pos + 1);
+
+        if (key == "level" || key == "Level") {
+            if (value == "trace")        _minLevel = LogLevel::Trace;
+            else if (value == "debug")   _minLevel = LogLevel::Debug;
+            else if (value == "info")    _minLevel = LogLevel::Info;
+            else if (value == "warning") _minLevel = LogLevel::Warning;
+            else if (value == "error")   _minLevel = LogLevel::Error;
+        }
     }
 }
 
-
-
-}
+} // namespace hglv

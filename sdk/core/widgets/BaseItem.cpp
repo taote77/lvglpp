@@ -299,4 +299,60 @@ void BaseItem::dumpTree(int depth) const
     }
 }
 
+// ---- Layout API ----
+
+void BaseItem::setFlexFlow(lv_flex_flow_t flow)
+{
+    lv_obj_set_flex_flow(lv_base_ptr_, flow);
+}
+
+void BaseItem::setFlexAlign(lv_flex_align_t mainAxis, lv_flex_align_t crossAxis,
+                             lv_flex_align_t trackAlign)
+{
+    lv_obj_set_flex_align(lv_base_ptr_, mainAxis, crossAxis, trackAlign);
+}
+
+void BaseItem::setFlexGrow(uint8_t grow)
+{
+    lv_obj_set_flex_grow(lv_base_ptr_, grow);
+}
+
+void BaseItem::setGridColumns(const std::string &columnDescriptors)
+{
+    static lv_coord_t col_dsc[16] = {LV_GRID_FR(1), LV_GRID_TEMPLATE_LAST};
+    // Simple approach: use LVGL's grid description DSL
+    // For now, set grid layout and let advanced users use the C API
+    lv_obj_set_grid_dsc_array(lv_base_ptr_,
+        const_cast<lv_coord_t *>(col_dsc), nullptr);
+    (void)columnDescriptors; // TODO: parse column descriptors like "1fr 2fr auto"
+}
+
+void BaseItem::setGridRows(const std::string &rowDescriptors)
+{
+    static lv_coord_t row_dsc[16] = {LV_GRID_FR(1), LV_GRID_TEMPLATE_LAST};
+    lv_obj_set_grid_dsc_array(lv_base_ptr_,
+        nullptr, const_cast<lv_coord_t *>(row_dsc));
+    (void)rowDescriptors; // TODO: parse row descriptors
+}
+
+void BaseItem::setGridCell(uint32_t column, uint32_t row,
+                            uint32_t colSpan, uint32_t rowSpan)
+{
+    lv_obj_set_grid_cell(lv_base_ptr_, LV_GRID_ALIGN_STRETCH, column, colSpan,
+                         LV_GRID_ALIGN_STRETCH, row, rowSpan);
+}
+
+void BaseItem::setGridCellColumnAlign(lv_grid_align_t align)
+{
+    // Grid cell alignment is set via lv_obj_set_grid_cell; use default for others
+    lv_obj_set_grid_cell(lv_base_ptr_, align, 0, 1,
+                         LV_GRID_ALIGN_STRETCH, 0, 1);
+}
+
+void BaseItem::setGridCellRowAlign(lv_grid_align_t align)
+{
+    lv_obj_set_grid_cell(lv_base_ptr_, LV_GRID_ALIGN_STRETCH, 0, 1,
+                         align, 0, 1);
+}
+
 } // namespace lvglpp::widgets

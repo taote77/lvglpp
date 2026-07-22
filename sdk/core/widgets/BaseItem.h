@@ -40,15 +40,25 @@ public:
 
     virtual void setAligment(lv_align_t align, lv_coord_t offsetX, lv_coord_t offsetY);
 
+    /// Correct spelling: setAlignment
+    void setAlignment(lv_align_t align, lv_coord_t offsetX, lv_coord_t offsetY) {
+        setAligment(align, offsetX, offsetY);
+    }
+
     virtual void setAligmentTo(const BaseItem &item, lv_align_t align, lv_coord_t offsetX, lv_coord_t offsetY);
+
+    /// Correct spelling: setAlignmentTo
+    void setAlignmentTo(const BaseItem &item, lv_align_t align, lv_coord_t offsetX, lv_coord_t offsetY) {
+        setAligmentTo(item, align, offsetX, offsetY);
+    }
 
     void setBgColor(uint32_t clr);
 
     void setDisableBgColor(uint32_t clr);
 
     /**
-     * 透明度设置 0.0~1.0
-     * @param opa
+     * Set opacity (0.0 = fully transparent, 1.0 = fully opaque)
+     * @param opa opacity value in range [0.0, 1.0]
      */
     void setOpacity(double opa);
 
@@ -147,6 +157,32 @@ public:
     /// Get the screen-relative bounding rectangle {x, y, w, h}
     struct Rect { lv_coord_t x, y, w, h; };
     Rect bounds() const;
+
+    // ---- Layout API (wrapping LVGL flex/grid) ----
+
+    /// Set flex flow on this container. Children are laid out automatically.
+    void setFlexFlow(lv_flex_flow_t flow);
+
+    /// Set flex align for main axis and cross axis + track (wrap) alignment
+    void setFlexAlign(lv_flex_align_t mainAxis, lv_flex_align_t crossAxis, lv_flex_align_t trackAlign);
+
+    /// Set flex grow factor for this item (0 = fixed, >0 = proportion of remaining space)
+    void setFlexGrow(uint8_t grow);
+
+    /// Set grid layout with column descriptors (e.g. "1fr 2fr auto")
+    void setGridColumns(const std::string &columnDescriptors);
+
+    /// Set grid layout row descriptors
+    void setGridRows(const std::string &rowDescriptors);
+
+    /// Set this item's grid cell position (column, row) and optional span
+    void setGridCell(uint32_t column, uint32_t row, uint32_t colSpan = 1, uint32_t rowSpan = 1);
+
+    /// Set grid cell column alignment
+    void setGridCellColumnAlign(lv_grid_align_t align);
+
+    /// Set grid cell row alignment
+    void setGridCellRowAlign(lv_grid_align_t align);
 
 protected:
     void setLvglItem(lv_obj_t *ptr)

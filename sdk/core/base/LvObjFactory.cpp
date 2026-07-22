@@ -93,4 +93,74 @@ lv_obj_t *LvObjFactory::createLvglQrCode(lv_obj_t *parent)
     return lv_qrcode_create(parent);
 }
 
+lv_obj_t *LvObjFactory::createLvglSlider(lv_obj_t *parent)
+{
+    return lv_slider_create(parent);
+}
+
+lv_obj_t *LvObjFactory::createLvglDropdown(lv_obj_t *parent)
+{
+    return lv_dropdown_create(parent);
+}
+
+lv_obj_t *LvObjFactory::createLvglBar(lv_obj_t *parent)
+{
+    return lv_bar_create(parent);
+}
+
+lv_obj_t *LvObjFactory::createLvglArc(lv_obj_t *parent)
+{
+    return lv_arc_create(parent);
+}
+
+lv_obj_t *LvObjFactory::createLvglTextArea(lv_obj_t *parent)
+{
+    return lv_textarea_create(parent);
+}
+
+lv_obj_t *LvObjFactory::createLvglKeyboard(lv_obj_t *parent)
+{
+    return lv_keyboard_create(parent);
+}
+
+lv_obj_t *LvObjFactory::createLvglTabView(lv_obj_t *parent)
+{
+    return lv_tabview_create(parent);
+}
+
+lv_obj_t *LvObjFactory::createLvglCanvas(lv_obj_t *parent)
+{
+    return lv_canvas_create(parent);
+}
+
+lv_obj_t *LvObjFactory::createLvglLed(lv_obj_t *parent)
+{
+    return lv_led_create(parent);
+}
+
+lv_obj_t *LvObjFactory::createLvglList(lv_obj_t *parent)
+{
+    return lv_list_create(parent);
+}
+
+lv_obj_t *LvObjFactory::createLvglLine(lv_obj_t *parent)
+{
+    return lv_line_create(parent);
+}
+
+lv_obj_t *LvObjFactory::createLvglRoller(lv_obj_t *parent)
+{
+    return lv_roller_create(parent);
+}
+
+lv_obj_t *LvObjFactory::createLvglCalendar(lv_obj_t *parent)
+{
+    return lv_calendar_create(parent);
+}
+
+lv_obj_t *LvObjFactory::createLvglTable(lv_obj_t *parent)
+{
+    return lv_table_create(parent);
+}
+
 } // namespace lvglpp::tools

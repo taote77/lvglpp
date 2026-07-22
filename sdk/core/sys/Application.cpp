@@ -8,6 +8,7 @@
 #include <filesystem>
 #include <memory>
 #include <thread>
+#include <unistd.h>
 
 namespace lvglpp::sys {
 

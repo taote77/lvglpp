@@ -2,15 +2,19 @@
 #define SMART_HOME_SETTINGS_PAGE_H
 
 #include "core/sys/BaseActivity.h"
+#include "core/widgets/Dropdown.h"
 #include "core/widgets/LvText.h"
 #include "core/widgets/PushButton.h"
+#include "core/widgets/Roller.h"
+#include "core/widgets/Slider.h"
 #include "core/widgets/SwitchButton.h"
 #include <memory>
-#include <vector>
+
+namespace w = ::lvglpp::widgets;
 
 namespace lvglpp::ui::page {
 
-/// Settings page with theme switching, language selection, and about info
+/// Settings page with working theme, language, brightness, and about info
 class SettingsPage : public sys::BaseActivity
 {
 public:
@@ -23,23 +27,18 @@ protected:
     void onDestroy() override;
 
 private:
-    void buildThemeSection();
+    void buildAppearanceSection();
     void buildLanguageSection();
+    void buildNetworkSection();
     void buildAboutSection();
-    void onThemeChanged(int themeIndex);
-    void onLanguageChanged(int langIndex);
 
-    std::unique_ptr<widgets::LvText>       _title;
-    std::unique_ptr<widgets::LvText>       _themeLabel;
-    std::unique_ptr<widgets::LvText>       _langLabel;
-    std::unique_ptr<widgets::LvText>       _versionLabel;
-    std::unique_ptr<widgets::PushButton>   _backBtn;
-    std::vector<std::unique_ptr<widgets::SwitchButton>> _switches;
-
-    int _currentTheme = 0;
-    int _currentLang  = 0;
+    std::unique_ptr<w::LvText>      _title;
+    std::unique_ptr<w::Dropdown>    _themeDropdown;
+    std::unique_ptr<w::Roller>      _langRoller;
+    std::unique_ptr<w::Slider>      _brightnessSlider;
+    std::unique_ptr<w::SwitchButton> _wifiSwitch;
 };
 
 } // namespace lvglpp::ui::page
 
-#endif // SMART_HOME_SETTINGS_PAGE_H
+#endif

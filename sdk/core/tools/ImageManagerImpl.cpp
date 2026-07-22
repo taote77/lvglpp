@@ -2,6 +2,7 @@
 #include "ImageManagerImpl.h"
 #include "Utils.h"
 #include "core/log/log.h"
+#include <cstring>
 #include <filesystem>
 #include <iostream>
 

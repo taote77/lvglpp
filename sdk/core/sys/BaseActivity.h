@@ -1,8 +1,8 @@
 /**************************************************************************
 
-Class:${CLASS}
+Class: BaseActivity
 
-Description:一个空白页的基础实现界面
+Description: Base implementation of an Activity with a root window
 
 **************************************************************************/
 
@@ -21,38 +21,38 @@ public:
 
     ~BaseActivity() override;
 
-    // 禁用拷贝。类拷贝时会导致window窗口被多次释放
+    // Disable copy: copying would cause the window to be freed multiple times
     BaseActivity(const BaseActivity &) = delete;
 
     BaseActivity &operator=(const BaseActivity &) = delete;
 
-    // protected:
     /**
-     * @brief 首次调用时回调创建界面
-     * @param arg
+     * @brief Called on first creation to build the UI
+     * @param arg optional argument passed from the caller
      */
     void onCreate(std::any arg) override;
 
     /**
-     * @brief 开始显示前调用
+     * @brief Called when the activity becomes visible
      */
     void onResume() override;
 
     /**
-     * @brief 结束显示时调用
+     * @brief Called when the activity is no longer visible
      */
     void onPause() override;
 
     /**
-     * @brief 销毁界面时调用
+     * @brief Called when the activity is being destroyed
      */
     void onDestroy() override;
 
+    /// Receive notification events
     void onNotifyUI(const Event &e) override;
 
     /**
-     * @brief  返回根屏幕的指针
-     * @return
+     * @brief Returns the root widget of this activity
+     * @return pointer to the root BaseItem
      */
     widgets::BaseItem *getRoot() const override;
 

@@ -1,8 +1,8 @@
 /**************************************************************************
 
-Class:Application
+Class: Application
 
-Description:应用程序管理虚基类
+Description: Abstract base class for application management
 
 **************************************************************************/
 

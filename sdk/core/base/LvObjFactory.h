@@ -34,10 +34,15 @@ public:
      */
     static lv_obj_t *createLvglScrolable(lv_obj_t *parent);
 
+    /// Correct spelling: createLvglScrollable
+    static lv_obj_t *createLvglScrollable(lv_obj_t *parent) {
+        return createLvglScrolable(parent);
+    }
+
     /**
-     * 创建一个lvgl image对象
-     * @param parent
-     * @return
+     * Create an LVGL image object
+     * @param parent parent object
+     * @return created lv_obj_t pointer
      */
     static lv_obj_t *createLvglImage(lv_obj_t *parent);
 
@@ -60,6 +65,22 @@ public:
     static lv_obj_t *createLvglLottie(lv_obj_t *parent);
 
     static lv_obj_t *createLvglQrCode(lv_obj_t *parent);
+
+    // New widget factory methods
+    static lv_obj_t *createLvglSlider(lv_obj_t *parent);
+    static lv_obj_t *createLvglDropdown(lv_obj_t *parent);
+    static lv_obj_t *createLvglBar(lv_obj_t *parent);
+    static lv_obj_t *createLvglArc(lv_obj_t *parent);
+    static lv_obj_t *createLvglTextArea(lv_obj_t *parent);
+    static lv_obj_t *createLvglKeyboard(lv_obj_t *parent);
+    static lv_obj_t *createLvglTabView(lv_obj_t *parent);
+    static lv_obj_t *createLvglCanvas(lv_obj_t *parent);
+    static lv_obj_t *createLvglLed(lv_obj_t *parent);
+    static lv_obj_t *createLvglList(lv_obj_t *parent);
+    static lv_obj_t *createLvglLine(lv_obj_t *parent);
+    static lv_obj_t *createLvglRoller(lv_obj_t *parent);
+    static lv_obj_t *createLvglCalendar(lv_obj_t *parent);
+    static lv_obj_t *createLvglTable(lv_obj_t *parent);
 };
 // Modern alias
 using WidgetFactory = LvObjFactory;

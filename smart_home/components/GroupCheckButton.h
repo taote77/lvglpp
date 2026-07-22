@@ -22,6 +22,9 @@ public:
         return state_;
     }
 
+    /// Correct spelling
+    State getSelectedState() const { return getSlectedState(); }
+
 private:
     std::shared_ptr<ConsumeText>    display_label_;
     std::shared_ptr<widgets::Image> icon_;

@@ -4,6 +4,7 @@
 #include "core/sys/Application.h"
 #include "trTranslateImpl.h"
 #include <codecvt>
+#include <cstring>
 #include <locale>
 
 namespace lvglpp {
