@@ -1,7 +1,6 @@
 #include "RemoteClient.h"
 #include "config/color_sheet.h"
 #include "core/sys/Application.h"
-#include "core/sys/app/SdlApplication.h"
 #include "core/sys/StackView.h"
 
 #include "net/ws_gw/ws_util.h"
@@ -270,7 +269,10 @@ void RemoteClient::onNotifyUI(const sys::Event &evt)
         {
             auto pos = *data;
             LOG_DEBUG() << "MOUSE_EVENT pos: " << pos.first << pos.second;
-            sys::SdlApplication::simulate_click_at(pos.first, pos.second);
+            if (auto *app = sys::StackView::getInstance().getApplication())
+            {
+                app->simulatePointerClick(pos.first, pos.second);
+            }
         }
     }
 }

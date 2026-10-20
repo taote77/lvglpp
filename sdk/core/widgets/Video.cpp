@@ -16,7 +16,7 @@ Video::Video(const std::string &path, BaseItem *parent) : BaseItem(tools::LvObjF
 
 void Video::setVideoSrcPath(const std::string &path)
 {
-#ifdef USED_FRAMEBUFF
+#if defined(LVGLPP_PLATFORM_FRAMEBUF)
     src_path_ = "/home/app/bin/" + path;
 #else
     src_path_ = "." + path;

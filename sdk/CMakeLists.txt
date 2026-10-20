@@ -22,13 +22,9 @@ endif ()
 # set(LV_CONF_BUILD_DISABLE_DEMOS 1)
 
 
-# if (CMAKE_SYSTEM_PROCESSOR MATCHES "arm" OR CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
-#     # add_definitions(-DUSED_FRAMEBUFF)
-#     add_definitions(-DUSE_LINUX_DRM)
-
-add_definitions(-DUSE_LINUX_DRM)
-add_definitions(-DLV_USE_LINUX_DRM=1)
-include_directories(/usr/include/drm)
+if (LVGLPP_PLATFORM STREQUAL "DRM")
+    include_directories(/usr/include/drm)
+endif ()
 
 
 if (ENABLE_LUA)
@@ -69,6 +65,12 @@ add_compile_definitions($<$<BOOL:${LV_USE_FFMPEG}>:LV_USE_FFMPEG=1>)
 add_subdirectory(lvgl)
 target_include_directories(lvgl PUBLIC ${PROJECT_SOURCE_DIR} ${SDL2_INCLUDE_DIRS})
 
+if (LVGLPP_PLATFORM STREQUAL "SDL")
+    target_link_libraries(lvgl PUBLIC ${SDL2_LIBRARIES})
+elseif (LVGLPP_PLATFORM STREQUAL "DRM")
+    target_link_libraries(lvgl PUBLIC drm)
+endif ()
+
 
 file(GLOB_RECURSE TOOLS_SRC CONFIGURE_DEPENDS
     ${CMAKE_CURRENT_SOURCE_DIR}/core/*.c
@@ -87,13 +89,11 @@ add_subdirectory(net)
 add_subdirectory(wrappers)
 
 
-target_link_libraries(${PROJECT_NAME} 
+target_link_libraries(${PROJECT_NAME}
     # wayland-cursor
     # wayland-client
     # wayland-server
     # wayland-egl
-    xkbcommon
-    drm
 )
 
 if (ENABLE_LUA)

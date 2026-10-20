@@ -328,7 +328,7 @@ respack verify <in.pak>
 
 ```cpp
 auto &assets = tools::AssetManager::getInstance();
-assets.mountPack("build/target/bin/common.pak");   // Application::initApp() 自动完成
+assets.mountPack("build/target/bin/common.pak");   // Application::initialize() 自动完成
 
 tools::AssetHandle asset = assets.open("image/40x40/icon_warn.png");
 const std::uint8_t *bytes = asset->data();
@@ -337,7 +337,7 @@ std::size_t         size  = asset->size();
 
   - Pack 使用只读 `mmap`（失败时回退为整文件读入），`AssetHandle` 是零拷贝视图；`reset()` 后已发出的 handle 仍然有效。
   - Directory 源每次 `open` 重新读取文件，支持热更新；符号链接逃逸会被拒绝。
-  - `Application::initApp()` 自动挂载 `<cwd>/common.pak` 与 `<cwd>/<exe>.pak`（或对应 `.asset/` 目录）；`LVGLPP_ASSET_DIR`、`LVGLPP_ASSET_PACK` 可覆盖。
+  - `Application::initialize()` 自动挂载 `<cwd>/common.pak` 与 `<cwd>/<exe>.pak`（或对应 `.asset/` 目录）；`LVGLPP_ASSET_DIR`、`LVGLPP_ASSET_PACK` 可覆盖。
   - `A:` 只读 LVGL FS 驱动：`lv_fs_open("A:/image/...")`，供 GIF / FreeType 等需要文件路径的组件使用。
   - `AssetManager::materialize(path, out)` 返回真实文件路径；pack 条目会解压到进程临时目录，供绕过 LVGL FS 的库使用（FreeType、ffmpeg）。
   - 缺失资源每个路径只告警一次。
@@ -500,10 +500,36 @@ smart_home 已迁移到 `PageHost`：启动时只构建 Home 页，其余四个 
 - `PageView` 的滚动索引有边界与宽度保护；挂起的异步页面创建会在包装对象销毁或 lv_obj 删除时取消。
 - `ListView`/`PageView` 目前只增不回收 delegate；数据量很大时应实现窗口化复用，避免隐藏行持续占用内存。
 
-### 11.4 退出与进程生命周期
+### 11.4 Application、Platform 与退出
 
-LVGL 的 SDL 驱动在收到 `SDL_QUIT`（窗口关闭或 SIGTERM）时会执行 `SDL_Quit(); lv_deinit(); exit(0);`，不会经过正常的 C++ 栈展开。为此：
+`sys::Application` 只负责通用生命周期（LVGL 初始化、资源挂载、事件队列、信号、主循环、清理）；显示/输入后端通过 `sys::Platform` 组合注入，后端类型不与 Application 继承体系耦合。
 
-- `StackView`、`Theme`、`Toast` 及工厂默认 Style 都是**进程生命周期单例**，避免静态析构在 `lv_deinit()` 之后访问 LVGL 分配器；
-- 需要可控退出时，在 `lv_deinit()` 之前显式调用 `StackView::shutdown()` 和 `InputManager::shutdown()`；
-- 不要在 `lv_deinit()` 之后销毁仍持有 `lv_obj`/`lv_style_t` 的对象。
+```cpp
+#include "core/sys/Application.h"
+#include "core/sys/StackView.h"
+
+int main(int argc, char **argv)
+{
+    auto app = lvglpp::sys::createApplication(argc, argv);
+    if (!app || !app->initialize())
+    {
+        return EXIT_FAILURE;
+    }
+
+    lvglpp::sys::StackView::getInstance().pushView(std::make_shared<MyActivity>());
+    return app->exec();
+}
+```
+
+- **平台选择**：`-DLVGLPP_PLATFORM=AUTO|SDL|FRAMEBUF|DRM`（默认 `AUTO`：非 ARM 选 SDL，ARM 选 FRAMEBUF）。CMake 只定义一个 `LVGLPP_PLATFORM_*` 宏，`sdk/lv_conf.h` 据此启用对应的 LVGL 驱动。
+- **后端**：`SdlPlatform`、`FramebufPlatform`、`DrmPlatform`（`core/sys/platform/`）。新增后端实现 `Platform`（`name/init/shutdown/display/setTheme/simulatePointerClick/providesTick`）并在 `PlatformFactory.cpp` 注册即可。
+- **生命周期**：
+  1. `initialize()`：`lv_init` → 资产挂载 + `A:` 驱动 → 日志 → SIGINT/SIGTERM → ThorVG → `platform_->init()` → tick 兜底 → `InputManager::install()` → `onInit()`（子类钩子）。
+  2. `exec()`：排空事件队列 → `lv_timer_handler()` → `min(idle, 5ms)` 睡眠；`requestQuit()` 或信号后退出并返回退出码。
+  3. `shutdown()`：`onShutdown()` → 停止 tick → `StackView::shutdown()` → `ImageManager::shutdown()` → `InputManager::shutdown()` → `platform_->shutdown()` → `lv_deinit()` → 资源/信号恢复。幂等，部分初始化失败也安全。
+- **退出来源**：
+  - `requestQuit(code)` 可从任意线程调用，首个 code 生效；`exec()` 正常返回。
+  - `SIGTERM`/`SIGINT`：退出码分别为 143/130。`SDL_HINT_NO_SIGNAL_HANDLERS` 禁止 SDL 接管信号。
+  - SDL 窗口关闭：`SdlPlatform` 用 `SDL_SetEventFilter` 拦截 `SDL_QUIT`/`SDL_WINDOWEVENT_CLOSE`，调用 `requestQuit()` 并丢弃事件，从而绕开 LVGL SDL 驱动的 `lv_deinit(); exit(0)`。
+- `StackView`、`Theme`、`Toast` 及工厂默认 Style 仍是进程生命周期单例；不要在一进程内重复 `initialize()`/`lv_init()`。
+- 不要在 `lv_deinit()` 之后销毁仍持有 `lv_obj`/`lv_style_t` 的对象；`Application::shutdown()` 已保证正确的销毁顺序。

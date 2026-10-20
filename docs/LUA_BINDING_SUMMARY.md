@@ -40,7 +40,7 @@
 
 #### 主程序
 - **main.cpp** - C++ 主程序
-  - 继承 SdlApplication
+  - 继承 Application（通过 onInit/onShutdown 钩子接管 Lua 生命周期）
   - 初始化 Lua 引擎
   - 创建 root 控件
   - 加载并执行 Lua 脚本

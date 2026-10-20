@@ -16,7 +16,7 @@ LVGL++ is a C++17 object-oriented wrapper around **LVGL 9.3** (vendored at `sdk/
 
 ## Build
 
-Dependencies: CMake 3.16+, C++17 compiler (C++20 for `smart_home`), SDL2, FFmpeg (`avformat/avcodec/avutil/swscale`), libdrm, xkbcommon. Optional: Lua 5.4 + pkg-config for `ENABLE_LUA`.
+Dependencies: CMake 3.16+, C++17 compiler (C++20 for `smart_home`), FFmpeg (`avformat/avcodec/avutil/swscale`). Platform-specific: SDL2 for the SDL backend (default on non-ARM), Linux fbdev headers for FRAMEBUF, libdrm for DRM. Optional: Lua 5.4 + pkg-config for `ENABLE_LUA`.
 
 ```bash
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
@@ -25,6 +25,7 @@ cmake --build build -j$(nproc)
 
 Options (set at configure time):
 
+- `-DLVGLPP_PLATFORM=AUTO|SDL|FRAMEBUF|DRM` — display/input backend. `AUTO` (default) selects SDL on non-ARM and FRAMEBUF on ARM. Only the selected backend's LVGL driver is compiled/linked.
 - `-DENABLE_DEMO=OFF` — skips `demo/` only; `smart_home` and `test` are always built. Default is `ON`.
 - `-DENABLE_LUA=ON` — builds the static `lvglpp_lua` target and the `lua_ui` demo (requires `lua-5.4` via pkg-config).
 - `-DASAN=ON` — only takes effect when `CMAKE_BUILD_TYPE=Debug`.
@@ -93,8 +94,11 @@ clang-tidy -p build <file>
 
 ### Application framework (`sdk/core/sys`)
 
-- `Application` subclasses (`SdlApplication`, `FramebufApplication`, `DrmApplication`, `WaylandApplication`) are selected by compile definitions: `USED_SDL` on non-ARM, `USED_FRAMEBUFF` on ARM (set in the root `CMakeLists.txt`); the subclasses are `#if`-guarded headers. Note that `smart_home/CMakeLists.txt` unconditionally defines `USED_SDL` and requires SDL2, unlike `demo/` which switches on architecture. `Application::initApp()` performs `lv_init()`, filesystem-driver registration, lodepng init, and starts a 5 ms tick thread if `LV_TICK_CUSTOM == 0`; `SdlApplication::initApp()` adds SDL window/input setup (`halInit()`) and ThorVG init.
-- `Application::exec()` is the main loop: `handleEvent()` → `lv_timer_handler()` → 5 ms sleep. LVGL/UI work is single-threaded.
+- `sys::Application` is concrete and composes a `sys::Platform` backend (`core/sys/platform/Platform.h`); platform types are not part of the application hierarchy. Backends: `SdlPlatform`, `FramebufPlatform`, `DrmPlatform` in `core/sys/platform/`. A new backend only needs to implement `Platform` and register in `PlatformFactory.cpp`; `WaylandApplication` was removed.
+- `createApplication(argc, argv)` (`core/sys/PlatformFactory.h`) creates the compiled-in backend. CMake option `LVGLPP_PLATFORM=AUTO|SDL|FRAMEBUF|DRM` (default `AUTO`: SDL on non-ARM, FRAMEBUF on ARM) defines exactly one `LVGLPP_PLATFORM_*` macro; `sdk/lv_conf.h` maps it to `LV_USE_SDL` / `LV_USE_LINUX_FBDEV` / `LV_USE_LINUX_DRM` / `LV_USE_EVDEV`.
+- Lifecycle: `Application::initialize()` → `lv_init()`, asset mounts + `A:` driver, LVGL log hook, SIGINT/SIGTERM handlers, ThorVG init, `platform_->init()`, tick fallback, `InputManager::install()`, then the `onInit()` hook. `exec()` initializes if needed, runs the loop and returns the exit code. `shutdown()` is idempotent and ordered: `onShutdown()` → tick thread join → `StackView::shutdown()` → `ImageManager::shutdown()` → `InputManager::shutdown()` → platform shutdown → `lv_deinit()` → asset reset.
+- `Application::exec()` drains the whole event queue per iteration, calls `lv_timer_handler()`, and sleeps `min(time-to-next-timer, 5 ms)`. LVGL/UI work is single-threaded.
+- `requestQuit(code)` is thread-safe and the first code wins. SIGTERM/SIGINT produce exit codes 143/130. `SdlPlatform` installs an SDL event filter that turns `SDL_QUIT`/`SDL_WINDOWEVENT_CLOSE` into `requestQuit()` and drops the event, so LVGL's SDL driver `exit(0)` path is never taken.
 - Background threads must not touch widgets. Wrap data in `sys::Event` and call `Application::postEvent(...)`; `StackView::notifyAllUi()` delivers it to every Activity's `onNotifyUI(const Event&)` on the UI thread.
 - `Activity` lifecycle mirrors Android: `onCreate(std::any arg)` → `onResume()` → `onPause()` → `onDestroy()`. `BaseActivity` owns a root `BaseItem` in `std::unique_ptr`.
 - `sys::InputManager` (`core/sys/InputManager.{h,cpp}`) owns keyboard focus scopes, a virtual keypad indev and global key routing. `BaseActivity::onResume/onPause` push/pop an Activity scope; `BaseDialog::open/close` push/pop a modal scope (ESC closes the dialog by default). Interactive widgets call `setFocusable(true)` and expose `onKey()`; unhandled keys bubble to ancestors and then global handlers. Physical/custom keys are injected thread-safely with `postKey()/postKeyRaw()`.
@@ -115,7 +119,7 @@ clang-tidy -p build <file>
   respack list <in.pak>
   respack verify <in.pak>
   ```
-- `tools::AssetManager` mounts one or more sources (pack, directory or in-memory pack); the last mounted source wins. `Application::initApp()` mounts `common.pak` first and `<exe>.pak` second. The `A:` LVGL FS driver (`FileSystemManager::registerAssetDriver()`) exposes the same files read-only for controllers that need a file path (GIF, fonts, ...). `AssetManager::materialize()` extracts a pack entry to a per-process temp file for libraries that bypass LVGL's FS (FreeType without the LVGL port, ffmpeg).
+- `tools::AssetManager` mounts one or more sources (pack, directory or in-memory pack); the last mounted source wins. `Application::initialize()` mounts `common.pak` first and `<exe>.pak` second. The `A:` LVGL FS driver (`FileSystemManager::registerAssetDriver()`) exposes the same files read-only for controllers that need a file path (GIF, fonts, ...). `AssetManager::materialize()` extracts a pack entry to a per-process temp file for libraries that bypass LVGL's FS (FreeType without the LVGL port, ffmpeg).
 - `tools::ImageManager` decodes asset bytes with `stb_image` into LVGL ARGB8888 (BGRA) pixels wrapped in `ImageResource`. `load(assetPath)` is synchronous; `prefetch(...)` warms the cache on a background worker (never touches LVGL); `waitForPrefetch()` joins the queue. The cache is a mutex-protected **safe LRU** (defaults 32 entries / 64 MB); eviction drops only the cache reference, while `Image` keeps an `ImageHandle` via the `BaseItem` registry keepalive. Dimensions are validated (≤16384², ≤256 MB). `loadFile()` handles real filesystem images; `invalidate()`/`Image::reload()` support directory-mode hot reload.
 - `Image` treats its string constructor argument as an asset path; use `Image(FileSource{path}, parent)` for real files. `ImageButton` resolves all three parts through `ImageManager` and keepalives the descriptors; `LottieCanvas` uses `lv_lottie_set_src_data()` for packed JSON; `GifImage` reads through `A:`.
 - CMake option `LVGLPP_ASSET_MODE=pack|directory|both` (default `pack`). The helper `lvglpp_attach_assets(<target>)` stages the common assets plus `assets/apps/<target>/`; packs are generated at build time with `respack`.
@@ -168,8 +172,8 @@ Built only with `-DENABLE_LUA=ON`, producing static `lvglpp_lua` using sol2 (hea
 - `Style` becomes immutable on first application. Use `Style::clone()` for variants. Theme changes do not restyle existing widgets; set `Theme::setMode()` before building the UI.
 - SDL keyboard non-Enter releases are synthesized (LVGL only delivers full release semantics for Enter). Use `InputManager::postKey()` for hardware keys that need real press/release.
 - `test_unit` creates a headless display with a no-op flush callback; without one, `lv_timer_handler()` blocks in LVGL's `wait_for_flushing()`.
-- LVGL's SDL driver handles `SDL_QUIT` (window close / SIGTERM) by calling `lv_deinit()` and `exit(0)`. `StackView`, `Theme`, `Toast` and the factory default styles are intentionally process-lifetime singletons so static destructors never touch LVGL after deinit. Call `StackView::shutdown()`, `ImageManager::shutdown()` and `InputManager::shutdown()` explicitly before `lv_deinit()` if you control shutdown.
+- The LVGL SDL driver still calls `lv_deinit(); exit(0)` on `SDL_QUIT`, but `SdlPlatform` installs an SDL event filter that intercepts `SDL_QUIT`/`SDL_WINDOWEVENT_CLOSE` and requests a controlled quit instead. `Application` also handles SIGINT/SIGTERM. `StackView`, `Theme`, `Toast` and the factory default styles remain process-lifetime singletons. Call `Application::shutdown()` (or `requestQuit()` + `exec()`) for a graceful teardown.
 - Assets are served from `common.pak` + `<exe>.pak`. A missing logical path logs **once** per path. For hot reload, run with `LVGLPP_ASSET_DIR=<dir>` (or build with `-DLVGLPP_ASSET_MODE=directory`) and call `ImageManager::invalidate()` / `Image::reload()` after replacing files.
 - LVGL config is `sdk/lv_conf.h`, which includes `sdk/config/lv_conf_my.h` (screen size, SDL/DRM, Lottie, etc.). Display dimensions are `800x480` by default.
 - `.gitmodules` points at a root-level `lvgl` path, but LVGL is vendored directly under `sdk/lvgl/` as tracked files (9.3.0). Do not expect `git submodule update` to populate `sdk/lvgl`.
-- Most demos and `SdlApplication` require a graphical display; only `test_unit` runs headless.
+- Most demos and real platform backends require a graphical display; only `test_unit` runs headless.

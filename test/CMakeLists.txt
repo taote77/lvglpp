@@ -2,12 +2,6 @@ project(test)
 
 set(CMAKE_CXX_STANDARD 17)
 
-if (CMAKE_SYSTEM_PROCESSOR MATCHES "arm" OR CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
-    add_definitions(-DUSED_FRAMEBUFF)
-else ()
-    find_package(SDL2 REQUIRED SDL2)
-    add_definitions(-DUSED_SDL)
-endif ()
 
 include(CheckCXXCompilerFlag)
 
@@ -21,14 +15,13 @@ add_executable(testd
 )
 
 target_link_libraries(testd PRIVATE
-    lvglpp ${SDL2_LIBRARIES} lvgl
+    lvglpp lvgl
 )
 
 target_include_directories(testd PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/../sdk/lvgl/
     ${CMAKE_CURRENT_LIST_DIR}/../sdk/lvgl/src/
     ${CMAKE_CURRENT_LIST_DIR}/../
-    ${SDL2_INCLUDE_DIRS}
 )
 
 # Unit tests (logic only, no display needed)
@@ -45,17 +38,17 @@ add_executable(test_unit
     PageTests.cpp
     AssetPackTests.cpp
     AssetManagerTests.cpp
+    ApplicationTests.cpp
 )
 
 target_link_libraries(test_unit PRIVATE
-    lvglpp lvgl ${SDL2_LIBRARIES}
+    lvglpp lvgl
 )
 
 target_include_directories(test_unit PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/../sdk/lvgl/
     ${CMAKE_CURRENT_LIST_DIR}/../sdk/lvgl/src/
     ${CMAKE_CURRENT_LIST_DIR}/../
-    ${SDL2_INCLUDE_DIRS}
 )
 
 # Sanitizer flags are set in sdk/ scope, which does not propagate to this

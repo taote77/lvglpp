@@ -89,18 +89,12 @@ target_sources(${PROJECT_NAME} PRIVATE
     theme/form_design.h
 )
 
-add_definitions(-DUSED_SDL)
-
-find_package(SDL2 REQUIRED SDL2)
-
 target_include_directories(${PROJECT_NAME} PRIVATE
-    ${SDL2_INCLUDE_DIRS}
     ${CMAKE_CURRENT_LIST_DIR}
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     lvglpp
-    ${SDL2_LIBRARIES}
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE

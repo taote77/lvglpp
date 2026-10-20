@@ -12,9 +12,9 @@
 #include "components/SceneButton.h"
 #include "components/StatusBadge.h"
 #include "components/ThermostatWidget.h"
+#include "core/sys/Application.h"
 #include "core/sys/BaseActivity.h"
 #include "core/sys/StackView.h"
-#include "core/sys/app/SdlApplication.h"
 #include "core/widgets/BaseItem.h"
 #include "core/widgets/Dropdown.h"
 #include "core/widgets/LvText.h"
@@ -403,9 +403,9 @@ private:
 
 int main(int argc, char *argv[])
 {
-    lvglpp::sys::SdlApplication app(argc, argv);
+    auto app = lvglpp::sys::createApplication(argc, argv);
 
-    if (!app.initApp())
+    if (!app || !app->initialize())
     {
         return -1;
     }
@@ -416,5 +416,5 @@ int main(int argc, char *argv[])
     auto shell = std::make_shared<SmartHomeShell>();
     lvglpp::sys::StackView::getInstance().pushView(shell);
 
-    return app.exec();
+    return app->exec();
 }

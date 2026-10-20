@@ -89,7 +89,7 @@ int main() {
 ### 步骤 2: 初始化 Lua 引擎
 
 ```cpp
-// main.cpp - initApp() 函数
+// main.cpp - onInit() 函数
 lua_bind_->initialize();
 ```
 
@@ -116,7 +116,7 @@ void LvglLuaBind::initialize() {
 ### 步骤 3: 创建根控件
 
 ```cpp
-// main.cpp - initApp() 函数
+// main.cpp - onInit() 函数
 root_item_ = new BaseItem(nullptr);
 root_item_->setSize(800, 480);  // 设置窗口大小
 root_item_->setBgColor(0x1a1a1a); // 设置背景色
@@ -134,7 +134,7 @@ lua_bind_->setRootItem(root_item_);
 ### 步骤 4: 加载 Lua 脚本
 
 ```cpp
-// main.cpp - initApp() 函数
+// main.cpp - onInit() 函数
 lua_bind_->executeFile("very_simple_demo.lua");
 ```
 

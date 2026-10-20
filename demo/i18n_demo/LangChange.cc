@@ -1,7 +1,6 @@
 #include "LangChange.h"
 #include "LvTranslator.h"
 #include "config/color_sheet.h"
-// #include "core/sys/app/SdlApplication.h"
 #include "core/sys/StackView.h"
 #include "core/widgets/ButtonBuilder.h"
 #include "core/widgets/LvText.h"
@@ -242,7 +241,6 @@ void LangChangePage::onCreate(std::any arg)
 
         _btn_test->emitSignal("hello");
 
-        // sys::SdlSimulateApplication::simulate_click_at(780, 4);
     });
 
     Object::connect(_btn_test.get(), "hello", [this]() {

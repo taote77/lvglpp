@@ -43,33 +43,33 @@ make -j4
 ### C++ 代码
 
 ```cpp
-#include "core/sys/SdlApplication.h"
+#include "core/sys/Application.h"
 #include "lua/LvglLuaBind.h"
 
 using namespace lvglpp;
 using namespace lvglpp::lua;
 
-class LuaUIApplication : public sys::SdlApplication {
+class LuaUIApplication : public sys::Application {
 public:
     LuaUIApplication(int argc, char* argv[])
-        : SdlApplication(argc, argv)
+        : Application(argc, argv)
         , lua_bind_(std::make_unique<LvglLuaBind>()) {
     }
 
 protected:
-    bool initApp() override {
-        if (!SdlApplication::initApp()) {
-            return false;
-        }
-
+    bool onInit() override {
+        setEnableStackView(false);   // Lua owns the UI root
         lua_bind_->initialize();
 
         auto root = std::make_shared<widgets::BaseItem>(nullptr);
         root->setSize(800, 480);
         lua_bind_->setRootItem(root);
 
-        lua_bind_->executeFile("example.lua");
-        return true;
+        return lua_bind_->executeFile("example.lua");
+    }
+
+    void onShutdown() override {
+        lua_bind_->shutdown();
     }
 
 private:

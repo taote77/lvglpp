@@ -1,14 +1,6 @@
 project(i18n_demo)
 
 
-if (CMAKE_SYSTEM_PROCESSOR MATCHES "arm" OR CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
-    add_definitions(-DUSED_FRAMEBUFF)
-    #add_definitions(-DUSED_WAYLAND)
-else ()
-    find_package(SDL2 REQUIRED SDL2)
-    add_definitions(-DUSED_SDL)
-    include_directories(${SDL2_INCLUDE_DIRS})
-endif ()
 
 
 include(CheckCXXCompilerFlag)
@@ -39,7 +31,6 @@ target_sources(${PROJECT_NAME} PRIVATE
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     lvglpp
-    ${SDL2_LIBRARIES}
     lvgl
 )
 

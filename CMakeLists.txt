@@ -1,5 +1,5 @@
 
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.24)
 
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_CXX_STANDARD 17)
@@ -13,14 +13,26 @@ include(cmake/build.cmake)
 include(cmake/cmrc.cmake)
 
 
-if (CMAKE_SYSTEM_PROCESSOR MATCHES "arm" OR CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
-    add_definitions(-DUSED_FRAMEBUFF)
-    #add_definitions(-DUSED_WAYLAND)
-else ()
-    find_package(SDL2 REQUIRED SDL2)
-    add_definitions(-DUSED_SDL)
-    add_definitions(-DLV_USE_SDL)
+set(LVGLPP_PLATFORM "AUTO" CACHE STRING "Display backend: AUTO, SDL, FRAMEBUF or DRM")
+set_property(CACHE LVGLPP_PLATFORM PROPERTY STRINGS AUTO SDL FRAMEBUF DRM)
+string(TOUPPER "${LVGLPP_PLATFORM}" _lvglpp_platform)
+if (_lvglpp_platform STREQUAL "AUTO")
+    if (CMAKE_SYSTEM_PROCESSOR MATCHES "arm" OR CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
+        set(_lvglpp_platform "FRAMEBUF")
+    else ()
+        set(_lvglpp_platform "SDL")
+    endif ()
+endif ()
+if (NOT _lvglpp_platform MATCHES "^(SDL|FRAMEBUF|DRM)$")
+    message(FATAL_ERROR "LVGLPP_PLATFORM must be AUTO, SDL, FRAMEBUF or DRM (got '${LVGLPP_PLATFORM}')")
+endif ()
+set(LVGLPP_PLATFORM "${_lvglpp_platform}" CACHE STRING "Display backend: AUTO, SDL, FRAMEBUF or DRM" FORCE)
 
+add_compile_definitions(LVGLPP_PLATFORM_${LVGLPP_PLATFORM}=1)
+message(STATUS "LVGL++ platform backend: ${LVGLPP_PLATFORM}")
+
+if (LVGLPP_PLATFORM STREQUAL "SDL")
+    find_package(SDL2 REQUIRED SDL2)
     include_directories(${SDL2_INCLUDE_DIRS})
 endif ()
 

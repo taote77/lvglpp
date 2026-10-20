@@ -1,5 +1,5 @@
 #include "RemoteClient.h"
-#include "core/sys/app/SdlApplication.h"
+#include "core/sys/Application.h"
 #include "core/sys/StackView.h"
 #include "session.h"
 #include <pthread.h>
@@ -7,9 +7,9 @@
 
 int main(int argc, char *argv[])
 {
-    lvglpp::sys::SdlApplication app(argc, argv);
+    auto app = lvglpp::sys::createApplication(argc, argv);
 
-    if (!app.initApp())
+    if (!app || !app->initialize())
     {
         return -1;
     }
@@ -18,5 +18,5 @@ int main(int argc, char *argv[])
 
     lvglpp::sys::StackView::getInstance().pushView(std::make_shared<RemoteClient>());
 
-    return app.exec();
+    return app->exec();
 }
