@@ -97,6 +97,65 @@ TEST(Object_property_set_get)
     return true;
 }
 
+TEST(Object_receiver_auto_disconnect)
+{
+    core::Object sender;
+    int          count = 0;
+    {
+        core::Object receiver;
+        core::Object::connect(&sender, "sig", &receiver, [&count]() { count++; });
+        sender.emitSignal("sig");
+        CHECK_EQ(count, 1);
+    }
+    // receiver is gone: the slot must not run (and must not touch freed memory)
+    sender.emitSignal("sig");
+    CHECK_EQ(count, 1);
+    return true;
+}
+
+TEST(Object_connection_token)
+{
+    core::Object obj;
+    int          count = 0;
+    auto         conn  = core::Object::connect(&obj, "sig", [&count]() { count++; });
+    auto         copy  = conn;
+
+    conn.disconnect();
+    obj.emitSignal("sig");
+    CHECK_EQ(count, 0);
+    CHECK_FALSE(conn.connected());
+    CHECK_FALSE(copy.connected());
+    return true;
+}
+
+TEST(Object_connection_after_sender_destroyed)
+{
+    core::Connection conn;
+    {
+        core::Object obj;
+        conn = core::Object::connect(&obj, "sig", []() {});
+    }
+    // Sender is gone; disconnecting a stale token must be a safe no-op.
+    conn.disconnect();
+    CHECK_FALSE(conn.connected());
+    return true;
+}
+
+TEST(Object_scoped_connection)
+{
+    core::Object obj;
+    int          count = 0;
+    {
+        core::ScopedConnection scoped(core::Object::connect(&obj, "sig", [&count]() { count++; }));
+        obj.emitSignal("sig");
+        CHECK_EQ(count, 1);
+        CHECK_TRUE(scoped.connected());
+    }
+    obj.emitSignal("sig");
+    CHECK_EQ(count, 1);
+    return true;
+}
+
 // ---- Event Tests ----
 
 TEST(Event_construct_with_data)

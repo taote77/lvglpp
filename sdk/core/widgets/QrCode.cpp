@@ -1,41 +1,40 @@
-
 #include "QrCode.h"
 #include "config/color_sheet.h"
+#include "core/base/LvObjFactory.h"
 
 namespace lvglpp::widgets {
 
-QrCode::QrCode(uint32_t length, lv_color_t back_color, lv_color_t front_color, BaseItem *parent) : BaseItem(parent), _length(length)
+QrCode::QrCode(uint32_t length, lv_color_t back_color, lv_color_t front_color, BaseItem *parent) : BaseItem(tools::LvObjFactory::createLvglQrCode, parent), _length(length)
 {
-    this->setSize(length, length);
+    setSize(length, length);
 
-    _qr = lv_qrcode_create(getLvglItem());
-    lv_qrcode_set_size(_qr, length);
-    lv_qrcode_set_dark_color(_qr, front_color);
-    lv_qrcode_set_light_color(_qr, back_color);
+    lv_obj_t *qr = getLvglItem();
+    if (qr == nullptr)
+    {
+        return;
+    }
+
+    lv_qrcode_set_size(qr, length);
+    lv_qrcode_set_dark_color(qr, front_color);
+    lv_qrcode_set_light_color(qr, back_color);
 
     const std::string data = "https://lvglpp.io";
-    lv_qrcode_update(_qr, data.c_str(), data.length());
-    lv_obj_center(_qr);
+    lv_qrcode_update(qr, data.c_str(), static_cast<uint32_t>(data.length()));
+    lv_obj_center(qr);
 
-    lv_obj_set_style_border_color(_qr, back_color, 0);
-    lv_obj_set_style_border_width(_qr, 5, 0);
-}
-
-QrCode::~QrCode()
-{
-    if (_qr != nullptr)
-    {
-        lv_obj_del(_qr);
-        _qr = nullptr;
-    }
+    lv_obj_set_style_border_color(qr, back_color, 0);
+    lv_obj_set_style_border_width(qr, 5, 0);
 }
 
 void QrCode::setData(const std::string &data)
 {
-    lv_qrcode_update(_qr, data.c_str(), data.length());
+    if (getLvglItem() != nullptr)
+    {
+        lv_qrcode_update(getLvglItem(), data.c_str(), static_cast<uint32_t>(data.length()));
+    }
 }
 
-void QrCode::setImgSrc(const std::string &src)
+void QrCode::setImgSrc(const std::string &assetPath)
 {
     if (_img_icon == nullptr)
     {
@@ -43,7 +42,18 @@ void QrCode::setImgSrc(const std::string &src)
         _img_icon->setSize(_length / 4, _length / 4);
         _img_icon->setAligment(LV_ALIGN_CENTER, 0, 0);
     }
-    _img_icon->setImageSrcPath(src);
+    _img_icon->setAsset(assetPath);
+}
+
+void QrCode::setImgFile(const std::string &fsPath)
+{
+    if (_img_icon == nullptr)
+    {
+        _img_icon = std::make_unique<lvglpp::widgets::Image>("", this);
+        _img_icon->setSize(_length / 4, _length / 4);
+        _img_icon->setAligment(LV_ALIGN_CENTER, 0, 0);
+    }
+    _img_icon->setFile(fsPath);
 }
 
 } // namespace lvglpp::widgets

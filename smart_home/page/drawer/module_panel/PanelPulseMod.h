@@ -7,8 +7,6 @@
 #include "core/widgets/LvText.h"
 #include "core/widgets/Image.h"
 #include "core/widgets/MouseArea.h"
-#include <boost/format.hpp>
-#include <boost/signals2/signal.hpp>
 #include <cstdint>
 
 namespace lvglpp::ui::page {

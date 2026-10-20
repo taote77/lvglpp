@@ -10,7 +10,22 @@ namespace lvglpp::widgets {
 class LvText : public BaseItem
 {
 public:
-    enum TextStyle { FontSize20, FontSize22, FontSize24, FontSize28, FontSize32, FontSize36, FontSize20Bold, FontSize22Bold, FontSize24Bold, FontSize28Bold, FontSize32Bold, FontSize36Bold, FontSize48Bold, FontSize64Bold };
+    enum TextStyle {
+        FontSize20,
+        FontSize22,
+        FontSize24,
+        FontSize28,
+        FontSize32,
+        FontSize36,
+        FontSize20Bold,
+        FontSize22Bold,
+        FontSize24Bold,
+        FontSize28Bold,
+        FontSize32Bold,
+        FontSize36Bold,
+        FontSize48Bold,
+        FontSize64Bold
+    };
 
     enum FontType { Auto, DMSans, SansSC, Oswald };
 
@@ -24,14 +39,6 @@ public:
     LvText(const std::string &strMsg, uint32_t clr, BaseItem *parent, TextStyle style = TextStyle::FontSize20, FontType type = FontType::Auto);
 
     ~LvText() override;
-    /**
-     * 获取文本样式
-     * @return
-     */
-    lv_style_t *getTextStyle()
-    {
-        return &font_style_;
-    }
     /**
      * 设置文本内容
      * @param strMsg
@@ -74,7 +81,6 @@ public:
 private:
     std::string getLongModeStr(std::string src);
 
-    lv_style_t     font_style_{};
     std::string    text_;
     int            max_len_;
     TextStyle      text_style_;
@@ -83,7 +89,7 @@ private:
     LongModeStruct long_mode_;
 };
 // Modern aliases
-using Label = LvText;
+using Label       = LvText;
 using ConsumeText = LvText; // backward compatibility
 
 } // namespace lvglpp::widgets

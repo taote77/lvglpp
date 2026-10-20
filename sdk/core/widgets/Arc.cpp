@@ -5,7 +5,9 @@ namespace lvglpp::widgets {
 
 Arc::Arc(BaseItem *parent)
     : BaseItem(tools::LvObjFactory::createLvglArc, parent)
-{}
+{
+    setFocusable(true);
+}
 
 void Arc::setValue(int32_t value)
 {

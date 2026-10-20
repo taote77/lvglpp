@@ -10,7 +10,6 @@
 #include "core/widgets/MouseArea.h"
 #include "core/widgets/PushButton.h"
 #include "core/widgets/SwitchButton.h"
-#include <boost/format.hpp>
 #include <cstdint>
 #include <iomanip>
 #include <iostream>

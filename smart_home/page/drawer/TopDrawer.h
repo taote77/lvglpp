@@ -8,7 +8,6 @@
 #include "core/widgets/BaseItem.h"
 #include "core/widgets/MouseArea.h"
 #include "core/widgets/PageIndicator.h"
-#include <boost/shared_ptr.hpp>
 
 namespace lvglpp::ui::page {
 using namespace widgets;

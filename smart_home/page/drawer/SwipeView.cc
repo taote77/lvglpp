@@ -55,8 +55,7 @@ void SwipeView::init()
     lv_obj_set_style_pad_column(getLvglItem(), 0, LV_STATE_DEFAULT);
     lv_obj_clear_flag(getLvglItem(), LV_OBJ_FLAG_SCROLL_ELASTIC);
 
-    lv_obj_add_event_cb(
-        getLvglItem(),
+    addLvglEventHandler(
         [](lv_event_t *e) -> void {
             auto lv_obj   = static_cast<lv_obj_t *>(lv_event_get_target(e));
             auto scroll_x = lv_obj_get_scroll_x(lv_obj);

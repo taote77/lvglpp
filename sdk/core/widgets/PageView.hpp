@@ -16,11 +16,7 @@ public:
 
     explicit PageView(const BaseModel<T> &model, BaseItem *parentItem = nullptr);
 
-    ~PageView() override
-    {
-        // show_content_vec_.clear();
-        // LV_LOG_USER("PageView delete~~");
-    }
+    ~PageView() override;
 
     void setModel(const BaseModel<T> &model)
     {
@@ -51,9 +47,14 @@ public:
 
 protected:
     void initItem();
+
     void createDelegates();
 
+    void onLvglObjectDeleted() override;
+
 private:
+    static void asyncCreateDelegates(void *src);
+
     BaseModel<T>                     page_view_model_;
     std::function<void(int)>         current_index_changed_cb_ = nullptr;
     int                              current_index_            = -1;
@@ -82,8 +83,7 @@ void PageView<T, T2>::initItem()
     lv_obj_set_flex_flow(getLvglItem(), LV_FLEX_FLOW_ROW);
     lv_obj_set_scrollbar_mode(getLvglItem(), LV_SCROLLBAR_MODE_OFF);
     lv_obj_set_style_pad_column(getLvglItem(), 0, LV_STATE_DEFAULT);
-    lv_obj_add_event_cb(
-        getLvglItem(),
+    addLvglEventHandler(
         [](lv_event_t *e) -> void {
             auto lobj = static_cast<lv_obj_t *>(lv_event_get_target(e));
             // auto scroll_x = lv_obj_get_scroll_x(lv_event_get_target(e));
@@ -92,7 +92,22 @@ void PageView<T, T2>::initItem()
             auto data = (PageView *)lv_event_get_user_data(e);
             if (data != nullptr)
             {
-                int cr_index = scroll_x / data->getWidth();
+                const lv_coord_t page_width = data->getWidth();
+                if (page_width <= 0)
+                {
+                    return;
+                }
+
+                int cr_index = scroll_x / page_width;
+                if (cr_index < 0)
+                {
+                    cr_index = 0;
+                }
+                if (data->page_view_model_.count() > 0 && cr_index >= data->page_view_model_.count())
+                {
+                    cr_index = data->page_view_model_.count() - 1;
+                }
+
                 if (data->current_index_ == cr_index)
                 {
                     return;
@@ -132,9 +147,51 @@ void PageView<T, T2>::update()
 }
 
 template <typename T, typename T2>
+PageView<T, T2>::~PageView()
+{
+    // A queued async delegate creation would otherwise dereference `this`.
+    lv_async_call_cancel(&PageView<T, T2>::asyncCreateDelegates, this);
+}
+
+template <typename T, typename T2>
+void PageView<T, T2>::onLvglObjectDeleted()
+{
+    lv_async_call_cancel(&PageView<T, T2>::asyncCreateDelegates, this);
+}
+
+template <typename T, typename T2>
+void PageView<T, T2>::asyncCreateDelegates(void *src)
+{
+    auto *page_view = static_cast<PageView<T, T2> *>(src);
+    if (page_view != nullptr)
+    {
+        page_view->createDelegates();
+    }
+}
+
+template <typename T, typename T2>
 void PageView<T, T2>::setCurrentIndex(int n)
 {
-    int scroll_x = n * getWidth();
+    if (page_view_model_.count() <= 0)
+    {
+        return;
+    }
+
+    if (n < 0)
+    {
+        n = 0;
+    } else if (n >= page_view_model_.count())
+    {
+        n = page_view_model_.count() - 1;
+    }
+
+    const lv_coord_t page_width = getWidth();
+    if (page_width <= 0)
+    {
+        return;
+    }
+
+    int scroll_x = n * page_width;
     lv_obj_scroll_to_x(getLvglItem(), scroll_x, LV_ANIM_ON);
 }
 
@@ -161,15 +218,7 @@ void PageView<T, T2>::createDelegates()
 
         if (current_index_ + 2 > show_content_vec_.size())
         {
-            lv_async_call(
-                [](void *src) -> void {
-                    auto p = (PageView *)src;
-                    if (p != nullptr)
-                    {
-                        p->createDelegates();
-                    }
-                },
-                this);
+            lv_async_call(&PageView<T, T2>::asyncCreateDelegates, this);
         }
     }
 }

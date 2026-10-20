@@ -6,7 +6,9 @@ namespace lvglpp::widgets {
 
 Dropdown::Dropdown(BaseItem *parent)
     : BaseItem(tools::LvObjFactory::createLvglDropdown, parent)
-{}
+{
+    setFocusable(true);
+}
 
 void Dropdown::setText(const std::string &text)
 {

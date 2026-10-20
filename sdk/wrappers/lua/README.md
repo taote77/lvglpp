@@ -135,7 +135,7 @@ switch:set_pos(200, 200)
 创建一个图片控件。
 
 **参数:**
-- `path` (string) - 图片路径
+- `path` (string) - 资产逻辑路径，例如 `image/40x40/icon_warn.png`
 - `parent` (BaseItem) - 父控件
 
 **返回:** Image 对象
@@ -234,8 +234,9 @@ switch:set_pos(200, 200)
 
 ### Image 特有方法
 
-- `set_image_src_path(path)` - 设置图片路径
-- `get_image_src_path()` - 获取图片路径
+- `set_image_src_path(path)` / `set_asset(path)` - 设置资产逻辑路径
+- `set_file(path)` - 使用真实文件路径
+- `get_image_src_path()` - 获取当前路径
 
 ### PushButton 特有方法
 
@@ -243,7 +244,7 @@ switch:set_pos(200, 200)
 - `set_text_pos(x, y)` - 设置文本位置
 - `set_text_alignment(align)` - 设置文本对齐
 - `set_text_msg(text)` - 设置按钮文本
-- `change_image_url(url)` - 更改图片 URL
+- `change_image_asset(path)` - 更改图片资产路径
 - `set_color_type(type)` - 设置颜色类型
 - `set_repeat_ms(ms)` - 设置重复间隔
 

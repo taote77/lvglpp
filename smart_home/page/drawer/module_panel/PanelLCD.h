@@ -7,7 +7,6 @@
 #include "core/widgets/Image.h"
 #include "core/widgets/MouseArea.h"
 #include "core/widgets/PushButton.h"
-#include <boost/format.hpp>
 #include <cstdint>
 #include <iomanip>
 #include <iostream>

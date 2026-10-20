@@ -39,7 +39,7 @@ target_sources(${PROJECT_NAME} PRIVATE
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     lvglpp
-    sqlite3 ${SDL2_LIBRARIES} ${Boost_LIBRARIES}
+    ${SDL2_LIBRARIES}
     lvgl
 )
 
@@ -53,11 +53,4 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ./    
 )
 
-SET(ASSET_SOURCE_DIR ${PROJECT_SOURCE_DIR}/asset)
-
-set(COPY_ASSET_RES 1)
-
-if (COPY_ASSET_RES)
-    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_directory ${ASSET_SOURCE_DIR} ${EXECUTABLE_OUTPUT_PATH}/asset)
-endif ()
+lvglpp_attach_assets(${PROJECT_NAME})

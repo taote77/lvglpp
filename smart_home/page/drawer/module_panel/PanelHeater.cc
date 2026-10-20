@@ -90,11 +90,11 @@ PanelHeater::PanelHeater(BaseItem *parent) : BaseItem(parent)
     _touch_area->setSize(150, 92);
     _touch_area->setAligment(LV_ALIGN_RIGHT_MID, 0, 0);
 
-    _arrow_right = std::make_shared<widgets::Image>(":/image/32x32/arrow_right.png", this);
+    _arrow_right = std::make_shared<widgets::Image>("image/32x32/arrow_right.png", this);
     _arrow_right->setSize(32, 32);
     _arrow_right->setAligment(LV_ALIGN_BOTTOM_RIGHT, -16, -15);
 
-    _icon1 = std::make_shared<widgets::Image>(":/image/36x36/scraper.png", this);
+    _icon1 = std::make_shared<widgets::Image>("image/36x36/scraper.png", this);
     _icon1->setPos(lv_coord_t(mod_item_edge_x), lv_coord_t(18));
 
     _touch_area->setOnClickedListener([this]() {

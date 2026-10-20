@@ -1,12 +1,9 @@
 #ifndef _SESSION_H
 #define _SESSION_H
 
-// #include "ws_gw/ws_gw.h"
+#include "net/ws_gw/ws_gw.h"
 
-#include <boost/json/object.hpp>
 #include <functional>
-
-struct WsGwContext;
 
 class WebsocketSession
 {
@@ -16,20 +13,20 @@ private:
 public:
     static WebsocketSession &Instance();
 
-    using MsgHandler = std::function<void(boost::json::object &req, boost::json::object &res)>;
+    using MsgHandler = std::function<void(wsgw::Json &req, wsgw::Json &res)>;
 
     WebsocketSession(/* args */);
 
     ~WebsocketSession();
 
-    void Post(boost::json::object &data);
+    void Post(wsgw::Json &data);
 
     void Init();
 
     void OnMsgHandler(MsgHandler handler);
 
 private:
-    void OnHandle(boost::json::object &req, boost::json::object &res);
+    void OnHandle(wsgw::Json &req, wsgw::Json &res);
 
     MsgHandler _msg_handler;
 };

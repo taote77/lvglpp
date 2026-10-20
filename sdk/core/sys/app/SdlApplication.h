@@ -45,6 +45,8 @@ private:
     lv_indev_t *_mouse_indev{nullptr};
 
     lv_indev_t *_keybaord_indev{nullptr};
+
+    lv_indev_t *_mousewheel_indev{nullptr};
 };
 } // namespace lvglpp::sys
 

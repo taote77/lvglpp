@@ -82,6 +82,11 @@ public:
 protected:
     void initItem();
 
+    void onLvglObjectDeleted() override
+    {
+        removeTimer();
+    }
+
 private:
     BaseModel<T>                     list_view_model_;
     std::vector<std::shared_ptr<T2>> show_content_vec_;
@@ -90,13 +95,13 @@ private:
     int                              refresh_page_index_ = -1;
     bool                             async_load_         = false;
     lv_timer_t                      *async_load_timer_   = nullptr;
-    std::any                        extra_data_{};
+    std::any                         extra_data_{};
 
     void removeTimer()
     {
         if (async_load_timer_ != nullptr)
         {
-            lv_timer_del(async_load_timer_);
+            lv_timer_delete(async_load_timer_);
             async_load_timer_ = nullptr;
         }
     }
@@ -165,9 +170,17 @@ void ListView<T, T2>::update()
         }
     } else
     {
+        const lv_coord_t view_height = getHeight();
+        const int        item_stride = delegateHeight_ + span_;
+        const int        model_count = list_view_model_.count();
+        if (view_height <= 0 || item_stride <= 0 || model_count <= 0)
+        {
+            return;
+        }
+
         lv_coord_t scroll_y        = lv_obj_get_scroll_y(getLvglItem());
-        int        page_count      = scroll_y / getHeight();
-        int        page_item_count = (getHeight() / (delegateHeight_ + span_)) + 1;
+        int        page_count      = scroll_y / view_height;
+        int        page_item_count = (view_height / item_stride) + 1;
         if (refresh_page_index_ >= page_count)
         {
             return;
@@ -209,8 +222,7 @@ void ListView<T, T2>::initItem()
     lv_obj_set_scrollbar_mode(getLvglItem(), LV_SCROLLBAR_MODE_OFF);
     lv_obj_set_style_pad_row(getLvglItem(), span_, LV_STATE_DEFAULT);
 
-    lv_obj_add_event_cb(
-        getLvglItem(),
+    addLvglEventHandler(
         [](lv_event_t *e) -> void {
             auto data = (ListView *)lv_event_get_user_data(e);
             if (data != nullptr)

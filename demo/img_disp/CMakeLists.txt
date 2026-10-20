@@ -28,7 +28,7 @@ target_sources(${PROJECT_NAME} PRIVATE
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     lvglpp
-    sqlite3 ${SDL2_LIBRARIES} ${Boost_LIBRARIES}
+    ${SDL2_LIBRARIES}
     lvgl
 )
 
@@ -37,3 +37,5 @@ include_directories(${PROJECT_NAME}
     ${CMAKE_CURRENT_LIST_DIR}/../lvgl/
     ${CMAKE_CURRENT_LIST_DIR}/../lvgl/src/
 )
+
+lvglpp_attach_assets(${PROJECT_NAME})

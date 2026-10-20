@@ -5,7 +5,9 @@ namespace lvglpp::widgets {
 
 Slider::Slider(BaseItem *parent)
     : BaseItem(tools::LvObjFactory::createLvglSlider, parent)
-{}
+{
+    setFocusable(true);
+}
 
 void Slider::setValue(int32_t value, bool animate)
 {

@@ -12,15 +12,15 @@ class QrCode : public BaseItem
 public:
     explicit QrCode(uint32_t length, lv_color_t back_color, lv_color_t front_color, BaseItem *parent = nullptr);
 
-    ~QrCode();
-
     void setData(const std::string &data);
 
-    void setImgSrc(const std::string &src);
+    /// Set the center icon from an application asset path.
+    void setImgSrc(const std::string &assetPath);
+
+    /// Set the center icon from a real filesystem path.
+    void setImgFile(const std::string &fsPath);
 
 private:
-    lv_obj_t *_qr;
-
     std::unique_ptr<widgets::Image> _img_icon;
     uint32_t                        _length = 0;
 };

@@ -262,7 +262,7 @@ void LangChangePage::onCreate(std::any arg)
 
             file.close();
 
-            boost::json::object data;
+            wsgw::Json data;
             data["topic"] = "image/png";
             data["data"]  = buffer;
 
@@ -290,7 +290,7 @@ void LangChangePage::onCreate(std::any arg)
 
         LOG_DEBUG() << "Simu lang";
 
-        boost::json::object data;
+        wsgw::Json data;
         data["topic"] = "test";
         data["data"]  = "hello";
 

@@ -17,6 +17,7 @@ SwitchButton::SwitchButton(lv_coord_t width, lv_coord_t height, BaseItem *parent
     round_item_->setBgColor(CLR_PRIMARY_BRIGHT);
     round_item_->setEnable(false);
     update();
+    setFocusable(true);
 }
 
 void SwitchButton::update()

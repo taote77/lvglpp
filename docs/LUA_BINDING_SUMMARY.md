@@ -97,11 +97,11 @@
 - 高级：`set_recolor_enable()`, `set_max_len()`, `set_long_mode()`
 
 ### Image（图片控件）
-- 路径：`set_image_src_path(path)`, `get_image_src_path()`
+- 路径：`set_image_src_path(path)` / `set_asset(path)`, `set_file(path)`, `get_image_src_path()`（路径为资产逻辑路径）
 
 ### PushButton（按钮控件）
 - 文本：`set_text_msg(text)`, `set_text_alignment(align)`
-- 图片：`set_image_pos(x, y)`, `change_image_url(url)`
+- 图片：`set_image_pos(x, y)`, `change_image_asset(path)`
 - 样式：`set_color_type(type)`
 - 其他：`set_repeat_ms(ms)`
 
@@ -117,7 +117,7 @@
 ```lua
 lvgl.create_text(text, color, parent)
 lvgl.create_text_ex(text, color, parent, style, font_type)
-lvgl.create_image(path, parent)
+lvgl.create_image(asset_path, parent)
 lvgl.create_button(width, height, text, parent)
 lvgl.create_button_ex(width, height, color_style, text, parent)
 lvgl.create_checkbox(width, height, bg_color, check_color, parent)

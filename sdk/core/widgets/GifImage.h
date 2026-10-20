@@ -10,9 +10,19 @@ namespace lvglpp::widgets {
 class GifImage : public BaseItem
 {
 public:
-    explicit GifImage(const std::string &path, BaseItem *parent = nullptr);
+    /// Load a GIF from the application assets (e.g. "gif/bird.gif").
+    explicit GifImage(const std::string &assetPath, BaseItem *parent = nullptr);
 
-    void setImageSrcPath(const std::string &path);
+    void setAsset(const std::string &assetPath);
+
+    /// Compatibility name; now interpreted as an asset path.
+    void setImageSrcPath(const std::string &assetPath)
+    {
+        setAsset(assetPath);
+    }
+
+    /// Set an explicit LVGL FS path, e.g. "A:/gif/bird.gif".
+    void setFsPath(const std::string &lvglPath);
 
     const std::string &getImageSrcPath() const
     {
@@ -20,7 +30,10 @@ public:
     }
 
 private:
+    void applyLvglPath(const std::string &lvglPath);
+
     std::string src_path_;
+    std::string lvgl_path_;
 };
 
 } // namespace lvglpp::widgets

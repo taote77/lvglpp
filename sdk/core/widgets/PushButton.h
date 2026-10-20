@@ -46,7 +46,7 @@ public:
 
     void setEnable(bool enable) override;
 
-    void changeImageUrl(const std::string &url);
+    void changeImageAsset(const std::string &assetPath);
 
     void setOnClickedListener(const std::function<void()> &l) override;
 
@@ -74,7 +74,7 @@ private:
     void handleButtonClicked();
 };
 // Modern aliases
-using Button = PushButton;
+using Button        = PushButton;
 using RoundedButton = PushButton; // backward compatibility
 
 } // namespace lvglpp::widgets

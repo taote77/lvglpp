@@ -1,19 +1,33 @@
-#include "core/base/LvObjFactory.h"
 #include "Base64Image.h"
+#include "core/base/LvObjFactory.h"
 #include "core/tools/Utils.h"
+#include <cstdint>
 #include <iostream>
 #include <memory>
 #include <utility>
+#include <vector>
 
-#define STB_IMAGE_IMPLEMENTATION
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#define STB_IMAGE_RESIZE_IMPLEMENTATION
+#include "core/tools/stb/StbImageHelpers.h"
+#include "core/tools/stb/StbImageLock.h"
 #include "core/tools/stb/stb_image.h"
 #include "core/tools/stb/stb_image_resize2.h"
 #include "core/tools/stb/stb_image_write.h"
 
 namespace lvglpp {
 namespace widgets {
+
+struct Base64Image::ImageState {
+    lv_image_dsc_t dsc{};
+    lv_draw_buf_t *draw_buf = nullptr;
+
+    ~ImageState()
+    {
+        if (draw_buf != nullptr)
+        {
+            lv_draw_buf_destroy(draw_buf);
+        }
+    }
+};
 
 void Base64Resize(const std::string &src, std::string &output, int width, int height)
 {
@@ -91,17 +105,13 @@ void Base64Resize(const std::string &src, std::string &output, int width, int he
     }
 
     // 编码为Base64格式
-    int            encodedLength;
-    unsigned char *encodedData = stbi_write_png_to_mem(finalData.get(), 0, width, height, outputChannels, &encodedLength);
-    if (!encodedData)
+    const std::vector<std::uint8_t> encoded = tools::encodePng(finalData.get(), width, height, outputChannels);
+    if (encoded.empty())
     {
-        throw std::runtime_error("stbi_write_png_to_mem error.");
+        throw std::runtime_error("encodePng error.");
     }
 
-    // 在这里使用智能指针来管理encodedData内存
-    std::unique_ptr<unsigned char, void (*)(void *)> encodedDataGuard(encodedData, stbi_image_free);
-
-    output = std::string(reinterpret_cast<char *>(encodedData), encodedLength);
+    output = std::string(reinterpret_cast<const char *>(encoded.data()), encoded.size());
 
     if (output.empty())
     {
@@ -114,17 +124,9 @@ Base64Image::Base64Image(std::string base64, int w, int h, BaseItem *parent) : B
     updateImage(base64Data_);
 }
 
-Base64Image::~Base64Image()
-{
-    // delete[] img_struct_.data;
-    // TODO
-
-    lv_free((void *)img_struct_.data);
-}
-
 void Base64Image::updateImage(const std::string &data)
 {
-    if (data.empty())
+    if (data.empty() || getLvglItem() == nullptr)
     {
         return;
     }
@@ -138,6 +140,9 @@ void Base64Image::updateImage(const std::string &data)
 
     try
     {
+        // stb keeps process-global decoder state; serialize with the
+        // ImageManager prefetch worker.
+        std::lock_guard<std::mutex> stbLock(tools::stbImageMutex());
         Base64Resize(img_decode, img_data, w_, h_);
     }
     catch (const std::exception &e)
@@ -147,26 +152,46 @@ void Base64Image::updateImage(const std::string &data)
     }
 
     unsigned char *output_buf = nullptr;
-    unsigned       decode_w = 0, decode_h = 0;
+    unsigned       decode_w   = 0;
+    unsigned       decode_h   = 0;
 
-    //    lv_image_dsc_t img_struct;
-    //    img_struct.header.magic = LV_IMAGE_HEADER_MAGIC;
-    //    img_struct.header.w  = data->width;
-    //    img_struct.header.h  = data->height;
-    //    img_struct.header.cf = LV_COLOR_FORMAT_ARGB8888;
+    const unsigned decode_error = lodepng_decode32_2(&output_buf, &decode_w, &decode_h, (unsigned char *)img_data.data(), img_data.length());
+    if (decode_error != 0 || output_buf == nullptr || decode_w == 0 || decode_h == 0)
+    {
+        std::cerr << "lodepng_decode32_2 failed: " << decode_error << '\n';
+        return;
+    }
 
-    // TODO
-    lodepng_decode32_2(&output_buf, &decode_w, &decode_h, (unsigned char *)img_data.data(), img_data.length());
+    // LVGL's vendored lodepng is patched: the decoder returns an lv_draw_buf_t*
+    // (ARGB8888) instead of a bare pixel buffer.
+    auto *draw_buf = reinterpret_cast<lv_draw_buf_t *>(output_buf);
+    if (draw_buf->data == nullptr || draw_buf->data_size < static_cast<uint32_t>(decode_w) * decode_h * 4)
+    {
+        lv_draw_buf_destroy(draw_buf);
+        return;
+    }
 
-    img_struct_.header.magic = LV_IMAGE_HEADER_MAGIC;
-    img_struct_.header.w     = decode_w;
-    img_struct_.header.h     = decode_h;
-    img_struct_.header.cf    = LV_COLOR_FORMAT_ARGB8888;
-    //     img_struct_.header.always_zero = 0;
-    //     img_struct_.header.reserved = 0;
-    img_struct_.data_size = decode_w * decode_h * 4;
-    img_struct_.data      = output_buf;
-    lv_img_set_src(getLvglItem(), &img_struct_);
+    // postProcessScanlines writes RGBA bytes; LVGL's ARGB8888 is BGRA in memory.
+    const uint32_t pixel_bytes = static_cast<uint32_t>(decode_w) * decode_h * 4;
+    for (uint32_t i = 0; i + 3 < pixel_bytes; i += 4)
+    {
+        std::swap(draw_buf->data[i], draw_buf->data[i + 2]);
+    }
+
+    auto state               = std::make_shared<ImageState>();
+    state->draw_buf          = draw_buf;
+    state->dsc.header.magic  = LV_IMAGE_HEADER_MAGIC;
+    state->dsc.header.w      = static_cast<int32_t>(decode_w);
+    state->dsc.header.h      = static_cast<int32_t>(decode_h);
+    state->dsc.header.cf     = LV_COLOR_FORMAT_ARGB8888;
+    state->dsc.header.stride = draw_buf->header.stride;
+    state->dsc.data_size     = pixel_bytes;
+    state->dsc.data          = draw_buf->data;
+
+    // Switch LVGL to the new descriptor before releasing the previous state.
+    lv_image_set_src(getLvglItem(), &state->dsc);
+    setObjectKeepalive("base64image.dsc", state);
+    image_state_ = std::move(state);
 }
 } // namespace widgets
 } // namespace lvglpp

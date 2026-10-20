@@ -55,10 +55,10 @@ PanelTempHumi::PanelTempHumi(BaseItem *parent) : BaseItem(parent)
     _text->setPos(mod_item_edge_x + offset, 16);
     _text1->setPos(mod_item_edge_x + offset, 60);
 
-    _icon1 = std::make_shared<widgets::Image>(":/image/32x32/mod_temperature.png", this);
+    _icon1 = std::make_shared<widgets::Image>("image/32x32/mod_temperature.png", this);
     _icon1->setPos(lv_coord_t(mod_item_edge_x), lv_coord_t(18));
 
-    _icon2 = std::make_shared<widgets::Image>(":/image/32x32/mod_humidity.png", this);
+    _icon2 = std::make_shared<widgets::Image>("image/32x32/mod_humidity.png", this);
     _icon2->setPos(lv_coord_t(mod_item_edge_x), lv_coord_t(mod_item_edge_row2_y + 5));
 
     updateSensor(0, 0, 0);

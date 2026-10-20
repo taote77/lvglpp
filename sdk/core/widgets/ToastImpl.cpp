@@ -1,6 +1,6 @@
-#include "core/base/LvObjFactory.h"
 #include "ToastImpl.h"
 #include "config/color_sheet.h"
+#include "core/base/LvObjFactory.h"
 
 namespace lvglpp::widgets {
 ToastImpl::ToastImpl() : BaseItem(tools::LvObjFactory::createLvglDialog)
@@ -24,13 +24,13 @@ void ToastImpl::setMessage(const std::string &str_msg, ToastImpl::IconType type)
     setSize(desc_->getDisplayTextWidth() + 72, 56);
     if (type == ToastImpl::Succeed)
     {
-        icon_->setImageSrcPath(":/image/40x40/icon_success.png");
+        icon_->setImageSrcPath("image/40x40/icon_success.png");
     } else if (type == ToastImpl::Warn)
     {
-        icon_->setImageSrcPath(":/image/40x40/icon_warn.png");
+        icon_->setImageSrcPath("image/40x40/icon_warn.png");
     } else
     {
-        icon_->setImageSrcPath(":/image/40x40/icon_error.png");
+        icon_->setImageSrcPath("image/40x40/icon_error.png");
     }
 }
 } // namespace lvglpp::widgets

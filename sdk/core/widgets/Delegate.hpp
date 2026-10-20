@@ -37,11 +37,13 @@ private:
 template <class T>
 Delegate<T>::~Delegate()
 {
-    if (getLvglItem() != nullptr && lv_obj_is_valid(getLvglItem()))
+    // ListView/PageView rely on a delegate removing its row when the wrapper
+    // is cleared from the model. The delete watchdog detaches this wrapper
+    // safely if the parent tree was destroyed first.
+    lv_obj_t *obj = getLvglItem();
+    if (obj != nullptr && lv_obj_is_valid(obj))
     {
-        // LV_LOG_USER("Delegate delete!! %ld",getLvglItem());
-        lv_obj_del(getLvglItem());
-        setLvglItem(nullptr);
+        lv_obj_delete(obj);
     }
 }
 

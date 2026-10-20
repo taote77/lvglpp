@@ -2,6 +2,7 @@
 #define LVGLPP_BASEDIALOG_H
 
 #include "BaseItem.h"
+#include <cstdint>
 #include <memory>
 
 namespace lvglpp::widgets {
@@ -30,10 +31,11 @@ public:
 
 protected:
     BaseItem *getRoot() const;
-    virtual ~BaseDialog() = default;
+    virtual ~BaseDialog();
 
 private:
     std::unique_ptr<BaseItem> background_item_ptr_;
+    std::uint64_t             focus_scope_ = 0;
 };
 
 } // namespace lvglpp::widgets

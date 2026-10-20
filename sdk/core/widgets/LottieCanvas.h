@@ -1,18 +1,28 @@
-
 #ifndef LVGLPP_LOTTIECANVAS_H
 #define LVGLPP_LOTTIECANVAS_H
 
 #include "BaseItem.h"
 #include <string>
+#include <vector>
 
 namespace lvglpp::widgets {
 
 class LottieCanvas : public BaseItem
 {
 public:
-    explicit LottieCanvas(const std::string &path, BaseItem *parent = nullptr);
+    /// Load a Lottie JSON from the application assets.
+    explicit LottieCanvas(const std::string &assetPath, BaseItem *parent = nullptr);
 
-    void setImageSrcPath(const std::string &path);
+    void setAsset(const std::string &assetPath);
+
+    /// Compatibility name; now interpreted as an asset path.
+    void setImageSrcPath(const std::string &assetPath)
+    {
+        setAsset(assetPath);
+    }
+
+    /// Load a Lottie JSON from the real filesystem (ThorVG stdio path).
+    void setFile(const std::string &fsPath);
 
     void setCacheSize(int32_t width, int32_t height);
 

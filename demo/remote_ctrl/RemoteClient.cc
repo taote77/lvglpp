@@ -4,8 +4,9 @@
 #include "core/sys/app/SdlApplication.h"
 #include "core/sys/StackView.h"
 
+#include "net/ws_gw/ws_util.h"
 #include "session.h"
-#include <boost/beast/core/detail/base64.hpp>
+#include <algorithm>
 #include <core/log/log.h>
 #include <exception>
 #include <fstream>
@@ -140,21 +141,24 @@ bool takeScreenshot(lv_obj_t *screen, const std::string &filename)
 
 std::string base64_encode(const std::string &input)
 {
-    std::string output;
-    output.resize(boost::beast::detail::base64::encoded_size(input.size()));
-    output.resize(boost::beast::detail::base64::encode(&output[0], input.data(), input.size()));
-    return output;
+    return wsgw::base64Encode(input.data(), input.size());
 }
 
 RemoteClient::RemoteClient() : sys::BaseActivity()
 {}
 
 RemoteClient::~RemoteClient()
-{}
+{
+    if (_timer != nullptr)
+    {
+        lv_timer_delete(_timer);
+        _timer = nullptr;
+    }
+}
 
 void RemoteClient::onCreate(std::any arg)
 {
-    WebsocketSession::Instance().OnMsgHandler([this](boost::json::object &req, boost::json::object &res) {
+    WebsocketSession::Instance().OnMsgHandler([this](wsgw::Json &req, wsgw::Json &res) {
         auto topic     = req["topic"].as_string();
         auto data_json = req["data"].as_object();
 
@@ -213,7 +217,7 @@ void RemoteClient::onCreate(std::any arg)
 
             std::string base64Data = base64_encode(buffer);
 
-            boost::json::object data;
+            wsgw::Json data;
             data["topic"] = "IMAGE_DATA";
             data["data"]  = base64Data;
 
@@ -236,6 +240,10 @@ void RemoteClient::onCreate(std::any arg)
         [](lv_timer_t *data) -> void {
             auto user_data = lv_timer_get_user_data(data);
             auto page      = (RemoteClient *)user_data;
+            if (page == nullptr || page->_label == nullptr)
+            {
+                return;
+            }
 
             page->_count++;
             page->_label->setText(std::to_string(page->_count));
@@ -268,4 +276,10 @@ void RemoteClient::onNotifyUI(const sys::Event &evt)
 }
 
 void RemoteClient::onDestroy()
-{}
+{
+    if (_timer != nullptr)
+    {
+        lv_timer_delete(_timer);
+        _timer = nullptr;
+    }
+}

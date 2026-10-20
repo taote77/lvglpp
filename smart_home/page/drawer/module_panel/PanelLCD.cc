@@ -83,7 +83,7 @@ LCDInfoCard::LCDInfoCard(const double expose_time, const int32_t status) : BaseD
     _warn_bar_bg->setAligmentTo(*_status_label, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 16);
     _warn_bar_bg->setVisible(false);
 
-    _warn_icon = std::make_shared<widgets::Image>(":/image/28x28/warn_icon.png", _warn_bar_bg.get());
+    _warn_icon = std::make_shared<widgets::Image>("image/28x28/warn_icon.png", _warn_bar_bg.get());
     _warn_icon->setAligment(LV_ALIGN_LEFT_MID, 12, 0);
 
     _warn_bar_0 = std::make_shared<ConsumeText>(lvTr("ReplaceMaterialTrayTips"), ThemeColor(CLR_ON_SURFACE), _warn_bar_bg.get(), ConsumeText::FontSize24);
@@ -93,7 +93,7 @@ LCDInfoCard::LCDInfoCard(const double expose_time, const int32_t status) : BaseD
     _warn_bar_1 = std::make_shared<ConsumeText>("", ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24);
     _warn_bar_1->setAligmentTo(*_warn_bar_0, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 8);
 
-    _close_button = std::make_shared<RoundedButton>(48, 48, RoundedButton::ColorStyle::Gray, "", ":/image/32x32/x_close.png", _dialog_bg_item.get());
+    _close_button = std::make_shared<RoundedButton>(48, 48, RoundedButton::ColorStyle::Gray, "", "image/32x32/x_close.png", _dialog_bg_item.get());
     _close_button->setRadius(24);
     _close_button->setAligment(LV_ALIGN_BOTTOM_MID, 0, -20);
     _close_button->setOnClickedListener([this]() {
@@ -164,7 +164,7 @@ PanelLCD::PanelLCD(BaseItem *parent) : BaseItem(parent)
     _touch_area->setSize(150, 92);
     _touch_area->setAligment(LV_ALIGN_RIGHT_MID, 0, 0);
 
-    _arrow_right = std::make_shared<widgets::Image>(":/image/32x32/arrow_right.png", this);
+    _arrow_right = std::make_shared<widgets::Image>("image/32x32/arrow_right.png", this);
     _arrow_right->setSize(32, 32);
     _arrow_right->setAligment(LV_ALIGN_BOTTOM_RIGHT, -16, -15);
 
@@ -196,7 +196,7 @@ PanelLCD::PanelLCD(BaseItem *parent) : BaseItem(parent)
         return progress;
     };
 
-    _icon1 = std::make_shared<widgets::Image>(":/image/36x36/mod_lcd.png", this);
+    _icon1 = std::make_shared<widgets::Image>("image/36x36/mod_lcd.png", this);
     _icon1->setPos(lv_coord_t(mod_item_edge_x), lv_coord_t(18));
 
     _text->setPos(lv_coord_t(16 + offset), lv_coord_t(18));

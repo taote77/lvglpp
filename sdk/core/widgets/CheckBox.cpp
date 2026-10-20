@@ -19,6 +19,7 @@ CheckBox::CheckBox(int width, int height, uint32_t bg_clr, uint32_t check_clr, B
     setBorder(2, form::design::CLR_SURFACE_CONTAINER_LOWEST);
 
     init();
+    setFocusable(true);
 }
 
 bool CheckBox::getCheckState()

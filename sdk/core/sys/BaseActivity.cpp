@@ -1,4 +1,5 @@
 #include "BaseActivity.h"
+#include "InputManager.h"
 #include "StackView.h"
 #include <lvgl.h>
 
@@ -6,6 +7,11 @@ namespace lvglpp::sys {
 
 BaseActivity::~BaseActivity() noexcept
 {
+    if (_focus_scope != 0)
+    {
+        InputManager::getInstance().popScope(_focus_scope);
+        _focus_scope = 0;
+    }
     _root_win.reset();
 }
 
@@ -23,11 +29,25 @@ void BaseActivity::onResume()
     {
         LOG_DEBUG() << "onResume: window_ptr != nullptr";
         _root_win->setVisible(true);
+
+        if (_focus_scope == 0)
+        {
+            _focus_scope = InputManager::getInstance().pushScope(_root_win.get());
+        } else
+        {
+            InputManager::getInstance().refresh(_focus_scope);
+        }
     }
 }
 
 void BaseActivity::onPause()
 {
+    if (_focus_scope != 0)
+    {
+        InputManager::getInstance().popScope(_focus_scope);
+        _focus_scope = 0;
+    }
+
     if (_root_win)
     {
         _root_win->setVisible(false);
@@ -37,12 +57,25 @@ void BaseActivity::onPause()
 void BaseActivity::onDestroy()
 {
     LOG_DEBUG() << "BaseActivity onDestroy,class name:" << typeid(*this).name();
+    if (_focus_scope != 0)
+    {
+        InputManager::getInstance().popScope(_focus_scope);
+        _focus_scope = 0;
+    }
     _root_win.reset();
 }
 
 widgets::BaseItem *BaseActivity::getRoot() const
 {
     return _root_win.get();
+}
+
+void BaseActivity::refreshFocus()
+{
+    if (_focus_scope != 0)
+    {
+        InputManager::getInstance().refresh(_focus_scope);
+    }
 }
 
 void BaseActivity::onNotifyUI(const Event &e)

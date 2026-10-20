@@ -67,42 +67,15 @@ static const lv_font_t *getFontByStyle(LvText::TextStyle style, LvText::FontType
     }
 }
 
-static void setFontLineSpacing(lv_style_t *font_style_t, LvText::TextStyle style)
-{
-    LV_UNUSED(style);
-    lv_style_set_text_line_space(font_style_t, 2);
-    /*switch (style)
-    {
-        case LvText::TextStyle::SubHeading1:
-            lv_style_set_text_line_space(font_style_t,36);
-            break;
-        case LvText::TextStyle::FontSize20:
-    case LvText::TextStyle::FontSize22:
-        return tools::LvFontManager::getFontInfo(font_type, 22, tools::LvFontManager::Normal);
-        case LvText::TextStyle::SubHeading2Bold:
-            lv_style_set_text_line_space(font_style_t,2);
-            break;
-        case LvText::TextStyle::Paragraph1:
-        case LvText::TextStyle::Paragraph1Bold:
-            lv_style_set_text_line_space(font_style_t,24);
-            break;
-        default:
-            lv_style_set_text_line_space(font_style_t,36);
-            break;
-    }*/
-}
-
 LvText::LvText(const std::string &strMsg, uint32_t clr, BaseItem *parent, LvText::TextStyle style, FontType type) :
     BaseItem(tools::LvObjFactory::createLvglLabel, parent), text_(strMsg), max_len_(-1), text_style_(style), font_type_(type)
 {
-    lv_style_init(&font_style_);
-    // lv_style_set_text_font(&font_style_, getFontByStyle(style, type).font);
-    lv_style_set_text_font(&font_style_, getFontByStyle(style, type));
-    font_ = *getFontByStyle(style, type);
-    lv_style_set_text_align(&font_style_, LV_TEXT_ALIGN_AUTO);
-    setFontLineSpacing(&font_style_, style);
+    const lv_font_t *font = getFontByStyle(style, type);
+    font_                 = *font;
+    lv_obj_set_style_text_font(getLvglItem(), font, LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(getLvglItem(), LV_TEXT_ALIGN_AUTO, LV_STATE_DEFAULT);
+    lv_obj_set_style_text_line_space(getLvglItem(), 2, LV_STATE_DEFAULT);
     setTextClr(clr);
-    lv_obj_add_style(getLvglItem(), &font_style_, LV_STATE_DEFAULT);
     // lv_label_set_long_mode(label_lvgl_obj_, LV_LABEL_LONG_DOT);
     setText(strMsg);
 }
@@ -130,7 +103,10 @@ void LvText::setText(const std::string &strMsg)
 
 void LvText::setTextClr(uint32_t clr)
 {
-    lv_style_set_text_color(&font_style_, lv_color_hex(clr));
+    if (getLvglItem() != nullptr)
+    {
+        lv_obj_set_style_text_color(getLvglItem(), lv_color_hex(clr), LV_STATE_DEFAULT);
+    }
 }
 
 void LvText::setReColorEnable(bool enable)
@@ -158,7 +134,10 @@ void LvText::setMaxLen(int n)
 
 void LvText::setTextAlign(lv_text_align_t align)
 {
-    lv_style_set_text_align(&font_style_, align);
+    if (getLvglItem() != nullptr)
+    {
+        lv_obj_set_style_text_align(getLvglItem(), align, LV_STATE_DEFAULT);
+    }
 }
 
 void LvText::setEnable(bool enable)
@@ -196,10 +175,7 @@ int LvText::getDisplayTextWidth() const
     return res > res_tmp ? res : res_tmp;
 }
 
-LvText::~LvText()
-{
-    lv_style_reset(&font_style_);
-}
+LvText::~LvText() = default;
 
 void LvText::setLongMode(int maxWidth, LvText::LongMode longMode)
 {
@@ -277,9 +253,11 @@ void LvText::setTextOpa(lv_opa_t opa)
 
 void LvText::setLongMode(int mode) // 1-LV_LABEL_LONG_WRAP, 2-LV_LABEL_LONG_SCROLL
 {
-    if (mode == 1) {
+    if (mode == 1)
+    {
         lv_label_set_long_mode(getLvglItem(), lv_label_long_mode_t::LV_LABEL_LONG_MODE_WRAP);
-    } else {
+    } else
+    {
         lv_label_set_long_mode(getLvglItem(), lv_label_long_mode_t::LV_LABEL_LONG_MODE_SCROLL);
     }
 }

@@ -2,65 +2,104 @@
 #define LVGLPP_TIMER_H
 
 #include "lvgl.h"
+
+#include <cstdint>
 #include <functional>
 #include <memory>
 
 namespace lvglpp::sys {
 
 /**
- * @brief C++ wrapper around LVGL lv_timer for periodic and one-shot callbacks.
+ * C++ wrapper around lv_timer_t.
  *
- * Usage:
- *   auto t = Timer::create([](Timer*) { ... }, 500);       // periodic every 500ms
- *   auto t = Timer::create([](Timer*) { ... }, 1000, true); // one-shot after 1s
+ * Unlike the old implementation a one-shot timer never deletes itself: the
+ * wrapper remains valid and can be restarted or destroyed by its owner. The
+ * callback is safe to destroy the owning Timer.
  */
 class Timer
 {
 public:
+    enum class Mode {
+        Periodic,
+        OneShot,
+    };
+
     using Callback = std::function<void(Timer *)>;
 
     ~Timer();
 
-    Timer(const Timer &) = delete;
+    Timer(const Timer &)            = delete;
     Timer &operator=(const Timer &) = delete;
 
-    /// Create and start a periodic timer
+    /// Create and start a periodic timer.
     static std::unique_ptr<Timer> create(Callback cb, uint32_t periodMs);
 
-    /// Create a timer (oneShot=true runs once, then self-deletes)
+    /// Compatibility overload: oneShot=true creates a one-shot timer.
     static std::unique_ptr<Timer> create(Callback cb, uint32_t periodMs, bool oneShot);
 
-    /// Pause the timer; call resume() to restart
+    static std::unique_ptr<Timer> create(Callback cb, uint32_t periodMs, Mode mode);
+
+    /// Start (or restart) the timer.
+    void start();
+
+    /// Stop and release the LVGL timer.
+    void stop();
+
+    /// Stop (if needed) and start again.
+    void restart();
+
+    /// Pause the timer; call resume() to continue.
     void pause();
 
-    /// Resume a paused timer
+    /// Resume a paused timer.
     void resume();
 
-    /// Reset the timer to fire immediately (ignores pending period)
+    /// Reset the timer to fire immediately.
     void setReady();
 
-    /// Change the callback period
     void setPeriod(uint32_t periodMs);
 
-    /// Get current period in ms
-    uint32_t period() const { return _periodMs; }
+    uint32_t period() const
+    {
+        return _periodMs;
+    }
 
-    /// Check if timer is paused
-    bool isPaused() const { return _paused; }
+    bool isPaused() const
+    {
+        return _paused;
+    }
 
-    /// The underlying LVGL timer handle (for advanced use)
-    lv_timer_t *handle() const { return _timer; }
+    bool isRunning() const;
+
+    /// True for a one-shot timer after its callback has run.
+    bool isFinished() const
+    {
+        return _finished;
+    }
+
+    Mode mode() const
+    {
+        return _mode;
+    }
+
+    lv_timer_t *handle() const
+    {
+        return _timer;
+    }
 
 private:
-    Timer(Callback cb, uint32_t periodMs, bool oneShot);
+    Timer(Callback cb, uint32_t periodMs, Mode mode);
 
     static void _lvglCallback(lv_timer_t *t);
 
+    void schedule();
+
     Callback   _cb;
-    uint32_t   _periodMs;
-    bool       _oneShot;
-    bool       _paused = false;
-    lv_timer_t *_timer = nullptr;
+    uint32_t   _periodMs = 0;
+    Mode       _mode     = Mode::Periodic;
+    bool       _paused   = false;
+    bool       _finished = false;
+    lv_timer_t *_timer   = nullptr;
 };
 
 } // namespace lvglpp::sys

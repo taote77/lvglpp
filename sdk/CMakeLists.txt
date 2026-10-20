@@ -13,8 +13,10 @@ add_compile_options(-fPIC)
 
 enable_language(ASM)
 
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(LUA REQUIRED lua-5.4)
+if (ENABLE_LUA)
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(LUA REQUIRED lua-5.4)
+endif ()
 
 # set(LV_CONF_BUILD_DISABLE_EXAMPLES 1)
 # set(LV_CONF_BUILD_DISABLE_DEMOS 1)
@@ -29,7 +31,9 @@ add_definitions(-DLV_USE_LINUX_DRM=1)
 include_directories(/usr/include/drm)
 
 
-include_directories(${LUA_INCLUDE_DIRS})
+if (ENABLE_LUA)
+    include_directories(${LUA_INCLUDE_DIRS})
+endif ()
 
 # Define options for LVGL with default values (OFF)
 option(LV_USE_DRAW_SDL "Use SDL draw unit" OFF)
@@ -43,8 +47,8 @@ set(CMAKE_C_STANDARD 99)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Set the output path for the executable
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
+# Keep EXECUTABLE_OUTPUT_PATH inherited from the top-level build
+# (build/target/bin) so subprojects never write artifacts into the source tree.
 set(WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 
 
@@ -90,37 +94,37 @@ target_link_libraries(${PROJECT_NAME}
     # wayland-egl
     xkbcommon
     drm
-    ${LUA_LIBRARIES}
 )
+
+if (ENABLE_LUA)
+    target_link_libraries(${PROJECT_NAME} ${LUA_LIBRARIES})
+endif ()
 
 
 target_include_directories(${PROJECT_NAME} PRIVATE
     lvgl/src/
     lvgl/src/core
-    ${CMAKE_SOURCE_DIR}/demo/clua/include
 )
+
+if (ENABLE_LUA)
+    target_include_directories(${PROJECT_NAME} PRIVATE
+        ${CMAKE_SOURCE_DIR}/demo/clua/include
+    )
+endif ()
 
 # Define LVGL configuration as a simple include
 target_compile_definitions(${PROJECT_NAME} PRIVATE
     LV_CONF_INCLUDE_SIMPLE
 )
 
-find_package(Boost REQUIRED COMPONENTS log log_setup json)
-
 target_link_libraries(${PROJECT_NAME}
     lvgl
     lvgl::thorvg
     # ${SDL2_LIBRARIES}
-    ${Boost_LIBRARIES}
-    sqlite3
     m
     pthread
     ws_gw
     avformat avcodec avutil swscale
-)
-
-target_compile_definitions(${PROJECT_NAME} PUBLIC
-    BOOST_ALL_DYN_LINK
 )
 
 
@@ -208,4 +212,4 @@ endif()
 endif()
 
 
-add_subdirectory(tools/lvrc)
+add_subdirectory(tools/respack)

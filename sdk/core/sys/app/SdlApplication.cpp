@@ -1,9 +1,11 @@
 #include "core/log/log.h"
+#include "core/tools/ImageManager.h"
 
 #include "core/sys/StackView.h"
 #if (defined(USED_SDL)) || (defined(USED_SDL_GPU))
 
 #include "SdlApplication.h"
+#include "core/sys/InputManager.h"
 #include "lvgl/src/core/lv_global.h"
 #include <lvgl.h>
 
@@ -246,6 +248,7 @@ void SdlApplication::setTheme(lv_theme_t *theme)
 void SdlApplication::exit(int code)
 {
     StackView::getInstance().shutdown();
+    tools::ImageManager::shutdown();
     std::exit(code);
 }
 
@@ -254,21 +257,28 @@ void SdlApplication::lv_linux_disp_init()
     _display = lv_sdl_window_create(LV_HOR_RES_MAX, LV_VER_RES_MAX);
 
     _mouse_indev = lv_sdl_mouse_create();
-    lv_indev_set_group(_mouse_indev, lv_group_get_default());
 
     _keybaord_indev = lv_sdl_keyboard_create();
-    lv_indev_set_group(_keybaord_indev, lv_group_get_default());
+
+    _mousewheel_indev = lv_sdl_mousewheel_create();
 
     _simu_touch_indev = lv_sdl_mouse_create();
-    lv_indev_set_group(_simu_touch_indev, lv_group_get_default());
 
     lv_indev_set_display(_mouse_indev, _display);
     lv_indev_set_display(_keybaord_indev, _display);
+    if (_mousewheel_indev != nullptr)
+    {
+        lv_indev_set_display(_mousewheel_indev, _display);
+    }
     lv_indev_set_display(_simu_touch_indev, _display);
     lv_indev_set_type(_simu_touch_indev, LV_INDEV_TYPE_POINTER);
     lv_indev_set_read_cb(_simu_touch_indev, mouse_read);
 
     lv_display_set_default(_display);
+
+    // Creates the virtual keypad indev and binds every keypad/encoder indev to
+    // the active focus group once an Activity scope is pushed.
+    InputManager::getInstance().install();
 }
 
 /**

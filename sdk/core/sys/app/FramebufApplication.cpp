@@ -1,6 +1,7 @@
 #ifdef USED_FRAMEBUFF
 #include "FramebufApplication.h"
 #include "core/sys/StackView.h"
+#include "core/tools/ImageManager.h"
 #include "lvgl/src/core/lv_global.h"
 
 // #define DISP_BUF_SIZE (128 * 1024)
@@ -92,6 +93,7 @@ void LinuxFramebufApplication::framebufInit()
 void LinuxFramebufApplication::exit(int c)
 {
     StackView::getInstance().shutdown();
+    tools::ImageManager::shutdown();
     std::exit(c);
 }
 
@@ -172,6 +174,7 @@ void LinuxFramebufApplication::framebufInit()
 void LinuxFramebufApplication::exit(int c)
 {
     StackView::getInstance().shutdown();
+    tools::ImageManager::shutdown();
     std::exit(c);
 }
 

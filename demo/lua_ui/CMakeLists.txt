@@ -41,3 +41,5 @@ foreach(SCRIPT ${LUA_SCRIPTS})
         ${SCRIPT} ${CMAKE_CURRENT_BINARY_DIR}/../../target/bin/${SCRIPT_NAME}
         COMMENT "Copying Lua script ${SCRIPT_NAME} to build directory")
 endforeach()
+
+lvglpp_attach_assets(${PROJECT_NAME})

@@ -1,17 +1,17 @@
-
 #ifndef HG_WS_GW_H__
 #define HG_WS_GW_H__
 
-#include "boost/json/value.hpp"
-#include <boost/json/object.hpp>
+#include "json.h"
+
 #include <cstdint>
 #include <functional>
 #include <string>
+
 struct WsGwSetting {
-    std::string                                                                                    bind_ip    = "0.0.0.0";
-    uint16_t                                                                                       port       = 1120;
-    uint16_t                                                                                       thread_num = 3;
-    std::function<void(const std::string &id, boost::json::object &req, boost::json::object &res)> callback;
+    std::string                                                                       bind_ip    = "0.0.0.0";
+    uint16_t                                                                          port       = 1120;
+    uint16_t                                                                          thread_num = 3; // max concurrent connections
+    std::function<void(const std::string &id, wsgw::Json &req, wsgw::Json &res)>      callback;
 };
 
 struct WsGwContext;
@@ -26,6 +26,6 @@ enum WsGwError {
 WsGwContext *ws_gw_start(const WsGwSetting &setting);
 
 // 向ws客户端发送消息
-WsGwError ws_gw_send_nofity(WsGwContext *cxt, const std::string &id, boost::json::object &msg);
+WsGwError ws_gw_send_nofity(WsGwContext *cxt, const std::string &id, wsgw::Json &msg);
 
 #endif

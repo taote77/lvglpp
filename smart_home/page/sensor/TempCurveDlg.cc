@@ -3,7 +3,7 @@
 #include "core/log/log.h"
 #include "core/tools/Utils.h"
 #include "i18n/LvTranslator.h"
-#include <boost/format.hpp>
+#include <algorithm>
 #include <memory>
 #include <utility>
 
@@ -44,7 +44,7 @@ void TempCurveDlg::init()
     lv_obj_set_style_bg_opa(chart_->getLvglItem(), LV_OPA_TRANSP, LV_PART_MAIN);
     lv_obj_set_style_border_width(chart_->getLvglItem(), 0, LV_PART_MAIN);
 
-    lv_obj_add_event_cb(chart_->getLvglItem(), TempCurveDlg::draw_event_cb, LV_EVENT_DRAW_TASK_ADDED, this);
+    chart_->addLvglEventHandler(TempCurveDlg::draw_event_cb, LV_EVENT_DRAW_TASK_ADDED, this);
     lv_obj_add_flag(chart_->getLvglItem(), LV_OBJ_FLAG_SEND_DRAW_TASK_EVENTS);
 
     time_label_1_ = std::make_shared<LvText>("", CLR_ON_SURFACE, bg_.get());
@@ -61,7 +61,7 @@ void TempCurveDlg::init()
 
     ser1_ = lv_chart_add_series(chart_->getLvglItem(), lv_color_hex(CLR_PRIMARY_BLUE), LV_CHART_AXIS_PRIMARY_Y);
 
-    back_icon_ = std::make_shared<widgets::Image>(":/image/56x56/Back.png", bg_.get());
+    back_icon_ = std::make_shared<widgets::Image>("image/56x56/Back.png", bg_.get());
     back_icon_->setPos(24, 24);
     back_icon_->setEnable(true);
     back_icon_->setOnClickedListener([this]() -> void { this->close(); });

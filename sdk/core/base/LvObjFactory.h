@@ -35,7 +35,8 @@ public:
     static lv_obj_t *createLvglScrolable(lv_obj_t *parent);
 
     /// Correct spelling: createLvglScrollable
-    static lv_obj_t *createLvglScrollable(lv_obj_t *parent) {
+    static lv_obj_t *createLvglScrollable(lv_obj_t *parent)
+    {
         return createLvglScrolable(parent);
     }
 
@@ -81,6 +82,10 @@ public:
     static lv_obj_t *createLvglRoller(lv_obj_t *parent);
     static lv_obj_t *createLvglCalendar(lv_obj_t *parent);
     static lv_obj_t *createLvglTable(lv_obj_t *parent);
+    static lv_obj_t *createLvglSpinner(lv_obj_t *parent);
+    static lv_obj_t *createLvglImageButton(lv_obj_t *parent);
+    static lv_obj_t *createLvglMsgBox(lv_obj_t *parent);
+    static lv_obj_t *createLvglScale(lv_obj_t *parent);
 };
 // Modern alias
 using WidgetFactory = LvObjFactory;

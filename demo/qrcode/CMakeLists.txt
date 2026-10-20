@@ -27,8 +27,7 @@ target_sources(${PROJECT_NAME} PRIVATE
 target_link_libraries(${PROJECT_NAME} PRIVATE
     lvgl
     lvglpp
-    sqlite3
-    ${SDL2_LIBRARIES} ${Boost_LIBRARIES}
+    ${SDL2_LIBRARIES}
 )
 
 
@@ -40,3 +39,5 @@ include_directories(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME} PRIVATE
     ./    
 )
+
+lvglpp_attach_assets(${PROJECT_NAME})

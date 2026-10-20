@@ -77,7 +77,7 @@ PanelResinBottle::PanelResinBottle(BaseItem *parent) : BaseItem(parent)
     constexpr short mod_item_edge_x{16};
     constexpr short mod_item_edge_row2_y{60};
 
-    _icon_bottle = std::make_shared<widgets::Image>(":/image/36x36/mod_resin_bottle.png", this);
+    _icon_bottle = std::make_shared<widgets::Image>("image/36x36/mod_resin_bottle.png", this);
     _icon_bottle->setPos(lv_coord_t(mod_item_edge_x), lv_coord_t(18));
 
     _lbl_material_name = std::make_shared<ConsumeText>("", CLR_ON_SURFACE, this, ConsumeText::FontSize22Bold);
@@ -119,7 +119,7 @@ PanelResinBottle::PanelResinBottle(BaseItem *parent) : BaseItem(parent)
         _resin_detail_dialog->open();
     });
 
-    _arrow_right = std::make_shared<widgets::Image>(":/image/32x32/arrow_right.png", this);
+    _arrow_right = std::make_shared<widgets::Image>("image/32x32/arrow_right.png", this);
     _arrow_right->setSize(32, 32);
     _arrow_right->setAligment(LV_ALIGN_BOTTOM_RIGHT, -16, -15);
 

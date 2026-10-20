@@ -10,6 +10,7 @@ Description: Base implementation of an Activity with a root window
 #define BASE_ACTIVITY_H
 
 #include "Activity.h"
+#include <cstdint>
 #include <memory>
 
 namespace lvglpp::sys {
@@ -56,8 +57,17 @@ public:
      */
     widgets::BaseItem *getRoot() const override;
 
+    /**
+     * Rebuild the keyboard focus group from the currently visible widgets.
+     * Call this after changing page/tab visibility so focus does not stay on
+     * a hidden page.
+     */
+    void refreshFocus();
+
 private:
     std::unique_ptr<widgets::BaseItem> _root_win;
+
+    std::uint64_t _focus_scope = 0;
 };
 } // namespace lvglpp::sys
 

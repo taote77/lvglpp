@@ -1,79 +1,62 @@
-
 #include "msg_dispatcher.h"
-#include <boost/log/trivial.hpp>
-#include <boost/version.hpp>
-#include <mutex>
 
-WsGwContext::WsGwContext()
-{}
-WsGwContext::~WsGwContext()
-{}
+#include "tcp_listener.h"
+#include "ws_session.h"
 
-MsgDispatcher::MsgDispatcher(net::io_context &ioc) : m_ioc(ioc)
-{}
+WsGwContext::WsGwContext()  = default;
+WsGwContext::~WsGwContext() = default;
 
-WsGwError MsgDispatcher::send_notify(const std::string &id, boost::json::object &v)
+void MsgDispatcher::add_session(const std::shared_ptr<WsSession> &session)
 {
-    std::lock_guard<std::mutex> lk(m_mutex);
+    if (!session) return;
+
+    std::lock_guard<std::mutex> lock(m_mutex);
+    const std::string           id = session->get_id();
+
     for (auto it = m_sessions.begin(); it != m_sessions.end(); ++it)
     {
-        if (id == (*it)->get_id())
-        {
-            (*it)->send_msg(v);
-            return WSGW_OK;
-        }
-    }
-
-    return WSGW_NOT_FOUND_CLIENT;
-}
-
-bool MsgDispatcher::check_req(const tcp::endpoint &remote_ep, const websocket::request_type &req, std::string &id)
-{
-    if (remote_ep.address().to_string() == "127.0.0.1")
-    {
-        id = "127.0.0.1";
-        return true;
-    }
-
-    auto it = req.find("id");
-    if (it != req.end())
-    {
-#if BOOST_VERSION < 108000
-        id = it->value().to_string();
-#else
-        id = it->value();
-#endif
-        return true;
-    }
-    return false;
-}
-
-void MsgDispatcher::add_session(std::shared_ptr<WsSession> &ses)
-{
-    std::lock_guard<std::mutex> lk(m_mutex);
-    std::string                 id = ses->get_id();
-    auto                        it = m_sessions.begin();
-    for (; it != m_sessions.end(); ++it)
-    {
-        if (id == (*it)->get_id())
+        if ((*it)->get_id() == id)
         {
             m_sessions.erase(it);
             break;
         }
     }
-    m_sessions.push_back(ses);
+
+    m_sessions.push_back(session);
 }
 
-void MsgDispatcher::remove_session(std::shared_ptr<WsSession> &ses)
+void MsgDispatcher::remove_session(const std::shared_ptr<WsSession> &session)
 {
-    std::lock_guard<std::mutex> lk(m_mutex);
-    auto                        it = m_sessions.begin();
-    for (; it != m_sessions.end(); ++it)
+    std::lock_guard<std::mutex> lock(m_mutex);
+
+    for (auto it = m_sessions.begin(); it != m_sessions.end(); ++it)
     {
-        if (ses.get() == it->get())
+        if (it->get() == session.get())
         {
             m_sessions.erase(it);
             break;
         }
     }
+}
+
+WsGwError MsgDispatcher::send_notify(const std::string &id, wsgw::Json &value)
+{
+    std::shared_ptr<WsSession> target;
+    {
+        std::lock_guard<std::mutex> lock(m_mutex);
+
+        for (const auto &session : m_sessions)
+        {
+            if (session->get_id() == id)
+            {
+                target = session;
+                break;
+            }
+        }
+    }
+
+    if (!target) return WSGW_NOT_FOUND_CLIENT;
+
+    target->send_msg(value);
+    return WSGW_OK;
 }

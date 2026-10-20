@@ -6,7 +6,9 @@ namespace lvglpp::widgets {
 
 Calendar::Calendar(BaseItem *parent)
     : BaseItem(tools::LvObjFactory::createLvglCalendar, parent)
-{}
+{
+    setFocusable(true);
+}
 
 void Calendar::setTodayDate(uint32_t year, uint32_t month, uint32_t day)
 {

@@ -13,7 +13,11 @@ GameActivity::GameActivity() : sys::BaseActivity()
 
 GameActivity::~GameActivity()
 {
-    //
+    if (_timer != nullptr)
+    {
+        lv_timer_delete(_timer);
+        _timer = nullptr;
+    }
 }
 
 void GameActivity::onCreate(std::any arg)
@@ -27,12 +31,9 @@ void GameActivity::onCreate(std::any arg)
             auto user_data = lv_timer_get_user_data(t);
             auto page      = (GameActivity *)user_data;
 
-            auto &game_state = page->_game_state; // careful !!!, do not left reference &
-
             if (page != nullptr)
             {
                 page->move();
-
                 page->updateFrame();
             }
         },
@@ -48,7 +49,11 @@ void GameActivity::onNotifyUI(const sys::Event &evt)
 
 void GameActivity::onDestroy()
 {
-    //
+    if (_timer != nullptr)
+    {
+        lv_timer_delete(_timer);
+        _timer = nullptr;
+    }
 }
 
 void GameActivity::init()

@@ -5,7 +5,9 @@ namespace lvglpp::widgets {
 
 Table::Table(BaseItem *parent)
     : BaseItem(tools::LvObjFactory::createLvglTable, parent)
-{}
+{
+    setFocusable(true);
+}
 
 void Table::setCellValue(uint32_t row, uint32_t col, const std::string &text)
 {

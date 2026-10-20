@@ -1,14 +1,20 @@
 #ifndef LVGLPP_FILE_SYSTEM_MANAGER_H
 #define LVGLPP_FILE_SYSTEM_MANAGER_H
 
-#include <lvgl.h>
-
 namespace lvglpp::sys {
 
+/**
+ * Registers the SDK's read-only LVGL filesystem driver.
+ *
+ * Drive 'A' exposes the mounted AssetManager sources. It is used by widgets
+ * that can only consume an LVGL file path (GIF, fonts via the LVGL FreeType
+ * port, ...). Images normally go through ImageManager instead, which keeps
+ * decoded descriptors cached.
+ */
 class FileSystemManager
 {
 public:
-    FileSystemManager(const FileSystemManager &) = delete;
+    FileSystemManager(const FileSystemManager &)            = delete;
     FileSystemManager &operator=(const FileSystemManager &) = delete;
 
     static FileSystemManager &getInstance()
@@ -17,14 +23,13 @@ public:
         return instance;
     }
 
-    /// Register both file and memory filesystem drivers with LVGL
-    void registerDrivers();
+    /// Register the 'A:' asset driver. Idempotent.
+    void registerAssetDriver();
 
 private:
     FileSystemManager() = default;
 
-    lv_fs_drv_t _fileFsDrv{};
-    lv_fs_drv_t _memFsDrv{};
+    bool registered_ = false;
 };
 
 } // namespace lvglpp::sys

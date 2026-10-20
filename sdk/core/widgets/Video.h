@@ -28,7 +28,12 @@ public:
 
     ~Video() override;
 
+protected:
+    void onLvglObjectDeleted() override;
+
 private:
+    void cleanupTimer();
+
     std::string src_path_;
 
     bool visible_ = true;

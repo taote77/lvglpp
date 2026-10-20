@@ -1,18 +1,48 @@
-#include "core/base/LvObjFactory.h"
 #include "GifImage.h"
+#include "core/base/LvObjFactory.h"
 
 namespace lvglpp::widgets {
-GifImage::GifImage(const std::string &path, BaseItem *parent) : BaseItem(tools::LvObjFactory::createLvglGif, parent)
+
+GifImage::GifImage(const std::string &assetPath, BaseItem *parent) : BaseItem(tools::LvObjFactory::createLvglGif, parent)
 {
-    setImageSrcPath(path);
+    setAsset(assetPath);
 }
 
-void GifImage::setImageSrcPath(const std::string &path)
+void GifImage::setAsset(const std::string &assetPath)
 {
-    src_path_ = path;
-    if (getLvglItem() != nullptr && !src_path_.empty())
+    src_path_ = assetPath;
+    if (assetPath.empty())
     {
-        lv_gif_set_src(getLvglItem(), src_path_.c_str());
+        applyLvglPath({});
+        return;
     }
+    applyLvglPath("A:/" + assetPath);
 }
+
+void GifImage::setFsPath(const std::string &lvglPath)
+{
+    src_path_ = lvglPath;
+    applyLvglPath(lvglPath);
+}
+
+void GifImage::applyLvglPath(const std::string &lvglPath)
+{
+    lvgl_path_ = lvglPath;
+    if (getLvglItem() == nullptr)
+    {
+        return;
+    }
+
+    if (lvgl_path_.empty())
+    {
+        lv_gif_set_src(getLvglItem(), nullptr);
+        clearObjectKeepalive("gif.src");
+        return;
+    }
+
+    auto persistent = std::make_shared<std::string>(lvgl_path_);
+    setObjectKeepalive("gif.src", persistent);
+    lv_gif_set_src(getLvglItem(), persistent->c_str());
+}
+
 } // namespace lvglpp::widgets

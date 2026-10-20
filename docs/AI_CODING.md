@@ -33,7 +33,9 @@ Rules:
 - Use std::unique_ptr for owned sub-objects, NOT raw new/delete
 - Do NOT add new Boost dependencies — use C++17 std:: equivalents
 - Add modern alias (using ModernName = ClassName;) for new widgets
-- All widgets .cpp files that use LvObjFactory need #include "core/kernel/LvObjFactory.h"
+- All widgets .cpp files that use LvObjFactory need #include "core/base/LvObjFactory.h"
+- Register events through BaseItem::onClicked/onKey/addLvglEventHandler, never raw callbacks with `this`
+- Callback-bearing widgets must outlive their callbacks (member or widgets::WidgetStore)
 ```
 
 ## Prompt Templates
@@ -97,7 +99,7 @@ Follow the existing pattern:
 
 ### "tools has not been declared" / "LvObjFactory has not been declared"
 ```
-Fix: Add #include "core/kernel/LvObjFactory.h" to the .cpp file
+Fix: Add #include "core/base/LvObjFactory.h" to the .cpp file
 ```
 
 ### "no match for operator=" with sol2 bindings
@@ -116,6 +118,18 @@ Fix: Replace BaseItem(BaseItem::Type, parent) with
 ```
 Fix: Use std::unique_ptr<BaseItem> for _root_win,
   call .reset() in both destructor and onDestroy()
+```
+
+### Widget becomes unresponsive after creation
+```
+Cause: the wrapper was a short-lived local and was destroyed with its callbacks.
+Fix: keep callback-bearing widgets in a member or widgets::WidgetStore.
+```
+
+### Calling a method on a widget whose parent tree was deleted
+```
+All BaseItem methods are safe no-ops when isAttached() == false.
+Use onDestroyed() to observe deletion instead of keeping raw pointers.
 ```
 
 ## AI Agent Interaction API

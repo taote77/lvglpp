@@ -25,7 +25,7 @@ void MessageCenterControl::udiskChange(bool state)
 {
     if (_udisk_status)
     {
-        _udisk_status->setIcon(state ? ":/image/32x32/udisk.png" : ":/image/32x32/udisk_dis.png");
+        _udisk_status->setIcon(state ? "image/32x32/udisk.png" : "image/32x32/udisk_dis.png");
     }
 }
 
@@ -33,7 +33,7 @@ void MessageCenterControl::cloudChange(bool state)
 {
     if (_cloud_status)
     {
-        _cloud_status->setIcon(state ? ":/image/32x32/cloud.png" : ":/image/32x32/cloud_off.png");
+        _cloud_status->setIcon(state ? "image/32x32/cloud.png" : "image/32x32/cloud_off.png");
     }
 }
 
@@ -41,7 +41,7 @@ void MessageCenterControl::wifiChange(bool state)
 {
     if (_wifi_status)
     {
-        _wifi_status->setIcon(state ? ":/image/32x32/wifi.png" : ":/image/32x32/wifi_off.png");
+        _wifi_status->setIcon(state ? "image/32x32/wifi.png" : "image/32x32/wifi_off.png");
     }
 }
 
@@ -64,20 +64,20 @@ void MessageCenterControl::init()
     _toolbar_layout->setRadius(8);
     lv_obj_set_style_pad_hor(_toolbar_layout->getLvglItem(), 24, LV_STATE_DEFAULT);
 
-    _wifi_status = std::make_shared<StatusIcon>(":/image/32x32/wifi.png", _toolbar_layout.get());
+    _wifi_status = std::make_shared<StatusIcon>("image/32x32/wifi.png", _toolbar_layout.get());
     _wifi_status->setOpacity(1);
     _wifi_status->setPos(10, 10);
 
     lv_obj_center(_wifi_status->getLvglItem());
 
-    _cloud_status = std::make_shared<StatusIcon>(":/image/32x32/cloud.png", _toolbar_layout.get());
+    _cloud_status = std::make_shared<StatusIcon>("image/32x32/cloud.png", _toolbar_layout.get());
     lv_obj_center(_cloud_status->getLvglItem());
 
     bool udisk_mounted = true;
-    _udisk_status      = std::make_shared<StatusIcon>(udisk_mounted ? ":/image/32x32/udisk.png" : ":/image/32x32/usb_dis.png", _toolbar_layout.get());
+    _udisk_status      = std::make_shared<StatusIcon>(udisk_mounted ? "image/32x32/udisk.png" : "image/32x32/usb_dis.png", _toolbar_layout.get());
     lv_obj_center(_udisk_status->getLvglItem());
 
-    _reboot_status = std::make_shared<StatusIcon>(":/image/32x32/reboot.png", _toolbar_layout.get());
+    _reboot_status = std::make_shared<StatusIcon>("image/32x32/reboot.png", _toolbar_layout.get());
     lv_obj_center(_reboot_status->getLvglItem());
 
     _wifi_status->enable(true);

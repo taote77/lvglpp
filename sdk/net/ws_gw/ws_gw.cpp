@@ -1,27 +1,28 @@
 #include "ws_gw.h"
-#include "msg_dispatcher.h"
-#include "tcp_listener.h"
-#include <thread>
 
-//////////////////////////////////////////////////////////////
+#include "msg_dispatcher.h"
+#include "net_pub_def.h"
+#include "tcp_listener.h"
+
+#include <memory>
+
 WsGwContext *ws_gw_start(const WsGwSetting &setting)
 {
-    WsGwContext *cxt;
-    cxt = new WsGwContext();
-    cxt->dispatcher.reset(new MsgDispatcher(cxt->ioc));
-    cxt->listener.reset(new TcpListener(cxt, cxt->ioc, setting.bind_ip.c_str(), setting.port));
-    cxt->callback = setting.callback;
+    auto *cxt = new WsGwContext();
+    cxt->dispatcher = std::make_unique<MsgDispatcher>();
+    cxt->callback   = setting.callback;
+    cxt->listener   = std::make_unique<TcpListener>(cxt, setting.bind_ip, setting.port, setting.thread_num);
 
-    cxt->listener->loop();
-    for (int i = 0; i < setting.thread_num; ++i)
+    if (!cxt->listener->start())
     {
-        std::thread([cxt]() { cxt->ioc.run(); }).detach();
+        PX_ERROR() << "failed to start WebSocket gateway on " << setting.bind_ip << ":"
+                   << setting.port << std::endl;
     }
 
     return cxt;
 }
 
-WsGwError ws_gw_send_nofity(WsGwContext *cxt, const std::string &id, boost::json::object &msg)
+WsGwError ws_gw_send_nofity(WsGwContext *cxt, const std::string &id, wsgw::Json &msg)
 {
     if (!cxt)
     {

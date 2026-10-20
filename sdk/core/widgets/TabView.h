@@ -2,6 +2,7 @@
 #define LVGLPP_TABVIEW_H
 
 #include "BaseItem.h"
+#include <memory>
 #include <string>
 
 namespace lvglpp::widgets {
@@ -11,8 +12,9 @@ class TabView : public BaseItem
 public:
     explicit TabView(BaseItem *parent = nullptr);
 
-    /// Add a tab with the given name. Returns the content area BaseItem.
-    BaseItem *addTab(const std::string &name);
+    /// Add a tab with the given name. The returned wrapper owns nothing; keep
+    /// it alive if you attach callbacks/content to the page.
+    std::unique_ptr<BaseItem> addTab(const std::string &name);
 
     /// Rename a tab
     void renameTab(uint32_t tabIdx, const std::string &newName);

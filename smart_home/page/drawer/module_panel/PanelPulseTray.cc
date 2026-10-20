@@ -3,6 +3,7 @@
 #include "core/sys/Application.h"
 #include "i18n/LvTranslator.h"
 #include "theme/form_design.h"
+#include <algorithm>
 
 namespace lvglpp::ui::page {
 
@@ -83,7 +84,7 @@ ModuleDetailPulseTrayDialog::ModuleDetailPulseTrayDialog(const double progress, 
     _warn_bar_bg->setAligmentTo(*_status_label, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 16);
     _warn_bar_bg->setVisible(false);
 
-    _warn_icon = std::make_shared<widgets::Image>(":/image/28x28/warn_icon.png", _warn_bar_bg.get());
+    _warn_icon = std::make_shared<widgets::Image>("image/28x28/warn_icon.png", _warn_bar_bg.get());
     _warn_icon->setAligment(LV_ALIGN_LEFT_MID, 12, 0);
 
     _warn_bar_0 = std::make_shared<ConsumeText>(lvTr("ReplaceMaterialTrayTips"), ThemeColor(CLR_ON_SURFACE), _warn_bar_bg.get(), ConsumeText::FontSize24);
@@ -93,7 +94,7 @@ ModuleDetailPulseTrayDialog::ModuleDetailPulseTrayDialog(const double progress, 
     _warn_bar_1 = std::make_shared<ConsumeText>("", ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24);
     _warn_bar_1->setAligmentTo(*_warn_bar_0, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 8);
 
-    _close_button = std::make_shared<RoundedButton>(48, 48, RoundedButton::ColorStyle::Gray, "", ":/image/32x32/x_close.png", _dialog_bg_item.get());
+    _close_button = std::make_shared<RoundedButton>(48, 48, RoundedButton::ColorStyle::Gray, "", "image/32x32/x_close.png", _dialog_bg_item.get());
     _close_button->setRadius(24);
     _close_button->setAligment(LV_ALIGN_BOTTOM_MID, 0, -20);
     _close_button->setOnClickedListener([this]() {
@@ -312,7 +313,7 @@ PanelPulseTray::PanelPulseTray(BaseItem *parent) : BaseItem(parent)
     constexpr short mod_item_edge_x{16};
     constexpr short mod_item_edge_row2_y{60};
 
-    _icon_tray = std::make_shared<widgets::Image>(":/image/36x36/mod_tray.png", this);
+    _icon_tray = std::make_shared<widgets::Image>("image/36x36/mod_tray.png", this);
     _icon_tray->setPos(lv_coord_t(mod_item_edge_x), lv_coord_t(18));
 
     if (sys::Application::getLanguageType() == sys::Application::LanguageType::English)
@@ -352,7 +353,7 @@ PanelPulseTray::PanelPulseTray(BaseItem *parent) : BaseItem(parent)
         _pulse_tray_detail_dialog->open();
     });
 
-    _arrow_right = std::make_shared<widgets::Image>(":/image/32x32/arrow_right.png", this);
+    _arrow_right = std::make_shared<widgets::Image>("image/32x32/arrow_right.png", this);
     _arrow_right->setSize(32, 32);
     _arrow_right->setAligment(LV_ALIGN_BOTTOM_RIGHT, -16, -15);
 

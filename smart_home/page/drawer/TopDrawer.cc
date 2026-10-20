@@ -3,6 +3,7 @@
 #include "core/base/LvObjFactory.h"
 #include "core/widgets/PageIndicator.h"
 #include "theme/form_design.h"
+#include <algorithm>
 #include <cmath>
 
 namespace lvglpp::ui::page {

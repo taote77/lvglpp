@@ -1,6 +1,7 @@
 #include "WaylandApplication.h"
-#include "lvgl.h"
 #include "core/sys/StackView.h"
+#include "core/tools/ImageManager.h"
+#include "lvgl.h"
 
 namespace lvglpp::sys {
 WaylandApplication::WaylandApplication(int argc, char **argv) : Application(argc, argv)
@@ -34,6 +35,7 @@ bool WaylandApplication::initApp()
 void WaylandApplication::exit(int c)
 {
     StackView::getInstance().shutdown();
+    tools::ImageManager::shutdown();
     std::exit(c);
 }
 } // namespace lvglpp::sys

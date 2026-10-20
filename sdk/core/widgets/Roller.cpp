@@ -5,7 +5,9 @@ namespace lvglpp::widgets {
 
 Roller::Roller(BaseItem *parent)
     : BaseItem(tools::LvObjFactory::createLvglRoller, parent)
-{}
+{
+    setFocusable(true);
+}
 
 void Roller::setOptions(const std::string &options, lv_roller_mode_t mode)
 {

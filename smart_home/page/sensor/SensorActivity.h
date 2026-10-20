@@ -34,7 +34,7 @@ private:
 
     std::shared_ptr<widgets::RoundedButton> btn_;
 
-    TempCurveDlg *force_dlg_;
+    std::unique_ptr<TempCurveDlg> force_dlg_;
 
     lv_timer_t *remain_time_refresh_timer_{nullptr};
 };

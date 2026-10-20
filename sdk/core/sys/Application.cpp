@@ -4,9 +4,11 @@
 #include "FileSystemManager.h"
 #include "StackView.h"
 #include "core/log/log.h"
+#include "core/tools/AssetManager.h"
 #include "core/tools/Utils.h"
 #include <filesystem>
 #include <memory>
+#include <optional>
 #include <thread>
 #include <unistd.h>
 
@@ -19,6 +21,10 @@ Application::LanguageType Application::language_type_ = Application::Chinese;
 
 Application::Application(int argc, char *argv[])
 {
+    if (argc > 0 && argv != nullptr && argv[0] != nullptr)
+    {
+        application_name_ = std::filesystem::path(argv[0]).stem().string();
+    }
     StackView::getInstance().setApplication(this);
 }
 
@@ -29,11 +35,16 @@ bool Application::initApp()
     LogDebug << "path:" << application_dir_path_;
     lv_init();
 
-    // Register filesystem drivers
-    FileSystemManager::getInstance().registerDrivers();
-
-    // use lvgl png file
-    lv_lodepng_init();
+    // Mount the application assets before any widget is created. Sources are
+    // common.pak / common.asset first, then <exe>.pak / <exe>.asset; the
+    // LVGLPP_ASSET_DIR and LVGLPP_ASSET_PACK environment variables override
+    // discovery for development and tests. Guard against repeated initApp().
+    auto &assets = tools::AssetManager::getInstance();
+    if (assets.mountCount() == 0)
+    {
+        assets.mountDefaults(application_dir_path_, application_name_);
+    }
+    FileSystemManager::getInstance().registerAssetDriver();
 
     // init log printf
     lv_log_register_print_cb([](lv_log_level_t level, const char *buf) -> void { LogWarn << "lvgl logs:" << buf; });
@@ -54,7 +65,6 @@ bool Application::initApp()
     return true;
 }
 
-
 void Application::initStackView()
 {
     StackView::getInstance().start();
@@ -71,11 +81,10 @@ int Application::exec()
         initApp();
     }
 
-    if(enable_stack_view_)
+    if (enable_stack_view_)
     {
         initStackView();
     }
-
 
     while (true)
     {
@@ -97,26 +106,27 @@ void Application::postEvent(const Event &evt)
 
 void Application::handleEvent()
 {
-    std::lock_guard<std::mutex> lock(mutex_);
-
-    if(enable_stack_view_)
+    // Destroy popped views outside the queue lock: activity destructors may
+    // post events themselves.
+    if (enable_stack_view_)
     {
         StackView::getInstance().clearDeleteVec();
     }
 
-    // 需要注意
-    if (event_queue_.empty())
+    std::optional<Event> event;
     {
-        return;
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (!event_queue_.empty())
+        {
+            event = event_queue_.front();
+            event_queue_.pop();
+        }
     }
 
-    Event event_ref = event_queue_.front();
-
-    event_queue_.pop();
-
-    if(enable_stack_view_)
+    // Deliver outside the lock so handlers can call postEvent() again.
+    if (event && enable_stack_view_)
     {
-        StackView::getInstance().notifyAllUi(event_ref);
+        StackView::getInstance().notifyAllUi(*event);
     }
 }
 } // namespace lvglpp::sys

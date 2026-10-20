@@ -2,6 +2,7 @@
 #define UI_UTILS_H
 
 #include <codecvt>
+#include <cstdlib>
 #include <locale>
 #include <string>
 
@@ -17,48 +18,11 @@ public:
     Utils operator=(const Utils &) = delete;
 
     /**
-     * 获取资源访问的根路径
-     * @return
-     */
-    static std::string getAssetDirRoot();
-
-    /**
-     * 把资源系统路径转化为系统路径
-     * @param asset_res
-     * @return
-     */
-    static std::string convertAssetResToGlobal(const std::string &asset_res);
-
-    /**
-     * 读取文件全部内容
-     * @param path
-     * @return
-     */
-    static std::string readAllText(const std::string &path);
-
-    /**
-     * 判读是否是资源URL
-     * @param asset_res
-     * @return
-     */
-    static bool isAssetResUrl(const std::string &asset_res);
-
-    static char getAssetetter()
-    {
-        return g_asset_letter;
-    }
-
-    static char getMemAssetLetter()
-    {
-        return g_mem_asset_letter;
-    }
-
-    /**
      * 转换成xh xmin xs
      * @param sec
      * @return
      */
-    static std::string convertSecToTimeLabel(int sec, const std::string &boost_fmt = "%1%h %2%min %3%s");
+    static std::string convertSecToTimeLabel(int sec, const std::string &fmt = "%1%h %2%min %3%s");
 
     /**
      * 时间戳转换为对应格式时间
@@ -125,13 +89,8 @@ public:
             return ssid;
         }
     }
-
-private:
-    static char g_asset_letter;
-    static char g_mem_asset_letter;
 };
 
-std::string tr(const std::string &str_src);
 } // namespace tools
 } // namespace lvglpp
 

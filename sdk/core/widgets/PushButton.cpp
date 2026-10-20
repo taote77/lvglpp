@@ -1,23 +1,44 @@
 #include "PushButton.h"
 #include "config/color_sheet.h"
+#include "core/style/Theme.h"
 #include <memory>
 
 namespace lvglpp::widgets {
 
 using namespace form::design;
 
+namespace {
+
+core::ButtonStyle toThemeStyle(PushButton::ColorStyle type)
+{
+    switch (type)
+    {
+    case PushButton::Blue:
+        return core::ButtonStyle::Blue;
+    case PushButton::Dark:
+        return core::ButtonStyle::Dark;
+    case PushButton::Gray:
+        return core::ButtonStyle::Gray;
+    case PushButton::LightBlue:
+        return core::ButtonStyle::LightBlue;
+    case PushButton::BlackBroder:
+        return core::ButtonStyle::BlackBorder;
+    case PushButton::Red:
+        return core::ButtonStyle::Red;
+    case PushButton::DarkGray:
+        return core::ButtonStyle::DarkGray;
+    }
+    return core::ButtonStyle::Blue;
+}
+
+} // namespace
+
 PushButton::PushButton(int width, int height, PushButton::ColorStyle type, const std::string &strMsg, BaseItem *parent) : BaseItem(parent), type_(type)
 {
     init(width, height, type);
-    if (strMsg.size() >= 2 && strMsg[0] == ':' && strMsg[1] == '/')
-    {
-        // 如果是图片资源
-        initImage(strMsg);
-    } else
-    {
-        initLabel(strMsg, type);
-    }
+    initLabel(strMsg, type);
     setColorType(type);
+    setFocusable(true);
 }
 
 PushButton::PushButton(int width, int height, PushButton::ColorStyle type, const std::string &strMsg, const std::string &strImgPath, BaseItem *parent) :
@@ -27,6 +48,7 @@ PushButton::PushButton(int width, int height, PushButton::ColorStyle type, const
     initImage(strImgPath);
     initLabel(strMsg, type);
     setColorType(type);
+    setFocusable(true);
 }
 
 void PushButton::init(int width, int height, PushButton::ColorStyle type)
@@ -51,83 +73,25 @@ void PushButton::setColorType(ColorStyle type)
     {
         return;
     }
-    if (type == PushButton::Blue)
-    {
-        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_WIDGET_BUTTON_BLUE), LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_WIDGET_BUTTON_BLUE_DIS), LV_STATE_PRESSED);
-        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_SURFACE_DIS_CONTAINER_1), LV_STATE_DISABLED);
-        if (label_ != nullptr)
-        {
-            label_->setTextClr(CLR_ON_SURFACE);
-        }
-    } else if (type == PushButton::Gray)
-    {
-        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_SECONDARY), LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_WIDGET_BUTTON_GRAY_DIS), LV_STATE_PRESSED);
-        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_SURFACE_DIS_CONTAINER_1), LV_STATE_DISABLED);
-        if (label_ != nullptr)
-        {
-            label_->setTextClr(CLR_ON_SURFACE);
-        }
-    } else if (type == PushButton::DarkGray)
-    {
-        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_SECONDARY_CONTAINER), LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_PRIMARY_BLACK_HOVER), LV_STATE_PRESSED);
-        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_SURFACE_DIS_CONTAINER_1), LV_STATE_DISABLED);
-        if (label_ != nullptr)
-        {
-            label_->setTextClr(CLR_ON_SURFACE);
-        }
-    } else if (type == PushButton::Dark)
-    {
-        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_PRIMARY_DARK_BG), LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_PRIMARY_BLACK), LV_STATE_PRESSED);
-        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_PRIMARY_BLACK_HOVER), LV_STATE_DISABLED);
 
-        if (label_ != nullptr)
-        {
-            label_->setTextClr(CLR_ON_SURFACE);
-        }
-    } else if (type == PushButton::LightBlue)
-    {
-        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(0xF7F9FF), LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(0xEAEFFF), LV_STATE_PRESSED);
-        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(0xF7F9FF), LV_STATE_DISABLED);
+    type_                              = type;
+    const core::ButtonPalette &palette = core::Theme::instance().buttonPalette(toThemeStyle(type));
 
-        if (label_ != nullptr)
-        {
-            label_->setTextClr(CLR_PRIMARY_BLUE);
-        }
-    } else if (type == PushButton::BlackBroder)
+    if (palette.transparent)
     {
         lv_obj_set_style_bg_opa(getLvglItem(), LV_OPA_TRANSP, LV_STATE_DEFAULT);
         lv_obj_set_style_border_width(getLvglItem(), 1, LV_STATE_DEFAULT);
-        lv_obj_set_style_border_color(getLvglItem(), lv_color_hex(CLR_PRIMARY_DIS_BG), LV_STATE_DEFAULT);
-
-        if (label_ != nullptr)
-        {
-            label_->setTextClr(CLR_PRIMARY_BLACK);
-        }
-    } else if (type == PushButton::Red)
-    {
-        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_WARNING_DARK), LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(0x661616), LV_STATE_PRESSED);
-        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_PRIMARY_BLACK_HOVER), LV_STATE_DISABLED);
-
-        if (label_ != nullptr)
-        {
-            label_->setTextClr(CLR_ON_SURFACE);
-        }
+        lv_obj_set_style_border_color(getLvglItem(), lv_color_hex(palette.border_color), LV_STATE_DEFAULT);
     } else
     {
-        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_WIDGET_BUTTON_BLUE), LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_PRIMARY_DARK_BLUE), LV_STATE_PRESSED);
-        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(CLR_PRIMARY_BLUE_DIS_TEXT), LV_STATE_DISABLED);
+        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(palette.normal_bg), LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(palette.pressed_bg), LV_STATE_PRESSED);
+        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(palette.disabled_bg), LV_STATE_DISABLED);
+    }
 
-        if (label_ != nullptr)
-        {
-            label_->setTextClr(CLR_ON_SURFACE);
-        }
+    if (label_ != nullptr)
+    {
+        label_->setTextClr(palette.label_color);
     }
 }
 
@@ -179,7 +143,10 @@ void PushButton::setTextPos(lv_align_t align, int x, int y)
 
 void PushButton::setTextAlignment(lv_text_align_t align_type)
 {
-    lv_style_set_text_align(label_->getTextStyle(), align_type);
+    if (label_ != nullptr)
+    {
+        label_->setTextAlign(align_type);
+    }
 }
 
 void PushButton::setTextMsg(const std::string &str)
@@ -194,20 +161,18 @@ void PushButton::setTextMsg(const std::string &str)
 void PushButton::setEnable(bool enable)
 {
     BaseItem::setEnable(enable);
-    if (type_ == PushButton::Gray)
+    if (label_ != nullptr)
     {
-        if (label_ != nullptr)
-        {
-            label_->setTextClr(enable ? CLR_PRIMARY_BLACK : CLR_PRIMARY_DIS_BG);
-        }
+        const core::ButtonPalette &palette = core::Theme::instance().buttonPalette(toThemeStyle(type_));
+        label_->setTextClr(enable ? palette.label_color : palette.label_disabled);
     }
 }
 
-void PushButton::changeImageUrl(const std::string &url)
+void PushButton::changeImageAsset(const std::string &assetPath)
 {
     if (img_obj_ != nullptr)
     {
-        img_obj_->setImageSrcPath(url);
+        img_obj_->setAsset(assetPath);
     }
 }
 

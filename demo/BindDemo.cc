@@ -18,10 +18,10 @@ void BindDemo::onCreate(std::any arg)
 
     // _label->setAligment(LV_ALIGN_CENTER, 0, -80);
 
-    // _gif = std::make_shared<widgets::GifImage>("G:/gif/bird.gif", getRoot());
+    // _gif = std::make_shared<widgets::GifImage>("gif/bird.gif", getRoot());
     // _gif->setPos(0, 0);
 
-    _lottie = std::make_shared<widgets::LottieCanvas>("asset/lottie/camera.json", getRoot());
+    _lottie = std::make_shared<widgets::LottieCanvas>("lottie/camera.json", getRoot());
     // _lottie->setPos(0, 0);
     _lottie->setCacheSize(190, 120);
     _lottie->setAligment(LV_ALIGN_CENTER, 0, 0);
@@ -49,7 +49,7 @@ void BindDemo::onCreate(std::any arg)
     //     lv_subject_copy_string(&_subject, _txt.c_str());
     // });
 
-    // _img = std::make_shared<widgets::Image>(":/image/400x300/sky.png", getRoot());
+    // _img = std::make_shared<widgets::Image>("image/400x300/sky.png", getRoot());
     // // _img->setSize(200, 200);
     // _img->setAligment(LV_ALIGN_TOP_RIGHT, 0, 0);
 

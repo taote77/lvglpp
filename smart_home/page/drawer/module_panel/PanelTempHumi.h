@@ -4,8 +4,6 @@
 #include "core/widgets/BaseItem.h"
 #include "core/widgets/LvText.h"
 #include "core/widgets/Image.h"
-#include <boost/format.hpp>
-#include <boost/signals2/signal.hpp>
 #include <cstdint>
 #include <iomanip>
 #include <iostream>

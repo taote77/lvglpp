@@ -1,4 +1,5 @@
 #include "DrmApplication.h"
+#include "core/tools/ImageManager.h"
 
 #include "core/sys/StackView.h"
 #include "lvgl.h"
@@ -45,6 +46,7 @@ bool DrmApplication::initApp()
 void DrmApplication::exit(int code)
 {
     StackView::getInstance().shutdown();
+    tools::ImageManager::shutdown();
     std::exit(code);
 }
 

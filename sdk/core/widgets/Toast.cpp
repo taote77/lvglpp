@@ -37,8 +37,10 @@ void Toast::error(const std::string &msg)
 
 Toast &Toast::getInstance()
 {
-    static Toast instance;
-    return instance;
+    // Process-lifetime: the toast root lives on lv_layer_top() and must not be
+    // deleted by a static destructor after lv_deinit().
+    static Toast *instance = new Toast();
+    return *instance;
 }
 
 Toast::Toast()

@@ -1,10 +1,7 @@
 #ifndef _SESSION_H
 #define _SESSION_H
 
-// #include "ws_gw/ws_gw.h"
-
-#include <boost/json/object.hpp>
-struct WsGwContext;
+#include "net/ws_gw/ws_gw.h"
 
 class WebsocketSession
 {
@@ -18,7 +15,7 @@ public:
 
     ~WebsocketSession();
 
-    void Post(boost::json::object &data);
+    void Post(wsgw::Json &data);
 
     void Init();
 };

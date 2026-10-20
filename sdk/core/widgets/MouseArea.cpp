@@ -4,15 +4,14 @@ namespace lvglpp::widgets {
 MouseArea::MouseArea(BaseItem *parent) : BaseItem(parent), pressing_cb_(nullptr), released_cb_(nullptr)
 {
     this->setOpacity(0);
-    lv_obj_add_event_cb(
-        this->getLvglItem(),
+    addLvglEventHandler(
         [](lv_event_t *e) -> void {
             auto p = (MouseArea *)lv_event_get_user_data(e);
             if (p != nullptr)
             {
                 if (p->pressing_cb_ != nullptr)
                 {
-                    lv_indev_t *indev = lv_indev_get_act();
+                    lv_indev_t *indev = lv_indev_active();
                     if (indev == NULL)
                         return;
                     lv_point_t vect;
@@ -24,15 +23,14 @@ MouseArea::MouseArea(BaseItem *parent) : BaseItem(parent), pressing_cb_(nullptr)
         },
         LV_EVENT_PRESSING, this);
 
-    lv_obj_add_event_cb(
-        this->getLvglItem(),
+    addLvglEventHandler(
         [](lv_event_t *e) -> void {
             auto p = (MouseArea *)lv_event_get_user_data(e);
             if (p != nullptr)
             {
                 if (p->released_cb_ != nullptr)
                 {
-                    lv_indev_t *indev = lv_indev_get_act();
+                    lv_indev_t *indev = lv_indev_active();
                     if (indev == NULL)
                         return;
                     lv_point_t vect;

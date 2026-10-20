@@ -1,28 +1,65 @@
-
 #ifndef LVGLPP_IMAGE_H
 #define LVGLPP_IMAGE_H
 
 #include "BaseItem.h"
+#include "core/tools/ImageResource.h"
+#include <memory>
 #include <string>
 
 namespace lvglpp::widgets {
 
+/// Marks a real filesystem path (as opposed to an application asset path).
+struct FileSource {
+    std::string path;
+};
+
 class Image : public BaseItem
 {
 public:
-    explicit Image(const std::string &path, BaseItem *parent = nullptr);
+    /// Load an image from the application assets (AssetManager logical path).
+    explicit Image(const std::string &assetPath, BaseItem *parent = nullptr);
 
-    void setImageSrcPath(const std::string &path);
+    /// Load an image from a real filesystem path.
+    explicit Image(FileSource source, BaseItem *parent = nullptr);
+
+    /// Load from the application assets, e.g. "image/40x40/icon.png".
+    void setAsset(const std::string &assetPath);
+
+    /// Load from the real filesystem.
+    void setFile(const std::string &fsPath);
+
+    /// Drop the cached entry and load the current source again.
+    void reload();
+
+    /// Compatibility name; now always interpreted as an asset path.
+    void setImageSrcPath(const std::string &assetPath)
+    {
+        setAsset(assetPath);
+    }
 
     const std::string &getImageSrcPath() const
     {
         return src_path_;
     }
 
+    const std::string &source() const
+    {
+        return src_path_;
+    }
+
+    bool isFileSource() const
+    {
+        return file_source_;
+    }
+
     void setEnable(bool enable) override;
 
 private:
-    std::string src_path_;
+    void applySource(const std::string &path, bool fileSource);
+
+    std::string        src_path_;
+    tools::ImageHandle image_resource_;
+    bool               file_source_ = false;
 };
 
 } // namespace lvglpp::widgets

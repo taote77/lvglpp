@@ -2,7 +2,6 @@
 
 #include "net/ws_gw/net_pub_def.h"
 #include "net/ws_gw/ws_gw.h"
-#include <boost/json/object.hpp>
 
 WebsocketSession &WebsocketSession::Instance()
 {
@@ -16,7 +15,7 @@ WebsocketSession::WebsocketSession(/* args */)
 WebsocketSession::~WebsocketSession()
 {}
 
-void WebsocketSession::Post(boost::json::object &data)
+void WebsocketSession::Post(wsgw::Json &data)
 {
     WsGwError err = ws_gw_send_nofity(m_cxt, "127.0.0.1", data);
     if (err != WSGW_OK)
@@ -31,7 +30,7 @@ void WebsocketSession::Init()
     WsGwSetting setting;
     setting.bind_ip  = "127.0.0.1";
     setting.port     = port;
-    setting.callback = [this](const std::string &id, boost::json::object &req, boost::json::object &res) {
+    setting.callback = [this](const std::string &id, wsgw::Json &req, wsgw::Json &res) {
         (void)(id);
 
         this->OnHandle(req, res);
@@ -46,7 +45,7 @@ void WebsocketSession::OnMsgHandler(MsgHandler handler)
     _msg_handler = handler;
 }
 
-void WebsocketSession::OnHandle(boost::json::object &req, boost::json::object &res)
+void WebsocketSession::OnHandle(wsgw::Json &req, wsgw::Json &res)
 {
     _msg_handler(req, res);
 }

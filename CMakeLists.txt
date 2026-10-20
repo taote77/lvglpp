@@ -25,7 +25,12 @@ else ()
 endif ()
 
 
+option(ENABLE_LUA "Enable Lua bindings (requires lua-5.4)" OFF)
+
 add_subdirectory(sdk)
+
+# Asset pack/directory staging (needs the respack target from sdk/).
+include(cmake/assets.cmake)
 
 set(ENABLE_DEMO ON CACHE BOOL "Enable demo application")
 if (ENABLE_DEMO)

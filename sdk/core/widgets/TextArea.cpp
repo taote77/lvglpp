@@ -5,7 +5,9 @@ namespace lvglpp::widgets {
 
 TextArea::TextArea(BaseItem *parent)
     : BaseItem(tools::LvObjFactory::createLvglTextArea, parent)
-{}
+{
+    setFocusable(true);
+}
 
 void TextArea::setText(const std::string &text)
 {

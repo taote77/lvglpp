@@ -2,7 +2,6 @@
 #include "config/color_sheet.h"
 #include "core/sys/StackView.h"
 #include "page/sensor/TempCurveDlg.h"
-#include <boost/format.hpp>
 #include <random>
 
 using namespace form::design;
@@ -15,7 +14,7 @@ void SensorActivity::onCreate(std::any arg)
     BaseActivity::onCreate(arg);
     getRoot()->setBgColor(CLR_SURFACE);
 
-    force_dlg_ = new TempCurveDlg(); // std::make_shared<ui::dialogs::TempCurveDlg>();
+    force_dlg_ = std::make_unique<TempCurveDlg>();
     // force_dlg_->setAutoDel(false);
 
     btn_ = std::make_shared<widgets::RoundedButton>(200, 64, widgets::RoundedButton::Dark, "开始显示曲线", getRoot());
@@ -48,6 +47,12 @@ void SensorActivity::onCreate(std::any arg)
 
 void SensorActivity::onDestroy()
 {
+    if (remain_time_refresh_timer_ != nullptr)
+    {
+        lv_timer_delete(remain_time_refresh_timer_);
+        remain_time_refresh_timer_ = nullptr;
+    }
+    force_dlg_.reset();
     BaseActivity::onDestroy();
 }
 

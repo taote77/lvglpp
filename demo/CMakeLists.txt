@@ -32,7 +32,7 @@ target_sources(${PROJECT_NAME} PRIVATE
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     lvglpp
-    sqlite3 ${SDL2_LIBRARIES} ${Boost_LIBRARIES}
+    ${SDL2_LIBRARIES}
     lvgl
 )
 
@@ -47,5 +47,9 @@ add_subdirectory(i18n_demo)
 add_subdirectory(qrcode)
 add_subdirectory(remote_ctrl)
 add_subdirectory(img_disp)
-add_subdirectory(lua_ui)
+if (ENABLE_LUA)
+    add_subdirectory(lua_ui)
+endif ()
 # add_subdirectory(clua)
+
+lvglpp_attach_assets(${PROJECT_NAME})

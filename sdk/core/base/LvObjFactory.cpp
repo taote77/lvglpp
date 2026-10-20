@@ -1,7 +1,35 @@
 
 #include "LvObjFactory.h"
+#include "core/style/Theme.h"
 
 namespace lvglpp::tools {
+
+namespace {
+
+/// Shared default container style. Using a shared style (instead of local
+/// style props) allows callers to override properties with BaseItem::applyStyle().
+const core::Style &containerBaseStyle()
+{
+    // Process-lifetime style: LVGL objects reference it until lv_deinit().
+    static const core::Style *style = [] {
+        auto *s = new core::Style();
+        s->padAll(0).radius(0).borderWidth(0).outline(0, 0x000000, 0);
+        return s;
+    }();
+    return *style;
+}
+
+const core::Style &canvasStyle()
+{
+    static const core::Style *style = [] {
+        auto *s = new core::Style(containerBaseStyle().clone());
+        s->bgColor(core::Theme::instance().hex(core::ColorRole::SurfaceCanvas));
+        return s;
+    }();
+    return *style;
+}
+
+} // namespace
 
 lv_obj_t *LvObjFactory::createLvglItem(lv_obj_t *parent)
 {
@@ -13,13 +41,7 @@ lv_obj_t *LvObjFactory::createLvglItem(lv_obj_t *parent)
 lv_obj_t *LvObjFactory::createLvglScrolable(lv_obj_t *parent)
 {
     lv_obj_t *item = lv_obj_create(parent);
-    lv_obj_set_style_pad_all(item, 0, LV_STATE_DEFAULT);
-    lv_obj_set_style_radius(item, 0, LV_STATE_DEFAULT);
-    lv_obj_set_style_border_width(item, 0, LV_STATE_DEFAULT);
-    lv_obj_set_style_outline_pad(item, 0, LV_STATE_DEFAULT);
-    lv_obj_set_style_outline_width(item, 0, LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(item, lv_color_hex(0X444E5B), LV_STATE_DEFAULT);
-    // lv_obj_set_style_bg_color(item, lv_color_hex(0x000000), LV_STATE_DEFAULT);
+    canvasStyle().applyTo(item);
     return item;
 }
 
@@ -47,11 +69,7 @@ lv_obj_t *LvObjFactory::createLvglDialog(lv_obj_t *parent)
 {
     LV_UNUSED(parent);
     lv_obj_t *item = lv_obj_create(lv_layer_top());
-    lv_obj_set_style_pad_all(item, 0, LV_STATE_DEFAULT);
-    lv_obj_set_style_radius(item, 0, LV_STATE_DEFAULT);
-    lv_obj_set_style_border_width(item, 0, LV_STATE_DEFAULT);
-    lv_obj_set_style_outline_pad(item, 0, LV_STATE_DEFAULT);
-    lv_obj_set_style_outline_width(item, 0, LV_STATE_DEFAULT);
+    containerBaseStyle().applyTo(item);
     return item;
 }
 
@@ -65,11 +83,7 @@ lv_obj_t *LvObjFactory::createLvglSysDialog(lv_obj_t *parent)
     LV_UNUSED(parent);
     lv_obj_t *item = lv_obj_create(lv_layer_sys());
     lv_obj_clear_flag(item, LV_OBJ_FLAG_SCROLLABLE);
-    lv_obj_set_style_pad_all(item, 0, LV_STATE_DEFAULT);
-    lv_obj_set_style_radius(item, 0, LV_STATE_DEFAULT);
-    lv_obj_set_style_border_width(item, 0, LV_STATE_DEFAULT);
-    lv_obj_set_style_outline_pad(item, 0, LV_STATE_DEFAULT);
-    lv_obj_set_style_outline_width(item, 0, LV_STATE_DEFAULT);
+    containerBaseStyle().applyTo(item);
     return item;
 }
 
@@ -161,6 +175,26 @@ lv_obj_t *LvObjFactory::createLvglCalendar(lv_obj_t *parent)
 lv_obj_t *LvObjFactory::createLvglTable(lv_obj_t *parent)
 {
     return lv_table_create(parent);
+}
+
+lv_obj_t *LvObjFactory::createLvglSpinner(lv_obj_t *parent)
+{
+    return lv_spinner_create(parent);
+}
+
+lv_obj_t *LvObjFactory::createLvglImageButton(lv_obj_t *parent)
+{
+    return lv_imagebutton_create(parent);
+}
+
+lv_obj_t *LvObjFactory::createLvglMsgBox(lv_obj_t *parent)
+{
+    return lv_msgbox_create(parent);
+}
+
+lv_obj_t *LvObjFactory::createLvglScale(lv_obj_t *parent)
+{
+    return lv_scale_create(parent);
 }
 
 } // namespace lvglpp::tools

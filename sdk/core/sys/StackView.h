@@ -6,6 +6,8 @@
 #include "Application.h"
 #include "Event.h"
 #include <any>
+#include <deque>
+#include <functional>
 #include <memory>
 #include <vector>
 
@@ -87,13 +89,25 @@ protected:
 
 private:
     bool                                   working_       = false;
+    bool                                   animating_     = false;
     const int                              enter_anim_ms_ = 250;
     const int                              pop_anim_ms_   = 250;
     std::vector<std::shared_ptr<Activity>> view_manager_;
+    std::vector<std::any>                  view_args_;
     std::vector<std::shared_ptr<Activity>> delete_view_manager_;
+    std::deque<std::function<void()>>      pending_ops_;
     Application                           *app_ = nullptr;
 
     StackView();
+
+    /// Run immediately, or queue while a pop transition is in flight.
+    void runOrQueue(std::function<void()> op);
+
+    void processPendingOps();
+
+    void popTop();
+
+    void cancelAnimations(Activity *activity);
 
     void popViewAndRunCb();
 };

@@ -48,7 +48,7 @@ ModuleDetailPulseDialog::ModuleDetailPulseDialog(const int progress, const int s
     // _status_value_label = std::make_shared<ConsumeText>(lvTr("EMPTY_INFO"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24);
     _status_value_label->setAligmentTo(*_status_label, LV_ALIGN_OUT_RIGHT_MID, 12, 0);
 
-    _close_button = std::make_shared<RoundedButton>(48, 48, RoundedButton::ColorStyle::Gray, "", ":/image/32x32/x_close.png", _dialog_bg_item.get());
+    _close_button = std::make_shared<RoundedButton>(48, 48, RoundedButton::ColorStyle::Gray, "", "image/32x32/x_close.png", _dialog_bg_item.get());
     _close_button->setRadius(24);
     _close_button->setAligment(LV_ALIGN_BOTTOM_MID, 0, -20);
     _close_button->setOnClickedListener([this]() {

@@ -5,7 +5,6 @@
 #include "core/widgets/LvText.h"
 #include "core/widgets/PushButton.h"
 #include "core/widgets/SwitchButton.h"
-#include <boost/signals2/signal.hpp>
 
 namespace lvglpp::ui::page {
 using namespace lvglpp::widgets;

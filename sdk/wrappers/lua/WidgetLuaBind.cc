@@ -112,7 +112,9 @@ void WidgetLuaBind::bindImage(sol::state& lua) {
     
     bindCommonMethods(image_type);
     
-    image_type["set_image_src_path"] = &widgets::Image::setImageSrcPath;
+    image_type["set_image_src_path"] = &widgets::Image::setAsset;
+    image_type["set_asset"] = &widgets::Image::setAsset;
+    image_type["set_file"] = &widgets::Image::setFile;
     image_type["get_image_src_path"] = &widgets::Image::getImageSrcPath;
 }
 
@@ -157,7 +159,7 @@ void WidgetLuaBind::bindPushButton(sol::state& lua) {
     
     button_type["set_text_alignment"] = &widgets::PushButton::setTextAlignment;
     button_type["set_text_msg"] = &widgets::PushButton::setTextMsg;
-    button_type["change_image_url"] = &widgets::PushButton::changeImageUrl;
+    button_type["change_image_asset"] = &widgets::PushButton::changeImageAsset;
     button_type["set_color_type"] = &widgets::PushButton::setColorType;
     button_type["set_repeat_ms"] = &widgets::PushButton::setRepeatMs;
     

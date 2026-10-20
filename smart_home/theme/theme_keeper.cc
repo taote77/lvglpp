@@ -1,4 +1,5 @@
 #include "theme_keeper.h"
+#include "core/style/Theme.h"
 #include <src/misc/lv_style.h>
 
 using namespace form::design;
@@ -19,6 +20,16 @@ ThemeKeeper::ThemeKeeper()
 
 void ThemeKeeper::SetTheme(const std::string &theme_name)
 {
+    // Theme changes affect newly created widgets; set the mode before building
+    // a screen. Existing widgets keep the styles they were created with.
+    if (theme_name == "light" || theme_name == "Light" || theme_name == "SHALLOW")
+    {
+        lvglpp::core::Theme::instance().setMode(lvglpp::core::ThemeMode::Light);
+    }
+    else
+    {
+        lvglpp::core::Theme::instance().setMode(lvglpp::core::ThemeMode::Dark);
+    }
 }
 
 lv_style_t &ThemeKeeper::StyleTaskCard()
