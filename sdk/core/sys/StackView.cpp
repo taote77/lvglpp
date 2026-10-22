@@ -1,5 +1,6 @@
 #include "StackView.h"
 #include "Activity.h"
+#include "UiConfig.h"
 #include <lvgl.h>
 #include <utility>
 
@@ -147,7 +148,12 @@ void StackView::enterAnim(const Activity *act)
             lv_obj_set_x((lv_obj_t *)obj, (lv_coord_t)v);
         }
     });
-    lv_anim_set_values(&a_enter, lv_disp_get_hor_res(d), 0);
+#if LVGLPP_ENABLE_RTL
+    const lv_coord_t enter_from = UiConfig::instance().isRtl() ? -lv_disp_get_hor_res(d) : lv_disp_get_hor_res(d);
+#else
+    const lv_coord_t enter_from = lv_disp_get_hor_res(d);
+#endif
+    lv_anim_set_values(&a_enter, enter_from, 0);
     lv_anim_start(&a_enter);
 }
 
@@ -184,7 +190,11 @@ void StackView::popAnim(const Activity *act)
             lv_obj_set_x((lv_obj_t *)obj, (lv_coord_t)v);
         }
     });
+#if LVGLPP_ENABLE_RTL
+    auto end_num = UiConfig::instance().isRtl() ? -lv_disp_get_hor_res(d) : lv_disp_get_hor_res(d);
+#else
     auto end_num = lv_disp_get_hor_res(d);
+#endif
     lv_anim_set_values(&a_pop, 0, end_num);
     lv_anim_start(&a_pop);
 }
@@ -410,6 +420,38 @@ void StackView::notifyAllUi(const Event &e)
     for (auto &it : view_manager_)
     {
         it->onNotifyUI(e);
+    }
+}
+
+bool StackView::isAnimating() const
+{
+    return animating_ || !pending_ops_.empty();
+}
+
+void StackView::cancelRootAnimations()
+{
+    for (auto &activity : view_manager_)
+    {
+        if (activity && activity->getRoot() != nullptr && activity->getRoot()->getLvglItem() != nullptr)
+        {
+            lv_anim_delete(activity->getRoot()->getLvglItem(), nullptr);
+        }
+    }
+}
+
+void StackView::notifyConfigurationChanged(const UiConfiguration &configuration)
+{
+    for (auto it = view_manager_.rbegin(); it != view_manager_.rend(); ++it)
+    {
+        if (*it)
+        {
+            (*it)->onConfigurationChanged(configuration);
+        }
+    }
+
+    if (Activity *current = getCurrentActivity())
+    {
+        current->refreshFocus();
     }
 }
 

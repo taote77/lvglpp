@@ -2,6 +2,14 @@
 #define LV_TRANSLATOR_H
 
 #include <string>
+
+#if defined(__cplusplus) && __cplusplus >= 202002L && defined(__has_include)
+#if __has_include(<format>)
+#include <format>
+#define LVGLPP_HAS_STD_FORMAT 1
+#endif
+#endif
+
 namespace lvglpp {
 
 enum LANGUAGE {
@@ -34,6 +42,28 @@ protected:
 const char *lvTr(const char *text);
 
 const std::string lvTrStr(const char *text);
+
+#ifdef LVGLPP_HAS_STD_FORMAT
+/**
+ * Translate a strid containing std::format placeholders and format it.
+ * Example: lvTrFmt("Common.DeviceCount", 3) with "{} devices".
+ */
+template <typename... Args>
+inline std::string lvTrFmt(const char *strid, Args &&...args)
+{
+    const char *fmt = lvTr(strid);
+    try
+    {
+        return std::vformat(fmt, std::make_format_args(args...));
+    }
+    catch (const std::format_error &)
+    {
+        // A bad translation must not take down the UI; fall back to the raw
+        // translated string (still better than the strid).
+        return fmt;
+    }
+}
+#endif
 
 } // namespace lvglpp
 

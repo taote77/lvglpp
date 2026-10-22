@@ -711,8 +711,10 @@
 /*Barcode code library*/
 #define LV_USE_BARCODE 0
 
-/*FreeType library*/
-#define LV_USE_FREETYPE 1
+/*FreeType library (opt-in: configure with -DLVGLPP_ENABLE_FREETYPE=ON)*/
+#ifndef LV_USE_FREETYPE
+    #define LV_USE_FREETYPE 0
+#endif
 #if LV_USE_FREETYPE
     /*Let FreeType to use LVGL memory and file porting*/
     #define LV_FREETYPE_USE_LVGL_PORT 0
@@ -722,8 +724,10 @@
     #define LV_FREETYPE_CACHE_FT_GLYPH_CNT (256 * 4)
 #endif
 
-/* Built-in TTF decoder */
-#define LV_USE_TINY_TTF 1
+/* Built-in TTF decoder (vector fonts are opt-in; bitmap fonts are the default) */
+#ifndef LV_USE_TINY_TTF
+    #define LV_USE_TINY_TTF 0
+#endif
 #if LV_USE_TINY_TTF
     /* Enable loading TTF data from files */
     #define LV_TINY_TTF_FILE_SUPPORT 0

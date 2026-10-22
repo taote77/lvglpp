@@ -4,9 +4,56 @@
 
 #include "core/log/log.h"
 
+#include <algorithm>
+#include <cstdlib>
+#include <cstring>
 #include <utility>
 
 namespace lvglpp::sys {
+
+namespace {
+
+bool envFlag(const char *name)
+{
+    const char *value = std::getenv(name);
+    return value != nullptr
+        && (std::strcmp(value, "1") == 0 || std::strcmp(value, "true") == 0
+            || std::strcmp(value, "yes") == 0 || std::strcmp(value, "on") == 0);
+}
+
+int envInt(const char *name, int fallback)
+{
+    const char *value = std::getenv(name);
+    if (value == nullptr || *value == '\0')
+    {
+        return fallback;
+    }
+    char *end = nullptr;
+    const long parsed = std::strtol(value, &end, 10);
+    return (end != value) ? static_cast<int>(parsed) : fallback;
+}
+
+lv_display_rotation_t rotationFromDegrees(int degrees)
+{
+    int normalized = degrees % 360;
+    if (normalized < 0)
+    {
+        normalized += 360;
+    }
+    switch (normalized)
+    {
+    case 90:
+        return LV_DISPLAY_ROTATION_90;
+    case 180:
+        return LV_DISPLAY_ROTATION_180;
+    case 270:
+        return LV_DISPLAY_ROTATION_270;
+    default:
+        return LV_DISPLAY_ROTATION_0;
+    }
+}
+
+} // namespace
 
 SdlPlatform::SdlPlatform(int argc, char **argv)
 {
@@ -48,6 +95,16 @@ bool SdlPlatform::init()
     // From here on lv_deinit() owns SDL teardown via release_disp_cb.
     driver_owns_sdl_ = true;
     lv_display_set_default(display_);
+
+    native_width_    = lv_display_get_horizontal_resolution(display_);
+    native_height_   = lv_display_get_vertical_resolution(display_);
+    fixed_panel_     = envFlag("LVGLPP_SDL_FIXED_PANEL");
+    rotation_offset_ = envInt("LVGLPP_PANEL_ROTATION_OFFSET", 0);
+
+#if LV_DRAW_TRANSFORM_USE_MATRIX
+    // Required for visible rotation in DIRECT render mode.
+    lv_display_set_matrix_rotation(display_, true);
+#endif
 
     mouse_    = lv_sdl_mouse_create();
     keyboard_ = lv_sdl_keyboard_create();
@@ -143,8 +200,35 @@ void SdlPlatform::simulatePointerClick(std::int32_t x, std::int32_t y)
         return;
     }
 
-    sim_position_.x = static_cast<lv_coord_t>(x);
-    sim_position_.y = static_cast<lv_coord_t>(y);
+    // Automation passes logical UI coordinates; the LVGL core rotates raw
+    // indev coordinates forward, so undo the display rotation here.
+    const lv_display_rotation_t rotation = lv_display_get_rotation(display_);
+    const std::int32_t nativeWidth       = lv_display_get_original_horizontal_resolution(display_);
+    const std::int32_t nativeHeight      = lv_display_get_original_vertical_resolution(display_);
+
+    std::int32_t rawX = x;
+    std::int32_t rawY = y;
+    switch (rotation)
+    {
+    case LV_DISPLAY_ROTATION_90:
+        rawX = y;
+        rawY = nativeHeight - x - 1;
+        break;
+    case LV_DISPLAY_ROTATION_180:
+        rawX = nativeWidth - x - 1;
+        rawY = nativeHeight - y - 1;
+        break;
+    case LV_DISPLAY_ROTATION_270:
+        rawX = nativeWidth - y - 1;
+        rawY = x;
+        break;
+    case LV_DISPLAY_ROTATION_0:
+    default:
+        break;
+    }
+
+    sim_position_.x = static_cast<lv_coord_t>(rawX);
+    sim_position_.y = static_cast<lv_coord_t>(rawY);
 
     sim_pressed_ = true;
     lv_indev_read(sim_);
@@ -154,6 +238,46 @@ void SdlPlatform::simulatePointerClick(std::int32_t x, std::int32_t y)
     sim_pressed_ = false;
     lv_indev_read(sim_);
     lv_refr_now(display_);
+}
+
+bool SdlPlatform::applyOrientation(Orientation orientation)
+{
+    if (display_ == nullptr)
+    {
+        return false;
+    }
+
+    const int degrees = static_cast<int>(orientation) + rotation_offset_;
+
+    if (fixed_panel_)
+    {
+        // LVGL 9.3's DIRECT + matrix transform path does not reliably support
+        // 90/270 on the SDL texture backend (memory corruption at 90°). Use the
+        // fixed-panel path only for 0/180; fall back to window reshape for the
+        // portrait directions. FBDEV is the reference rotation backend.
+        if (orientation == Orientation::Portrait || orientation == Orientation::ReversePortrait)
+        {
+            LOG_WARN() << "SDL fixed-panel 90/270 is unsupported; using window reshape instead";
+        }
+        else
+        {
+            lv_display_set_resolution(display_, native_width_, native_height_);
+            lv_display_set_rotation(display_, rotationFromDegrees(degrees));
+            return true;
+        }
+    }
+
+    // Desktop mode: reshape the window to the logical orientation. 90/270
+    // become a portrait window; 180/270 additionally rotate the content so
+    // the four gyro directions remain distinguishable.
+    const bool  portrait   = orientation == Orientation::Portrait || orientation == Orientation::ReversePortrait;
+    const bool  reverse    = orientation == Orientation::ReverseLandscape || orientation == Orientation::ReversePortrait;
+    const int   shortSide  = std::min(native_width_, native_height_);
+    const int   longSide   = std::max(native_width_, native_height_);
+
+    lv_display_set_resolution(display_, portrait ? shortSide : longSide, portrait ? longSide : shortSide);
+    lv_display_set_rotation(display_, reverse ? LV_DISPLAY_ROTATION_180 : LV_DISPLAY_ROTATION_0);
+    return true;
 }
 
 void SdlPlatform::setTheme(lv_theme_t *theme)

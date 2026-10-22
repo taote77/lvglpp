@@ -31,7 +31,7 @@ class Platform;
 class Application
 {
 public:
-    enum LanguageType { Chinese, English, Japanese, Russian, LOCAL };
+    enum LanguageType { Chinese, English, Japanese, Russian, Arabic, LOCAL };
 
     Application(int argc, char *argv[]);
     explicit Application(std::unique_ptr<Platform> platform, std::string executableName = {});

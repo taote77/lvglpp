@@ -2,6 +2,7 @@
 #define LVGLPP_BASEDIALOG_H
 
 #include "BaseItem.h"
+#include "core/base/Connection.h"
 #include <cstdint>
 #include <memory>
 
@@ -36,6 +37,7 @@ protected:
 private:
     std::unique_ptr<BaseItem> background_item_ptr_;
     std::uint64_t             focus_scope_ = 0;
+    core::ScopedConnection    config_connection_;
 };
 
 } // namespace lvglpp::widgets

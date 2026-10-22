@@ -5,9 +5,12 @@ This file provides concise instructions for AI coding assistants working on this
 ## Quick Reference
 
 - **Language**: C++17
-- **Build**: `cmake --build build -j$(nproc)` (configure: `cmake .. -DENABLE_DEMO=OFF`, add `-DENABLE_LUA=ON` to enable Lua)
+- **Build**: `cmake --build build -j$(nproc)` (configure: `cmake .. -DENABLE_DEMO=OFF`, add `-DENABLE_LUA=ON` to enable Lua, `-DLVGLPP_ENABLE_FREETYPE=ON` to enable FreeType; it is **off** by default)
+- **Orientation/RTL**: `-DLVGLPP_ENABLE_ROTATION=ON|OFF` / `-DLVGLPP_ENABLE_RTL=ON|OFF` (both default ON). Set both OFF for a zero-overhead static UI.
 - **Library**: `lvglpp` (shared), `lvglpp_lua` (static Lua bindings)
-- **LVGL version**: 9.x (submodule at `sdk/lvgl/`)
+- **LVGL version**: 9.x (vendored at `sdk/lvgl/`)
+- **Fonts**: compiled-in bitmap subsets in `sdk/core/tools/fonts/`; regenerate with `sdk/tools/i18n/gen_fonts.py` after changing `smart_home/i18n/strings.xlsx`
+- **i18n**: Excel is the source of truth; `gen_lv_i18n.py` generates `lv_i18n.c`; use `lvTr("strid")` / `lvTrFmt(...)` in UI code
 
 ## Code Rules (MUST FOLLOW)
 
@@ -30,6 +33,8 @@ This file provides concise instructions for AI coding assistants working on this
 - Add aliases for new widgets: `using ModernName = ClassName;`
 - Focus/keyboard handling: `sys::InputManager` (automatic per-Activity and per-dialog scopes)
 - Styling: `core::Style` / `core::Theme`; layout: flex/grid helpers on `BaseItem`
+- Configuration changes: `sys::UiConfig` + `Activity::onConfigurationChanged`; rebuild pages via `PageHost::releaseAll()+show(current)`
+- RTL: `BaseItem` mirrors explicit align/pos; **do not** manually mirror flex/grid (LVGL reverses them); charts are LTR
 - Full usage guide: `docs/CPP_SDK_GUIDE.md`
 
 ## After Every Change

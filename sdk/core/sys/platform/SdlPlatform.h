@@ -34,6 +34,18 @@ public:
     void setTheme(lv_theme_t *theme) override;
     void simulatePointerClick(std::int32_t x, std::int32_t y) override;
 
+    bool supportsPanelRotation() const noexcept override
+    {
+        return true;
+    }
+
+    bool supportsWindowReshape() const noexcept override
+    {
+        return true;
+    }
+
+    bool applyOrientation(Orientation orientation) override;
+
     bool providesTick() const noexcept override
     {
         return true;
@@ -57,6 +69,11 @@ private:
     bool            driver_owns_sdl_      = false;
     SDL_EventFilter previous_filter_      = nullptr;
     void           *previous_filter_data_ = nullptr;
+
+    std::int32_t native_width_     = 0;
+    std::int32_t native_height_    = 0;
+    bool         fixed_panel_      = false;
+    int          rotation_offset_  = 0;
 };
 
 } // namespace lvglpp::sys

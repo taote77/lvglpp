@@ -69,7 +69,7 @@ ModuleDetailPulseTrayDialog::ModuleDetailPulseTrayDialog(const double progress, 
     _resin_remain_label = std::make_shared<ConsumeText>(lvTr("EMPTY_INFO"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize22);
     _resin_remain_label->setAligmentTo(*_status_label, LV_ALIGN_OUT_RIGHT_MID, 4, 0);
 
-    _temperature_tag_label = std::make_shared<ConsumeText>(lvTr(""), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize22);
+    _temperature_tag_label = std::make_shared<ConsumeText>("", ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize22);
     _temperature_tag_label->setPos(286, 82 + 32 + 15);
 
     _temperature_value_label = std::make_shared<ConsumeText>(lvTr("EMPTY_INFO"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize22);
@@ -109,15 +109,13 @@ ModuleDetailPulseTrayDialog::~ModuleDetailPulseTrayDialog()
 void ModuleDetailPulseTrayDialog::UpdatePulseTrayInfo(const double progress, const int32_t resin_level, const int32_t tank_type, const int tank_state, const bool sensor_resin,
                                                       const int32_t remain_resin, const int32_t resin_temp)
 {
-    std::string status_str;
     if (remain_resin < 0)
     {
-        status_str = "EMPTY_INFO";
+        _resin_remain_label->setText(lvTr("EMPTY_INFO"));
     } else
     {
-        status_str = std::to_string(remain_resin) + " g";
+        _resin_remain_label->setText(lvTrFmt("Common.Grams", remain_resin));
     }
-    _resin_remain_label->setText(lvTr(status_str.c_str()));
     if (resin_temp < 0)
     {
         _temperature_value_label->setText(lvTr("EMPTY_INFO"));
@@ -134,7 +132,7 @@ void ModuleDetailPulseTrayDialog::UpdatePulseTrayInfo(const double progress, con
 
         //                _resin_temp->setText(doubleToString(temp, 1) + " ℃");
 
-        _temperature_value_label->setText(doubleToString(temp, 1) + " ℃");
+        _temperature_value_label->setText(lvTrFmt("Common.TemperatureTextC", doubleToString(temp, 1)));
     }
 
     if (tank_type == 1)

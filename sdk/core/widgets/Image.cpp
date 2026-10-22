@@ -2,6 +2,7 @@
 
 #include "Image.h"
 #include "core/log/log.h"
+#include "core/sys/UiConfig.h"
 #include "core/tools/ImageManager.h"
 
 namespace lvglpp::widgets {
@@ -58,6 +59,15 @@ void Image::applySource(const std::string &path, bool fileSource)
     lv_image_set_src(getLvglItem(), handle->descriptor());
     setObjectKeepalive("image.resource", handle);
     image_resource_ = std::move(handle);
+}
+
+void Image::setRtlAsset(const std::string &assetPath)
+{
+    rtl_asset_path_ = assetPath;
+    if (sys::UiConfig::instance().isRtl())
+    {
+        setAsset(assetPath);
+    }
 }
 
 void Image::reload()

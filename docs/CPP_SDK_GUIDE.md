@@ -22,6 +22,12 @@ ctest --test-dir build/test --output-on-failure
 cmake -S . -B build-asan -DCMAKE_BUILD_TYPE=Debug -DASAN=ON
 cmake --build build-asan --target test_unit -j$(nproc)
 ./build-asan/target/bin/test_unit
+
+# 四方向 + RTL（默认 ON）
+cmake -S . -B build -DLVGLPP_ENABLE_ROTATION=ON -DLVGLPP_ENABLE_RTL=ON
+
+# 静态产品：编译期移除旋转/RTL 代码，零额外运行时开销
+cmake -S . -B build-static -DLVGLPP_ENABLE_ROTATION=OFF -DLVGLPP_ENABLE_RTL=OFF
 ```
 
 应用必须从 `build/target/bin` 运行；资源按 `<cwd>/common.pak` → `<cwd>/<exe>.pak` 查找（目录模式为 `*.asset/`），可用 `LVGLPP_ASSET_DIR` / `LVGLPP_ASSET_PACK` 覆盖。
@@ -35,6 +41,7 @@ cmake --build build-asan --target test_unit -j$(nproc)
 | `core/base/Connection.h` | 事件连接 token |
 | `core/widgets/KeyEvent.h` | 按键事件类型 |
 | `core/sys/InputManager.h` | 焦点作用域、全局按键路由 |
+| `core/sys/UiConfig.h` | 四方向、RTL、逻辑屏幕尺寸 |
 | `core/style/Style.h` / `Theme.h` | 样式与主题 |
 | `core/widgets/GridLayout.h` | Grid 描述符解析 |
 
@@ -292,6 +299,28 @@ child->setGridCellColumnAlign(LV_GRID_ALIGN_CENTER);
 - `setSizePercent(w, h)` 支持百分比尺寸。
 - 提供 `setPadding* / setMargin*` 全套便捷方法。
 
+### 6.4 横竖屏与 RTL
+
+```cpp
+sys::UiConfig &cfg = sys::UiConfig::instance();
+cfg.requestOrientation(sys::Orientation::Portrait);        // 0/90/180/270
+cfg.requestLayoutDirection(sys::LayoutDirection::Rtl);     // Arabic
+cfg.requestRebuild();                                      // re-translate current page
+cfg.feedGravity(gx, gy, gz);                               // sensor thread, filtered
+
+int w = cfg.width();
+int h = cfg.height();
+bool portrait = cfg.isPortrait();
+```
+
+- 所有 `request*` 都是线程安全的原子请求；`Application::exec()` 在 `lv_timer_handler()` 前调用 `UiConfig::processPending()`，所以不要在 LVGL 回调里同步重建 UI。
+- `StackView` 把配置变更分发给每个 `Activity::onConfigurationChanged`；`BaseActivity` 调整 root 尺寸，具体页面通过 `PageHost::releaseAll()+show(currentIndex)` 重建。当前页索引保留，滚动位置和打开的对话框不保留。
+- `BaseItem::setAlignment/setAlignmentTo/setPos` 会按 RTL 镜像显式 LEFT/RIGHT/OUT_* 和 x 偏移。**flex/grid 的 RTL 反向由 LVGL 自动完成，不要手动镜像**。`setMirrorInRtl(false)` 可关闭某个控件的镜像；`LvChart` 固定 LTR。
+- 方向图片使用 `Image::setRtlAsset(path)`；LVGL 9.3 不支持负 scale 镜像。
+- 启动/调试环境变量：`LVGLPP_ORIENTATION=landscape|portrait|reverse-landscape|reverse-portrait`、`LVGLPP_RTL=1`、`LVGLPP_PANEL_ROTATION_OFFSET=90`、`LVGLPP_SDL_FIXED_PANEL=1`、`LVGLPP_DISABLE_PANEL_ROTATION=1`。smart_home 还支持 `1/2/3/4` 切换四方向、`R` 切换 RTL。
+- 静态产品零开销：`-DLVGLPP_ENABLE_ROTATION=OFF -DLVGLPP_ENABLE_RTL=OFF`，相关代码、每控件镜像状态、矩阵变换和每帧 `processPending` 调用都会在编译期移除。
+- 平台：FBDEV 用 PARTIAL 软件旋转；SDL 默认通过窗口 reshape 模拟横竖屏（fixed-panel 仅 0/180）；DRM 用 DIRECT + matrix 软件旋转，CPU 成本需实测。`LV_DRAW_TRANSFORM_USE_MATRIX` 由 rotation 开关自动定义。
+
 ---
 
 ## 7. 控件
@@ -370,7 +399,7 @@ tools::ImageManager::clearCache();        // 只释放缓存引用；正在使�
   - `LottieCanvas::setAsset()` 读取 pack 字节并调用 `lv_lottie_set_src_data()`；`setFile()` 走 ThorVG 的文件接口。
   - `GifImage::setAsset()` 转换为 `A:/...`；`setFsPath()` 接受显式 LVGL 路径。
   - `Base64Image` 仍用于内联 base64 数据，与资产管线无关。
-- **字体**：内置点阵字体为静态数据；启用 FreeType 时通过 `AssetManager::materialize()` 获取真实 TTF 路径，并在进程生命周期内复用。
+- **字体**：默认使用 `sdk/core/tools/fonts/` 下的点阵字体（静态数据），按 Excel 文案（`smart_home/i18n/strings.xlsx`）逐字号裁剪生成，`NotoSC_<size>_{Normal,Bold}` 覆盖中/英/日/俄/阿，Bold 通过 `NotoArabic_<size>_Bold` fallback 补齐阿拉伯语。启用 FreeType（`-DLVGLPP_ENABLE_FREETYPE=ON`）并通过 `LvFontManager::enableFreetype(true)` 切换后，才通过 `AssetManager::materialize()` 获取 TTF 路径；关闭时 `assets/common/fonts/*.ttf` 不进入 `common.pak`。生成/校验脚本见 `sdk/tools/i18n/`。
 - **构建**：`LVGLPP_ASSET_MODE=pack|directory|both`（默认 `pack`）；`lvglpp_attach_assets(<target>)` 负责 common 与 app 资源的打包/暂存。
 
 ---

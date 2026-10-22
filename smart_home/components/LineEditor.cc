@@ -1,5 +1,7 @@
 #include "LineEditor.h"
+#include "core/sys/UiConfig.h"
 #include "theme/form_design.h"
+#include <algorithm>
 
 namespace wrapper::widgets
 {
@@ -7,7 +9,7 @@ namespace wrapper::widgets
 
     LineEditor::LineEditor(BaseItem *parent) : StringEditor(parent)
     {
-        setSize(664, 60);
+        setSize(std::min(664, lvglpp::sys::UiConfig::instance().width() - 32), 60);
         setRadius(8);
         setBgColor(design::ThemeColor(design::CLR_ON_INFO));
 

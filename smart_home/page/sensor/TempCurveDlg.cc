@@ -1,6 +1,7 @@
 #include "TempCurveDlg.h"
 #include "config/color_sheet.h"
 #include "core/log/log.h"
+#include "core/sys/UiConfig.h"
 #include "core/tools/Utils.h"
 #include "i18n/LvTranslator.h"
 #include <algorithm>
@@ -19,18 +20,22 @@ TempCurveDlg::TempCurveDlg() : BaseDialog()
 
 void TempCurveDlg::init()
 {
+    const auto &cfg    = sys::UiConfig::instance();
+    const int   chartW = std::min(600, cfg.width() - 32);
+    const int   chartX = std::max(0, (cfg.width() - chartW) / 2);
+
     bg_ = std::make_shared<widgets::BaseItem>(this->getRoot());
-    bg_->setSize(800, 480);
+    bg_->setSize(cfg.width(), cfg.height());
     // bg_->setBgColor(CLR_SURFACE_DIM);
     bg_->setPos(0, 0);
     bg_->setOpacity(1);
 
     zero_label_ = std::make_shared<widgets::LvText>("0", CLR_ON_SURFACE, bg_.get());
-    zero_label_->setPos(90, 200);
+    zero_label_->setPos(std::max(0, chartX - 10), 200);
 
     chart_ = std::make_shared<lvglpp::widgets::LvChart>(bg_.get());
-    chart_->setSize(600, 300);
-    chart_->setPos(100, 116);
+    chart_->setSize(chartW, 300);
+    chart_->setPos(chartX, 116);
 
     lv_obj_set_style_pad_all(chart_->getLvglItem(), 0, LV_PART_MAIN);
     lv_obj_set_style_pad_bottom(chart_->getLvglItem(), 2, LV_PART_MAIN);
@@ -48,13 +53,13 @@ void TempCurveDlg::init()
     lv_obj_add_flag(chart_->getLvglItem(), LV_OBJ_FLAG_SEND_DRAW_TASK_EVENTS);
 
     time_label_1_ = std::make_shared<LvText>("", CLR_ON_SURFACE, bg_.get());
-    lv_obj_align_to(time_label_1_->getLvglItem(), chart_->getLvglItem(), LV_ALIGN_OUT_BOTTOM_MID, 300, 16);
+    lv_obj_align_to(time_label_1_->getLvglItem(), chart_->getLvglItem(), LV_ALIGN_OUT_BOTTOM_MID, chartW / 2, 16);
 
     time_label_2_ = std::make_shared<LvText>("", CLR_ON_SURFACE, bg_.get());
     lv_obj_align_to(time_label_2_->getLvglItem(), chart_->getLvglItem(), LV_ALIGN_OUT_BOTTOM_MID, 0, 16);
 
     time_label_3_ = std::make_shared<LvText>("", CLR_ON_SURFACE, bg_.get());
-    lv_obj_align_to(time_label_3_->getLvglItem(), chart_->getLvglItem(), LV_ALIGN_OUT_BOTTOM_MID, -300, 16);
+    lv_obj_align_to(time_label_3_->getLvglItem(), chart_->getLvglItem(), LV_ALIGN_OUT_BOTTOM_MID, -chartW / 2, 16);
 
     ser2_ = lv_chart_add_series(chart_->getLvglItem(), lv_color_hex(CLR_PRIMARY_DARK_BLUE), LV_CHART_AXIS_PRIMARY_Y);
     lv_chart_set_all_value(chart_->getLvglItem(), ser2_, 0);
@@ -70,9 +75,9 @@ void TempCurveDlg::init()
     peak_force_curve_label->setAligmentTo(*back_icon_, LV_ALIGN_OUT_RIGHT_MID, 30, 0);
     peak_force_curve_label->setReColorEnable(true);
 
-    peak_value_ = std::make_shared<LvText>("0.00 N", CLR_ON_SURFACE, bg_.get(), LvText::FontSize20);
+    peak_value_ = std::make_shared<LvText>(lvTrFmt("Common.Newton", "0.00"), CLR_ON_SURFACE, bg_.get(), LvText::FontSize20);
     peak_value_->setPos(28, peak_pos_y);
-    trough_value_ = std::make_shared<LvText>("0.00 N", CLR_ON_SURFACE, bg_.get(), LvText::FontSize20);
+    trough_value_ = std::make_shared<LvText>(lvTrFmt("Common.Newton", "0.00"), CLR_ON_SURFACE, bg_.get(), LvText::FontSize20);
     trough_value_->setPos(28, trough_pos_y);
 }
 
@@ -88,9 +93,10 @@ void TempCurveDlg::updateTime()
     time_label_2_->setText(time_text_2);
     time_label_3_->setText(time_text_3);
 
-    lv_obj_align_to(time_label_1_->getLvglItem(), chart_->getLvglItem(), LV_ALIGN_OUT_BOTTOM_MID, 300, 16);
+    const int halfWidth = chart_->getWidth() > 0 ? chart_->getWidth() / 2 : 300;
+    lv_obj_align_to(time_label_1_->getLvglItem(), chart_->getLvglItem(), LV_ALIGN_OUT_BOTTOM_MID, halfWidth, 16);
     lv_obj_align_to(time_label_2_->getLvglItem(), chart_->getLvglItem(), LV_ALIGN_OUT_BOTTOM_MID, 0, 16);
-    lv_obj_align_to(time_label_3_->getLvglItem(), chart_->getLvglItem(), LV_ALIGN_OUT_BOTTOM_MID, -300, 16);
+    lv_obj_align_to(time_label_3_->getLvglItem(), chart_->getLvglItem(), LV_ALIGN_OUT_BOTTOM_MID, -halfWidth, 16);
 }
 
 static void hook_division_lines(lv_event_t *e) // 内置曲线
@@ -189,7 +195,7 @@ void TempCurveDlg::addChartIndex(int index)
     double max_index = *std::max_element(chart_vec_.begin(), chart_vec_.end());
     double min_index = *std::min_element(chart_vec_.begin(), chart_vec_.end());
 
-    peak_force_curve_label->setText("Value     Max   " + std::to_string(max_index) + "      Min  " + std::to_string(min_index));
+    peak_force_curve_label->setText(lvTrFmt("Sensor.CurveStats", max_index, min_index));
 
     zero_label_->setPos(85, peak_pos_y + 10 + (max_index / (max_index - min_index) * (trough_pos_y - peak_pos_y)));
 
@@ -198,8 +204,8 @@ void TempCurveDlg::addChartIndex(int index)
     double axis_y_low  = min_index < -10 ? min_index - 10 : -20;
     double axis_y_high = max_index > 15 ? max_index + 15 : 30;
 
-    peak_value_->setText(std::to_string(axis_y_low) + " N");
-    trough_value_->setText(std::to_string(max_index) + " N");
+    peak_value_->setText(lvTrFmt("Common.Newton", axis_y_low));
+    trough_value_->setText(lvTrFmt("Common.Newton", max_index));
 
     lv_chart_set_next_value(chart_->getLvglItem(), ser1_, index / 100.0);
     lv_chart_set_next_value(chart_->getLvglItem(), ser2_, 0);

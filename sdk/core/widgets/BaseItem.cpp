@@ -5,12 +5,62 @@
 #include "core/style/Style.h"
 #include "core/style/Theme.h"
 #include "core/sys/InputManager.h"
+#include "core/sys/UiConfig.h"
 
 #include <algorithm>
 #include <iostream>
 #include <typeinfo>
 #include <unordered_map>
 #include <utility>
+
+#if LVGLPP_ENABLE_RTL
+
+namespace {
+
+lv_align_t mirrorAlignForRtl(lv_align_t align)
+{
+    switch (align)
+    {
+    case LV_ALIGN_TOP_LEFT:
+        return LV_ALIGN_TOP_RIGHT;
+    case LV_ALIGN_TOP_RIGHT:
+        return LV_ALIGN_TOP_LEFT;
+    case LV_ALIGN_BOTTOM_LEFT:
+        return LV_ALIGN_BOTTOM_RIGHT;
+    case LV_ALIGN_BOTTOM_RIGHT:
+        return LV_ALIGN_BOTTOM_LEFT;
+    case LV_ALIGN_LEFT_MID:
+        return LV_ALIGN_RIGHT_MID;
+    case LV_ALIGN_RIGHT_MID:
+        return LV_ALIGN_LEFT_MID;
+    case LV_ALIGN_OUT_TOP_LEFT:
+        return LV_ALIGN_OUT_TOP_RIGHT;
+    case LV_ALIGN_OUT_TOP_RIGHT:
+        return LV_ALIGN_OUT_TOP_LEFT;
+    case LV_ALIGN_OUT_BOTTOM_LEFT:
+        return LV_ALIGN_OUT_BOTTOM_RIGHT;
+    case LV_ALIGN_OUT_BOTTOM_RIGHT:
+        return LV_ALIGN_OUT_BOTTOM_LEFT;
+    case LV_ALIGN_OUT_LEFT_TOP:
+        return LV_ALIGN_OUT_RIGHT_TOP;
+    case LV_ALIGN_OUT_RIGHT_TOP:
+        return LV_ALIGN_OUT_LEFT_TOP;
+    case LV_ALIGN_OUT_LEFT_MID:
+        return LV_ALIGN_OUT_RIGHT_MID;
+    case LV_ALIGN_OUT_RIGHT_MID:
+        return LV_ALIGN_OUT_LEFT_MID;
+    case LV_ALIGN_OUT_LEFT_BOTTOM:
+        return LV_ALIGN_OUT_RIGHT_BOTTOM;
+    case LV_ALIGN_OUT_RIGHT_BOTTOM:
+        return LV_ALIGN_OUT_LEFT_BOTTOM;
+    default:
+        return align;
+    }
+}
+
+} // namespace
+
+#endif // LVGLPP_ENABLE_RTL
 
 namespace lvglpp::widgets {
 
@@ -907,6 +957,39 @@ BaseItem &BaseItem::setPos(lv_coord_t x, lv_coord_t y)
 {
     if (lv_base_ptr_ != nullptr)
     {
+#if LVGLPP_ENABLE_RTL
+        if (mirror_in_rtl_ && sys::UiConfig::instance().isRtl())
+        {
+            lv_obj_t  *parent = lv_obj_get_parent(lv_base_ptr_);
+            lv_coord_t width  = lv_obj_get_width(lv_base_ptr_);
+            if (width <= 0 && requested_width_ > 0 && requested_width_ < 4096)
+            {
+                width = requested_width_;
+            }
+            lv_coord_t parentWidth = parent != nullptr ? lv_obj_get_content_width(parent) : 0;
+            x                      = parentWidth - x - width;
+        }
+#endif
+        // An explicit position overrides a previous alignment request.
+        // Use TOP_LEFT (physical) so RTL's DEFAULT -> TOP_RIGHT translation
+        // does not add the parent width a second time.
+        lv_obj_set_style_align(lv_base_ptr_, LV_ALIGN_TOP_LEFT, 0);
+#if LVGLPP_ENABLE_RTL
+        has_logical_align_ = false;
+#endif
+        lv_obj_set_pos(lv_base_ptr_, x, y);
+    }
+    return *this;
+}
+
+BaseItem &BaseItem::setPosPhysical(lv_coord_t x, lv_coord_t y)
+{
+    if (lv_base_ptr_ != nullptr)
+    {
+        lv_obj_set_style_align(lv_base_ptr_, LV_ALIGN_TOP_LEFT, 0);
+#if LVGLPP_ENABLE_RTL
+        has_logical_align_ = false;
+#endif
         lv_obj_set_pos(lv_base_ptr_, x, y);
     }
     return *this;
@@ -924,17 +1007,97 @@ lv_coord_t BaseItem::getY() const
 
 BaseItem &BaseItem::setAlignment(lv_align_t align, lv_coord_t offsetX, lv_coord_t offsetY)
 {
+#if LVGLPP_ENABLE_RTL
+    logical_align_     = align;
+    logical_x_         = offsetX;
+    logical_y_         = offsetY;
+    has_logical_align_ = true;
+    applyLogicalAlignment();
+#else
     if (lv_base_ptr_ != nullptr)
     {
         lv_obj_align(lv_base_ptr_, align, offsetX, offsetY);
     }
+#endif
     return *this;
+}
+
+BaseItem &BaseItem::setAlignmentPhysical(lv_align_t align, lv_coord_t offsetX, lv_coord_t offsetY)
+{
+    if (lv_base_ptr_ != nullptr)
+    {
+#if LVGLPP_ENABLE_RTL
+        has_logical_align_ = false;
+#endif
+        lv_obj_align(lv_base_ptr_, align, offsetX, offsetY);
+    }
+    return *this;
+}
+
+BaseItem &BaseItem::setMirrorInRtl(bool enabled)
+{
+#if LVGLPP_ENABLE_RTL
+    mirror_in_rtl_ = enabled;
+    if (enabled && has_logical_align_)
+    {
+        applyLogicalAlignment();
+    }
+#else
+    (void)enabled;
+#endif
+    return *this;
+}
+
+bool BaseItem::mirrorInRtl() const
+{
+#if LVGLPP_ENABLE_RTL
+    return mirror_in_rtl_;
+#else
+    return false;
+#endif
+}
+
+BaseItem &BaseItem::setBaseDir(lv_base_dir_t direction)
+{
+    if (lv_base_ptr_ != nullptr)
+    {
+        lv_obj_set_style_base_dir(lv_base_ptr_, direction, 0);
+    }
+    return *this;
+}
+
+void BaseItem::applyLogicalAlignment()
+{
+#if LVGLPP_ENABLE_RTL
+    if (lv_base_ptr_ == nullptr || !has_logical_align_)
+    {
+        return;
+    }
+
+    lv_align_t align   = logical_align_;
+    lv_coord_t offsetX = logical_x_;
+
+    if (mirror_in_rtl_ && sys::UiConfig::instance().isRtl())
+    {
+        align   = mirrorAlignForRtl(align);
+        offsetX = -offsetX;
+    }
+
+    lv_obj_align(lv_base_ptr_, align, offsetX, logical_y_);
+#endif
 }
 
 BaseItem &BaseItem::setAlignmentTo(const BaseItem &item, lv_align_t align, lv_coord_t offsetX, lv_coord_t offsetY)
 {
     if (lv_base_ptr_ != nullptr && item.getLvglItem() != nullptr)
     {
+#if LVGLPP_ENABLE_RTL
+        if (mirror_in_rtl_ && sys::UiConfig::instance().isRtl())
+        {
+            align   = mirrorAlignForRtl(align);
+            offsetX = -offsetX;
+        }
+#endif
         lv_obj_align_to(lv_base_ptr_, item.getLvglItem(), align, offsetX, offsetY);
     }
     return *this;

@@ -9,6 +9,7 @@ Description:定义不同活动的窗口。类似Android
 #define LVGLPP_ACTIVITY_H
 
 #include "Event.h"
+#include "UiTypes.h"
 #include "core/widgets/BaseItem.h"
 #include <any>
 
@@ -31,6 +32,18 @@ public:
     virtual widgets::BaseItem *getRoot() const = 0;
 
     virtual void onNotifyUI(const Event &e) = 0;
+
+    /**
+     * Called after a display orientation or layout-direction change.
+     * The activity root has already been resized; rebuild content here.
+     */
+    virtual void onConfigurationChanged(const UiConfiguration &configuration)
+    {
+        (void)configuration;
+    }
+
+    /// Rebuild the keyboard focus group after a rebuild/visibility change.
+    virtual void refreshFocus() {}
 };
 } // namespace sys
 } // namespace lvglpp

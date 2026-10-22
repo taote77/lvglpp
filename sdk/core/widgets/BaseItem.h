@@ -23,6 +23,7 @@ lv_obj safely invalidates the wrapper instead of leaving a dangling pointer.
 #include "core/base/Connection.h"
 #include "core/base/Object.h"
 #include "core/log/log.h"
+#include "core/sys/UiFeatures.h"
 #include "lvgl.h"
 #include <cstdint>
 #include <functional>
@@ -94,11 +95,25 @@ public:
 
     BaseItem &setPos(lv_coord_t x, lv_coord_t y);
 
+    /// Physical position, never mirrored under RTL.
+    BaseItem &setPosPhysical(lv_coord_t x, lv_coord_t y);
+
     lv_coord_t getX() const;
 
     lv_coord_t getY() const;
 
     BaseItem &setAlignment(lv_align_t align, lv_coord_t offsetX, lv_coord_t offsetY);
+
+    /// Physical alignment, never mirrored under RTL.
+    BaseItem &setAlignmentPhysical(lv_align_t align, lv_coord_t offsetX, lv_coord_t offsetY);
+
+    /// Opt out of automatic RTL mirroring for this item (e.g. charts).
+    BaseItem &setMirrorInRtl(bool enabled = true);
+
+    bool mirrorInRtl() const;
+
+    /// Set the LVGL base direction for this subtree.
+    BaseItem &setBaseDir(lv_base_dir_t direction);
 
     /// Legacy spelling, use setAlignment().
     BaseItem &setAligment(lv_align_t align, lv_coord_t offsetX, lv_coord_t offsetY)
@@ -442,6 +457,8 @@ private:
 
     void applyGridCell();
 
+    void applyLogicalAlignment();
+
     GridState &ensureGridState();
 
     std::shared_ptr<detail::ConnectionState> makeConnection(std::function<void()> onDisconnect);
@@ -455,6 +472,14 @@ private:
     lv_coord_t  requested_width_  = 0;
     lv_coord_t  requested_height_ = 0;
     std::string _name;
+
+#if LVGLPP_ENABLE_RTL
+    lv_align_t logical_align_     = LV_ALIGN_DEFAULT;
+    lv_coord_t logical_x_         = 0;
+    lv_coord_t logical_y_         = 0;
+    bool       has_logical_align_ = false;
+    bool       mirror_in_rtl_     = true;
+#endif
 
     std::function<void()> clicked_cb_;
     std::function<void()> pressed_cb_;

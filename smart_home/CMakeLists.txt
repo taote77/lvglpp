@@ -97,6 +97,21 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     lvglpp
 )
 
+# Manual validation target: does not run as part of ALL (Python is optional).
+find_package(Python3 COMPONENTS Interpreter QUIET)
+if(Python3_Interpreter_FOUND)
+    add_custom_target(i18n-check
+        COMMAND ${Python3_EXECUTABLE} -I ${CMAKE_SOURCE_DIR}/sdk/tools/i18n/gen_lv_i18n.py
+                --xlsx ${CMAKE_CURRENT_SOURCE_DIR}/i18n/strings.xlsx
+                --out ${CMAKE_CURRENT_SOURCE_DIR}/i18n/translations/lv_i18n.c
+                --check --strict
+        COMMAND ${Python3_EXECUTABLE} -I ${CMAKE_SOURCE_DIR}/sdk/tools/i18n/check_keys.py
+                --xlsx ${CMAKE_CURRENT_SOURCE_DIR}/i18n/strings.xlsx
+                --sources ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMENT "Checking smart_home i18n workbook, generated C and source keys"
+        VERBATIM)
+endif()
+
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/../sdk/lvgl/
     ${CMAKE_CURRENT_LIST_DIR}/../sdk/lvgl/src/

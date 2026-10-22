@@ -28,6 +28,10 @@ public:
     /// Load from the real filesystem.
     void setFile(const std::string &fsPath);
 
+    /// Optional RTL alternative asset. When the UI direction is RTL this
+    /// replaces the current source (e.g. a mirrored arrow).
+    void setRtlAsset(const std::string &assetPath);
+
     /// Drop the cached entry and load the current source again.
     void reload();
 
@@ -58,6 +62,7 @@ private:
     void applySource(const std::string &path, bool fileSource);
 
     std::string        src_path_;
+    std::string        rtl_asset_path_;
     tools::ImageHandle image_resource_;
     bool               file_source_ = false;
 };

@@ -5,7 +5,10 @@ namespace lvglpp::widgets {
 
 LvChart::LvChart(BaseItem *parent)
     : BaseItem(tools::LvObjFactory::createLvglChart, parent)
-{}
+{
+    // Quantitative plots keep a left-to-right axis even in an RTL UI.
+    setBaseDir(LV_BASE_DIR_LTR);
+}
 
 void LvChart::setType(Type type)
 {

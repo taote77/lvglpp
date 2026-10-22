@@ -117,6 +117,7 @@ namespace form::design
     // conf
 
 
+    // Design-reference dimensions only; runtime layout uses sys::UiConfig.
     const uint32_t WIN_WIDTH = 800;
     const uint32_t WIN_HEIGHT = 480;
     const uint32_t PAGE_HEIGHT = 400;

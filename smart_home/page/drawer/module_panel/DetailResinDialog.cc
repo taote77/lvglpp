@@ -98,7 +98,7 @@ void ModuleDetailResinDialog::UpdateBottleInfo(const std::string &resin_name, co
     {
         try
         {
-            _remaing_info->setText(" " + std::to_string(remaining) + " g");
+            _remaing_info->setText(lvTrFmt("Common.Grams", remaining));
         }
         catch (const std::exception &e)
         {

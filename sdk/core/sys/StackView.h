@@ -5,6 +5,7 @@
 #include "Activity.h"
 #include "Application.h"
 #include "Event.h"
+#include "UiTypes.h"
 #include <any>
 #include <deque>
 #include <functional>
@@ -58,6 +59,15 @@ public:
     }
 
     void notifyAllUi(const Event &e);
+
+    /// True while a push/pop transition or queued navigation is in flight.
+    bool isAnimating() const;
+
+    /// Stop any root-position animations (used before a configuration rebuild).
+    void cancelRootAnimations();
+
+    /// Deliver a configuration change to every activity, then refresh focus.
+    void notifyConfigurationChanged(const UiConfiguration &configuration);
 
     void setApplication(Application *app)
     {

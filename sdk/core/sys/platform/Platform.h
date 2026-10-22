@@ -1,6 +1,8 @@
 #ifndef LVGLPP_PLATFORM_H
 #define LVGLPP_PLATFORM_H
 
+#include "core/sys/UiTypes.h"
+
 #include <cstdint>
 #include <functional>
 #include <utility>
@@ -49,7 +51,27 @@ public:
     virtual void setTheme(lv_theme_t *theme) = 0;
 
     /// UI-thread pointer simulation; no-op when unsupported.
+    /// Coordinates are logical (already rotated) UI coordinates.
     virtual void simulatePointerClick(std::int32_t x, std::int32_t y) = 0;
+
+    /// True when the backend can rotate a fixed-scanout panel in software.
+    virtual bool supportsPanelRotation() const noexcept
+    {
+        return false;
+    }
+
+    /// True when the backend can reshape its output (SDL window, DRM mode).
+    virtual bool supportsWindowReshape() const noexcept
+    {
+        return false;
+    }
+
+    /// UI-thread; applies one of the four logical orientations.
+    virtual bool applyOrientation(Orientation orientation)
+    {
+        (void)orientation;
+        return false;
+    }
 
     /// True when the backend's LVGL driver already provides a tick source.
     virtual bool providesTick() const noexcept

@@ -44,7 +44,6 @@ void PanelHeater::updateHeatStatus(int32_t scraperstate, int32_t scrapertype, in
         {
             constexpr int ratio_value{10000};
 
-            static const char *RESIN_TEMP_TAG = " #3760EA %1%℃#";
             // resin_temp_label_->setText();
 
             static auto doubleToString = [](double value, int precision = 2) -> std::string {

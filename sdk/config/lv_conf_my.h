@@ -6,11 +6,21 @@
 #define LV_SIM_WINDOW_HEIGHT 480
 
 #define LV_USE_MATRIX 1
+
+#ifndef LVGLPP_ENABLE_ROTATION
+#define LVGLPP_ENABLE_ROTATION 1
+#endif
+#if LVGLPP_ENABLE_ROTATION
+// Enable matrix rotation for DIRECT renderers (SDL/DRM). FBDEV uses the
+// driver's PARTIAL flush rotation and does not need this.
+#define LV_DRAW_TRANSFORM_USE_MATRIX 1
+#endif
 // #define LV_USE_LINUX_FBDEV	0
 // #define LV_USE_LINUX_DRM	0
 // #define LV_USE_SDL		0
 
-// #define LV_USE_FREETYPE 1
+// FreeType is controlled at CMake level: -DLVGLPP_ENABLE_FREETYPE=ON
+// (default OFF; bitmap fonts are used otherwise).
 
 // option
 // #define LV_WAYLAND_WINDOW_DECORATIONS 1

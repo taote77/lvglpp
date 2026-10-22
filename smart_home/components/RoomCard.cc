@@ -1,4 +1,5 @@
 #include "RoomCard.h"
+#include "i18n/LvTranslator.h"
 #include "theme/form_design.h"
 #include <format>
 
@@ -23,17 +24,17 @@ RoomCard::RoomCard(const std::string &name, const std::string &icon, int deviceC
     _nameLabel->setAligment(LV_ALIGN_TOP_LEFT, 12, 50);
 
     // Temperature
-    auto tempStr = std::format("{:.1f}C", temperature);
+    auto tempStr = lvTrFmt("Common.TemperatureC", temperature);
     _tempLabel = std::make_unique<w::LvText>(tempStr, CLR_PRIMARY, this, w::LvText::FontSize22Bold);
     _tempLabel->setAligment(LV_ALIGN_BOTTOM_LEFT, 12, -30);
 
     // Humidity
-    auto humidStr = std::format("{:.0f}%", humidity);
+    auto humidStr = lvTrFmt("Common.HumidityPercent", humidity);
     _humidLabel = std::make_unique<w::LvText>(humidStr, CLR_INFO, this, w::LvText::FontSize20);
     _humidLabel->setAligment(LV_ALIGN_BOTTOM_LEFT, 12, -10);
 
     // Device count
-    auto devStr = std::format("{} devices", deviceCount);
+    auto devStr = lvTrFmt("Common.DeviceCount", deviceCount);
     _deviceLabel = std::make_unique<w::LvText>(devStr, CLR_ON_SURFACE_VARIANT_2, this, w::LvText::FontSize20);
     _deviceLabel->setAligment(LV_ALIGN_BOTTOM_RIGHT, -10, -30);
 
@@ -41,15 +42,15 @@ RoomCard::RoomCard(const std::string &name, const std::string &icon, int deviceC
 }
 
 void RoomCard::setTemperature(float temp) {
-    _tempLabel->setText(std::format("{:.1f}C", temp));
+    _tempLabel->setText(lvTrFmt("Common.TemperatureC", temp));
 }
 
 void RoomCard::setHumidity(float humidity) {
-    _humidLabel->setText(std::format("{:.0f}%", humidity));
+    _humidLabel->setText(lvTrFmt("Common.HumidityPercent", humidity));
 }
 
 void RoomCard::setDeviceCount(int count) {
-    _deviceLabel->setText(std::format("{} devices", count));
+    _deviceLabel->setText(lvTrFmt("Common.DeviceCount", count));
 }
 
 } // namespace lvglpp::ui::widgets

@@ -18,19 +18,19 @@ void PanelTempHumi::updateSensor(int32_t senser_state, int32_t temp, int32_t hum
             if (temp != temp_last)
             {
                 sprintf(buf, "%.1f", static_cast<double>(temp) / 10000.0);
-                _text->setText(std::string(buf) + "℃");
+                _text->setText(lvTrFmt("Common.TemperatureTextC", buf));
             }
 
             if (humi_last != humi)
             {
                 sprintf(buf, "%.1f", static_cast<double>(humi) / 100.0);
-                _text1->setText(std::string(buf) + "RH%");
+                _text1->setText(lvTrFmt("Common.HumidityRH", buf));
                 humi_last = humi;
             }
         } else
         {
-            _text->setText(lvTrStr("EMPTY_INFO") + "℃");
-            _text1->setText(lvTrStr("EMPTY_INFO") + "RH%");
+            _text->setText(lvTrFmt("Common.TemperatureTextC", lvTr("EMPTY_INFO")));
+            _text1->setText(lvTrFmt("Common.HumidityRH", lvTr("EMPTY_INFO")));
         }
 
         last_sensor = senser_state;

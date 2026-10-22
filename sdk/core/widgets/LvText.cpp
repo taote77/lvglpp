@@ -14,7 +14,8 @@ static const lv_font_t *getFontByStyle(LvText::TextStyle style, LvText::FontType
     tools::LvFontManager::FontName font_type;
     if (type == LvText::FontType::Auto)
     {
-        if (lvglpp::sys::Application::getLanguageType() == sys::Application::Chinese)
+        if (lvglpp::sys::Application::getLanguageType() == sys::Application::Chinese
+            || lvglpp::sys::Application::getLanguageType() == sys::Application::Arabic)
         {
             font_type = tools::LvFontManager::SansSC;
         } else

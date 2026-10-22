@@ -44,7 +44,7 @@ ModuleDetailPulseDialog::ModuleDetailPulseDialog(const int progress, const int s
     _status_label = std::make_shared<ConsumeText>(lvTr("Panel.Resin.Remaining"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24);
     _status_label->setPos(24, 82 + 32 + 15);
 
-    _status_value_label = std::make_shared<ConsumeText>(lvTr(""), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24);
+    _status_value_label = std::make_shared<ConsumeText>("", ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24);
     // _status_value_label = std::make_shared<ConsumeText>(lvTr("EMPTY_INFO"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24);
     _status_value_label->setAligmentTo(*_status_label, LV_ALIGN_OUT_RIGHT_MID, 12, 0);
 

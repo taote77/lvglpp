@@ -1,4 +1,5 @@
 #include "Application.h"
+#include "UiConfig.h"
 
 #include "BaseActivity.h"
 #include "FileSystemManager.h"
@@ -133,6 +134,9 @@ bool Application::initialize()
         return false;
     }
 
+    // Apply the initial orientation/direction before any activity is built.
+    UiConfig::instance().initialize(platform_.get());
+
     if (!platform_->providesTick())
     {
         startTickThread();
@@ -166,6 +170,12 @@ int Application::exec()
 
     while (!quit_requested_.load(std::memory_order_acquire))
     {
+#if LVGLPP_DYNAMIC_UI
+        // Orientation/direction/rebuild requests are coalesced here, before
+        // LVGL timers and outside any widget event callback.
+        UiConfig::instance().processPending();
+#endif
+
         pollSignal();
         if (quit_requested_.load(std::memory_order_acquire))
         {
@@ -219,6 +229,8 @@ void Application::shutdown()
     {
         StackView::getInstance().shutdown();
     }
+
+    UiConfig::instance().shutdown();
 
     LOG_DEBUG() << "shutdown: image manager";
     tools::ImageManager::shutdown();
@@ -356,6 +368,9 @@ void Application::setLanguageType(LanguageType type)
         break;
     case Russian:
         name = "Russian";
+        break;
+    case Arabic:
+        name = "Arabic";
         break;
     case LOCAL:
         name = "LOCAL";

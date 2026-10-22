@@ -1,6 +1,7 @@
 #include "BaseActivity.h"
 #include "InputManager.h"
 #include "StackView.h"
+#include "UiConfig.h"
 #include <lvgl.h>
 
 namespace lvglpp::sys {
@@ -19,7 +20,16 @@ void BaseActivity::onCreate(std::any arg)
 {
     LOG_DEBUG() << "BaseActivity onCreate,class name:" << typeid(*this).name();
     _root_win = std::make_unique<widgets::BaseItem>();
-    _root_win->setSize(LV_HOR_RES_MAX, LV_VER_RES_MAX);
+    _root_win->setSize(UiConfig::instance().width(), UiConfig::instance().height());
+}
+
+void BaseActivity::onConfigurationChanged(const UiConfiguration &configuration)
+{
+    if (_root_win)
+    {
+        _root_win->setSize(configuration.width, configuration.height);
+    }
+    refreshFocus();
 }
 
 void BaseActivity::onResume()

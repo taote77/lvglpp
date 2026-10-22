@@ -100,7 +100,7 @@ static lv_i18n_phrase_t en_us_singulars[] = {
     {"Settings", "Setting"},
     {"Setting.General", "GENERAL"},
     {"Setting.Chinese", "English"},
-    {"LanguageChinese", "Simplified Chinese"},
+    {"LanguageChinese", "Chinese"},
     {"Cloud.Unbind", "Not Connected"},
     {"WifiLabel", "Wi-Fi"},
     {"Setting.NetConnect", "Net Connect"},
@@ -322,7 +322,7 @@ static lv_i18n_phrase_t en_us_singulars[] = {
     {"CurrentValueInvalid", "current is invalid!"},
     {"SetCurrent", "Current"},
     {"SetLCDFailTips", "set lcd info failed!"},
-    {"UniformityCalibration:", "Uniformity Calibration:"},
+    {"UniformityCalibration", "Uniformity Calibration:"},
     {"ReplaceLCDTips", "Every time you replace the LCD screen, please perform uniformity calibration. The instructions will guide you to cover 60 spots one by one with the probe. The process will take around 15 min."},
     {"Click.Exit", "Exit"},
     {"UniformityCalibrationStepTips", "Please follow these steps:"},
@@ -560,6 +560,109 @@ static lv_i18n_phrase_t en_us_singulars[] = {
     {"SEPERATE_LINE0", "=================================="},
     {"SEPERATE_LINE1", "=           分割线               ="},
     {"SEPERATE_LINE2", "=================================="},
+    {"Machine error. Please restart.", "Machine error. Please restart."},
+    {"If error still occurs after restart, please contact support.", "If error still occurs after restart, please contact support."},
+    {"Restart", "Restart"},
+    {"ChangeLangWarnTitle", "Change System Language"},
+    {"ChangeLangWarnConfirm", "Change"},
+    {"ChangeLangWarnCancel", "Cancel"},
+    {"ChangeLangWarnConfirmText", "Change the system language?"},
+    {"ChangeLangWarnConfirmTitle", "Change System Language"},
+    {"ChangeLangWarnConfirmConfirm", "Change"},
+    {"ChangeLangWarnConfirmCancel", "Cancel"},
+    {"ChangeLangWarnConfirmConfirmText", "Change the system language?"},
+    {"ChangeLangWarnConfirmConfirmTitle", "Change System Language"},
+    {"ChangeLangWarnConfirmConfirmConfirm", "Change"},
+    {"ChangeLangWarnConfirmConfirmCancel", "Cancel"},
+    {"HeatModLabel", "Heating Module"},
+    {"Common.On", "ON"},
+    {"Common.Off", "OFF"},
+    {"Common.Heat", "Heat"},
+    {"Common.Cool", "Cool"},
+    {"Common.Auto", "Auto"},
+    {"Common.Warm", "Warm"},
+    {"Common.Day", "Day"},
+    {"Common.Week", "Week"},
+    {"Common.Open", "Open"},
+    {"Common.Locked", "Locked"},
+    {"Common.Bootloader", "Bootloader"},
+    {"Common.DeviceCount", "{} devices"},
+    {"Common.Percent", "{}%"},
+    {"Common.Grams", "{} g"},
+    {"Common.Kilograms", "{} kg"},
+    {"Common.Newton", "{} N"},
+    {"Common.EnergyKWh", "{:.1f} kWh"},
+    {"Common.TemperatureC", "{:.1f}C"},
+    {"Common.TemperatureTextC", "{}C"},
+    {"Common.HumidityPercent", "{:.0f}%"},
+    {"Common.HumidityRH", "{}RH%"},
+    {"Common.MaterialKg", "{} ({}kg)"},
+    {"Common.Opening", "Opening {}"},
+    {"Common.Active", "Active: {}"},
+    {"Common.Activated", "{} activated"},
+    {"Nav.Home", "Home"},
+    {"Nav.Rooms", "Rooms"},
+    {"Nav.Devices", "Devices"},
+    {"Nav.Scenes", "Scenes"},
+    {"Nav.Settings", "Settings"},
+    {"Home.Title", "Smart Home"},
+    {"Home.Weather", "Sunny  72F  45%"},
+    {"Home.LightsOff", "Lights Off"},
+    {"Home.AllLightsOff", "All lights off"},
+    {"Home.LockAll", "Lock All"},
+    {"Home.AllDoorsLocked", "All doors locked"},
+    {"Home.Away", "Away"},
+    {"Home.AwayMode", "Away mode"},
+    {"Home.Today", "Today"},
+    {"Home.Security", "Security"},
+    {"Home.DoorsLocked", "Doors Locked"},
+    {"Home.CamerasActive", "Cameras Active"},
+    {"Home.AlarmDisarmed", "Alarm Disarmed"},
+    {"Home.Lights", "Lights"},
+    {"Home.CeilingLight", "Ceiling Light"},
+    {"Home.FloorLamp", "Floor Lamp"},
+    {"Home.Climate", "Climate"},
+    {"Home.FrontDoor", "Front Door"},
+    {"Home.GarageDoor", "Garage Door"},
+    {"Home.MotionSensor", "Motion Sensor"},
+    {"Home.HallwayNoMotion", "Hallway - No motion"},
+    {"Room.LivingRoom", "Living Room"},
+    {"Room.Bedroom", "Bedroom"},
+    {"Room.Kitchen", "Kitchen"},
+    {"Room.Bathroom", "Bathroom"},
+    {"Room.Hallway", "Hallway"},
+    {"Room.Garage", "Garage"},
+    {"Room.Icon.Sofa", "Sofa"},
+    {"Room.Icon.Bed", "Bed"},
+    {"Room.Icon.Cook", "Cook"},
+    {"Room.Icon.Bath", "Bath"},
+    {"Room.Icon.Door", "Door"},
+    {"Room.Icon.Car", "Car"},
+    {"Scenes.Active", "Active: None"},
+    {"Scene.GoodMorning", "Good Morning"},
+    {"Scene.GoodMorning.Desc", "Lights on, blinds open"},
+    {"Scene.GoodNight", "Good Night"},
+    {"Scene.GoodNight.Desc", "All off, doors locked"},
+    {"Scene.AwayMode", "Away Mode"},
+    {"Scene.AwayMode.Desc", "All off, cameras on"},
+    {"Scene.MovieTime", "Movie Time"},
+    {"Scene.MovieTime.Desc", "Lights dim, TV on"},
+    {"Settings.Appearance", "Appearance"},
+    {"Settings.Theme", "Theme"},
+    {"Settings.Theme.Dark", "Dark"},
+    {"Settings.Theme.Light", "Light"},
+    {"Settings.Theme.Auto", "Auto"},
+    {"Settings.Brightness", "Brightness"},
+    {"Settings.Network", "Network"},
+    {"Settings.WiFi", "WiFi"},
+    {"Settings.Notifications", "Notifications"},
+    {"Settings.PushNotifications", "Push Notifications"},
+    {"Settings.About", "About"},
+    {"Settings.ViewLicense", "View License"},
+    {"LanguageArabic", "Arabic"},
+    {"Thermostat.Target", "Target: {:.1f}C"},
+    {"Sensor.ShowCurve", "Show Curve"},
+    {"Sensor.CurveStats", "Value     Max   {}      Min  {}"},
     {NULL, NULL} // End mark
 };
 
@@ -584,13 +687,13 @@ static const lv_i18n_lang_t en_us_lang = {
 
 static lv_i18n_phrase_t ar_singulars[] = {
     {"Language", "لغة"},
-    {"ChangeLangWarnText", "系统语言切换后设备会自动重启。"},
-    {"Start", "开始"},
+    {"ChangeLangWarnText", "سيُعاد تشغيل الجهاز بعد تغيير لغة النظام."},
+    {"Start", "بدء"},
     {"EMPTY_INFO", "--"},
-    {"HeatModLabel", "وحدة التدفئة"},
     {"ElectronStack", "وحدة تجريد النبض"},
     {"LCDScreenLable", "شاشة LCD"},
     {"PulsingReleaseResinTank", "خزان راتنج التجريد النبضي"},
+    {"HeatModLabel", "وحدة التدفئة"},
     {NULL, NULL} // End mark
 };
 
@@ -858,33 +961,9 @@ static lv_i18n_phrase_t ja_jp_singulars[] = {
     {"SEPERATE_LINE0", "=================================="},
     {"SEPERATE_LINE1", "=           分割线               ="},
     {"SEPERATE_LINE2", "=================================="},
-    {NULL, NULL} // End mark
-};
-
-
-
-static uint8_t ja_jp_plural_fn(int32_t num)
-{
-
-
-
-    return LV_I18N_PLURAL_TYPE_OTHER;
-}
-
-static const lv_i18n_lang_t ja_jp_lang = {
-    .locale_name = "ja-JP",
-    .singulars = ja_jp_singulars,
-
-    .locale_plural_fn = ja_jp_plural_fn
-};
-
-static lv_i18n_phrase_t ja_singulars[] = {
-    {"Language", "言語"},
-    {"Start", "スタート"},
     {"Machine error. Please restart.", "予期せぬエラーが発生しました。再起動してください。"},
     {"If error still occurs after restart, please contact support.", "再起動後もエラーが続く場合は、技術サポートまでご連絡ください。"},
     {"Restart", "再起動"},
-    {"ChangeLangWarnText", "システム言語を切り替えると、デバイスは自動的に再起動します。"},
     {"ChangeLangWarnTitle", "システム言語を変更"},
     {"ChangeLangWarnConfirm", "変更"},
     {"ChangeLangWarnCancel", "キャンセル"},
@@ -901,19 +980,18 @@ static lv_i18n_phrase_t ja_singulars[] = {
 
 
 
-static uint8_t ja_plural_fn(int32_t num)
+static uint8_t ja_jp_plural_fn(int32_t num)
 {
-
-
+    uint32_t n = op_n(num); UNUSED(n);
 
     return LV_I18N_PLURAL_TYPE_OTHER;
 }
 
-static const lv_i18n_lang_t ja_lang = {
-    .locale_name = "ja",
-    .singulars = ja_singulars,
+static const lv_i18n_lang_t ja_jp_lang = {
+    .locale_name = "ja-JP",
+    .singulars = ja_jp_singulars,
 
-    .locale_plural_fn = ja_plural_fn
+    .locale_plural_fn = ja_jp_plural_fn
 };
 
 static lv_i18n_phrase_t ru_ru_singulars[] = {
@@ -1266,7 +1344,7 @@ static lv_i18n_phrase_t zh_cn_singulars[] = {
     {"Settings", "设置"},
     {"Setting.General", "通用"},
     {"Setting.Chinese", "中文"},
-    {"LanguageChinese", "简体中文"},
+    {"LanguageChinese", "中文"},
     {"Cloud.Unbind", "未绑定"},
     {"WifiLabel", "Wi-Fi"},
     {"Setting.NetConnect", "网络连接"},
@@ -1670,6 +1748,94 @@ static lv_i18n_phrase_t zh_cn_singulars[] = {
     {"SpodUnit", "光点序号"},
     {"SpodUnitRange", "介于(1~"},
     {"TimeisInvalid", "无效时间"},
+    {"Common.On", "开"},
+    {"Common.Off", "关"},
+    {"Common.Heat", "制热"},
+    {"Common.Cool", "制冷"},
+    {"Common.Auto", "自动"},
+    {"Common.Warm", "暖光"},
+    {"Common.Day", "日光"},
+    {"Common.Week", "周"},
+    {"Common.Open", "打开"},
+    {"Common.Locked", "已上锁"},
+    {"Common.Bootloader", "Bootloader"},
+    {"Common.DeviceCount", "{} 个设备"},
+    {"Common.Percent", "{}%"},
+    {"Common.Grams", "{} g"},
+    {"Common.Kilograms", "{} kg"},
+    {"Common.Newton", "{} N"},
+    {"Common.EnergyKWh", "{:.1f} kWh"},
+    {"Common.TemperatureC", "{:.1f}℃"},
+    {"Common.TemperatureTextC", "{}℃"},
+    {"Common.HumidityPercent", "{:.0f}%"},
+    {"Common.HumidityRH", "{}RH%"},
+    {"Common.MaterialKg", "{} ({}kg)"},
+    {"Common.Opening", "正在打开 {}"},
+    {"Common.Active", "当前：{}"},
+    {"Common.Activated", "{} 已激活"},
+    {"Nav.Home", "首页"},
+    {"Nav.Rooms", "房间"},
+    {"Nav.Devices", "设备"},
+    {"Nav.Scenes", "场景"},
+    {"Nav.Settings", "设置"},
+    {"Home.Title", "智能家居"},
+    {"Home.Weather", "晴  72F  45%"},
+    {"Home.LightsOff", "关灯"},
+    {"Home.AllLightsOff", "所有灯已关闭"},
+    {"Home.LockAll", "全部上锁"},
+    {"Home.AllDoorsLocked", "所有门已上锁"},
+    {"Home.Away", "离家"},
+    {"Home.AwayMode", "离家模式"},
+    {"Home.Today", "今天"},
+    {"Home.Security", "安防"},
+    {"Home.DoorsLocked", "门已上锁"},
+    {"Home.CamerasActive", "摄像头已开启"},
+    {"Home.AlarmDisarmed", "警报已解除"},
+    {"Home.Lights", "灯光"},
+    {"Home.CeilingLight", "吸顶灯"},
+    {"Home.FloorLamp", "落地灯"},
+    {"Home.Climate", "温控"},
+    {"Home.FrontDoor", "前门"},
+    {"Home.GarageDoor", "车库门"},
+    {"Home.MotionSensor", "人体传感器"},
+    {"Home.HallwayNoMotion", "走廊 - 无活动"},
+    {"Room.LivingRoom", "客厅"},
+    {"Room.Bedroom", "卧室"},
+    {"Room.Kitchen", "厨房"},
+    {"Room.Bathroom", "浴室"},
+    {"Room.Hallway", "走廊"},
+    {"Room.Garage", "车库"},
+    {"Room.Icon.Sofa", "沙发"},
+    {"Room.Icon.Bed", "床"},
+    {"Room.Icon.Cook", "烹饪"},
+    {"Room.Icon.Bath", "浴缸"},
+    {"Room.Icon.Door", "门"},
+    {"Room.Icon.Car", "车"},
+    {"Scenes.Active", "当前：无"},
+    {"Scene.GoodMorning", "早安"},
+    {"Scene.GoodMorning.Desc", "开灯，打开窗帘"},
+    {"Scene.GoodNight", "晚安"},
+    {"Scene.GoodNight.Desc", "全部关闭，门上锁"},
+    {"Scene.AwayMode", "离家模式"},
+    {"Scene.AwayMode.Desc", "全部关闭，摄像头开启"},
+    {"Scene.MovieTime", "观影时间"},
+    {"Scene.MovieTime.Desc", "灯光调暗，电视开启"},
+    {"Settings.Appearance", "外观"},
+    {"Settings.Theme", "主题"},
+    {"Settings.Theme.Dark", "深色"},
+    {"Settings.Theme.Light", "浅色"},
+    {"Settings.Theme.Auto", "自动"},
+    {"Settings.Brightness", "亮度"},
+    {"Settings.Network", "网络"},
+    {"Settings.WiFi", "WiFi"},
+    {"Settings.Notifications", "通知"},
+    {"Settings.PushNotifications", "推送通知"},
+    {"Settings.About", "关于"},
+    {"Settings.ViewLicense", "查看许可"},
+    {"LanguageArabic", "阿拉伯语"},
+    {"Thermostat.Target", "目标: {:.1f}℃"},
+    {"Sensor.ShowCurve", "开始显示曲线"},
+    {"Sensor.CurveStats", "数值     最大   {}      最小  {}"},
     {NULL, NULL} // End mark
 };
 
@@ -1677,8 +1843,7 @@ static lv_i18n_phrase_t zh_cn_singulars[] = {
 
 static uint8_t zh_cn_plural_fn(int32_t num)
 {
-
-
+    uint32_t n = op_n(num); UNUSED(n);
 
     return LV_I18N_PLURAL_TYPE_OTHER;
 }
@@ -1694,12 +1859,10 @@ const lv_i18n_language_pack_t lv_i18n_language_pack[] = {
     &en_us_lang,
     &ar_lang,
     &ja_jp_lang,
-    &ja_lang,
     &ru_ru_lang,
     &zh_cn_lang,
     NULL // End mark
 };
-
 ////////////////////////////////////////////////////////////////////////////////
 
 

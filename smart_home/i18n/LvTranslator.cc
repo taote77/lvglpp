@@ -1,11 +1,36 @@
 #include "LvTranslator.h"
+#include "core/sys/Application.h"
+#include "core/sys/UiConfig.h"
 #include "translations/lv_i18n.h"
-#include <iostream>
 #include <lvgl.h>
 
 static lv_subject_t g_subject_language;
 
 namespace lvglpp {
+
+namespace {
+
+const char *localeForLanguage(LANGUAGE lang)
+{
+    switch (lang)
+    {
+    case LANGUAGE::LOCAL:
+    case LANGUAGE::CHINESE:
+        return "zh-CN";
+    case LANGUAGE::ENGLISH:
+        return "en-US";
+    case LANGUAGE::JAPANESE:
+        return "ja-JP";
+    case LANGUAGE::RUSSIAN:
+        return "ru-RU";
+    case LANGUAGE::AR:
+        return "ar";
+    default:
+        return "zh-CN";
+    }
+}
+
+} // namespace
 
 static void language_observer_cb(lv_observer_t *observer, lv_subject_t *subject)
 {
@@ -16,29 +41,7 @@ static void language_observer_cb(lv_observer_t *observer, lv_subject_t *subject)
     if (lang_new != lang_current)
     {
         lang_current = lang_new;
-
-        switch (LANGUAGE(lang_current))
-        {
-        case LANGUAGE::LOCAL:
-        case LANGUAGE::CHINESE:
-            lv_i18n_set_locale("zh-CN");
-            break;
-        case LANGUAGE::ENGLISH:
-            lv_i18n_set_locale("en-US");
-            break;
-        case LANGUAGE::JAPANESE:
-            lv_i18n_set_locale("ja");
-            break;
-        case LANGUAGE::RUSSIAN:
-            lv_i18n_set_locale("ru-RU");
-            break;
-        case LANGUAGE::AR:
-            lv_i18n_set_locale("ar");
-            break;
-        default:
-            lv_i18n_set_locale("zh-CN");
-            break;
-        }
+        lv_i18n_set_locale(localeForLanguage(LANGUAGE(lang_current)));
     }
 }
 
@@ -61,30 +64,36 @@ LvTranslator::LvTranslator()
 
 void LvTranslator::load(const LANGUAGE lang)
 {
-    std::cout << __FUNCTION__ << lang;
+    lv_i18n_set_locale(localeForLanguage(lang));
 
     switch (lang)
     {
-    case LANGUAGE::LOCAL:
     case LANGUAGE::CHINESE:
-        lv_i18n_set_locale("zh-CN");
+    case LANGUAGE::LOCAL:
+        sys::Application::setLanguageType(sys::Application::Chinese);
         break;
     case LANGUAGE::ENGLISH:
-        lv_i18n_set_locale("en-US");
+        sys::Application::setLanguageType(sys::Application::English);
         break;
     case LANGUAGE::JAPANESE:
-        lv_i18n_set_locale("ja");
+        sys::Application::setLanguageType(sys::Application::Japanese);
         break;
     case LANGUAGE::RUSSIAN:
-        lv_i18n_set_locale("ru-RU");
+        sys::Application::setLanguageType(sys::Application::Russian);
         break;
     case LANGUAGE::AR:
-        lv_i18n_set_locale("ar");
-        break;
-    default:
-        lv_i18n_set_locale("zh-CN");
+        sys::Application::setLanguageType(sys::Application::Arabic);
         break;
     }
+
+#if LVGLPP_ENABLE_RTL
+    sys::UiConfig::instance().requestLayoutDirection(lang == LANGUAGE::AR ? sys::LayoutDirection::Rtl
+                                                                          : sys::LayoutDirection::Ltr);
+#endif
+#if LVGLPP_DYNAMIC_UI
+    // Re-translate existing pages and re-run their builders.
+    sys::UiConfig::instance().requestRebuild();
+#endif
 }
 
 const char *LvTranslator::tr(const char *text)

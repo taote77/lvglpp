@@ -1,0 +1,143 @@
+{
+  "tool": "lv_font_conv@1.5.3",
+  "xlsx_sha256": "3c8c896760d3a567da07573643a995a1a45785e55a6330590f3b6010cec6c6e0",
+  "charset_sha256": "2657dc7e6f1bcfc7bd66db26f944d9efd3c523237587cf32bc53e32022a47494",
+  "charset": " !#%'()*,-./012345678:;=?ABCDEFGHIJKLMNOPQRSTUVWYZ[\\]abcdefghijklmnopqrstuvwxyz{}~°²µ·АБВЖЗИКЛМНОПРСТУФХШЭЯабвгдежзийклмнопрстуфхцчшщыьэюяءئابةتجحخدرزسشضظعغفلمنهويُ’•℃、。【】いえかがきくぐごさしじすせただってでとなにぬのはべまみもらりるれをんァアィイウエォカガキギクグサシジスセタッテデトドナネバパフブプベポムメモャュョラリルレロワンー一上下不与且丝丢两个中临为主久之了予二于云些亮人今介仍仓他以件任会传伯位低体余作你使依俄保信候值停储像元先光入全公关其内再冗冲决况冷净准出击刀分切列则创初删刮到制刷削前剥剩割力功加务动助動勿匀包化升单卡卧印即厂厅历压原厨去参及发取变口可台史右号合名后向否吧含启吸告员周和响售器回固国图圆圈在地场址均块型垫報場塞境处备変复外多大天失头好如始姿子字存学安完定客室家密察寸对寻导将小少尝尺尽层居屏層履工左差已帘帮常幅幕干平并床序库底度座廊建开异式引张强归当录形影往待後従御微心志快忽态性恢息您情意感態成或戻房所手打执扳技投抜护报拉拔拟拧择拭持指按挿换据掃掉探接控推掩提插揭搜摄撕操擦放故效敗敬数整文斑料断新方旅无日旧早时是显時晚景晴智晾暂暖暗曝曲更替最有期未本机材束架查标树校桌检検標模樹次止正此步歴残气水永沙法波洁活流浅测浴消液深清済渣温源準满激灯灰点热烹然熱片版物状率环现玻珠理璃瓶生用电画略異発白的盖盘目直看知码硬确確磁示离称移程稍稳空窗立端等简簡精系索紧絡続維约级纯纸线组细绑结络统继续维绿缓缸网置者耗联胶能脂脉脚膜自至致般舱色节若英荷获落螺行術衣表被装要覆观规视角解言記設認語調警计认议讯记许设试询语误请读调败账赠走起超足跳転车轴载较输辨过运近返这进连述退送适选透通速連道部都配醒重量録钟铁锁错镜长閉開门闭闲间队防阿附降除险随障離零需非面页顶题颜风饪首验骤高！（），：；？",
+  "sizes": [
+    20,
+    22,
+    24,
+    28,
+    32,
+    36
+  ],
+  "bpp": 8,
+  "fonts": [
+    {
+      "file": "NotoArabic_20_Bold.c",
+      "source": "NotoSansArabic-Bold.ttf",
+      "size": 20,
+      "sha256": "eb6befc47a98bcc7e7ae92aebac25cd862c665c8ce255bc4ad62a9b020892fef",
+      "glyphs": 798
+    },
+    {
+      "file": "NotoArabic_22_Bold.c",
+      "source": "NotoSansArabic-Bold.ttf",
+      "size": 22,
+      "sha256": "93c2ad5c6efff2f1c088518dd54805ab01d12aa6d67fc2a1136155eb1d32367c",
+      "glyphs": 798
+    },
+    {
+      "file": "NotoArabic_24_Bold.c",
+      "source": "NotoSansArabic-Bold.ttf",
+      "size": 24,
+      "sha256": "db331e3dcd262dc80a6c02b715a56eb3b2fb07445d71b4bf13f8d35cf440ed65",
+      "glyphs": 798
+    },
+    {
+      "file": "NotoArabic_28_Bold.c",
+      "source": "NotoSansArabic-Bold.ttf",
+      "size": 28,
+      "sha256": "f2a7ff45104611c6ce4a2c2b764cb37b54beffc9adbe4bb2e59dec596c257e44",
+      "glyphs": 798
+    },
+    {
+      "file": "NotoArabic_32_Bold.c",
+      "source": "NotoSansArabic-Bold.ttf",
+      "size": 32,
+      "sha256": "60151723c2d6d1184014dae7de0c0fd3bf8a8651b9c59d64d3f3e217579fef6f",
+      "glyphs": 798
+    },
+    {
+      "file": "NotoArabic_36_Bold.c",
+      "source": "NotoSansArabic-Bold.ttf",
+      "size": 36,
+      "sha256": "f839e3008377fd3edffed0bb799a42e0e4d22c0443d87f0d95dd5ea01c83ece2",
+      "glyphs": 798
+    },
+    {
+      "file": "NotoSC_20_Bold.c",
+      "source": "NotoSansSC-Bold.ttf",
+      "size": 20,
+      "sha256": "62771b2423124c41e14925e8205261a69e4bfbb60e6ee5238218acfc11d46253",
+      "glyphs": 1336
+    },
+    {
+      "file": "NotoSC_20_Normal.c",
+      "source": "NotoSansSC-AR-Regular.ttf",
+      "size": 20,
+      "sha256": "2a9610213effc1740fa2d5388514024e56a7533cd1ac8d2b7fa49460ca6973f3",
+      "glyphs": 2059
+    },
+    {
+      "file": "NotoSC_22_Bold.c",
+      "source": "NotoSansSC-Bold.ttf",
+      "size": 22,
+      "sha256": "76d4adcadffb48cc0eb4c5d9d4ecc2070c1d98f48f31e9ce7eb68a60a9df73b3",
+      "glyphs": 1336
+    },
+    {
+      "file": "NotoSC_22_Normal.c",
+      "source": "NotoSansSC-AR-Regular.ttf",
+      "size": 22,
+      "sha256": "3326e23282ffd9d9efd223bcbd678a879f589fbf174fead1b2a796d715751037",
+      "glyphs": 2059
+    },
+    {
+      "file": "NotoSC_24_Bold.c",
+      "source": "NotoSansSC-Bold.ttf",
+      "size": 24,
+      "sha256": "f42c77bf738b6e89179fd95bce15cee486dc0d11b038a2cbbfaeda732dc62c1a",
+      "glyphs": 1336
+    },
+    {
+      "file": "NotoSC_24_Normal.c",
+      "source": "NotoSansSC-AR-Regular.ttf",
+      "size": 24,
+      "sha256": "e459cc63122d60cbe02369bf847cf5beb7e57af67519cc888b2444acdf405f38",
+      "glyphs": 2059
+    },
+    {
+      "file": "NotoSC_28_Bold.c",
+      "source": "NotoSansSC-Bold.ttf",
+      "size": 28,
+      "sha256": "f78c11af86639a781ba593a210a31aae6d483c277840bb293d2a4099077deb2e",
+      "glyphs": 1336
+    },
+    {
+      "file": "NotoSC_28_Normal.c",
+      "source": "NotoSansSC-AR-Regular.ttf",
+      "size": 28,
+      "sha256": "8f97dde2bd5da6b567cf11aa19552138fa825e6fa7a53d3deccc670cad503d7f",
+      "glyphs": 2059
+    },
+    {
+      "file": "NotoSC_32_Bold.c",
+      "source": "NotoSansSC-Bold.ttf",
+      "size": 32,
+      "sha256": "8092aae040a288a13e1a804bfeaf8d3fac1ea1aaee2a04b2043b3aa0d3ba5205",
+      "glyphs": 1336
+    },
+    {
+      "file": "NotoSC_32_Normal.c",
+      "source": "NotoSansSC-AR-Regular.ttf",
+      "size": 32,
+      "sha256": "bc8e7b3b979945f7da259932f3a04adf14196089a63f5898d4291c879263b005",
+      "glyphs": 2059
+    },
+    {
+      "file": "NotoSC_36_Bold.c",
+      "source": "NotoSansSC-Bold.ttf",
+      "size": 36,
+      "sha256": "86ac712cb794a718ca442f0b00651fab820454580c172239a3ffc33dbceb4f1d",
+      "glyphs": 1336
+    },
+    {
+      "file": "NotoSC_36_Normal.c",
+      "source": "NotoSansSC-AR-Regular.ttf",
+      "size": 36,
+      "sha256": "719782a895f031dabc435764afddfb0150b6cfdd6142cc25fee265f4504866b7",
+      "glyphs": 2059
+    }
+  ]
+}

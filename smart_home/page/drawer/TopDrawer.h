@@ -34,6 +34,8 @@ private:
     void pagePopAnim();
 
 private:
+    int content_height_ = 480;
+
     std::shared_ptr<BaseItem>  bg_item_;
     std::shared_ptr<MouseArea> touch_area_;
 

@@ -15,6 +15,15 @@ endif()
 set(_lvglpp_common_files "")
 file(GLOB_RECURSE _lvglpp_common_files CONFIGURE_DEPENDS "${LVGLPP_ASSET_ROOT}/common/*")
 
+# TTF assets are only needed by the optional FreeType backend. Skip them both
+# in the pack contents and in the dependency/stamp list so changing a TTF does
+# not trigger a repack when FreeType is disabled.
+set(_lvglpp_common_pack_excludes "")
+if(NOT LVGLPP_ENABLE_FREETYPE)
+    list(FILTER _lvglpp_common_files EXCLUDE REGEX "/fonts/[^/]*[.]ttf$")
+    set(_lvglpp_common_pack_excludes --exclude "fonts/*.ttf")
+endif()
+
 # A configure-time list stamp makes deleted/renamed assets invalidate the pack.
 set(_lvglpp_common_stamp "${CMAKE_BINARY_DIR}/lvglpp_common_assets.stamp")
 file(WRITE "${_lvglpp_common_stamp}" "${_lvglpp_common_files}")
@@ -22,7 +31,7 @@ file(WRITE "${_lvglpp_common_stamp}" "${_lvglpp_common_files}")
 if(LVGLPP_ASSET_MODE MATCHES "pack|both")
     add_custom_command(
         OUTPUT  "${LVGLPP_ASSET_OUTPUT}/common.pak"
-        COMMAND $<TARGET_FILE:respack> pack "${LVGLPP_ASSET_ROOT}/common" "${LVGLPP_ASSET_OUTPUT}/common.pak"
+        COMMAND $<TARGET_FILE:respack> pack "${LVGLPP_ASSET_ROOT}/common" "${LVGLPP_ASSET_OUTPUT}/common.pak" ${_lvglpp_common_pack_excludes}
         DEPENDS respack "${_lvglpp_common_stamp}" ${_lvglpp_common_files}
         COMMENT "Packing common assets"
         VERBATIM)
@@ -68,13 +77,18 @@ function(lvglpp_attach_assets target)
     endif()
 
     file(GLOB_RECURSE _app_files CONFIGURE_DEPENDS "${_app_dir}/*")
+    set(_app_pack_excludes "")
+    if(NOT LVGLPP_ENABLE_FREETYPE)
+        list(FILTER _app_files EXCLUDE REGEX "/fonts/[^/]*[.]ttf$")
+        set(_app_pack_excludes --exclude "fonts/*.ttf")
+    endif()
     set(_app_stamp "${CMAKE_BINARY_DIR}/${target}_assets.stamp")
     file(WRITE "${_app_stamp}" "${_app_files}")
 
     if(LVGLPP_ASSET_MODE MATCHES "pack|both")
         add_custom_command(
             OUTPUT  "${LVGLPP_ASSET_OUTPUT}/${target}.pak"
-            COMMAND $<TARGET_FILE:respack> pack "${_app_dir}" "${LVGLPP_ASSET_OUTPUT}/${target}.pak"
+            COMMAND $<TARGET_FILE:respack> pack "${_app_dir}" "${LVGLPP_ASSET_OUTPUT}/${target}.pak" ${_app_pack_excludes}
             DEPENDS respack "${_app_stamp}" ${_app_files}
             COMMENT "Packing ${target} assets"
             VERBATIM)

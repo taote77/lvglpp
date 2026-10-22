@@ -1,4 +1,5 @@
 #include "SensorActivity.h"
+#include "i18n/LvTranslator.h"
 #include "config/color_sheet.h"
 #include "core/sys/StackView.h"
 #include "page/sensor/TempCurveDlg.h"
@@ -17,7 +18,7 @@ void SensorActivity::onCreate(std::any arg)
     force_dlg_ = std::make_unique<TempCurveDlg>();
     // force_dlg_->setAutoDel(false);
 
-    btn_ = std::make_shared<widgets::RoundedButton>(200, 64, widgets::RoundedButton::Dark, "开始显示曲线", getRoot());
+    btn_ = std::make_shared<widgets::RoundedButton>(200, 64, widgets::RoundedButton::Dark, lvTr("Sensor.ShowCurve"), getRoot());
     btn_->setPos(30, 200);
 
     btn_->setOnClickedListener([this]() {

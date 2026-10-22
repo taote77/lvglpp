@@ -16,7 +16,7 @@ LVGL++ is a C++17 object-oriented wrapper around **LVGL 9.3** (vendored at `sdk/
 
 ## Build
 
-Dependencies: CMake 3.16+, C++17 compiler (C++20 for `smart_home`), FFmpeg (`avformat/avcodec/avutil/swscale`). Platform-specific: SDL2 for the SDL backend (default on non-ARM), Linux fbdev headers for FRAMEBUF, libdrm for DRM. Optional: Lua 5.4 + pkg-config for `ENABLE_LUA`.
+Dependencies: CMake 3.24+ (root `CMakeLists.txt`; `sdk/CMakeLists.txt` still declares 3.16), C++17 compiler (C++20 for `smart_home`), FFmpeg (`avformat/avcodec/avutil/swscale`). Platform-specific: SDL2 for the SDL backend (default on non-ARM), Linux fbdev headers for FRAMEBUF, libdrm for DRM. Optional: Lua 5.4 + pkg-config for `ENABLE_LUA`.
 
 ```bash
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
@@ -28,6 +28,9 @@ Options (set at configure time):
 - `-DLVGLPP_PLATFORM=AUTO|SDL|FRAMEBUF|DRM` — display/input backend. `AUTO` (default) selects SDL on non-ARM and FRAMEBUF on ARM. Only the selected backend's LVGL driver is compiled/linked.
 - `-DENABLE_DEMO=OFF` — skips `demo/` only; `smart_home` and `test` are always built. Default is `ON`.
 - `-DENABLE_LUA=ON` — builds the static `lvglpp_lua` target and the `lua_ui` demo (requires `lua-5.4` via pkg-config).
+- `-DLVGLPP_ENABLE_FREETYPE=ON` — builds the vendored FreeType (`sdk/third_party/freetype/`) and enables `LV_USE_FREETYPE`. Default `OFF`: only the compiled-in bitmap fonts are used and `assets/common/fonts/*.ttf` are excluded from `common.pak`. Enabling it only compiles FreeType in; the runtime switch is still `LvFontManager::enableFreetype(true)`.
+- `-DLVGLPP_ENABLE_ROTATION=ON|OFF` — enables the four-orientation runtime mechanism (`sys::UiConfig`, display rotation/reshape, matrix transform). Default `ON`. With `OFF`, rotation code, portrait layout branches and `LV_DRAW_TRANSFORM_USE_MATRIX` are compiled out.
+- `-DLVGLPP_ENABLE_RTL=ON|OFF` — enables runtime RTL mirroring (`base_dir`, `BaseItem` alignment mirroring, RTL animations). Default `ON`. With both rotation and RTL `OFF`, `Application` does not call `UiConfig::processPending()` at all (zero per-frame cost).
 - `-DASAN=ON` — only takes effect when `CMAKE_BUILD_TYPE=Debug`.
 - `-DUSE_MARCH_NATIVE=ON` — adds `-march=native`.
 
@@ -50,7 +53,7 @@ cd build/target/bin
 ./test_unit          # headless
 ```
 
-Run apps from `build/target/bin`: `Application::applicationDirPath()` is the **current working directory**, and assets are resolved as `<cwd>/common.pak` then `<cwd>/<exe>.pak` (directory mode uses `common.asset/` and `<exe>.asset/`). Set `LVGLPP_ASSET_DIR=<dir>` or `LVGLPP_ASSET_PACK=<pack>` to override discovery for development and tests.
+Run apps from `build/target/bin`: `Application::applicationDirPath()` is the **current working directory**, and assets are resolved as `<cwd>/common.pak` then `<cwd>/<exe>.pak` (directory mode uses `common.asset/` and `<exe>.asset/`). Set `LVGLPP_ASSET_DIR=<dir>` (exclusive: disables pack discovery) or `LVGLPP_ASSET_PACK=<pack>[:<pack>...]` (colon-separated list) to override discovery for development and tests.
 
 ### Tests
 
@@ -63,7 +66,7 @@ ctest --test-dir build/test         # CTest integration (1 test)
 
 Run CTest from `build/test`, not the build root: `enable_testing()` is called inside `test/CMakeLists.txt`, so no top-level `CTestTestfile.cmake` is generated.
 
-Add tests in `test/UnitTests.cpp` (signals/events), `test/WidgetTests.cpp` (factory smoke tests), `test/LifecycleTests.cpp` (registry/ownership), `test/EventInputTests.cpp` (focus/key routing), `test/StyleLayoutTests.cpp` (Style/Theme/grid), `test/TimerAnimationTests.cpp`, `test/NewWidgetTests.cpp`, `test/ResourceTests.cpp` (image/memory resources), or `test/PageTests.cpp` (StackView/PageHost/PageView/TabView). Widget tests use the display created in `test/TestMain.cpp`; new test files must be added to the explicit list in `test/CMakeLists.txt`.
+Add tests in `test/UnitTests.cpp` (signals/events), `test/WidgetTests.cpp` (factory smoke tests), `test/LifecycleTests.cpp` (registry/ownership), `test/EventInputTests.cpp` (focus/key routing), `test/StyleLayoutTests.cpp` (Style/Theme/grid), `test/TimerAnimationTests.cpp`, `test/NewWidgetTests.cpp`, `test/ResourceTests.cpp` (image/memory resources), `test/PageTests.cpp` (StackView/PageHost/PageView/TabView), `test/AssetPackTests.cpp` (LVPAK1 format/respack), `test/AssetManagerTests.cpp` (mount/discovery/hot reload), or `test/ApplicationTests.cpp` (requestQuit/platform factory). Widget tests use the display created in `test/TestMain.cpp`; new test files must be added to the explicit list in `test/CMakeLists.txt`.
 
 ### Formatting / lint
 
@@ -109,10 +112,17 @@ clang-tidy -p build <file>
 - `widgets::PageHost` (`core/widgets/PageHost.{h,cpp}`) manages lazy-loaded pages inside one container: `addPage(name, builder)`, `show(index)`, `PageContext::emplace/onShow/onHide/onDestroy`, and `CachePolicy::{KeepAll,ReleaseOnHide,MaxCached}`. Pages get a per-page `WidgetStore` and are released with their callbacks. smart_home's five tabs use it; only the first page is built at startup.
 - `TabView::addTab()` returns `std::unique_ptr<BaseItem>` (non-owning page handle); `TabView::content(idx)` returns the actual page `lv_obj_t*`. `PageView` cancels pending async delegate creation when the wrapper/lv_obj dies and clamps its current index.
 - `BaseActivity` roots are created with no parent, so they attach to `lv_scr_act()`.
+- `sys::UiConfig` (`core/sys/UiConfig.{h,cpp}`) owns the runtime `Orientation` (0/90/180/270), `LayoutDirection` (LTR/RTL) and logical width/height. `requestOrientation`/`requestLayoutDirection`/`requestRebuild` are thread-safe and only write atomics; `Application::exec()` calls `processPending()` before `lv_timer_handler()`. It applies the platform display change, sets `LV_STYLE_BASE_DIR` on the screen and all layers, then calls `StackView::notifyConfigurationChanged()`.
+- `Activity::onConfigurationChanged(const UiConfiguration&)` is delivered to every activity. `BaseActivity` resizes the root; `SmartHomeShell` rebuilds its shell and calls `PageHost::releaseAll()+show(current)` while preserving the current tab index. Open dialogs close on a configuration change (transient state is intentionally discarded).
+- `BaseItem::setAlignment/setAlignmentTo/setPos` are RTL-aware: explicit LEFT/RIGHT/OUT_* alignments are mirrored and x offsets negated. Flex/grid RTL ordering is handled by LVGL itself — do not mirror those manually. `setMirrorInRtl(false)` opts a widget out (charts do this in `LvChart`). `Image::setRtlAsset()` selects a mirrored asset; negative transform scale is not supported by LVGL 9.3.
+- Orientation is the state source; display rotation is platform policy. FBDEV uses `lv_display_set_rotation` (PARTIAL software rotation), SDL reshapes the window for portrait (fixed-panel mode uses rotation 0/180 only), and DRM uses the matrix transform in DIRECT mode (CPU cost; `LVGLPP_DISABLE_PANEL_ROTATION=1` disables it). `LVGLPP_PANEL_ROTATION_OFFSET` calibrates panel mounting. `LVGLPP_ORIENTATION` and `LVGLPP_RTL` set startup state.
+- RTL limitations: charts stay LTR; LVGL keyboard forces LTR; textarea cursor/selection is not bidi-aware; `SwipeView` page-index math is legacy and must be revisited if that widget is revived.
+- Zero-overhead static products: configure `-DLVGLPP_ENABLE_ROTATION=OFF -DLVGLPP_ENABLE_RTL=OFF`. The RTL per-widget state, orientation pending state, matrix transform and per-frame `processPending` call are removed at compile time.
 
 ### Resources and assets
 
 - Assets live in a top-level `assets/` tree: `assets/common/` (shared fonts, images, Lottie) and optional `assets/apps/<target>/` (app-specific extras). Logical paths are relative and `/`-separated, e.g. `image/40x40/icon_warn.png`, `fonts/NotoSansSC-Regular.ttf`, `lottie/camera.json`.
+- Fonts default to compiled-in bitmap faces in `sdk/core/tools/fonts/` (`NotoSC_<size>_{Normal,Bold}.c`, `NotoArabic_<size>_Bold.c`), generated as per-size subsets from the Excel copy in `smart_home/i18n/strings.xlsx`. `assets/common/fonts/*.ttf` are only used by the optional FreeType backend; when `LVGLPP_ENABLE_FREETYPE=OFF` they are excluded from the asset pack. See `sdk/tools/i18n/README.md`.
 - `sdk/tools/respack` packs a directory into an `LVPAK1` file. The format has a 40-byte header, 8-byte-aligned raw data and a sorted index with CRC-32 per entry and for the index:
   ```bash
   respack pack <asset-dir> <out.pak> [--exclude <glob>]...
@@ -147,7 +157,7 @@ Built only with `-DENABLE_LUA=ON`, producing static `lvglpp_lua` using sol2 (hea
 
 - `smart_home/main.cc` defines `SmartHomeShell : BaseActivity`. It uses `widgets::PageHost` for five lazy tab pages (only the first page is built at startup; visited pages are kept alive by default) and swaps pages on nav-button clicks.
 - `smart_home/CMakeLists.txt` uses an **explicit source list**. New `.cc` files must be added there. Only the components plus `page/sensor` and `page/drawer` are currently compiled; the `page/home`, `page/devices`, `page/energy`, `page/rooms`, `page/scenes`, and `page/settings` directories exist but are not part of the target.
-- i18n: `i18n/LvTranslator.{h,cc}` plus generated `i18n/translations/lv_i18n.{c,h}`; source YAML and helper scripts (`compile.sh`, `extract.sh`, `merge_i18n.py`, ...) live in `i18n/translations/`. `LvTranslator::Instance().init()/load(LANGUAGE::ENGLISH)` runs in `main`.
+- i18n: source of truth is `smart_home/i18n/strings.xlsx` (one row per `strid`, columns `zh-CN, en-US, ja-JP, ru-RU, ar`). `sdk/tools/i18n/gen_lv_i18n.py` generates `smart_home/i18n/translations/lv_i18n.c`; missing translations are omitted so runtime falls back to `en-US`. Use `lvTr("strid")` and `lvTrFmt("strid", args...)`; `check_keys.py` verifies literal keys. `LvTranslator::Instance().init()/load(LANGUAGE::ENGLISH)` runs in `main`. Old YAML files and helper scripts were removed (see git history); `sdk/tools/i18n/README.md` documents the workflow.
 - Theme/colors: `sdk/config/color_sheet.h` defines `form::design::CLR_*` constants; `smart_home/theme/` adds `form_design*.h` and `ThemeKeeper`.
 
 ## Coding Conventions
@@ -161,7 +171,7 @@ Built only with `-DENABLE_LUA=ON`, producing static `lvglpp_lua` using sol2 (hea
 - Adding a widget: inherit `BaseItem`, add `tools::LvObjFactory::createXxx`, pass it to the `BaseItem` constructor, add a modern alias, call `setFocusable(true)` for interactive widgets, and update `sdk/wrappers/lua/WidgetLuaBind.cc` if Lua support is required.
 - Register events through `onClicked/onKey/addLvglEventHandler`; never call `lv_obj_add_event_cb(..., this)` directly.
 - Store callback-bearing widgets in members or `widgets::WidgetStore`; wrapper destruction removes its callbacks.
-- The full SDK guide is `docs/CPP_SDK_GUIDE.md`.
+- The full SDK guide is `docs/CPP_SDK_GUIDE.md`; `AGENTS.md` holds the condensed rule list and `docs/AI_CODING.md` has prompt templates and common pitfalls.
 
 ## Known Gotchas
 
@@ -174,6 +184,12 @@ Built only with `-DENABLE_LUA=ON`, producing static `lvglpp_lua` using sol2 (hea
 - `test_unit` creates a headless display with a no-op flush callback; without one, `lv_timer_handler()` blocks in LVGL's `wait_for_flushing()`.
 - The LVGL SDL driver still calls `lv_deinit(); exit(0)` on `SDL_QUIT`, but `SdlPlatform` installs an SDL event filter that intercepts `SDL_QUIT`/`SDL_WINDOWEVENT_CLOSE` and requests a controlled quit instead. `Application` also handles SIGINT/SIGTERM. `StackView`, `Theme`, `Toast` and the factory default styles remain process-lifetime singletons. Call `Application::shutdown()` (or `requestQuit()` + `exec()`) for a graceful teardown.
 - Assets are served from `common.pak` + `<exe>.pak`. A missing logical path logs **once** per path. For hot reload, run with `LVGLPP_ASSET_DIR=<dir>` (or build with `-DLVGLPP_ASSET_MODE=directory`) and call `ImageManager::invalidate()` / `Image::reload()` after replacing files.
+- FreeType is opt-in (`-DLVGLPP_ENABLE_FREETYPE=ON`) and off by default. Even in an ON build, `LvFontManager::enableFreetype(true)` must be called before creating widgets; otherwise the bitmap faces are used. `LV_USE_TINY_TTF` is also off by default.
+- Bitmap fonts are **subsets** of the characters in `smart_home/i18n/strings.xlsx` plus fixed ASCII/punctuation/kana ranges. If runtime data (backend-provided names, user input) contains other Unicode characters they may render as missing glyphs; regenerate the fonts after adding copy to the workbook, or enable FreeType.
+- When FreeType is OFF, `assets/common/fonts/*.ttf` are excluded from `common.pak` but are still copied in `LVGLPP_ASSET_MODE=directory`.
 - LVGL config is `sdk/lv_conf.h`, which includes `sdk/config/lv_conf_my.h` (screen size, SDL/DRM, Lottie, etc.). Display dimensions are `800x480` by default.
 - `.gitmodules` points at a root-level `lvgl` path, but LVGL is vendored directly under `sdk/lvgl/` as tracked files (9.3.0). Do not expect `git submodule update` to populate `sdk/lvgl`.
 - Most demos and real platform backends require a graphical display; only `test_unit` runs headless.
+- Orientation/RTL changes rebuild the current page and close open dialogs; scroll positions and transient dialog state are not preserved. Use `LVGLPP_ENABLE_ROTATION=OFF`/`LVGLPP_ENABLE_RTL=OFF` for static products that never need them.
+- SDL fixed-panel mode (`LVGLPP_SDL_FIXED_PANEL=1`) supports 0/180°; 90/270° falls back to window reshape because LVGL 9.3's DIRECT+matrix path corrupts the SDL texture at 90°. Use FBDEV for real 90/270 rotation validation.
+- RTL mirroring covers explicit `BaseItem` alignments and image assets; flex/grid reverse automatically. Charts are deliberately LTR; directional images need `Image::setRtlAsset()`.

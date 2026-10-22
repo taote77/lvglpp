@@ -39,6 +39,9 @@ add_executable(test_unit
     AssetPackTests.cpp
     AssetManagerTests.cpp
     ApplicationTests.cpp
+    FontCoverageTests.cpp
+    UiConfigTests.cpp
+    RtlLayoutTests.cpp
 )
 
 target_link_libraries(test_unit PRIVATE

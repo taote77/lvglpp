@@ -94,21 +94,25 @@ make -j
 
 ## Optional library
 
-There are also FreeType and FFmpeg support. You can install these according to the followings:
+There are also FreeType and FFmpeg support.
 
-### Linux
+### FreeType (optional, default OFF)
+
+FreeType 2.13.3 is vendored at `sdk/third_party/freetype/`; no system
+installation is required. Enable it at configure time:
 
 ```bash
-# FreeType support
-wget https://kumisystems.dl.sourceforge.net/project/freetype/freetype2/2.13.2/freetype-2.13.2.tar.xz
-tar -xf freetype-2.13.2.tar.xz
-cd freetype-2.13.2
-make
-make install
+cmake -S . -B build -DLVGLPP_ENABLE_FREETYPE=ON
 ```
 
+When disabled, LVGL is built with `LV_USE_FREETYPE=0`, the SDK uses its
+compiled-in bitmap fonts, and `assets/common/fonts/*.ttf` are not packed into
+`common.pak`. The runtime still defaults to bitmap fonts; call
+`LvFontManager::enableFreetype(true)` to use the FreeType faces.
+
+### FFmpeg support
+
 ```bash
-# FFmpeg support
 git clone https://git.ffmpeg.org/ffmpeg.git ffmpeg
 cd ffmpeg
 git checkout release/6.0

@@ -36,7 +36,9 @@ option(LV_USE_DRAW_SDL "Use SDL draw unit" OFF)
 option(LV_USE_LIBPNG "Use libpng to decode PNG" OFF)
 option(LV_USE_LIBJPEG_TURBO "Use libjpeg turbo to decode JPEG" OFF)
 option(LV_USE_FFMPEG "Use libffmpeg to display video using lv_ffmpeg" ON)
-option(LV_USE_FREETYPE "Use freetype library" OFF)
+option(LVGLPP_ENABLE_FREETYPE "Enable FreeType vector font support (default: bitmap fonts only)" OFF)
+option(LVGLPP_ENABLE_ROTATION "Enable runtime four-orientation support" ON)
+option(LVGLPP_ENABLE_RTL "Enable runtime RTL layout mirroring" ON)
 
 # Set C and C++ standards
 set(CMAKE_C_STANDARD 99)
@@ -64,6 +66,48 @@ add_compile_definitions($<$<BOOL:${LV_USE_FFMPEG}>:LV_USE_FFMPEG=1>)
 # Add LVGL subdirectory
 add_subdirectory(lvgl)
 target_include_directories(lvgl PUBLIC ${PROJECT_SOURCE_DIR} ${SDL2_INCLUDE_DIRS})
+target_compile_definitions(lvgl PUBLIC
+    LVGLPP_ENABLE_ROTATION=$<BOOL:${LVGLPP_ENABLE_ROTATION}>
+    LVGLPP_ENABLE_RTL=$<BOOL:${LVGLPP_ENABLE_RTL}>)
+
+# FreeType is an opt-in, project-level dependency. It no longer lives inside
+# the vendored LVGL tree; when disabled, LVGL is built with LV_USE_FREETYPE=0
+# and the SDK uses the compiled-in bitmap fonts only.
+if(LVGLPP_ENABLE_FREETYPE)
+    # Keep the vendored FreeType build hermetic: no optional compression /
+    # shaping dependencies, no install rules, and always a static library so
+    # liblvglpp.so never depends on an uninstalled libfreetype.so.
+    set(FT_DISABLE_ZLIB TRUE CACHE BOOL "" FORCE)
+    set(FT_DISABLE_BZIP2 TRUE CACHE BOOL "" FORCE)
+    set(FT_DISABLE_PNG TRUE CACHE BOOL "" FORCE)
+    set(FT_DISABLE_HARFBUZZ TRUE CACHE BOOL "" FORCE)
+    set(FT_DISABLE_BROTLI TRUE CACHE BOOL "" FORCE)
+    set(SKIP_INSTALL_ALL TRUE)
+
+    set(_lvglpp_had_build_shared_libs FALSE)
+    if(DEFINED BUILD_SHARED_LIBS)
+        set(_lvglpp_had_build_shared_libs TRUE)
+        set(_lvglpp_saved_build_shared_libs "${BUILD_SHARED_LIBS}")
+    endif()
+    set(BUILD_SHARED_LIBS OFF)
+
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third_party/freetype
+                     ${CMAKE_CURRENT_BINARY_DIR}/third_party/freetype
+                     EXCLUDE_FROM_ALL)
+
+    if(_lvglpp_had_build_shared_libs)
+        set(BUILD_SHARED_LIBS "${_lvglpp_saved_build_shared_libs}")
+        unset(_lvglpp_saved_build_shared_libs)
+    else()
+        unset(BUILD_SHARED_LIBS)
+    endif()
+    unset(_lvglpp_had_build_shared_libs)
+    unset(SKIP_INSTALL_ALL)
+
+    # PUBLIC so LVGL, lvglpp and every app/test see the same macro value.
+    target_compile_definitions(lvgl PUBLIC LV_USE_FREETYPE=1)
+    target_link_libraries(lvgl PUBLIC freetype)
+endif()
 
 if (LVGLPP_PLATFORM STREQUAL "SDL")
     target_link_libraries(lvgl PUBLIC ${SDL2_LIBRARIES})
@@ -159,13 +203,6 @@ endif()
 # Conditionally include and link FFmpeg libraries if LV_USE_FFMPEG is enabled
 if(LV_USE_FFMPEG)
     target_link_libraries(${PROJECT_NAME} avformat avcodec avutil swscale z)
-endif()
-
-# Conditionally include and link FreeType if LV_USE_FREETYPE is enabled
-if(LV_USE_FREETYPE)
-    find_package(Freetype REQUIRED)
-    target_include_directories(lvgl PUBLIC ${FREETYPE_INCLUDE_DIRS})
-    target_link_libraries(${PROJECT_NAME} ${FREETYPE_LIBRARIES})
 endif()
 
 # Apply additional compile options if the build type is Debug

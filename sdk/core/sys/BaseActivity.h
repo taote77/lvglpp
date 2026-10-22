@@ -51,6 +51,9 @@ public:
     /// Receive notification events
     void onNotifyUI(const Event &e) override;
 
+    /// Resize the root for the new display configuration.
+    void onConfigurationChanged(const UiConfiguration &configuration) override;
+
     /**
      * @brief Returns the root widget of this activity
      * @return pointer to the root BaseItem
@@ -62,7 +65,7 @@ public:
      * Call this after changing page/tab visibility so focus does not stay on
      * a hidden page.
      */
-    void refreshFocus();
+    void refreshFocus() override;
 
 private:
     std::unique_ptr<widgets::BaseItem> _root_win;
