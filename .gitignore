@@ -15,3 +15,7 @@ ui/
 
 # VSCode
 .vscode
+
+# Local AI assistant instructions (kept local, not tracked)
+/CLAUDE.md
+/AGENTS.md
