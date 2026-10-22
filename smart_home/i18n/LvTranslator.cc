@@ -86,14 +86,11 @@ void LvTranslator::load(const LANGUAGE lang)
         break;
     }
 
-#if LVGLPP_ENABLE_RTL
     sys::UiConfig::instance().requestLayoutDirection(lang == LANGUAGE::AR ? sys::LayoutDirection::Rtl
                                                                           : sys::LayoutDirection::Ltr);
-#endif
-#if LVGLPP_DYNAMIC_UI
-    // Re-translate existing pages and re-run their builders.
+    // Re-translate existing pages and re-run their builders. This works even
+    // when rotation/RTL are compiled out; only the direction part is a no-op.
     sys::UiConfig::instance().requestRebuild();
-#endif
 }
 
 const char *LvTranslator::tr(const char *text)

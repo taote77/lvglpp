@@ -29,18 +29,18 @@ void PanelResinBottle::updateBottleInfo(const std::string &material, const int32
     {
         if ((material.empty() || bottlestate == 0) || (material == "unknown"))
         {
-            _lbl_material_name->setText(lvTr("EMPTY_INFO"));
+            _lbl_material_name->setText(lvTr("empty_info"));
 
-            _lbl_bottle_status->setText(lvTr("Status.Uninstalled"));
+            _lbl_bottle_status->setText(lvTr("status_uninstalled"));
             _lbl_bottle_status->setTextClr(CLR_WARNING);
         } else
         {
             LOG_DEBUG() << "tank size: " << tank_size;
-            _lbl_material_name->setText(lvTrFmt("Common.MaterialKg", material, tank_size / 1000));
+            _lbl_material_name->setText(lvTrFmt("common_material_kg", material, tank_size / 1000));
 
             _lbl_bottle_status->setTextClr(CLR_ON_SURFACE);
             // _lbl_bottle_status->setText(std::to_string(remaining) + " g");
-            _lbl_bottle_status->setText(lvTrFmt("Common.Grams", remaining));
+            _lbl_bottle_status->setText(lvTrFmt("common_grams", remaining));
         }
 
         _last_material = material;

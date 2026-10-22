@@ -21,25 +21,25 @@ LCDInfoCard::LCDInfoCard(const double expose_time, const int32_t status) : BaseD
     _dialog_bg_item->setBgColor(ThemeColor(CLR_SURFACE_CONTAINER));
     _dialog_bg_item->setAligment(LV_ALIGN_TOP_MID, 0, 28);
 
-    _title_label = std::make_shared<ConsumeText>(lvTr("LCDScreenLable"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24Bold);
+    _title_label = std::make_shared<ConsumeText>(lvTr("lcd_screen_label"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24Bold);
     _title_label->setAligment(LV_ALIGN_TOP_LEFT, 24, 20);
 
-    _lcd_state_label = std::make_shared<ConsumeText>(lvTr("Status.Abnormal"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24);
+    _lcd_state_label = std::make_shared<ConsumeText>(lvTr("status_abnormal"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24);
 
     std::string status_str;
     if (status == 1)
     {
-        status_str = "Status.Normal";
+        status_str = "status_normal";
         _lcd_state_label->setTextClr(CLR_ON_INFO);
     } else
     {
-        status_str = "Status.Abnormal";
+        status_str = "status_abnormal";
         _lcd_state_label->setTextClr(CLR_WARNING);
     }
     _lcd_state_label->setText(lvTr(status_str.c_str()));
     _lcd_state_label->setAligmentTo(*_dialog_bg_item.get(), LV_ALIGN_TOP_RIGHT, -24, 20);
 
-    _progress_label = std::make_shared<ConsumeText>(lvTr("Panel.PulseUsed"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24);
+    _progress_label = std::make_shared<ConsumeText>(lvTr("panel_pulse_used"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24);
     _progress_label->setAligmentTo(*_title_label, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 24);
 
     _progress_bar = std::make_shared<ProgressBar>(_dialog_bg_item.get(), 115, 20);
@@ -53,7 +53,7 @@ LCDInfoCard::LCDInfoCard(const double expose_time, const int32_t status) : BaseD
     _progress_bar->setIndicatorColor(ThemeColor(CLR_PROGRESS_NORMAL_FILL));
     _progress_bar->setVisible(false);
 
-    _progress_bar_replace = std::make_shared<ConsumeText>(lvTr("EMPTY_INFO"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24);
+    _progress_bar_replace = std::make_shared<ConsumeText>(lvTr("empty_info"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24);
     _progress_bar_replace->setAligmentTo(*_progress_label, LV_ALIGN_OUT_RIGHT_MID, 12, 0);
 
     _warn_lbl = std::make_shared<ConsumeText>("", ThemeColor(CLR_WARNING), _dialog_bg_item.get(), ConsumeText::FontSize24);
@@ -62,16 +62,16 @@ LCDInfoCard::LCDInfoCard(const double expose_time, const int32_t status) : BaseD
 
     /// -------------
 
-    _status_label = std::make_shared<ConsumeText>(lvTr("Panel.Resin.Remaining"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize22);
+    _status_label = std::make_shared<ConsumeText>(lvTr("panel_resin_remaining"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize22);
     _status_label->setPos(24, 82 + 32 + 15);
 
-    _resin_remain_label = std::make_shared<ConsumeText>(lvTr("EMPTY_INFO"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize22);
+    _resin_remain_label = std::make_shared<ConsumeText>(lvTr("empty_info"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize22);
     _resin_remain_label->setAligmentTo(*_status_label, LV_ALIGN_OUT_RIGHT_MID, 4, 0);
 
     _temperature_tag_label = std::make_shared<ConsumeText>("", ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize22);
     _temperature_tag_label->setPos(286, 82 + 32 + 15);
 
-    _temperature_value_label = std::make_shared<ConsumeText>(lvTr("EMPTY_INFO"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize22);
+    _temperature_value_label = std::make_shared<ConsumeText>(lvTr("empty_info"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize22);
 
     _temperature_value_label->setAligmentTo(*_temperature_tag_label, LV_ALIGN_OUT_RIGHT_MID, 4, 0);
 
@@ -86,7 +86,7 @@ LCDInfoCard::LCDInfoCard(const double expose_time, const int32_t status) : BaseD
     _warn_icon = std::make_shared<widgets::Image>("image/28x28/warn_icon.png", _warn_bar_bg.get());
     _warn_icon->setAligment(LV_ALIGN_LEFT_MID, 12, 0);
 
-    _warn_bar_0 = std::make_shared<ConsumeText>(lvTr("ReplaceMaterialTrayTips"), ThemeColor(CLR_ON_SURFACE), _warn_bar_bg.get(), ConsumeText::FontSize24);
+    _warn_bar_0 = std::make_shared<ConsumeText>(lvTr("replace_material_tray_tips"), ThemeColor(CLR_ON_SURFACE), _warn_bar_bg.get(), ConsumeText::FontSize24);
     // _warn_bar_0 = std::make_shared<ConsumeText>("请尽快更换料盘。", ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24);
     _warn_bar_0->setAligmentTo(*_warn_icon, LV_ALIGN_OUT_RIGHT_MID, 12, 0);
 
@@ -200,7 +200,7 @@ PanelLCD::PanelLCD(BaseItem *parent) : BaseItem(parent)
     _icon1->setPos(lv_coord_t(mod_item_edge_x), lv_coord_t(18));
 
     _text->setPos(lv_coord_t(16 + offset), lv_coord_t(18));
-    _text->setText(lvTr("LCDScreenLable"));
+    _text->setText(lvTr("lcd_screen_label"));
 
     _progress = createProgressBar(this);
 

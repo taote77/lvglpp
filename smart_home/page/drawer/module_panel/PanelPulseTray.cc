@@ -22,25 +22,25 @@ ModuleDetailPulseTrayDialog::ModuleDetailPulseTrayDialog(const double progress, 
     _dialog_bg_item->setBgColor(ThemeColor(CLR_SURFACE_CONTAINER));
     _dialog_bg_item->setAligment(LV_ALIGN_TOP_MID, 0, 72);
 
-    _title_label = std::make_shared<ConsumeText>(lvTr("EMPTY_INFO"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24Bold);
+    _title_label = std::make_shared<ConsumeText>(lvTr("empty_info"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24Bold);
     _title_label->setAligment(LV_ALIGN_TOP_LEFT, 24, 20);
 
-    _tray_state_label = std::make_shared<ConsumeText>(lvTr("Status.Abnormal"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24);
+    _tray_state_label = std::make_shared<ConsumeText>(lvTr("status_abnormal"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24);
 
     std::string status_str;
     if (status == 1)
     {
-        status_str = "Status.Normal";
+        status_str = "status_normal";
         _tray_state_label->setTextClr(CLR_ON_INFO);
     } else
     {
-        status_str = "Status.Abnormal";
+        status_str = "status_abnormal";
         _tray_state_label->setTextClr(CLR_WARNING);
     }
     _tray_state_label->setText(lvTr(status_str.c_str()));
     _tray_state_label->setAligmentTo(*_dialog_bg_item.get(), LV_ALIGN_TOP_RIGHT, -24, 20);
 
-    _progress_label = std::make_shared<ConsumeText>(lvTr("Panel.PulseUsed"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24);
+    _progress_label = std::make_shared<ConsumeText>(lvTr("panel_pulse_used"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24);
     _progress_label->setAligmentTo(*_title_label, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 24);
 
     _progress_bar = std::make_shared<ProgressBar>(_dialog_bg_item.get(), 115, 20);
@@ -54,7 +54,7 @@ ModuleDetailPulseTrayDialog::ModuleDetailPulseTrayDialog(const double progress, 
     _progress_bar->setIndicatorColor(ThemeColor(CLR_PROGRESS_NORMAL_FILL));
     _progress_bar->setVisible(false);
 
-    _progress_bar_replace = std::make_shared<ConsumeText>(lvTr("EMPTY_INFO"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24);
+    _progress_bar_replace = std::make_shared<ConsumeText>(lvTr("empty_info"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24);
     _progress_bar_replace->setAligmentTo(*_progress_label, LV_ALIGN_OUT_RIGHT_MID, 12, 0);
 
     _warn_lbl = std::make_shared<ConsumeText>("", ThemeColor(CLR_WARNING), _dialog_bg_item.get(), ConsumeText::FontSize24);
@@ -63,16 +63,16 @@ ModuleDetailPulseTrayDialog::ModuleDetailPulseTrayDialog(const double progress, 
 
     /// -------------
 
-    _status_label = std::make_shared<ConsumeText>(lvTr("Panel.Resin.Remaining"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize22);
+    _status_label = std::make_shared<ConsumeText>(lvTr("panel_resin_remaining"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize22);
     _status_label->setPos(24, 82 + 32 + 15);
 
-    _resin_remain_label = std::make_shared<ConsumeText>(lvTr("EMPTY_INFO"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize22);
+    _resin_remain_label = std::make_shared<ConsumeText>(lvTr("empty_info"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize22);
     _resin_remain_label->setAligmentTo(*_status_label, LV_ALIGN_OUT_RIGHT_MID, 4, 0);
 
     _temperature_tag_label = std::make_shared<ConsumeText>("", ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize22);
     _temperature_tag_label->setPos(286, 82 + 32 + 15);
 
-    _temperature_value_label = std::make_shared<ConsumeText>(lvTr("EMPTY_INFO"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize22);
+    _temperature_value_label = std::make_shared<ConsumeText>(lvTr("empty_info"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize22);
     ;
     _temperature_value_label->setAligmentTo(*_temperature_tag_label, LV_ALIGN_OUT_RIGHT_MID, 4, 0);
 
@@ -87,7 +87,7 @@ ModuleDetailPulseTrayDialog::ModuleDetailPulseTrayDialog(const double progress, 
     _warn_icon = std::make_shared<widgets::Image>("image/28x28/warn_icon.png", _warn_bar_bg.get());
     _warn_icon->setAligment(LV_ALIGN_LEFT_MID, 12, 0);
 
-    _warn_bar_0 = std::make_shared<ConsumeText>(lvTr("ReplaceMaterialTrayTips"), ThemeColor(CLR_ON_SURFACE), _warn_bar_bg.get(), ConsumeText::FontSize24);
+    _warn_bar_0 = std::make_shared<ConsumeText>(lvTr("replace_material_tray_tips"), ThemeColor(CLR_ON_SURFACE), _warn_bar_bg.get(), ConsumeText::FontSize24);
     // _warn_bar_0 = std::make_shared<ConsumeText>("请尽快更换料盘。", ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24);
     _warn_bar_0->setAligmentTo(*_warn_icon, LV_ALIGN_OUT_RIGHT_MID, 12, 0);
 
@@ -111,14 +111,14 @@ void ModuleDetailPulseTrayDialog::UpdatePulseTrayInfo(const double progress, con
 {
     if (remain_resin < 0)
     {
-        _resin_remain_label->setText(lvTr("EMPTY_INFO"));
+        _resin_remain_label->setText(lvTr("empty_info"));
     } else
     {
-        _resin_remain_label->setText(lvTrFmt("Common.Grams", remain_resin));
+        _resin_remain_label->setText(lvTrFmt("common_grams", remain_resin));
     }
     if (resin_temp < 0)
     {
-        _temperature_value_label->setText(lvTr("EMPTY_INFO"));
+        _temperature_value_label->setText(lvTr("empty_info"));
     } else
     {
         constexpr int ratio_value{10000};
@@ -132,18 +132,18 @@ void ModuleDetailPulseTrayDialog::UpdatePulseTrayInfo(const double progress, con
 
         //                _resin_temp->setText(doubleToString(temp, 1) + " ℃");
 
-        _temperature_value_label->setText(lvTrFmt("Common.TemperatureTextC", doubleToString(temp, 1)));
+        _temperature_value_label->setText(lvTrFmt("common_temperature_text_c", doubleToString(temp, 1)));
     }
 
     if (tank_type == 1)
     {
-        _title_label->setText(lvTr("RegularResinTank"));
+        _title_label->setText(lvTr("regular_resin_tank"));
     } else if (tank_type == 2)
     {
-        _title_label->setText(lvTr("PulsingReleaseResinTank"));
+        _title_label->setText(lvTr("pulsing_release_resin_tank"));
     } else
     {
-        _title_label->setText(lvTr("EMPTY_INFO"));
+        _title_label->setText(lvTr("empty_info"));
     }
 
     LOG_DEBUG() << "progress: " << progress;
@@ -158,7 +158,7 @@ void ModuleDetailPulseTrayDialog::UpdatePulseTrayInfo(const double progress, con
         _progress_bar->setIndicatorColor(ThemeColor(CLR_PROGRESS_WARN_FILL));
 
         _warn_lbl->setTextClr(CLR_PROGRESS_WARN_FILL);
-        _warn_lbl->setText(lvTr("WearingOut"));
+        _warn_lbl->setText(lvTr("wearing_out"));
 
         _warn_bar_bg->setVisible(true);
         _warn_bar_bg->setBgColor(CLR_WARNING_CONTAINER);
@@ -167,10 +167,10 @@ void ModuleDetailPulseTrayDialog::UpdatePulseTrayInfo(const double progress, con
         _progress_bar->setIndicatorColor(ThemeColor(CLR_PROGRESS_ERROR_FILL));
 
         _warn_lbl->setTextClr(CLR_PROGRESS_ERROR_FILL);
-        _warn_lbl->setText(lvTr("PleaseReplace"));
+        _warn_lbl->setText(lvTr("please_replace"));
 
         //            _status_label_data->setTextClr(CLR_WARNING);
-        //            _status_label_data->setText(lvTr("EMPTY_INFO"));
+        //            _status_label_data->setText(lvTr("empty_info"));
 
         _warn_bar_bg->setVisible(true);
 
@@ -187,17 +187,17 @@ void ModuleDetailPulseTrayDialog::UpdatePulseTrayInfo(const double progress, con
     std::string status_top_str;
     if (tank_state == 1)
     {
-        status_top_str = "Status.Normal";
+        status_top_str = "status_normal";
         _tray_state_label->setTextClr(CLR_ON_SURFACE);
     } else if (tank_state == 0)
     {
-        status_top_str = "Status.Abnormal";
+        status_top_str = "status_abnormal";
         _tray_state_label->setTextClr(CLR_WARNING);
 
         progressbar_visual = false;
     } else if (tank_state == -1)
     {
-        status_top_str = "Status.Error";
+        status_top_str = "status_error";
         _tray_state_label->setTextClr(CLR_ERROR);
 
         progressbar_visual = false;
@@ -235,23 +235,23 @@ void PanelPulseTray::updateTrayInfo(const int32_t peeled_count, const int32_t re
         {
             _progress->setVisible(false);
 
-            _label_mod_status->setText(lvTr("Status.Uninstalled"));
+            _label_mod_status->setText(lvTr("status_uninstalled"));
             _label_mod_status->setTextClr(CLR_WARNING);
             _label_mod_status->setVisible(true);
 
-            _label_tray_text->setText(lvTr("EMPTY_INFO"));
+            _label_tray_text->setText(lvTr("empty_info"));
         } else
         {
             if ((tank_type == 1 || tank_type == 3))
             {
                 warning_loss = 75000;
                 danger_loss  = 100000;
-                _label_tray_text->setText(lvTr("RegularResinTank"));
+                _label_tray_text->setText(lvTr("regular_resin_tank"));
             } else if (tank_type == 2)
             {
                 warning_loss = 112500;
                 danger_loss  = 150000;
-                _label_tray_text->setText(lvTr("PulsingReleaseResinTank"));
+                _label_tray_text->setText(lvTr("pulsing_release_resin_tank"));
             }
 
             _progress->setVisible(true);
@@ -316,18 +316,18 @@ PanelPulseTray::PanelPulseTray(BaseItem *parent) : BaseItem(parent)
 
     if (sys::Application::getLanguageType() == sys::Application::LanguageType::English)
     {
-        _label_tray_text = std::make_shared<ConsumeText>(lvTr("PulsingReleaseResinTank"), CLR_ON_SURFACE, this, ConsumeText::FontSize22Bold);
+        _label_tray_text = std::make_shared<ConsumeText>(lvTr("pulsing_release_resin_tank"), CLR_ON_SURFACE, this, ConsumeText::FontSize22Bold);
         _label_tray_text->setPos(lv_coord_t(mod_item_edge_x + offset), lv_coord_t(8));
     } else
     {
-        _label_tray_text = std::make_shared<ConsumeText>(lvTr("PulsingReleaseResinTank"), CLR_ON_SURFACE, this, ConsumeText::FontSize22Bold);
+        _label_tray_text = std::make_shared<ConsumeText>(lvTr("pulsing_release_resin_tank"), CLR_ON_SURFACE, this, ConsumeText::FontSize22Bold);
         _label_tray_text->setPos(lv_coord_t(mod_item_edge_x + offset), lv_coord_t(18));
     }
 
     constexpr int panel_text_max_length{260};
     _label_tray_text->setWidth(panel_text_max_length);
 
-    _label_mod_status = std::make_shared<ConsumeText>(lvTr("Status.Uninstalled"), CLR_ON_SURFACE, this, ConsumeText::FontSize20);
+    _label_mod_status = std::make_shared<ConsumeText>(lvTr("status_uninstalled"), CLR_ON_SURFACE, this, ConsumeText::FontSize20);
     _label_mod_status->setReColorEnable(true);
     _label_mod_status->setTextClr(CLR_WARNING);
     _label_mod_status->setPos(mod_item_edge_x, 60);

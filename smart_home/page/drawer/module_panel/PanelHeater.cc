@@ -22,13 +22,13 @@ void PanelHeater::updateHeatStatus(int32_t scraperstate, int32_t scrapertype, in
         switch (_last_scrapertype)
         {
         case 1:
-            _label_mod_scraper->setText(lvTr("HeatingScraper"));
+            _label_mod_scraper->setText(lvTr("heating_scraper"));
             break;
         case 2:
-            _label_mod_scraper->setText(lvTr("ScraperNormal"));
+            _label_mod_scraper->setText(lvTr("scraper_normal"));
             break;
         default:
-            _label_mod_scraper->setText(lvTr("Scraper.TitleName"));
+            _label_mod_scraper->setText(lvTr("scraper_title_name"));
             break;
         }
 
@@ -37,7 +37,7 @@ void PanelHeater::updateHeatStatus(int32_t scraperstate, int32_t scrapertype, in
             _label_scraper_state->setText("");
         } else
         {
-            _label_scraper_state->setText(lvTr("Net.Disconnected"));
+            _label_scraper_state->setText(lvTr("net_disconnected"));
         }
 
         if (resin_sensor)
@@ -58,7 +58,7 @@ void PanelHeater::updateHeatStatus(int32_t scraperstate, int32_t scrapertype, in
         }
         //            else
         //            {
-        //                _resin_temp->setText(lvTrStr("EMPTY_INFO") + " ℃");
+        //                _resin_temp->setText(lvTrStr("empty_info") + " ℃");
         //            }
 
         // if (_detail_dialog)
@@ -79,7 +79,7 @@ PanelHeater::PanelHeater(BaseItem *parent) : BaseItem(parent)
     constexpr short mod_item_edge_x{16};
     constexpr short mod_item_edge_row2_y{60};
 
-    _label_mod_scraper = std::make_shared<ConsumeText>(lvTr("HeatingScraper"), CLR_ON_SURFACE, this, ConsumeText::FontSize22Bold);
+    _label_mod_scraper = std::make_shared<ConsumeText>(lvTr("heating_scraper"), CLR_ON_SURFACE, this, ConsumeText::FontSize22Bold);
     _label_mod_scraper->setPos(lv_coord_t(mod_item_edge_x + offset), lv_coord_t(18));
 
     _label_scraper_state = std::make_shared<ConsumeText>("", CLR_WARNING, this, ConsumeText::FontSize22);

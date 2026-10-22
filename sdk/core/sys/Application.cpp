@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "UiConfig.h"
+#include "core/tools/fonts/LvFontManager.h"
 
 #include "BaseActivity.h"
 #include "FileSystemManager.h"
@@ -137,6 +138,19 @@ bool Application::initialize()
     // Apply the initial orientation/direction before any activity is built.
     UiConfig::instance().initialize(platform_.get());
 
+    // Make the compiled-in Noto family the inherited default so widgets that
+    // do not use LvText (roller, dropdown, button internals) can render Arabic.
+    if (const lv_font_t *defaultFont = tools::LvFontManager::getDefaultFont())
+    {
+        for (lv_obj_t *root : {lv_screen_active(), lv_layer_top(), lv_layer_bottom(), lv_layer_sys()})
+        {
+            if (root != nullptr)
+            {
+                lv_obj_set_style_text_font(root, defaultFont, 0);
+            }
+        }
+    }
+
     if (!platform_->providesTick())
     {
         startTickThread();
@@ -170,11 +184,11 @@ int Application::exec()
 
     while (!quit_requested_.load(std::memory_order_acquire))
     {
-#if LVGLPP_DYNAMIC_UI
         // Orientation/direction/rebuild requests are coalesced here, before
-        // LVGL timers and outside any widget event callback.
+        // LVGL timers and outside any widget event callback. Rebuilds also
+        // drive language switches, so this stays active even when rotation and
+        // RTL are compiled out (the other paths inside are guarded).
         UiConfig::instance().processPending();
-#endif
 
         pollSignal();
         if (quit_requested_.load(std::memory_order_acquire))

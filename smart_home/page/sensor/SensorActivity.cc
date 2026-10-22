@@ -18,7 +18,7 @@ void SensorActivity::onCreate(std::any arg)
     force_dlg_ = std::make_unique<TempCurveDlg>();
     // force_dlg_->setAutoDel(false);
 
-    btn_ = std::make_shared<widgets::RoundedButton>(200, 64, widgets::RoundedButton::Dark, lvTr("Sensor.ShowCurve"), getRoot());
+    btn_ = std::make_shared<widgets::RoundedButton>(200, 64, widgets::RoundedButton::Dark, lvTr("sensor_show_curve"), getRoot());
     btn_->setPos(30, 200);
 
     btn_->setOnClickedListener([this]() {

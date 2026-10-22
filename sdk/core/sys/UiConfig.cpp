@@ -248,9 +248,10 @@ bool UiConfig::processPending()
         return false;
     }
 
-    bool            changed         = false;
-    Orientation     nextOrientation = current_.orientation;
-    LayoutDirection nextDirection   = current_.direction;
+    bool            changed            = false;
+    bool            orientationApplied = false;
+    Orientation     nextOrientation    = current_.orientation;
+    LayoutDirection nextDirection      = current_.direction;
 
 #if LVGLPP_ENABLE_ROTATION
     const int requestedOrientation = pending_orientation_.exchange(-1, std::memory_order_acq_rel);
@@ -261,8 +262,9 @@ bool UiConfig::processPending()
         {
             if (platform_->applyOrientation(orientation))
             {
-                nextOrientation = orientation;
-                changed         = true;
+                nextOrientation    = orientation;
+                orientationApplied = true;
+                changed            = true;
             }
             else
             {
@@ -295,8 +297,14 @@ bool UiConfig::processPending()
 
     current_.orientation = nextOrientation;
     current_.direction   = nextDirection;
-    current_.width       = displayWidth();
-    current_.height      = displayHeight();
+    if (orientationApplied)
+    {
+        // A direction-only or language-rebuild transition must not re-read the
+        // display: window managers may report a slightly different window size
+        // (e.g. 800x487) and that would silently change the layout contract.
+        current_.width  = displayWidth();
+        current_.height = displayHeight();
+    }
     ++current_.revision;
 
     applyBaseDirection();

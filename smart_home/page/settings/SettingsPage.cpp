@@ -1,6 +1,7 @@
 #include "SettingsPage.h"
 #include "core/log/log.h"
 #include "core/widgets/Toast.h"
+#include "i18n/LvTranslator.h"
 #include "theme/form_design.h"
 
 namespace lvglpp::ui::page {
@@ -51,7 +52,7 @@ void SettingsPage::buildAppearanceSection() {
 }
 
 void SettingsPage::buildLanguageSection() {
-    auto sectionLabel = std::make_unique<w::LvText>("Language", CLR_ON_SURFACE_VARIANT_1, getRoot(), w::LvText::FontSize22Bold);
+    auto sectionLabel = std::make_unique<w::LvText>(lvTr("language"), CLR_ON_SURFACE_VARIANT_1, getRoot(), w::LvText::FontSize22Bold);
     sectionLabel->setAligment(LV_ALIGN_TOP_LEFT, 20, 175);
 
     _langRoller = std::make_unique<w::Roller>(getRoot());

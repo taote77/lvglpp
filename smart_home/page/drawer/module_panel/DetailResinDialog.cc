@@ -21,11 +21,11 @@ ModuleDetailResinDialog::ModuleDetailResinDialog(const std::string &resin_name, 
     _dialog_bg_item->setBgColor(ThemeColor(CLR_SURFACE_CONTAINER));
     _dialog_bg_item->setAligment(LV_ALIGN_TOP_MID, 0, 72);
 
-    std::string material_str = resin_name.empty() ? lvTr("EMPTY_INFO") : resin_name;
+    std::string material_str = resin_name.empty() ? lvTr("empty_info") : resin_name;
     _material_name_label     = std::make_shared<ConsumeText>(material_str, ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24Bold);
     _material_name_label->setAligment(LV_ALIGN_TOP_LEFT, 24, 20);
 
-    _btn_label = std::make_shared<ConsumeText>(lvTr("Panel.Autofill.Label"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24);
+    _btn_label = std::make_shared<ConsumeText>(lvTr("panel_autofill_label"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24);
     _btn_label->setPos(24, 82);
 
     _auto_fill_switch = std::make_shared<widgets::SwitchButton>(72, 36, _dialog_bg_item.get());
@@ -39,22 +39,22 @@ ModuleDetailResinDialog::ModuleDetailResinDialog(const std::string &resin_name, 
 
         if (!_fill_mod_equipped && !_auto_fill_switch->isCheck())
         {
-            widgets::Toast::success(lvTr("CheckFillModTips"));
+            widgets::Toast::success(lvTr("check_fill_mod_tips"));
             return;
         }
 
         // comm::OtherComm::SetAutomaticFillingEnable(!_auto_fill_switch->isCheck());
         _auto_fill_switch->setCheck(!_auto_fill_switch->isCheck());
 
-        std::string msg = _auto_fill_switch->isCheck() ? "AutoFillOpenTips" : "AutoFillCloseTips";
+        std::string msg = _auto_fill_switch->isCheck() ? "auto_fill_open_tips" : "auto_fill_close_tips";
 
         widgets::Toast::warn(lvTr(msg.c_str()));
     });
 
-    _status_label = std::make_shared<ConsumeText>(lvTr("Panel.Resin.Remaining"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24);
+    _status_label = std::make_shared<ConsumeText>(lvTr("panel_resin_remaining"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24);
     _status_label->setPos(24, 82 + 32 + 15);
 
-    _remaing_info = std::make_shared<ConsumeText>(lvTr("EMPTY_INFO"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24);
+    _remaing_info = std::make_shared<ConsumeText>(lvTr("empty_info"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24);
     _remaing_info->setAligmentTo(*_status_label, LV_ALIGN_OUT_RIGHT_MID, 12, 0);
 
     _close_button = std::make_shared<RoundedButton>(48, 48, RoundedButton::ColorStyle::Gray, "", "image/32x32/x_close.png", _dialog_bg_item.get());
@@ -90,7 +90,7 @@ void ModuleDetailResinDialog::setSwitchStatus(bool mod_switch, bool equipped)
 
 void ModuleDetailResinDialog::UpdateBottleInfo(const std::string &resin_name, const int32_t remaining, const int32_t bottlestate, bool fillmod_equipped)
 {
-    _material_name_label->setText((resin_name.empty() || resin_name == "unknown") ? lvTr("EMPTY_INFO") : resin_name);
+    _material_name_label->setText((resin_name.empty() || resin_name == "unknown") ? lvTr("empty_info") : resin_name);
 
     _fill_mod_equipped = fillmod_equipped;
 
@@ -98,7 +98,7 @@ void ModuleDetailResinDialog::UpdateBottleInfo(const std::string &resin_name, co
     {
         try
         {
-            _remaing_info->setText(lvTrFmt("Common.Grams", remaining));
+            _remaing_info->setText(lvTrFmt("common_grams", remaining));
         }
         catch (const std::exception &e)
         {
@@ -108,7 +108,7 @@ void ModuleDetailResinDialog::UpdateBottleInfo(const std::string &resin_name, co
         // _rounded_button->setEnable(true);
     } else
     {
-        _remaing_info->setText(lvTr("EMPTY_INFO"));
+        _remaing_info->setText(lvTr("empty_info"));
         // _rounded_button->setEnable(false);
     }
 
@@ -135,8 +135,8 @@ ModuleDetailResinDialog::~ModuleDetailResinDialog()
 
 void ModuleDetailResinDialog::open()
 {
-    _status_label->setText(lvTr("Panel.Resin.Remaining"));
-    _btn_label->setText(lvTr("Panel.Autofill.Label"));
+    _status_label->setText(lvTr("panel_resin_remaining"));
+    _btn_label->setText(lvTr("panel_autofill_label"));
     // _remaing_info
     BaseDialog::open();
 }

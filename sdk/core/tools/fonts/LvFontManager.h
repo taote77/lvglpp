@@ -21,6 +21,10 @@ public:
 
     static const lv_font_t *getFontInfo(FontName name, int size, FontStyle style);
 
+    /// Default inherited font for widgets that do not use LvText (roller,
+    /// dropdown, button internals, ...). Covers Arabic presentation forms.
+    static const lv_font_t *getDefaultFont();
+
     static void enableFreetype(bool enable);
 
 private:

@@ -156,6 +156,11 @@ void LvFontManager::enableFreetype(bool enable)
 #endif
 }
 
+const lv_font_t *LvFontManager::getDefaultFont()
+{
+    return getFontInfo(SansSC, 20, Normal);
+}
+
 const lv_font_t *LvFontManager::getFontInfo(LvFontManager::FontName name, int size, FontStyle style)
 {
     (void)name; // Only the SansSC bitmap family is compiled in; DMSans/Oswald alias it.

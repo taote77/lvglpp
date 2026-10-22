@@ -2,9 +2,13 @@
 """Generate subset LVGL bitmap fonts from the Excel translation character set.
 
 For every size we emit:
-  * NotoSC_<size>_Normal.c   (NotoSansSC-AR-Regular: zh/en/ja/ru/ar)
-  * NotoSC_<size>_Bold.c     (NotoSansSC-Bold + Arabic fallback)
-  * NotoArabic_<size>_Bold.c (NotoSansArabic-Bold, only Arabic glyphs)
+  * NotoSC_<size>_Normal.c    (NotoSansSC-AR-Regular + Arabic fallback)
+  * NotoSC_<size>_Bold.c      (NotoSansSC-Bold + Arabic fallback)
+  * NotoArabic_<size>_Normal.c (NotoSansArabic-Regular, only Arabic glyphs)
+  * NotoArabic_<size>_Bold.c  (NotoSansArabic-Bold, only Arabic glyphs)
+
+NotoSansSC-AR-Regular only carries part of the Arabic presentation forms; the
+rest are resolved through the CJK font's fallback pointer.
 
 Only characters that actually occur in strings.xlsx (plus a small set of fixed
 ranges for punctuation) are included, so the fonts stay small.
@@ -240,6 +244,7 @@ def main(argv: list[str] | None = None) -> int:
     sources = {
         "normal": fonts_dir / "NotoSansSC-AR-Regular.ttf",
         "bold": fonts_dir / "NotoSansSC-Bold.ttf",
+        "arabic_normal": fonts_dir / "NotoSansArabic-Regular.ttf",
         "arabic_bold": fonts_dir / "NotoSansArabic-Bold.ttf",
     }
     for name, path in sources.items():
@@ -251,6 +256,7 @@ def main(argv: list[str] | None = None) -> int:
     for label, path, chars in (
         ("normal", sources["normal"], charset),
         ("bold", sources["bold"], other_chars),
+        ("arabic_normal", sources["arabic_normal"], arabic_chars),
         ("arabic_bold", sources["arabic_bold"], arabic_chars),
     ):
         missing = _check_source_coverage(path, chars)
@@ -269,7 +275,7 @@ def main(argv: list[str] | None = None) -> int:
                 "size": size,
                 "symbols": charset,
                 "ranges": FIXED_RANGES + ARABIC_RANGES,
-                "fallback": None,
+                "fallback": f"NotoArabic_{size}_Normal" if arabic_chars else None,
                 "expected": charset,
                 "label": f"NotoSC_{size}_Normal",
             }
@@ -287,18 +293,21 @@ def main(argv: list[str] | None = None) -> int:
             }
         )
         if arabic_chars:
-            tasks.append(
-                {
-                    "file": f"NotoArabic_{size}_Bold.c",
-                    "source": sources["arabic_bold"],
-                    "size": size,
-                    "symbols": arabic_chars,
-                    "ranges": ARABIC_RANGES,
-                    "fallback": None,
-                    "expected": arabic_chars,
-                    "label": f"NotoArabic_{size}_Bold",
-                }
-            )
+            for style, source in (("Normal", "arabic_normal"), ("Bold", "arabic_bold")):
+                tasks.append(
+                    {
+                        "file": f"NotoArabic_{size}_{style}.c",
+                        "source": sources[source],
+                        "size": size,
+                        "symbols": arabic_chars,
+                        "ranges": ARABIC_RANGES,
+                        # LVGL symbol glyphs (U+F000-U+F8FF) only exist in the
+                        # built-in Montserrat fonts; chain them after Arabic.
+                        "fallback": f"lv_font_montserrat_{size}",
+                        "expected": arabic_chars,
+                        "label": f"NotoArabic_{size}_{style}",
+                    }
+                )
 
     if args.dry_run:
         for task in tasks:

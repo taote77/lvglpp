@@ -24,12 +24,12 @@ ThermostatWidget::ThermostatWidget(float currentTemp, float targetTemp,
 
     // Current temperature (large)
     _currentLabel = std::make_unique<w::LvText>(
-        lvTrFmt("Common.TemperatureC", _currentTemp), CLR_ON_SURFACE, this, w::LvText::FontSize36Bold);
+        lvTrFmt("common_temperature_c", _currentTemp), CLR_ON_SURFACE, this, w::LvText::FontSize36Bold);
     _currentLabel->setAligment(LV_ALIGN_CENTER, 30, -30);
 
     // Target temperature
     _targetLabel = std::make_unique<w::LvText>(
-        lvTrFmt("Thermostat.Target", _targetTemp), CLR_ON_SURFACE_VARIANT_1, this, w::LvText::FontSize22);
+        lvTrFmt("thermostat_target", _targetTemp), CLR_ON_SURFACE_VARIANT_1, this, w::LvText::FontSize22);
     _targetLabel->setAligment(LV_ALIGN_CENTER, 30, 10);
 
     // Minus button
@@ -43,7 +43,7 @@ ThermostatWidget::ThermostatWidget(float currentTemp, float targetTemp,
     _plusBtn->setOnClickedListener([this]() { _adjustTemp(+0.5f); });
 
     // Mode button
-    _modeBtn = std::make_unique<w::PushButton>(80, 40, w::PushButton::Dark, lvTr("Common.Heat"), this);
+    _modeBtn = std::make_unique<w::PushButton>(80, 40, w::PushButton::Dark, lvTr("common_heat"), this);
     _modeBtn->setAligment(LV_ALIGN_RIGHT_MID, -50, 25);
     _modeBtn->setOnClickedListener([this]() {
         _mode = static_cast<Mode>((static_cast<int>(_mode) + 1) % 4);
@@ -76,10 +76,10 @@ void ThermostatWidget::_adjustTemp(float delta) {
 
 void ThermostatWidget::_updateDisplay() {
     _arc->setValue(static_cast<int32_t>(_currentTemp * 10));
-    _currentLabel->setText(lvTrFmt("Common.TemperatureC", _currentTemp));
-    _targetLabel->setText(lvTrFmt("Thermostat.Target", _targetTemp));
+    _currentLabel->setText(lvTrFmt("common_temperature_c", _currentTemp));
+    _targetLabel->setText(lvTrFmt("thermostat_target", _targetTemp));
 
-    const char *modeNames[] = {lvTr("Common.Off"), lvTr("Common.Heat"), lvTr("Common.Cool"), lvTr("Common.Auto")};
+    const char *modeNames[] = {lvTr("common_off"), lvTr("common_heat"), lvTr("common_cool"), lvTr("common_auto")};
     _modeBtn->setTextMsg(modeNames[static_cast<int>(_mode)]);
 }
 

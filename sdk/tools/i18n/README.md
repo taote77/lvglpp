@@ -65,12 +65,18 @@ python3 -I sdk/tools/i18n/gen_fonts.py \
 
 Generated per size `20/22/24/28/32/36`:
 
-- `NotoSC_<size>_Normal.c` — `NotoSansSC-AR-Regular.ttf`, all locales.
+- `NotoSC_<size>_Normal.c` — `NotoSansSC-AR-Regular.ttf`, all locales, with
+  `--lv-fallback NotoArabic_<size>_Normal`.
 - `NotoSC_<size>_Bold.c` — `NotoSansSC-Bold.ttf`, with
   `--lv-fallback NotoArabic_<size>_Bold`.
-- `NotoArabic_<size>_Bold.c` — `NotoSansArabic-Bold.ttf`, Arabic glyphs and
-  presentation forms (`U+FB50–FDFF`, `U+FE70–FEFF`) used by LVGL's Arabic
-  shaping.
+- `NotoArabic_<size>_Normal.c` — `NotoSansArabic-Regular.ttf`, Arabic glyphs
+  and presentation forms (`U+FB50–FDFF`, `U+FE70–FEFF`) used by LVGL's Arabic
+  shaping. `NotoSansSC-AR-Regular.ttf` only carries part of these forms, so
+  the fallback fills the gaps. It also chains
+  `--lv-fallback lv_font_montserrat_<size>` so LVGL symbol glyphs
+  (`U+F000–F8FF`, e.g. dropdown arrows) keep rendering with the Noto default.
+- `NotoArabic_<size>_Bold.c` — the same set from
+  `NotoSansArabic-Bold.ttf`.
 
 Fixed ranges (ASCII, Latin-1, punctuation, kana, fullwidth) are added so
 runtime data such as numbers and dates renders even when it is not in the

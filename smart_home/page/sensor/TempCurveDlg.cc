@@ -75,9 +75,9 @@ void TempCurveDlg::init()
     peak_force_curve_label->setAligmentTo(*back_icon_, LV_ALIGN_OUT_RIGHT_MID, 30, 0);
     peak_force_curve_label->setReColorEnable(true);
 
-    peak_value_ = std::make_shared<LvText>(lvTrFmt("Common.Newton", "0.00"), CLR_ON_SURFACE, bg_.get(), LvText::FontSize20);
+    peak_value_ = std::make_shared<LvText>(lvTrFmt("common_newton", "0.00"), CLR_ON_SURFACE, bg_.get(), LvText::FontSize20);
     peak_value_->setPos(28, peak_pos_y);
-    trough_value_ = std::make_shared<LvText>(lvTrFmt("Common.Newton", "0.00"), CLR_ON_SURFACE, bg_.get(), LvText::FontSize20);
+    trough_value_ = std::make_shared<LvText>(lvTrFmt("common_newton", "0.00"), CLR_ON_SURFACE, bg_.get(), LvText::FontSize20);
     trough_value_->setPos(28, trough_pos_y);
 }
 
@@ -195,7 +195,7 @@ void TempCurveDlg::addChartIndex(int index)
     double max_index = *std::max_element(chart_vec_.begin(), chart_vec_.end());
     double min_index = *std::min_element(chart_vec_.begin(), chart_vec_.end());
 
-    peak_force_curve_label->setText(lvTrFmt("Sensor.CurveStats", max_index, min_index));
+    peak_force_curve_label->setText(lvTrFmt("sensor_curve_stats", max_index, min_index));
 
     zero_label_->setPos(85, peak_pos_y + 10 + (max_index / (max_index - min_index) * (trough_pos_y - peak_pos_y)));
 
@@ -204,8 +204,8 @@ void TempCurveDlg::addChartIndex(int index)
     double axis_y_low  = min_index < -10 ? min_index - 10 : -20;
     double axis_y_high = max_index > 15 ? max_index + 15 : 30;
 
-    peak_value_->setText(lvTrFmt("Common.Newton", axis_y_low));
-    trough_value_->setText(lvTrFmt("Common.Newton", max_index));
+    peak_value_->setText(lvTrFmt("common_newton", axis_y_low));
+    trough_value_->setText(lvTrFmt("common_newton", max_index));
 
     lv_chart_set_next_value(chart_->getLvglItem(), ser1_, index / 100.0);
     lv_chart_set_next_value(chart_->getLvglItem(), ser2_, 0);

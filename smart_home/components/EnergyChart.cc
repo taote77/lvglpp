@@ -19,7 +19,7 @@ EnergyChart::EnergyChart(const std::string &title, w::BaseItem *parent)
     _titleLabel->setAligment(LV_ALIGN_TOP_LEFT, 12, 8);
 
     // Total kWh
-    _totalLabel = std::make_unique<w::LvText>(lvTrFmt("Common.EnergyKWh", 0.0f), CLR_PRIMARY, this, w::LvText::FontSize28Bold);
+    _totalLabel = std::make_unique<w::LvText>(lvTrFmt("common_energy_kwh", 0.0f), CLR_PRIMARY, this, w::LvText::FontSize28Bold);
     _totalLabel->setAligment(LV_ALIGN_TOP_RIGHT, -12, 8);
 
     // Chart
@@ -34,10 +34,10 @@ EnergyChart::EnergyChart(const std::string &title, w::BaseItem *parent)
     _series = _chart->addSeries(lv_color_hex(CLR_PRIMARY), w::LvChart::PrimaryY);
 
     // Day/Week toggle buttons
-    _dayBtn = std::make_unique<w::PushButton>(50, 28, w::PushButton::Blue, lvTr("Common.Day"), this);
+    _dayBtn = std::make_unique<w::PushButton>(50, 28, w::PushButton::Blue, lvTr("common_day"), this);
     _dayBtn->setAligment(LV_ALIGN_BOTTOM_LEFT, 12, -8);
 
-    _weekBtn = std::make_unique<w::PushButton>(50, 28, w::PushButton::Gray, lvTr("Common.Week"), this);
+    _weekBtn = std::make_unique<w::PushButton>(50, 28, w::PushButton::Gray, lvTr("common_week"), this);
     _weekBtn->setAligment(LV_ALIGN_BOTTOM_LEFT, 68, -8);
 }
 
@@ -51,7 +51,7 @@ void EnergyChart::setData(const std::vector<int32_t> &values, const std::vector<
 }
 
 void EnergyChart::setTotal(float kWh) {
-    _totalLabel->setText(lvTrFmt("Common.EnergyKWh", kWh));
+    _totalLabel->setText(lvTrFmt("common_energy_kwh", kWh));
 }
 
 } // namespace lvglpp::ui::widgets

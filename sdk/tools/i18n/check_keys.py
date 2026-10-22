@@ -36,13 +36,13 @@ LITERAL_PATTERNS = (
 DYNAMIC_PATTERN = re.compile(r'\b(?:lvTr|lvTrFmt|lvTrStr)\s*\(\s*([^"\s][^)]*)\)')
 
 DEFAULT_DYNAMIC_ALLOWLIST = {
-    "EMPTY_INFO",
-    "Status.Normal",
-    "Status.Abnormal",
-    "Status.Uninstalled",
-    "Status.Error",
-    "AutoFillOpenTips",
-    "AutoFillCloseTips",
+    "empty_info",
+    "status_normal",
+    "status_abnormal",
+    "status_uninstalled",
+    "status_error",
+    "auto_fill_open_tips",
+    "auto_fill_close_tips",
 }
 
 

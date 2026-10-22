@@ -46,7 +46,7 @@ const std::string lvTrStr(const char *text);
 #ifdef LVGLPP_HAS_STD_FORMAT
 /**
  * Translate a strid containing std::format placeholders and format it.
- * Example: lvTrFmt("Common.DeviceCount", 3) with "{} devices".
+ * Example: lvTrFmt("common_device_count", 3) with "{} devices".
  */
 template <typename... Args>
 inline std::string lvTrFmt(const char *strid, Args &&...args)
