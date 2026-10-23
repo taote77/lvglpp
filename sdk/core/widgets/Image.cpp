@@ -7,12 +7,12 @@
 
 namespace lvglpp::widgets {
 
-Image::Image(const std::string &assetPath, BaseItem *parent) : BaseItem(tools::LvObjFactory::createLvglImage, parent)
+Image::Image(const std::string &assetPath, Widget *parent) : Widget(tools::LvObjFactory::createLvglImage, parent)
 {
     setAsset(assetPath);
 }
 
-Image::Image(FileSource source, BaseItem *parent) : BaseItem(tools::LvObjFactory::createLvglImage, parent)
+Image::Image(FileSource source, Widget *parent) : Widget(tools::LvObjFactory::createLvglImage, parent)
 {
     setFile(source.path);
 }
@@ -32,14 +32,14 @@ void Image::applySource(const std::string &path, bool fileSource)
     src_path_    = path;
     file_source_ = fileSource;
 
-    if (getLvglItem() == nullptr)
+    if (lvObj() == nullptr)
     {
         return;
     }
 
     if (path.empty())
     {
-        lv_image_set_src(getLvglItem(), nullptr);
+        lv_image_set_src(lvObj(), nullptr);
         clearObjectKeepalive("image.resource");
         image_resource_.reset();
         return;
@@ -48,7 +48,7 @@ void Image::applySource(const std::string &path, bool fileSource)
     tools::ImageHandle handle = fileSource ? tools::ImageManager::loadFile(path) : tools::ImageManager::load(path);
     if (!handle)
     {
-        lv_image_set_src(getLvglItem(), nullptr);
+        lv_image_set_src(lvObj(), nullptr);
         clearObjectKeepalive("image.resource");
         image_resource_.reset();
         return;
@@ -56,7 +56,7 @@ void Image::applySource(const std::string &path, bool fileSource)
 
     // Switch LVGL to the new descriptor before releasing the previous
     // resource, then retain the handle until the lv_obj is deleted.
-    lv_image_set_src(getLvglItem(), handle->descriptor());
+    lv_image_set_src(lvObj(), handle->descriptor());
     setObjectKeepalive("image.resource", handle);
     image_resource_ = std::move(handle);
 }
@@ -88,12 +88,23 @@ void Image::reload()
     }
 }
 
-void Image::setEnable(bool enable)
+void Image::setEnabled(bool enable)
 {
-    BaseItem::setEnable(enable);
-    if (enable && getLvglItem() != nullptr)
+    Widget::setEnabled(enable);
+    if (lvObj() == nullptr)
     {
-        lv_obj_set_ext_click_area(getLvglItem(), 15);
+        return;
+    }
+
+    // Images are not clickable in LVGL by default. Enabling one is the
+    // established way to turn it into a click target (e.g. back arrows).
+    if (enable)
+    {
+        lv_obj_add_flag(lvObj(), LV_OBJ_FLAG_CLICKABLE);
+        lv_obj_set_ext_click_area(lvObj(), 15);
+    } else
+    {
+        lv_obj_clear_flag(lvObj(), LV_OBJ_FLAG_CLICKABLE);
     }
 }
 

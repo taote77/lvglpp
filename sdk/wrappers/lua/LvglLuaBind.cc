@@ -92,7 +92,7 @@ bool LvglLuaBind::executeFile(const std::string &filename)
     return executeScript(script);
 }
 
-void LvglLuaBind::setRootItem(std::shared_ptr<widgets::BaseItem> root)
+void LvglLuaBind::setRootItem(std::shared_ptr<widgets::Widget> root)
 {
     root_item_ = root;
 
@@ -102,7 +102,7 @@ void LvglLuaBind::setRootItem(std::shared_ptr<widgets::BaseItem> root)
     }
 }
 
-std::shared_ptr<widgets::BaseItem> LvglLuaBind::getRootItem() const
+std::shared_ptr<widgets::Widget> LvglLuaBind::getRootItem() const
 {
     return root_item_;
 }
@@ -119,13 +119,13 @@ void LvglLuaBind::registerLuaAPI()
     WidgetLuaBind::bindAll(*lua_state_);
 
     lvgl["create_text"] = [this](const std::string &text, uint32_t color, sol::object parent_obj) -> std::shared_ptr<widgets::LvText> {
-        widgets::BaseItem *parent = nullptr;
-        if (parent_obj.is<widgets::BaseItem *>())
+        widgets::Widget *parent = nullptr;
+        if (parent_obj.is<widgets::Widget *>())
         {
-            parent = parent_obj.as<widgets::BaseItem *>();
-        } else if (parent_obj.is<std::shared_ptr<widgets::BaseItem>>())
+            parent = parent_obj.as<widgets::Widget *>();
+        } else if (parent_obj.is<std::shared_ptr<widgets::Widget>>())
         {
-            parent = parent_obj.as<std::shared_ptr<widgets::BaseItem>>().get();
+            parent = parent_obj.as<std::shared_ptr<widgets::Widget>>().get();
         }
 
         return std::make_shared<widgets::LvText>(text, color, parent, widgets::LvText::TextStyle::FontSize20, widgets::LvText::FontType::Auto);
@@ -133,39 +133,39 @@ void LvglLuaBind::registerLuaAPI()
 
     lvgl["create_text_ex"] = [this](const std::string &text, uint32_t color, sol::object parent_obj, widgets::LvText::TextStyle style,
                                     widgets::LvText::FontType font_type) -> std::shared_ptr<widgets::LvText> {
-        widgets::BaseItem *parent = nullptr;
-        if (parent_obj.is<widgets::BaseItem *>())
+        widgets::Widget *parent = nullptr;
+        if (parent_obj.is<widgets::Widget *>())
         {
-            parent = parent_obj.as<widgets::BaseItem *>();
-        } else if (parent_obj.is<std::shared_ptr<widgets::BaseItem>>())
+            parent = parent_obj.as<widgets::Widget *>();
+        } else if (parent_obj.is<std::shared_ptr<widgets::Widget>>())
         {
-            parent = parent_obj.as<std::shared_ptr<widgets::BaseItem>>().get();
+            parent = parent_obj.as<std::shared_ptr<widgets::Widget>>().get();
         }
 
         return std::make_shared<widgets::LvText>(text, color, parent, style, font_type);
     };
 
     lvgl["create_image"] = [this](const std::string &path, sol::object parent_obj) -> std::shared_ptr<widgets::Image> {
-        widgets::BaseItem *parent = nullptr;
-        if (parent_obj.is<widgets::BaseItem *>())
+        widgets::Widget *parent = nullptr;
+        if (parent_obj.is<widgets::Widget *>())
         {
-            parent = parent_obj.as<widgets::BaseItem *>();
-        } else if (parent_obj.is<std::shared_ptr<widgets::BaseItem>>())
+            parent = parent_obj.as<widgets::Widget *>();
+        } else if (parent_obj.is<std::shared_ptr<widgets::Widget>>())
         {
-            parent = parent_obj.as<std::shared_ptr<widgets::BaseItem>>().get();
+            parent = parent_obj.as<std::shared_ptr<widgets::Widget>>().get();
         }
 
         return std::make_shared<widgets::Image>(path, parent);
     };
 
     lvgl["create_button"] = [this](int width, int height, const std::string &text, sol::object parent_obj) -> std::shared_ptr<widgets::PushButton> {
-        widgets::BaseItem *parent = nullptr;
-        if (parent_obj.is<widgets::BaseItem *>())
+        widgets::Widget *parent = nullptr;
+        if (parent_obj.is<widgets::Widget *>())
         {
-            parent = parent_obj.as<widgets::BaseItem *>();
-        } else if (parent_obj.is<std::shared_ptr<widgets::BaseItem>>())
+            parent = parent_obj.as<widgets::Widget *>();
+        } else if (parent_obj.is<std::shared_ptr<widgets::Widget>>())
         {
-            parent = parent_obj.as<std::shared_ptr<widgets::BaseItem>>().get();
+            parent = parent_obj.as<std::shared_ptr<widgets::Widget>>().get();
         }
 
         return std::make_shared<widgets::PushButton>(width, height, widgets::PushButton::ColorStyle::Blue, text, parent);
@@ -173,13 +173,13 @@ void LvglLuaBind::registerLuaAPI()
 
     lvgl["create_button_ex"] = [this](int width, int height, widgets::PushButton::ColorStyle color_style, const std::string &text,
                                       sol::object parent_obj) -> std::shared_ptr<widgets::PushButton> {
-        widgets::BaseItem *parent = nullptr;
-        if (parent_obj.is<widgets::BaseItem *>())
+        widgets::Widget *parent = nullptr;
+        if (parent_obj.is<widgets::Widget *>())
         {
-            parent = parent_obj.as<widgets::BaseItem *>();
-        } else if (parent_obj.is<std::shared_ptr<widgets::BaseItem>>())
+            parent = parent_obj.as<widgets::Widget *>();
+        } else if (parent_obj.is<std::shared_ptr<widgets::Widget>>())
         {
-            parent = parent_obj.as<std::shared_ptr<widgets::BaseItem>>().get();
+            parent = parent_obj.as<std::shared_ptr<widgets::Widget>>().get();
         }
 
         return std::make_shared<widgets::PushButton>(width, height, color_style, text, parent);

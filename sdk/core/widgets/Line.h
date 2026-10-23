@@ -1,15 +1,15 @@
 #ifndef LVGLPP_LINE_H
 #define LVGLPP_LINE_H
 
-#include "BaseItem.h"
+#include "Widget.h"
 #include <vector>
 
 namespace lvglpp::widgets {
 
-class Line : public BaseItem
+class Line : public Widget
 {
 public:
-    explicit Line(BaseItem *parent = nullptr);
+    explicit Line(Widget *parent = nullptr);
 
     /// Set all points from an array of lv_point_precise_t
     /// Coordinates use LVGL's precise format (fixed-point with 8-bit fraction)

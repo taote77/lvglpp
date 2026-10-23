@@ -17,18 +17,18 @@ static uint32_t _colorForState(StatusBadge::State s) {
     return CLR_SUCCESS;
 }
 
-StatusBadge::StatusBadge(State state, w::BaseItem *parent)
-    : w::BaseItem(parent), _state(state)
+StatusBadge::StatusBadge(State state, w::Widget *parent)
+    : w::Widget(parent), _state(state)
 {
     setSize(80, 24);
 
-    _dot = std::make_unique<w::BaseItem>(this);
+    _dot = std::make_unique<w::Widget>(this);
     _dot->setSize(10, 10);
     _dot->setRadius(5);
-    _dot->setAligment(LV_ALIGN_LEFT_MID, 0, 0);
+    _dot->setAlignment(LV_ALIGN_LEFT_MID, 0, 0);
 
     _label = std::make_unique<w::LvText>("", CLR_ON_SURFACE_VARIANT_1, this, w::LvText::FontSize20);
-    _label->setAligment(LV_ALIGN_LEFT_MID, 16, 0);
+    _label->setAlignment(LV_ALIGN_LEFT_MID, 16, 0);
 
     _updateAppearance();
 }

@@ -1,15 +1,15 @@
 #ifndef LVGLPP_TABLE_H
 #define LVGLPP_TABLE_H
 
-#include "BaseItem.h"
+#include "Widget.h"
 #include <string>
 
 namespace lvglpp::widgets {
 
-class Table : public BaseItem
+class Table : public Widget
 {
 public:
-    explicit Table(BaseItem *parent = nullptr);
+    explicit Table(Widget *parent = nullptr);
 
     /// Set the cell value at [row, col]
     void setCellValue(uint32_t row, uint32_t col, const std::string &text);

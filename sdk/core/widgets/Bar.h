@@ -1,14 +1,14 @@
 #ifndef LVGLPP_BAR_H
 #define LVGLPP_BAR_H
 
-#include "BaseItem.h"
+#include "Widget.h"
 
 namespace lvglpp::widgets {
 
-class ProgressBar : public BaseItem
+class ProgressBar : public Widget
 {
 public:
-    explicit ProgressBar(BaseItem *parent = nullptr);
+    explicit ProgressBar(Widget *parent = nullptr);
 
     /// Set the current value
     void setValue(int32_t value, bool animate = false);

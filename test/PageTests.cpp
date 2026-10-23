@@ -2,7 +2,7 @@
 #include "core/sys/BaseActivity.h"
 #include "core/sys/InputManager.h"
 #include "core/sys/StackView.h"
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 #include "core/widgets/BaseModel.hpp"
 #include "core/widgets/PageHost.h"
 #include "core/widgets/PageView.hpp"
@@ -74,7 +74,7 @@ public:
 class TestPageDelegate : public PageViewDelegate<int>
 {
 public:
-    explicit TestPageDelegate(BaseItem *parent = nullptr) : PageViewDelegate<int>(parent)
+    explicit TestPageDelegate(Widget *parent = nullptr) : PageViewDelegate<int>(parent)
     {}
 
     void draw(const int &) override
@@ -146,7 +146,7 @@ TEST(BaseActivity_refresh_focus_skips_hidden_widgets)
         CountingActivity activity("focus");
         activity.onCreate({});
 
-        auto child = std::make_unique<BaseItem>(activity.getRoot());
+        auto child = std::make_unique<Widget>(activity.getRoot());
         child->setFocusable(true);
 
         activity.onResume();
@@ -184,7 +184,7 @@ TEST(PageView_destroy_cancels_pending_async_creation)
 
 TEST(PageHost_builds_pages_lazily)
 {
-    BaseItem root;
+    Widget root;
     PageHost host(&root);
     host.setSize(200, 100);
 
@@ -193,11 +193,11 @@ TEST(PageHost_builds_pages_lazily)
 
     host.addPage("A", [&builds_a](PageContext &ctx) {
         builds_a++;
-        ctx.emplace<BaseItem>(ctx.root())->setName("a-child");
+        ctx.emplace<Widget>(ctx.root())->setName("a-child");
     });
     host.addPage("B", [&builds_b](PageContext &ctx) {
         builds_b++;
-        ctx.emplace<BaseItem>(ctx.root())->setName("b-child");
+        ctx.emplace<Widget>(ctx.root())->setName("b-child");
     });
 
     CHECK_EQ(host.pageCount(), 2);
@@ -211,12 +211,12 @@ TEST(PageHost_builds_pages_lazily)
     CHECK_EQ(builds_b, 0);
     CHECK_EQ(host.currentIndex(), 0);
     CHECK_TRUE(host.isBuilt(0));
-    CHECK_TRUE(host.page(0)->getVisible());
+    CHECK_TRUE(host.page(0)->isVisible());
 
     CHECK_TRUE(host.show(1));
     CHECK_EQ(builds_b, 1);
-    CHECK_FALSE(host.page(0)->getVisible());
-    CHECK_TRUE(host.page(1)->getVisible());
+    CHECK_FALSE(host.page(0)->isVisible());
+    CHECK_TRUE(host.page(1)->isVisible());
 
     CHECK_TRUE(host.show(0));
     CHECK_EQ(builds_a, 1); // kept alive, not rebuilt
@@ -226,7 +226,7 @@ TEST(PageHost_builds_pages_lazily)
 
 TEST(PageHost_runs_page_lifecycle)
 {
-    BaseItem root;
+    Widget root;
     PageHost host(&root);
     host.setSize(200, 100);
 
@@ -254,7 +254,7 @@ TEST(PageHost_runs_page_lifecycle)
 
 TEST(PageHost_release_on_hide_rebuilds)
 {
-    BaseItem root;
+    Widget root;
     PageHost host(&root);
     host.setSize(200, 100);
     host.setCachePolicy(PageHost::CachePolicy::ReleaseOnHide);
@@ -280,7 +280,7 @@ TEST(PageHost_release_on_hide_rebuilds)
 
 TEST(PageHost_max_cached_releases_oldest)
 {
-    BaseItem root;
+    Widget root;
     PageHost host(&root);
     host.setSize(200, 100);
     host.setCachePolicy(PageHost::CachePolicy::MaxCached, 1);
@@ -314,22 +314,22 @@ TEST(PageHost_switch_from_nav_click_is_safe)
         auto host = std::make_unique<PageHost>(activity.getRoot());
         host->setSize(400, 200);
 
-        BaseItem *button_a = nullptr;
-        BaseItem *button_b = nullptr;
+        Widget *button_a = nullptr;
+        Widget *button_b = nullptr;
 
         host->addPage("A", [&button_a](PageContext &ctx) {
-            button_a = ctx.emplace<BaseItem>(ctx.root());
+            button_a = ctx.emplace<Widget>(ctx.root());
             button_a->setSize(10, 10);
             button_a->setFocusable(true);
         });
         host->addPage("B", [&button_b](PageContext &ctx) {
-            button_b = ctx.emplace<BaseItem>(ctx.root());
+            button_b = ctx.emplace<Widget>(ctx.root());
             button_b->setSize(10, 10);
             button_b->setFocusable(true);
         });
 
         // A nav control living outside the PageHost, like smart_home's tabs.
-        auto nav = std::make_unique<BaseItem>(activity.getRoot());
+        auto nav = std::make_unique<Widget>(activity.getRoot());
         nav->setSize(50, 20);
         nav->setFocusable(true);
         nav->onClicked([&host]() { host->show(1); });
@@ -340,7 +340,7 @@ TEST(PageHost_switch_from_nav_click_is_safe)
 
         // Focus refresh happens inside the clicked callback; this must not
         // corrupt LVGL's event dispatch.
-        lv_obj_send_event(nav->getLvglItem(), LV_EVENT_CLICKED, nullptr);
+        lv_obj_send_event(nav->lvObj(), LV_EVENT_CLICKED, nullptr);
 
         CHECK_EQ(host->currentIndex(), 1);
         CHECK(input.focusedItem() == button_b);
@@ -354,7 +354,7 @@ TEST(PageHost_switch_from_nav_click_is_safe)
 
 TEST(PageHost_destroys_pages_on_host_destruction)
 {
-    BaseItem root;
+    Widget root;
     int      destroyed = 0;
 
     {
@@ -382,16 +382,16 @@ TEST(PageHost_refreshes_focus_after_switch)
         auto host = std::make_unique<PageHost>(activity.getRoot());
         host->setSize(200, 100);
 
-        BaseItem *button_a = nullptr;
-        BaseItem *button_b = nullptr;
+        Widget *button_a = nullptr;
+        Widget *button_b = nullptr;
 
         host->addPage("A", [&button_a](PageContext &ctx) {
-            button_a = ctx.emplace<BaseItem>(ctx.root());
+            button_a = ctx.emplace<Widget>(ctx.root());
             button_a->setSize(10, 10);
             button_a->setFocusable(true);
         });
         host->addPage("B", [&button_b](PageContext &ctx) {
-            button_b = ctx.emplace<BaseItem>(ctx.root());
+            button_b = ctx.emplace<Widget>(ctx.root());
             button_b->setSize(10, 10);
             button_b->setFocusable(true);
         });
@@ -418,11 +418,11 @@ TEST(TabView_addTab_returns_owned_wrapper_and_content)
     auto page = tab.addTab("First");
     CHECK(page != nullptr);
     CHECK_TRUE(page->isAttached());
-    CHECK(tab.content(0) == page->getLvglItem());
+    CHECK(tab.content(0) == page->lvObj());
     CHECK(tab.content(5) == nullptr);
 
     auto second = tab.addTab("Second");
     CHECK(second != nullptr);
-    CHECK(tab.content(1) == second->getLvglItem());
+    CHECK(tab.content(1) == second->lvObj());
     return true;
 }

@@ -4,7 +4,7 @@
 #include "core/tools/Utils.h"
 #include "core/tools/stb/StbImageHelpers.h"
 #include "core/widgets/Base64Image.h"
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 #include "core/widgets/Image.h"
 #include "lvgl.h"
 
@@ -89,13 +89,13 @@ struct ImageFixture {
 
 TEST(Base64Image_pixels_survive_wrapper_destruction)
 {
-    auto parent = std::make_unique<widgets::BaseItem>();
+    auto parent = std::make_unique<widgets::Widget>();
 
     lv_obj_t *image_obj = nullptr;
     {
         auto image = std::make_unique<widgets::Base64Image>(kPng1x1Base64, 4, 4, parent.get());
         CHECK_TRUE(image->isAttached());
-        image_obj = image->getLvglItem();
+        image_obj = image->lvObj();
     }
 
     CHECK(image_obj != nullptr);
@@ -121,20 +121,20 @@ TEST(Base64Image_pixels_survive_wrapper_destruction)
 
 TEST(Base64Image_update_replaces_descriptor_safely)
 {
-    auto parent = std::make_unique<widgets::BaseItem>();
+    auto parent = std::make_unique<widgets::Widget>();
     auto image  = std::make_unique<widgets::Base64Image>(kPng1x1Base64, 4, 4, parent.get());
 
-    const auto *before = static_cast<const lv_image_dsc_t *>(lv_image_get_src(image->getLvglItem()));
+    const auto *before = static_cast<const lv_image_dsc_t *>(lv_image_get_src(image->lvObj()));
     CHECK(before != nullptr);
 
     image->updateImage(kPng1x1Base64);
 
-    const auto *after = static_cast<const lv_image_dsc_t *>(lv_image_get_src(image->getLvglItem()));
+    const auto *after = static_cast<const lv_image_dsc_t *>(lv_image_get_src(image->lvObj()));
     CHECK(after != nullptr);
     CHECK(after != before);
     CHECK(after->data != nullptr);
 
-    lv_obj_invalidate(image->getLvglItem());
+    lv_obj_invalidate(image->lvObj());
     lv_refr_now(nullptr);
     return true;
 }
@@ -268,13 +268,13 @@ TEST(Image_widget_uses_asset_path)
     CHECK_TRUE(fixture.write("image/red.png", makePng(2, 2, 255, 0, 0)));
     CHECK_TRUE(fixture.mount());
 
-    auto parent = std::make_unique<widgets::BaseItem>();
+    auto parent = std::make_unique<widgets::Widget>();
 
     lv_obj_t *image_obj = nullptr;
     {
         auto image = std::make_unique<widgets::Image>("image/red.png", parent.get());
         CHECK_TRUE(image->isAttached());
-        image_obj = image->getLvglItem();
+        image_obj = image->lvObj();
     }
 
     // The wrapper is gone; the registry keepalive must keep the descriptor alive.

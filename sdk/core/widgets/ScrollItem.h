@@ -2,14 +2,14 @@
 #ifndef LVGLPP_SCROLLITEM_H
 #define LVGLPP_SCROLLITEM_H
 
-#include "BaseItem.h"
+#include "Widget.h"
 
 namespace lvglpp::widgets {
 
-class ScrollItem : public BaseItem
+class ScrollItem : public Widget
 {
 public:
-    ScrollItem(BaseItem *parent);
+    ScrollItem(Widget *parent);
 
     void setScrollable(bool b);
 

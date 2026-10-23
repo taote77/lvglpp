@@ -4,11 +4,11 @@
 
 namespace lvglpp::widgets {
 
-QrCode::QrCode(uint32_t length, lv_color_t back_color, lv_color_t front_color, BaseItem *parent) : BaseItem(tools::LvObjFactory::createLvglQrCode, parent), _length(length)
+QrCode::QrCode(uint32_t length, lv_color_t back_color, lv_color_t front_color, Widget *parent) : Widget(tools::LvObjFactory::createLvglQrCode, parent), _length(length)
 {
     setSize(length, length);
 
-    lv_obj_t *qr = getLvglItem();
+    lv_obj_t *qr = lvObj();
     if (qr == nullptr)
     {
         return;
@@ -28,9 +28,9 @@ QrCode::QrCode(uint32_t length, lv_color_t back_color, lv_color_t front_color, B
 
 void QrCode::setData(const std::string &data)
 {
-    if (getLvglItem() != nullptr)
+    if (lvObj() != nullptr)
     {
-        lv_qrcode_update(getLvglItem(), data.c_str(), static_cast<uint32_t>(data.length()));
+        lv_qrcode_update(lvObj(), data.c_str(), static_cast<uint32_t>(data.length()));
     }
 }
 
@@ -40,7 +40,7 @@ void QrCode::setImgSrc(const std::string &assetPath)
     {
         _img_icon = std::make_unique<lvglpp::widgets::Image>("", this);
         _img_icon->setSize(_length / 4, _length / 4);
-        _img_icon->setAligment(LV_ALIGN_CENTER, 0, 0);
+        _img_icon->setAlignment(LV_ALIGN_CENTER, 0, 0);
     }
     _img_icon->setAsset(assetPath);
 }
@@ -51,7 +51,7 @@ void QrCode::setImgFile(const std::string &fsPath)
     {
         _img_icon = std::make_unique<lvglpp::widgets::Image>("", this);
         _img_icon->setSize(_length / 4, _length / 4);
-        _img_icon->setAligment(LV_ALIGN_CENTER, 0, 0);
+        _img_icon->setAlignment(LV_ALIGN_CENTER, 0, 0);
     }
     _img_icon->setFile(fsPath);
 }

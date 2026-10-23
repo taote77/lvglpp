@@ -1,14 +1,14 @@
 #ifndef LVGLPP_SCALE_H
 #define LVGLPP_SCALE_H
 
-#include "BaseItem.h"
+#include "Widget.h"
 
 namespace lvglpp::widgets {
 
-class Scale : public BaseItem
+class Scale : public Widget
 {
 public:
-    explicit Scale(BaseItem *parent = nullptr);
+    explicit Scale(Widget *parent = nullptr);
 
     Scale &setRange(int32_t min, int32_t max);
 

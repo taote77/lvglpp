@@ -1,12 +1,12 @@
 #ifndef LVGLPP_SWITCHBUTTON_H
 #define LVGLPP_SWITCHBUTTON_H
 
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 #include <memory>
 
 namespace lvglpp::widgets {
 
-class SwitchButton : public BaseItem
+class SwitchButton : public Widget
 {
 public:
     /**
@@ -16,7 +16,7 @@ public:
      * @param height 按钮的高度。
      * @param parent 父控件指针，默认为 nullptr。
      */
-    explicit SwitchButton(lv_coord_t width, lv_coord_t height, BaseItem *parent = nullptr);
+    explicit SwitchButton(lv_coord_t width, lv_coord_t height, Widget *parent = nullptr);
 
     void setCheck(bool checked);
 
@@ -33,7 +33,7 @@ private:
     lv_coord_t                height_{32};
     lv_coord_t                radius_{14};
     bool                      check_state_;
-    std::unique_ptr<BaseItem> round_item_;
+    std::unique_ptr<Widget> round_item_;
 };
 
 } // namespace lvglpp::widgets

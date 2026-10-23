@@ -4,9 +4,9 @@
 
 namespace lvglpp::widgets {
 
-CheckBox::CheckBox(int width, int height, uint32_t bg_clr, uint32_t check_clr, BaseItem *parent) : BaseItem(parent)
+CheckBox::CheckBox(int width, int height, uint32_t bg_clr, uint32_t check_clr, Widget *parent) : Widget(parent)
 {
-    check_item_ = std::make_unique<BaseItem>(this);
+    check_item_ = std::make_unique<Widget>(this);
     check_item_->setSize(width - 8, height - 8);
     check_item_->setBgColor(check_clr);
     check_item_->setPos(2, 2);

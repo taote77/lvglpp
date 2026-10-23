@@ -1,16 +1,16 @@
 #ifndef LVGLPP_DROPDOWN_H
 #define LVGLPP_DROPDOWN_H
 
-#include "BaseItem.h"
+#include "Widget.h"
 #include <string>
 #include <vector>
 
 namespace lvglpp::widgets {
 
-class Dropdown : public BaseItem
+class Dropdown : public Widget
 {
 public:
-    explicit Dropdown(BaseItem *parent = nullptr);
+    explicit Dropdown(Widget *parent = nullptr);
 
     /// Set the currently displayed text
     void setText(const std::string &text);

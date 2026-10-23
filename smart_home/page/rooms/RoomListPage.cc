@@ -3,7 +3,7 @@
 #include "components/RoomCard.h"
 #include "core/log/log.h"
 #include "core/sys/StackView.h"
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 #include "theme/form_design.h"
 #include <vector>
 
@@ -19,7 +19,7 @@ void RoomListPage::onCreate(std::any arg) {
     getRoot()->setBgColor(CLR_SURFACE);
 
     _title = std::make_unique<w::LvText>("Rooms", CLR_ON_SURFACE, getRoot(), w::LvText::FontSize28Bold);
-    _title->setAligment(LV_ALIGN_TOP_LEFT, 20, 10);
+    _title->setAlignment(LV_ALIGN_TOP_LEFT, 20, 10);
 
     struct RoomData { const char *name; const char *icon; int devices; float temp; float humidity; };
     std::vector<RoomData> rooms = {
@@ -33,7 +33,7 @@ void RoomListPage::onCreate(std::any arg) {
     int y = 50;
     for (auto &r : rooms) {
         auto card = std::make_unique<ui::widgets::RoomCard>(r.name, r.icon, r.devices, r.temp, r.humidity, getRoot());
-        card->setAligment(LV_ALIGN_TOP_LEFT, 20, y);
+        card->setAlignment(LV_ALIGN_TOP_LEFT, 20, y);
         card->setOnTap([name = std::string(r.name), this]() { showRoomDetail(name); });
         y += 145;
     }

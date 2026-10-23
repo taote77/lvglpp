@@ -135,12 +135,12 @@ void LangChangePage::onCreate(std::any arg)
 {
     _label = std::make_unique<lvglpp::widgets::LvText>(("中文😀1"), CLR_SUCCESS_CONTAINER, getRoot(), lvglpp::widgets::LvText::TextStyle::FontSize20);
 
-    _label->setAligment(LV_ALIGN_CENTER, 0, -120);
+    _label->setAlignment(LV_ALIGN_CENTER, 0, -120);
 
     static auto createLabel = [this]() {
         _label1 = std::make_unique<lvglpp::widgets::LvText>(lvglpp::LvTranslator::tr("ChangeLangWarnText"), CLR_SUCCESS_CONTAINER, getRoot());
 
-        _label->setAligment(LV_ALIGN_CENTER, 0, -140);
+        _label->setAlignment(LV_ALIGN_CENTER, 0, -140);
     };
 
     auto btn = widgets::ButtonBuilder() //
@@ -151,7 +151,7 @@ void LangChangePage::onCreate(std::any arg)
                    .build(getRoot());
 
     btn->setPos(480, 300);
-    btn->setAligment(LV_ALIGN_CENTER, 0, -50);
+    btn->setAlignment(LV_ALIGN_CENTER, 0, -50);
     btn->setOnClickedListener([this]() {
         //
         LOG_DEBUG() << "Chinese lang";
@@ -173,7 +173,7 @@ void LangChangePage::onCreate(std::any arg)
               .withText("English Button")
               .build(getRoot());
     btn->setPos(480, 300);
-    btn->setAligment(LV_ALIGN_CENTER, 0, 0);
+    btn->setAlignment(LV_ALIGN_CENTER, 0, 0);
     btn->setOnClickedListener([this]() {
         _txt = (_txt == "Start") ? "Stop" : "Start";
         //
@@ -192,7 +192,7 @@ void LangChangePage::onCreate(std::any arg)
               .withText("日文 Button")
               .build(getRoot());
     btn->setPos(480, 300);
-    btn->setAligment(LV_ALIGN_CENTER, 0, 50);
+    btn->setAlignment(LV_ALIGN_CENTER, 0, 50);
     btn->setOnClickedListener([this]() {
         _txt = (_txt == "Start") ? "Stop" : "Start";
 
@@ -211,7 +211,7 @@ void LangChangePage::onCreate(std::any arg)
               .build(getRoot());
 
     btn->setPos(480, 300);
-    btn->setAligment(LV_ALIGN_CENTER, 0, 100);
+    btn->setAlignment(LV_ALIGN_CENTER, 0, 100);
     btn->setOnClickedListener([this]() {
         _txt = (_txt == "Start") ? "Stop" : "Start";
 
@@ -229,7 +229,7 @@ void LangChangePage::onCreate(std::any arg)
               .withText("测试 Button")
               .build(getRoot());
     btn->setPos(480, 300);
-    btn->setAligment(LV_ALIGN_CENTER, 0, 150);
+    btn->setAlignment(LV_ALIGN_CENTER, 0, 150);
     _btn_test = std::move(btn);
 
     _btn_test->setOnClickedListener([this]() {
@@ -248,7 +248,7 @@ void LangChangePage::onCreate(std::any arg)
         //
 
         lv_obj_t *screen = lv_scr_act();
-        // getRoot()->getLvglItem();
+        // getRoot()->lvObj();
         if (takeScreenshot(screen, "screenshot.png"))
         {
             std::cout << "Screenshot saved successfully." << std::endl;
@@ -282,7 +282,7 @@ void LangChangePage::onCreate(std::any arg)
 
     _btn_simu->setPos(480, 300);
 
-    _btn_simu->setAligment(LV_ALIGN_TOP_RIGHT, 0, 0);
+    _btn_simu->setAlignment(LV_ALIGN_TOP_RIGHT, 0, 0);
     _btn_simu->setOnClickedListener([this]() {
         _txt = (_txt == "Start") ? "Stop" : "Start";
 

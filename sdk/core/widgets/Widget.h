@@ -1,10 +1,10 @@
 /**************************************************************************
 
-Class: BaseItem
+Class: Widget
 
 Ownership model
 ---------------
-The LVGL parent owns its child lv_obj objects. A BaseItem wrapper is a
+The LVGL parent owns its child lv_obj objects. A Widget wrapper is a
 non-owning handle for child objects and may therefore be destroyed while its
 lv_obj keeps living under the parent. Only top-level wrappers (no logical
 parent) and wrappers whose creator attaches to a layer (lv_layer_top()/sys())
@@ -16,8 +16,8 @@ lv_obj safely invalidates the wrapper instead of leaving a dangling pointer.
 
 **************************************************************************/
 
-#ifndef LVGLPP_BASEITEM_H
-#define LVGLPP_BASEITEM_H
+#ifndef LVGLPP_WIDGET_H
+#define LVGLPP_WIDGET_H
 
 #include "KeyEvent.h"
 #include "core/base/Connection.h"
@@ -41,9 +41,9 @@ namespace lvglpp::widgets {
 
 using namespace lvglpp::core;
 
-struct BaseItemRegistryEntry;
+struct WidgetRegistryEntry;
 
-class BaseItem : public Object
+class Widget : public Object
 {
 public:
     /// Factory function type: takes parent lv_obj*, returns created lv_obj*
@@ -58,28 +58,28 @@ public:
 
     enum class AdoptExistingTag { Adopt };
 
-    explicit BaseItem(BaseItem *parentItem = nullptr);
+    explicit Widget(Widget *parentItem = nullptr);
 
-    explicit BaseItem(Creator creator, BaseItem *parentItem = nullptr);
+    explicit Widget(Creator creator, Widget *parentItem = nullptr);
 
     /**
      * Wrap an already existing lv_obj (e.g. a lv_tabview page or an internal
      * widget child). The wrapper does not own the object unless takeOwnership
      * is true.
      */
-    BaseItem(AdoptExistingTag, lv_obj_t *existing, BaseItem *logicalParent = nullptr, bool takeOwnership = false);
+    Widget(AdoptExistingTag, lv_obj_t *existing, bool takeOwnership = false);
 
-    virtual ~BaseItem();
+    virtual ~Widget();
 
-    BaseItem(const BaseItem &)            = delete;
-    BaseItem &operator=(const BaseItem &) = delete;
-    BaseItem(BaseItem &&)                 = delete;
-    BaseItem &operator=(BaseItem &&)      = delete;
+    Widget(const Widget &)            = delete;
+    Widget &operator=(const Widget &) = delete;
+    Widget(Widget &&)                 = delete;
+    Widget &operator=(Widget &&)      = delete;
 
     // ---- Registry / lifetime diagnostics ----
 
     /// Resolve the live wrapper for an lv_obj, or nullptr.
-    static BaseItem *fromLvglObject(lv_obj_t *obj);
+    static Widget *fromLvglObject(lv_obj_t *obj);
 
     bool isAttached() const
     {
@@ -93,47 +93,35 @@ public:
 
     // ---- Geometry ----
 
-    BaseItem &setPos(lv_coord_t x, lv_coord_t y);
+    Widget &setPos(lv_coord_t x, lv_coord_t y);
 
     /// Physical position, never mirrored under RTL.
-    BaseItem &setPosPhysical(lv_coord_t x, lv_coord_t y);
+    Widget &setPosPhysical(lv_coord_t x, lv_coord_t y);
 
     lv_coord_t getX() const;
 
     lv_coord_t getY() const;
 
-    BaseItem &setAlignment(lv_align_t align, lv_coord_t offsetX, lv_coord_t offsetY);
+    Widget &setAlignment(lv_align_t align, lv_coord_t offsetX, lv_coord_t offsetY);
 
     /// Physical alignment, never mirrored under RTL.
-    BaseItem &setAlignmentPhysical(lv_align_t align, lv_coord_t offsetX, lv_coord_t offsetY);
+    Widget &setAlignmentPhysical(lv_align_t align, lv_coord_t offsetX, lv_coord_t offsetY);
 
     /// Opt out of automatic RTL mirroring for this item (e.g. charts).
-    BaseItem &setMirrorInRtl(bool enabled = true);
+    Widget &setMirrorInRtl(bool enabled = true);
 
     bool mirrorInRtl() const;
 
     /// Set the LVGL base direction for this subtree.
-    BaseItem &setBaseDir(lv_base_dir_t direction);
+    Widget &setBaseDir(lv_base_dir_t direction);
 
-    /// Legacy spelling, use setAlignment().
-    BaseItem &setAligment(lv_align_t align, lv_coord_t offsetX, lv_coord_t offsetY)
-    {
-        return setAlignment(align, offsetX, offsetY);
-    }
+    Widget &setAlignmentTo(const Widget &item, lv_align_t align, lv_coord_t offsetX, lv_coord_t offsetY);
 
-    BaseItem &setAlignmentTo(const BaseItem &item, lv_align_t align, lv_coord_t offsetX, lv_coord_t offsetY);
+    Widget &setSize(lv_coord_t width, lv_coord_t height);
 
-    /// Legacy spelling, use setAlignmentTo().
-    BaseItem &setAligmentTo(const BaseItem &item, lv_align_t align, lv_coord_t offsetX, lv_coord_t offsetY)
-    {
-        return setAlignmentTo(item, align, offsetX, offsetY);
-    }
+    Widget &setWidth(lv_coord_t w);
 
-    BaseItem &setSize(lv_coord_t width, lv_coord_t height);
-
-    BaseItem &setWidth(lv_coord_t w);
-
-    BaseItem &setHeight(lv_coord_t h);
+    Widget &setHeight(lv_coord_t h);
 
     /// Live layout width. Falls back to the requested width before first layout.
     lv_coord_t getWidth() const;
@@ -141,95 +129,126 @@ public:
     /// Live layout height. Falls back to the requested height before first layout.
     lv_coord_t getHeight() const;
 
-    BaseItem &setSizePercent(lv_coord_t widthPercent, lv_coord_t heightPercent);
+    Widget &setSizePercent(lv_coord_t widthPercent, lv_coord_t heightPercent);
 
     // ---- Appearance ----
 
-    BaseItem &setBgColor(uint32_t clr);
+    Widget &setBgColor(uint32_t clr);
 
-    BaseItem &setDisableBgColor(uint32_t clr);
+    Widget &setDisabledBgColor(uint32_t clr);
 
-    BaseItem &setBgOpacity(lv_opa_t opa);
+    [[deprecated("use setDisabledBgColor()")]]
+    Widget &setDisableBgColor(uint32_t clr)
+    {
+        return setDisabledBgColor(clr);
+    }
+
+    Widget &setBgOpacity(lv_opa_t opa);
 
     /**
      * Set opacity (0.0 = fully transparent, 1.0 = fully opaque)
      * @param opa opacity value in range [0.0, 1.0]
      */
-    BaseItem &setOpacity(double opa);
+    Widget &setOpacity(double opa);
 
-    BaseItem &setRadius(lv_coord_t radius);
+    Widget &setRadius(lv_coord_t radius);
 
     lv_coord_t getRadius() const;
 
-    BaseItem &setClip(bool clip);
+    /// Clip children to the rounded corners (LVGL clip_corner).
+    Widget &setClip(bool clip);
 
-    BaseItem &setBorder(lv_coord_t width, uint32_t color);
+    Widget &setBorder(lv_coord_t width, uint32_t color);
 
     /// Apply a reusable style. The style is kept alive until the lv_obj dies.
-    BaseItem &applyStyle(const Style &style, lv_style_selector_t selector = LV_PART_MAIN | LV_STATE_DEFAULT);
+    Widget &applyStyle(const Style &style, lv_style_selector_t selector = LV_PART_MAIN | LV_STATE_DEFAULT);
 
     /// Remove a style previously applied through applyStyle().
-    BaseItem &removeStyle(const Style &style, lv_style_selector_t selector = 0);
+    Widget &removeStyle(const Style &style, lv_style_selector_t selector = 0);
 
-    BaseItem &setState(lv_state_t state, bool enabled = true);
+    Widget &setState(lv_state_t state, bool enabled = true);
 
-    BaseItem &addState(lv_state_t state);
+    Widget &addState(lv_state_t state);
 
-    BaseItem &clearState(lv_state_t state);
+    Widget &clearState(lv_state_t state);
 
     virtual void setVisible(bool visible);
 
-    bool getVisible() const;
+    bool isVisible() const;
 
-    virtual void setEnable(bool enable);
+    [[deprecated("use isVisible()")]]
+    bool getVisible() const
+    {
+        return isVisible();
+    }
 
-    bool getEnable() const;
+    virtual void setEnabled(bool enabled);
+
+    [[deprecated("use setEnabled()")]]
+    void setEnable(bool enabled)
+    {
+        setEnabled(enabled);
+    }
+
+    bool isEnabled() const;
+
+    [[deprecated("use isEnabled()")]]
+    bool getEnable() const
+    {
+        return isEnabled();
+    }
 
     // ---- Padding / margin ----
 
-    BaseItem &setPaddingAll(lv_coord_t padding);
+    Widget &setPaddingAll(lv_coord_t padding);
 
-    BaseItem &setPaddingHor(lv_coord_t padding);
+    Widget &setPaddingHor(lv_coord_t padding);
 
-    BaseItem &setPaddingVer(lv_coord_t padding);
+    Widget &setPaddingVer(lv_coord_t padding);
 
-    BaseItem &setPaddingTop(lv_coord_t padding);
+    Widget &setPaddingTop(lv_coord_t padding);
 
-    BaseItem &setPaddingBottom(lv_coord_t padding);
+    Widget &setPaddingBottom(lv_coord_t padding);
 
-    BaseItem &setPaddingLeft(lv_coord_t padding);
+    Widget &setPaddingLeft(lv_coord_t padding);
 
-    BaseItem &setPaddingRight(lv_coord_t padding);
+    Widget &setPaddingRight(lv_coord_t padding);
 
-    BaseItem &setPaddingRow(lv_coord_t padding);
+    Widget &setPaddingRow(lv_coord_t padding);
 
-    BaseItem &setPaddingColumn(lv_coord_t padding);
+    Widget &setPaddingColumn(lv_coord_t padding);
 
-    BaseItem &setMarginAll(lv_coord_t margin);
+    Widget &setMarginAll(lv_coord_t margin);
 
-    BaseItem &setMarginHor(lv_coord_t margin);
+    Widget &setMarginHor(lv_coord_t margin);
 
-    BaseItem &setMarginVer(lv_coord_t margin);
+    Widget &setMarginVer(lv_coord_t margin);
 
-    BaseItem &setMarginTop(lv_coord_t margin);
+    Widget &setMarginTop(lv_coord_t margin);
 
-    BaseItem &setMarginBottom(lv_coord_t margin);
+    Widget &setMarginBottom(lv_coord_t margin);
 
-    BaseItem &setMarginLeft(lv_coord_t margin);
+    Widget &setMarginLeft(lv_coord_t margin);
 
-    BaseItem &setMarginRight(lv_coord_t margin);
+    Widget &setMarginRight(lv_coord_t margin);
 
     // ---- Tree ----
 
     /// Nearest live wrapper ancestor, or nullptr.
-    BaseItem *getParent() const;
+    Widget *getParent() const;
 
     /// Reparent the underlying lv_obj. Ownership follows the new parent.
-    void setParent(BaseItem *parent);
+    void setParent(Widget *parent);
 
-    lv_obj_t *getLvglItem() const
+    lv_obj_t *lvObj() const
     {
         return lv_base_ptr_;
+    }
+
+    [[deprecated("use lvObj()")]]
+    lv_obj_t *getLvglItem() const
+    {
+        return lvObj();
     }
 
     // ---- Events ----
@@ -258,7 +277,7 @@ public:
     void dispatchKeyEvent(KeyEvent &event);
 
     /// Enroll this widget in the active focus group.
-    BaseItem &setFocusable(bool focusable = true);
+    Widget &setFocusable(bool focusable = true);
 
     bool isFocusable() const
     {
@@ -313,19 +332,19 @@ public:
     uint32_t childCount() const;
 
     /// Get the nth child wrapper (0-indexed), or nullptr if it has no live wrapper.
-    BaseItem *childAt(uint32_t index) const;
+    Widget *childAt(uint32_t index) const;
 
     /// Recursively find the first descendant (or self) with the given name.
-    BaseItem *findChild(const std::string &n) const;
+    Widget *findChild(const std::string &n) const;
 
     /// Find all wrapper descendants of type T (including self when matching).
-    template <typename T = BaseItem>
+    template <typename T = Widget>
     std::vector<T *> findChildrenByType() const
     {
-        std::vector<BaseItem *> wrappers;
+        std::vector<Widget *> wrappers;
         collectWrapperSubtree(lv_base_ptr_, wrappers);
         std::vector<T *> result;
-        for (BaseItem *item : wrappers)
+        for (Widget *item : wrappers)
         {
             if (auto *typed = dynamic_cast<T *>(item))
             {
@@ -350,30 +369,28 @@ public:
 
     // ---- Layout API (wrapping LVGL flex/grid) ----
 
-    BaseItem &setFlexFlow(lv_flex_flow_t flow);
+    Widget &setFlexFlow(lv_flex_flow_t flow);
 
-    BaseItem &setFlexAlign(lv_flex_align_t mainAxis, lv_flex_align_t crossAxis, lv_flex_align_t trackAlign);
+    Widget &setFlexAlign(lv_flex_align_t mainAxis, lv_flex_align_t crossAxis, lv_flex_align_t trackAlign);
 
-    BaseItem &setFlexGrow(uint8_t grow);
+    Widget &setFlexGrow(uint8_t grow);
 
     /// Set grid column descriptors (e.g. "1fr 2fr auto 100px")
-    BaseItem &setGridColumns(const std::string &columnDescriptors);
+    Widget &setGridColumns(const std::string &columnDescriptors);
 
     /// Set grid row descriptors
-    BaseItem &setGridRows(const std::string &rowDescriptors);
+    Widget &setGridRows(const std::string &rowDescriptors);
 
     /// Set this item's grid cell position and span
-    BaseItem &setGridCell(uint32_t column, uint32_t row, uint32_t colSpan = 1, uint32_t rowSpan = 1);
+    Widget &setGridCell(uint32_t column, uint32_t row, uint32_t colSpan = 1, uint32_t rowSpan = 1);
 
     /// Set grid cell column alignment (position/span are preserved)
-    BaseItem &setGridCellColumnAlign(lv_grid_align_t align);
+    Widget &setGridCellColumnAlign(lv_grid_align_t align);
 
     /// Set grid cell row alignment (position/span are preserved)
-    BaseItem &setGridCellRowAlign(lv_grid_align_t align);
+    Widget &setGridCellRowAlign(lv_grid_align_t align);
 
 protected:
-    void setLvglItem(lv_obj_t *ptr);
-
     /// Virtual hook invoked when the underlying lv_obj is deleted externally.
     virtual void onLvglObjectDeleted()
     {}
@@ -421,15 +438,17 @@ private:
 
     static void eventTrampoline(lv_event_t *e);
 
-    static BaseItem *findChildInRawTree(lv_obj_t *obj, const std::string &name);
+    static Widget *findChildInRawTree(lv_obj_t *obj, const std::string &name);
 
-    static void collectWrapperSubtree(lv_obj_t *obj, std::vector<BaseItem *> &out);
+    static void collectWrapperSubtree(lv_obj_t *obj, std::vector<Widget *> &out);
 
-    void initItem(const Creator &creator, BaseItem *parentItem);
+    void initItem(const Creator &creator, Widget *parentItem);
 
     void attachToLvglObject(lv_obj_t *obj);
 
     void ensureEventHandler(lv_event_code_t code);
+
+    Connection onSimpleEvent(lv_event_code_t code, ClickHandler handler);
 
     void dispatchLvglEvent(lv_event_t *e);
 
@@ -464,9 +483,8 @@ private:
     std::shared_ptr<detail::ConnectionState> makeConnection(std::function<void()> onDisconnect);
 
     lv_obj_t              *lv_base_ptr_      = nullptr;
-    BaseItemRegistryEntry *registry_entry_   = nullptr;
+    WidgetRegistryEntry *registry_entry_   = nullptr;
     bool                   owns_lv_obj_      = false;
-    bool                   destroying_       = false;
     bool                   destroy_notified_ = false;
 
     lv_coord_t  requested_width_  = 0;
@@ -503,10 +521,8 @@ private:
     std::shared_ptr<core::Style> focus_style_;
     uint32_t                     pending_key_raw_  = 0;
     uint32_t                     pending_key_tick_ = 0;
-
-    friend class BaseDialog;
 };
 
 } // namespace lvglpp::widgets
 
-#endif // LVGLPP_BASEITEM_H
+#endif // LVGLPP_WIDGET_H

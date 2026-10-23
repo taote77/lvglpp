@@ -16,7 +16,7 @@ void Home::onCreate(std::any arg)
     _btn = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "Start", getRoot());
 
     _btn->setPos(480, 300);
-    _btn->setAligment(LV_ALIGN_CENTER, 0, 0);
+    _btn->setAlignment(LV_ALIGN_CENTER, 0, 0);
 
     _btn->setOnClickedListener([this]() {
         //

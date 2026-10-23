@@ -1,7 +1,7 @@
 #ifndef LVGLPP_LVCHART_H
 #define LVGLPP_LVCHART_H
 
-#include "BaseItem.h"
+#include "Widget.h"
 #include <vector>
 
 namespace lvglpp::widgets {
@@ -22,7 +22,7 @@ private:
     lv_chart_cursor_t *_cursor;
 };
 
-class LvChart : public BaseItem
+class LvChart : public Widget
 {
 public:
     /// Chart type
@@ -47,7 +47,7 @@ public:
         Circular = LV_CHART_UPDATE_MODE_CIRCULAR,
     };
 
-    explicit LvChart(BaseItem *parent = nullptr);
+    explicit LvChart(Widget *parent = nullptr);
 
     /// Set chart type
     void setType(Type type);

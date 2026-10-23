@@ -39,8 +39,8 @@ void alignListForDirection(lv_event_t *event)
 
 } // namespace
 
-Dropdown::Dropdown(BaseItem *parent)
-    : BaseItem(tools::LvObjFactory::createLvglDropdown, parent)
+Dropdown::Dropdown(Widget *parent)
+    : Widget(tools::LvObjFactory::createLvglDropdown, parent)
 {
     setFocusable(true);
     addLvglEventHandler(alignListForDirection, LV_EVENT_CLICKED, nullptr);
@@ -49,18 +49,18 @@ Dropdown::Dropdown(BaseItem *parent)
 
 void Dropdown::setText(const std::string &text)
 {
-    lv_dropdown_set_text(getLvglItem(), text.c_str());
+    lv_dropdown_set_text(lvObj(), text.c_str());
 }
 
 std::string Dropdown::text() const
 {
-    const char *t = lv_dropdown_get_text(getLvglItem());
+    const char *t = lv_dropdown_get_text(lvObj());
     return t ? std::string(t) : std::string();
 }
 
 void Dropdown::setOptions(const std::string &options)
 {
-    lv_dropdown_set_options(getLvglItem(), options.c_str());
+    lv_dropdown_set_options(lvObj(), options.c_str());
 }
 
 void Dropdown::setOptions(const std::vector<std::string> &options)
@@ -75,50 +75,50 @@ void Dropdown::setOptions(const std::vector<std::string> &options)
 
 std::string Dropdown::options() const
 {
-    const char *opts = lv_dropdown_get_options(getLvglItem());
+    const char *opts = lv_dropdown_get_options(lvObj());
     return opts ? std::string(opts) : std::string();
 }
 
 void Dropdown::setSelected(uint32_t index)
 {
-    lv_dropdown_set_selected(getLvglItem(), index);
+    lv_dropdown_set_selected(lvObj(), index);
 }
 
 uint32_t Dropdown::selected() const
 {
-    return lv_dropdown_get_selected(getLvglItem());
+    return lv_dropdown_get_selected(lvObj());
 }
 
 uint32_t Dropdown::optionCount() const
 {
-    return lv_dropdown_get_option_count(getLvglItem());
+    return lv_dropdown_get_option_count(lvObj());
 }
 
 std::string Dropdown::selectedText() const
 {
     char buf[256] = {};
-    lv_dropdown_get_selected_str(getLvglItem(), buf, sizeof(buf));
+    lv_dropdown_get_selected_str(lvObj(), buf, sizeof(buf));
     return std::string(buf);
 }
 
 void Dropdown::setDirection(lv_dir_t dir)
 {
-    lv_dropdown_set_dir(getLvglItem(), dir);
+    lv_dropdown_set_dir(lvObj(), dir);
 }
 
 lv_dir_t Dropdown::direction() const
 {
-    return lv_dropdown_get_dir(getLvglItem());
+    return lv_dropdown_get_dir(lvObj());
 }
 
 void Dropdown::setSymbol(const std::string &symbol)
 {
-    lv_dropdown_set_symbol(getLvglItem(), symbol.c_str());
+    lv_dropdown_set_symbol(lvObj(), symbol.c_str());
 }
 
 lv_obj_t *Dropdown::listObj() const
 {
-    return lv_dropdown_get_list(getLvglItem());
+    return lv_dropdown_get_list(lvObj());
 }
 
 } // namespace lvglpp::widgets

@@ -6,8 +6,8 @@ namespace wrapper::widgets
 
     using namespace form::design;
 
-    ClickableCard::ClickableCard(const std::string &text, const std::string &icon_src, BaseItem *parent)
-        : BaseItem(parent),
+    ClickableCard::ClickableCard(const std::string &text, const std::string &icon_src, Widget *parent)
+        : Widget(parent),
           _selected_bg_color(CLR_SURFACE_CONTAINER),
           _selected_border_color(CLR_PRIMARY),
           _default_bg_color(CLR_SURFACE_CONTAINER),
@@ -18,28 +18,28 @@ namespace wrapper::widgets
 
         setSize(langContentWidth, langContentHeight);
         setRadius(12);
-        setEnable(true);
+        setEnabled(true);
 
         if (!icon_src.empty())
         {
             _icon_ = std::make_shared<widgets::Image>(icon_src, this);
-            _icon_->setAligment(LV_ALIGN_CENTER, 0, 0);
+            _icon_->setAlignment(LV_ALIGN_CENTER, 0, 0);
         }
 
 
-        _label = std::make_shared<ConsumeText>(text, ThemeColor(CLR_ON_SURFACE), this, ConsumeText::FontSize24Bold);
+        _label = std::make_shared<LvText>(text, ThemeColor(CLR_ON_SURFACE), this, LvText::FontSize24Bold);
 
-        _label->setAligment(LV_ALIGN_CENTER, 0, 0);
+        _label->setAlignment(LV_ALIGN_CENTER, 0, 0);
     }
 
-    ClickableCard::ClickableCard(const std::string &text, const std::string &note, const std::string &icon_src, BaseItem *parent)
+    ClickableCard::ClickableCard(const std::string &text, const std::string &note, const std::string &icon_src, Widget *parent)
         : ClickableCard(text, icon_src, parent)
     {
 
-        _label->setAligment(LV_ALIGN_TOP_MID, 0, 60);
+        _label->setAlignment(LV_ALIGN_TOP_MID, 0, 60);
 
-        _foot_label = std::make_shared<ConsumeText>(note, ThemeColor(CLR_ON_SURFACE), this, ConsumeText::FontSize24);
-        _foot_label->setAligment(LV_ALIGN_TOP_MID, 0, 60 + 40);
+        _foot_label = std::make_shared<LvText>(note, ThemeColor(CLR_ON_SURFACE), this, LvText::FontSize24);
+        _foot_label->setAlignment(LV_ALIGN_TOP_MID, 0, 60 + 40);
     }
 
 

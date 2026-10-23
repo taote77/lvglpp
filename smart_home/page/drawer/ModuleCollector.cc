@@ -4,13 +4,13 @@
 namespace lvglpp::ui::page {
 static constexpr int container_width  = 672;
 static constexpr int container_height = 368;
-ModuleCollector::ModuleCollector(BaseItem *parent) : BaseItem(parent)
+ModuleCollector::ModuleCollector(Widget *parent) : Widget(parent)
 {
     this->setSize(container_width, container_height);
     this->setOpacity(1);
 
-    lv_obj_set_flex_flow(this->getLvglItem(), LV_FLEX_FLOW_ROW_WRAP);
-    lv_obj_set_style_pad_column(this->getLvglItem(), 8, LV_STATE_DEFAULT);
+    lv_obj_set_flex_flow(this->lvObj(), LV_FLEX_FLOW_ROW_WRAP);
+    lv_obj_set_style_pad_column(this->lvObj(), 8, LV_STATE_DEFAULT);
 
     init();
 }

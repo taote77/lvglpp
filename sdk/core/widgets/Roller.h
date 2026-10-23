@@ -1,15 +1,15 @@
 #ifndef LVGLPP_ROLLER_H
 #define LVGLPP_ROLLER_H
 
-#include "BaseItem.h"
+#include "Widget.h"
 #include <string>
 
 namespace lvglpp::widgets {
 
-class Roller : public BaseItem
+class Roller : public Widget
 {
 public:
-    explicit Roller(BaseItem *parent = nullptr);
+    explicit Roller(Widget *parent = nullptr);
 
     /// Set options (separated by \n)
     void setOptions(const std::string &options, lv_roller_mode_t mode = LV_ROLLER_MODE_NORMAL);

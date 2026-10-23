@@ -2,7 +2,7 @@
 #define GAME_STATE_DIALOG_H
 
 #include "core/widgets/BaseDialog.h"
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 #include "core/widgets/LvText.h"
 #include "core/widgets/PushButton.h"
 
@@ -18,7 +18,7 @@ public:
     void open() override;
 
 private:
-    std::shared_ptr<widgets::BaseItem> _bg_item;
+    std::shared_ptr<widgets::Widget> _bg_item;
 
     std::shared_ptr<lvglpp::widgets::LvText> _score_lbl;
 

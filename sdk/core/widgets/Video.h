@@ -3,15 +3,15 @@
 
 #if LV_USE_FFMPEG == 1
 
-#include "BaseItem.h"
+#include "Widget.h"
 #include <string>
 
 namespace lvglpp::widgets {
 
-class Video : public BaseItem
+class Video : public Widget
 {
 public:
-    explicit Video(const std::string &path, BaseItem *parent = nullptr);
+    explicit Video(const std::string &path, Widget *parent = nullptr);
 
     void setVideoSrcPath(const std::string &path);
 

@@ -10,7 +10,7 @@ Description:定义不同活动的窗口。类似Android
 
 #include "Event.h"
 #include "UiTypes.h"
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 #include <any>
 
 namespace lvglpp {
@@ -29,7 +29,7 @@ public:
 
     virtual void onDestroy() = 0;
 
-    virtual widgets::BaseItem *getRoot() const = 0;
+    virtual widgets::Widget *getRoot() const = 0;
 
     virtual void onNotifyUI(const Event &e) = 0;
 

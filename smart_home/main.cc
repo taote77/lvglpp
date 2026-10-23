@@ -16,7 +16,7 @@
 #include "core/sys/BaseActivity.h"
 #include "core/sys/InputManager.h"
 #include "core/sys/StackView.h"
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 #include "core/widgets/Dropdown.h"
 #include "core/widgets/LvText.h"
 #include "core/widgets/PageHost.h"
@@ -43,30 +43,30 @@ namespace w = ::lvglpp::widgets;
 namespace c = ::lvglpp::ui::widgets;
 
 // ============================================================
-// Page builders — each returns a BaseItem* container
+// Page builders — each returns a Widget* container
 // ============================================================
 
-static void buildDashboard(w::BaseItem *root, w::WidgetStore &store)
+static void buildDashboard(w::Widget *root, w::WidgetStore &store)
 {
     // Title
     auto *title = store.emplace<w::LvText>(lvTr("home_title"), CLR_ON_SURFACE, root, w::LvText::FontSize28Bold);
-    title->setAligment(LV_ALIGN_TOP_LEFT, 16, 8);
+    title->setAlignment(LV_ALIGN_TOP_LEFT, 16, 8);
 
     // Weather
     auto *weather = store.emplace<w::LvText>(lvTr("home_weather"), CLR_ON_SURFACE_VARIANT_1, root, w::LvText::FontSize22);
-    weather->setAligment(LV_ALIGN_TOP_RIGHT, -16, 12);
+    weather->setAlignment(LV_ALIGN_TOP_RIGHT, -16, 12);
 
     // Quick actions row
     auto *lightsOff = store.emplace<w::PushButton>(110, 32, w::PushButton::Dark, lvTr("home_lights_off"), root);
-    lightsOff->setAligment(LV_ALIGN_TOP_LEFT, 16, 42);
+    lightsOff->setAlignment(LV_ALIGN_TOP_LEFT, 16, 42);
     lightsOff->setOnClickedListener([]() { w::Toast::success(lvTr("home_all_lights_off")); });
 
     auto *lockAll = store.emplace<w::PushButton>(110, 32, w::PushButton::Dark, lvTr("home_lock_all"), root);
-    lockAll->setAligment(LV_ALIGN_TOP_LEFT, 134, 42);
+    lockAll->setAlignment(LV_ALIGN_TOP_LEFT, 134, 42);
     lockAll->setOnClickedListener([]() { w::Toast::success(lvTr("home_all_doors_locked")); });
 
     auto *awayBtn = store.emplace<w::PushButton>(100, 32, w::PushButton::Red, lvTr("home_away"), root);
-    awayBtn->setAligment(LV_ALIGN_TOP_LEFT, 252, 42);
+    awayBtn->setAlignment(LV_ALIGN_TOP_LEFT, 252, 42);
     awayBtn->setOnClickedListener([]() { w::Toast::warn(lvTr("home_away_mode")); });
 
     // Room cards (2x2 grid)
@@ -86,7 +86,7 @@ static void buildDashboard(w::BaseItem *root, w::WidgetStore &store)
     for (int i = 0; i < 4; i++)
     {
         auto *card = store.emplace<c::RoomCard>(rooms[i].n, rooms[i].i, rooms[i].d, rooms[i].t, rooms[i].h, root);
-        card->setAligment(LV_ALIGN_TOP_LEFT, pos[i][0], pos[i][1]);
+        card->setAlignment(LV_ALIGN_TOP_LEFT, pos[i][0], pos[i][1]);
     }
 
     const auto &cfg = sys::UiConfig::instance();
@@ -101,10 +101,10 @@ static void buildDashboard(w::BaseItem *root, w::WidgetStore &store)
     chart->setSize(portrait ? std::min(380, cfg.width() - 32) : 380, 200);
     if (portrait)
     {
-        chart->setAligment(LV_ALIGN_TOP_MID, 0, 370);
+        chart->setAlignment(LV_ALIGN_TOP_MID, 0, 370);
     } else
     {
-        chart->setAligment(LV_ALIGN_TOP_RIGHT, -16, 85);
+        chart->setAlignment(LV_ALIGN_TOP_RIGHT, -16, 85);
     }
     chart->setTotal(12.4f);
     chart->setData({8, 12, 15, 20, 25, 30, 18}, {});
@@ -112,32 +112,32 @@ static void buildDashboard(w::BaseItem *root, w::WidgetStore &store)
     // Security status
     const int securityY = portrait ? 580 : 370;
     auto *secTitle = store.emplace<w::LvText>(lvTr("home_security"), CLR_ON_SURFACE_VARIANT_1, root, w::LvText::FontSize22Bold);
-    secTitle->setAligment(LV_ALIGN_TOP_LEFT, 16, securityY);
+    secTitle->setAlignment(LV_ALIGN_TOP_LEFT, 16, securityY);
 
     auto *doorBadge = store.emplace<c::StatusBadge>(c::StatusBadge::Online, root);
     doorBadge->setLabel(lvTr("home_doors_locked"));
-    doorBadge->setAligment(LV_ALIGN_TOP_LEFT, 16, securityY + 30);
+    doorBadge->setAlignment(LV_ALIGN_TOP_LEFT, 16, securityY + 30);
 
     auto *camBadge = store.emplace<c::StatusBadge>(c::StatusBadge::Online, root);
     camBadge->setLabel(lvTr("home_cameras_active"));
-    camBadge->setAligment(LV_ALIGN_TOP_LEFT, 120, securityY + 30);
+    camBadge->setAlignment(LV_ALIGN_TOP_LEFT, 120, securityY + 30);
 
     auto *alarmBadge = store.emplace<c::StatusBadge>(c::StatusBadge::Offline, root);
     alarmBadge->setLabel(lvTr("home_alarm_disarmed"));
-    alarmBadge->setAligment(LV_ALIGN_TOP_LEFT, 250, securityY + 30);
+    alarmBadge->setAlignment(LV_ALIGN_TOP_LEFT, 250, securityY + 30);
 }
 
-static void buildRoomsPage(w::BaseItem *root, w::WidgetStore &store)
+static void buildRoomsPage(w::Widget *root, w::WidgetStore &store)
 {
     const auto &cfg = sys::UiConfig::instance();
 
     // Scrollable container
     auto *scroll = store.emplace<w::ScrollItem>(root);
     scroll->setSize(cfg.width(), cfg.height() - 60);
-    scroll->setAligment(LV_ALIGN_TOP_MID, 0, 0);
+    scroll->setAlignment(LV_ALIGN_TOP_MID, 0, 0);
 
     auto *title = store.emplace<w::LvText>(lvTr("nav_rooms"), CLR_ON_SURFACE, scroll, w::LvText::FontSize28Bold);
-    title->setAligment(LV_ALIGN_TOP_LEFT, 16, 8);
+    title->setAlignment(LV_ALIGN_TOP_LEFT, 16, 8);
 
     struct {
         const char *n;
@@ -170,14 +170,14 @@ static void buildRoomsPage(w::BaseItem *root, w::WidgetStore &store)
         auto *card = store.emplace<c::RoomCard>(rooms[i].n, rooms[i].i, rooms[i].d, rooms[i].t, rooms[i].h, scroll);
         const int col = i % columns;
         const int row = i / columns;
-        card->setAligment(LV_ALIGN_TOP_LEFT, startX + col * (cardW + gap), 45 + row * (cardH + gap));
+        card->setAlignment(LV_ALIGN_TOP_LEFT, startX + col * (cardW + gap), 45 + row * (cardH + gap));
         card->setOnTap([name = std::string(rooms[i].n)]() {
             w::Toast::success(lvTrFmt("common_opening", name).c_str());
         });
     }
 }
 
-static void buildDevicesPage(w::BaseItem *root, w::WidgetStore &store)
+static void buildDevicesPage(w::Widget *root, w::WidgetStore &store)
 {
     const auto &cfg = sys::UiConfig::instance();
 #if LVGLPP_ENABLE_ROTATION
@@ -190,68 +190,68 @@ static void buildDevicesPage(w::BaseItem *root, w::WidgetStore &store)
 
     auto *scroll = store.emplace<w::ScrollItem>(root);
     scroll->setSize(cfg.width(), cfg.height() - 60);
-    scroll->setAligment(LV_ALIGN_TOP_MID, 0, 0);
+    scroll->setAlignment(LV_ALIGN_TOP_MID, 0, 0);
     scroll->setScrollable(true);
 
     auto *title = store.emplace<w::LvText>(lvTr("nav_devices"), CLR_ON_SURFACE, scroll, w::LvText::FontSize28Bold);
-    title->setAligment(LV_ALIGN_TOP_LEFT, 16, 8);
+    title->setAlignment(LV_ALIGN_TOP_LEFT, 16, 8);
 
     int y = 42;
     // Lights section
     auto *lightsHdr = store.emplace<w::LvText>(lvTr("home_lights"), CLR_ON_SURFACE_VARIANT_1, scroll, w::LvText::FontSize22Bold);
-    lightsHdr->setAligment(LV_ALIGN_TOP_LEFT, 16, y);
+    lightsHdr->setAlignment(LV_ALIGN_TOP_LEFT, 16, y);
     y += 30;
 
     auto *ceilingLight = store.emplace<c::LightWidget>(lvTr("home_ceiling_light"), scroll);
-    ceilingLight->setAligment(cardAlign, cardX, y);
+    ceilingLight->setAlignment(cardAlign, cardX, y);
     y += 170;
 
     auto *floorLamp = store.emplace<c::DeviceCard>(lvTr("home_floor_lamp"), "L", true, scroll);
     floorLamp->setSize(360, 56);
-    floorLamp->setAligment(cardAlign, cardX, y);
+    floorLamp->setAlignment(cardAlign, cardX, y);
     floorLamp->setSubtitle(lvTr("room_living_room"));
     y += 64;
 
     // Thermostats
     auto *thermHdr = store.emplace<w::LvText>(lvTr("home_climate"), CLR_ON_SURFACE_VARIANT_1, scroll, w::LvText::FontSize22Bold);
-    thermHdr->setAligment(LV_ALIGN_TOP_LEFT, 16, y);
+    thermHdr->setAlignment(LV_ALIGN_TOP_LEFT, 16, y);
     y += 30;
 
     auto *thermostat = store.emplace<c::ThermostatWidget>(22.0f, 21.0f, scroll);
-    thermostat->setAligment(cardAlign, cardX, y);
+    thermostat->setAlignment(cardAlign, cardX, y);
     y += 210;
 
     // Security
     auto *secHdr = store.emplace<w::LvText>(lvTr("home_security"), CLR_ON_SURFACE_VARIANT_1, scroll, w::LvText::FontSize22Bold);
-    secHdr->setAligment(LV_ALIGN_TOP_LEFT, 16, y);
+    secHdr->setAlignment(LV_ALIGN_TOP_LEFT, 16, y);
     y += 30;
 
     auto *frontDoor = store.emplace<c::DeviceCard>(lvTr("home_front_door"), "D", true, scroll);
     frontDoor->setSize(360, 56);
-    frontDoor->setAligment(cardAlign, cardX, y);
+    frontDoor->setAlignment(cardAlign, cardX, y);
     frontDoor->setSubtitle(lvTr("common_locked"));
     y += 64;
 
     auto *garageDoor = store.emplace<c::DeviceCard>(lvTr("home_garage_door"), "G", false, scroll);
     garageDoor->setSize(360, 56);
-    garageDoor->setAligment(cardAlign, cardX, y);
+    garageDoor->setAlignment(cardAlign, cardX, y);
     garageDoor->setSubtitle(lvTr("common_open"));
     y += 64;
 
     auto *motionSensor = store.emplace<c::DeviceCard>(lvTr("home_motion_sensor"), "M", true, scroll);
     motionSensor->setSize(360, 56);
-    motionSensor->setAligment(cardAlign, cardX, y);
+    motionSensor->setAlignment(cardAlign, cardX, y);
     motionSensor->setSubtitle(lvTr("home_hallway_no_motion"));
     y += 64;
 }
 
-static void buildScenesPage(w::BaseItem *root, w::WidgetStore &store)
+static void buildScenesPage(w::Widget *root, w::WidgetStore &store)
 {
     auto *title = store.emplace<w::LvText>(lvTr("nav_scenes"), CLR_ON_SURFACE, root, w::LvText::FontSize28Bold);
-    title->setAligment(LV_ALIGN_TOP_LEFT, 16, 8);
+    title->setAlignment(LV_ALIGN_TOP_LEFT, 16, 8);
 
     auto *activeLabel = store.emplace<w::LvText>(lvTr("scenes_active"), CLR_ON_SURFACE_VARIANT_1, root, w::LvText::FontSize20);
-    activeLabel->setAligment(LV_ALIGN_TOP_RIGHT, -16, 12);
+    activeLabel->setAlignment(LV_ALIGN_TOP_RIGHT, -16, 12);
 
     struct {
         const char *icon;
@@ -282,7 +282,7 @@ static void buildScenesPage(w::BaseItem *root, w::WidgetStore &store)
         auto *btn = store.emplace<c::SceneButton>(scenes[i].icon, scenes[i].name, scenes[i].desc, root);
         const int col = i % columns;
         const int row = i / columns;
-        btn->setAligment(LV_ALIGN_TOP_LEFT, startX + col * (cardW + gap), 45 + row * (cardH + gap));
+        btn->setAlignment(LV_ALIGN_TOP_LEFT, startX + col * (cardW + gap), 45 + row * (cardH + gap));
         btn->setOnActivate([activeLabel, name = std::string(scenes[i].name)]() {
             activeLabel->setText(lvTrFmt("common_active", name));
             w::Toast::success(lvTrFmt("common_activated", name).c_str());
@@ -350,49 +350,49 @@ static void applyLanguageIndex(uint32_t index)
     LvTranslator::load(language);
 }
 
-static void buildSettingsPage(w::BaseItem *root, w::WidgetStore &store)
+static void buildSettingsPage(w::Widget *root, w::WidgetStore &store)
 {
     const auto &cfg = sys::UiConfig::instance();
 
     auto *scroll = store.emplace<w::ScrollItem>(root);
     scroll->setSize(cfg.width(), cfg.height() - 60);
-    scroll->setAligment(LV_ALIGN_TOP_MID, 0, 0);
+    scroll->setAlignment(LV_ALIGN_TOP_MID, 0, 0);
     scroll->setScrollable(true);
 
     auto *title = store.emplace<w::LvText>(lvTr("nav_settings"), CLR_ON_SURFACE, scroll, w::LvText::FontSize28Bold);
-    title->setAligment(LV_ALIGN_TOP_LEFT, 16, 8);
+    title->setAlignment(LV_ALIGN_TOP_LEFT, 16, 8);
 
     int y = 45;
 
     // ---- Appearance ----
     auto *appHdr = store.emplace<w::LvText>(lvTr("settings_appearance"), CLR_PRIMARY, scroll, w::LvText::FontSize22Bold);
-    appHdr->setAligment(LV_ALIGN_TOP_LEFT, 16, y);
+    appHdr->setAlignment(LV_ALIGN_TOP_LEFT, 16, y);
     y += 30;
 
     auto *themeLbl = store.emplace<w::LvText>(lvTr("settings_theme"), CLR_ON_SURFACE_VARIANT_0, scroll, w::LvText::FontSize20);
-    themeLbl->setAligment(LV_ALIGN_TOP_LEFT, 32, y);
+    themeLbl->setAlignment(LV_ALIGN_TOP_LEFT, 32, y);
     auto *themeDrop = store.emplace<w::Dropdown>(scroll);
     themeDrop->setSize(180, 36);
     themeDrop->setOptions(std::string(lvTr("settings_theme_dark")) + "\n" + lvTr("settings_theme_light") + "\n" + lvTr("settings_theme_auto"));
-    themeDrop->setAligment(LV_ALIGN_TOP_LEFT, 200, y - 3);
+    themeDrop->setAlignment(LV_ALIGN_TOP_LEFT, 200, y - 3);
     y += 44;
 
     auto *brightLbl = store.emplace<w::LvText>(lvTr("settings_brightness"), CLR_ON_SURFACE_VARIANT_0, scroll, w::LvText::FontSize20);
-    brightLbl->setAligment(LV_ALIGN_TOP_LEFT, 32, y);
+    brightLbl->setAlignment(LV_ALIGN_TOP_LEFT, 32, y);
     auto *brightSlider = store.emplace<w::Slider>(scroll);
     brightSlider->setSize(180, 20);
     brightSlider->setRange(10, 100);
     brightSlider->setValue(80);
-    brightSlider->setAligment(LV_ALIGN_TOP_LEFT, 200, y + 3);
+    brightSlider->setAlignment(LV_ALIGN_TOP_LEFT, 200, y + 3);
     y += 30;
 
     // ---- Language ----
     auto *langHdr = store.emplace<w::LvText>(lvTr("language"), CLR_PRIMARY, scroll, w::LvText::FontSize22Bold);
-    langHdr->setAligment(LV_ALIGN_TOP_LEFT, 16, y);
+    langHdr->setAlignment(LV_ALIGN_TOP_LEFT, 16, y);
     y += 30;
 
     auto *langLbl = store.emplace<w::LvText>(lvTr("language"), CLR_ON_SURFACE_VARIANT_0, scroll, w::LvText::FontSize20);
-    langLbl->setAligment(LV_ALIGN_TOP_LEFT, 32, y);
+    langLbl->setAlignment(LV_ALIGN_TOP_LEFT, 32, y);
     auto *langRoller = store.emplace<w::Roller>(scroll);
     langRoller->setSize(150, 100);
     const std::string languageOptions = std::string(lvTr("language_english")) + "\n" + lvTr("language_chinese") + "\n" + lvTr("language_japanese")
@@ -400,64 +400,64 @@ static void buildSettingsPage(w::BaseItem *root, w::WidgetStore &store)
     langRoller->setOptions(languageOptions, LV_ROLLER_MODE_INFINITE);
     langRoller->setSelected(static_cast<uint32_t>(languageRollerIndex()));
     langRoller->setVisibleRowCount(3);
-    langRoller->setAligment(LV_ALIGN_TOP_LEFT, 200, y - 5);
+    langRoller->setAlignment(LV_ALIGN_TOP_LEFT, 200, y - 5);
 
     // Apply explicitly: rebuilding the page while the roller is still being
     // dragged would destroy the widget under the user's finger.
     auto *langApplyBtn = store.emplace<w::PushButton>(90, 32, w::PushButton::Blue, lvTr("settings_language_apply"), scroll);
-    langApplyBtn->setAligment(LV_ALIGN_TOP_LEFT, 360, y + 2);
+    langApplyBtn->setAlignment(LV_ALIGN_TOP_LEFT, 360, y + 2);
     langApplyBtn->setOnClickedListener([langRoller]() { applyLanguageIndex(langRoller->selected()); });
     y += 110;
 
     // ---- Network ----
     auto *netHdr = store.emplace<w::LvText>(lvTr("settings_network"), CLR_PRIMARY, scroll, w::LvText::FontSize22Bold);
-    netHdr->setAligment(LV_ALIGN_TOP_LEFT, 16, y);
+    netHdr->setAlignment(LV_ALIGN_TOP_LEFT, 16, y);
     y += 30;
 
     auto *wifiLbl = store.emplace<w::LvText>(lvTr("settings_wifi"), CLR_ON_SURFACE_VARIANT_0, scroll, w::LvText::FontSize20);
-    wifiLbl->setAligment(LV_ALIGN_TOP_LEFT, 32, y);
+    wifiLbl->setAlignment(LV_ALIGN_TOP_LEFT, 32, y);
     auto *wifiSwitch = store.emplace<w::SwitchButton>(48, 24, scroll);
     wifiSwitch->setCheck(true);
-    wifiSwitch->setAligment(LV_ALIGN_TOP_LEFT, 200, y);
+    wifiSwitch->setAlignment(LV_ALIGN_TOP_LEFT, 200, y);
     y += 30;
 
     // Mock network data, not UI copy.
     auto *wifiInfo = store.emplace<w::LvText>("SSID: MyHomeWiFi  IP: 192.168.1.100", CLR_ON_SURFACE_VARIANT_2, scroll, w::LvText::FontSize20);
-    wifiInfo->setAligment(LV_ALIGN_TOP_LEFT, 32, y);
+    wifiInfo->setAlignment(LV_ALIGN_TOP_LEFT, 32, y);
     y += 28;
 
     // ---- Notifications ----
     auto *notifHdr = store.emplace<w::LvText>(lvTr("settings_notifications"), CLR_PRIMARY, scroll, w::LvText::FontSize22Bold);
-    notifHdr->setAligment(LV_ALIGN_TOP_LEFT, 16, y);
+    notifHdr->setAlignment(LV_ALIGN_TOP_LEFT, 16, y);
     y += 30;
 
     auto *pushLbl = store.emplace<w::LvText>(lvTr("settings_push_notifications"), CLR_ON_SURFACE_VARIANT_0, scroll, w::LvText::FontSize20);
-    pushLbl->setAligment(LV_ALIGN_TOP_LEFT, 32, y);
+    pushLbl->setAlignment(LV_ALIGN_TOP_LEFT, 32, y);
     auto *pushSwitch = store.emplace<w::SwitchButton>(48, 24, scroll);
     pushSwitch->setCheck(true);
-    pushSwitch->setAligment(LV_ALIGN_TOP_LEFT, 200, y);
+    pushSwitch->setAlignment(LV_ALIGN_TOP_LEFT, 200, y);
     y += 30;
 
     // ---- About ----
     auto *aboutHdr = store.emplace<w::LvText>(lvTr("settings_about"), CLR_PRIMARY, scroll, w::LvText::FontSize22Bold);
-    aboutHdr->setAligment(LV_ALIGN_TOP_LEFT, 16, y);
+    aboutHdr->setAlignment(LV_ALIGN_TOP_LEFT, 16, y);
     y += 30;
 
     // Version/build/copyright are product data, not translatable copy.
     auto *ver = store.emplace<w::LvText>("LVGL++ Smart Home v2.0", CLR_ON_SURFACE_VARIANT_1, scroll, w::LvText::FontSize20);
-    ver->setAligment(LV_ALIGN_TOP_LEFT, 32, y);
+    ver->setAlignment(LV_ALIGN_TOP_LEFT, 32, y);
     y += 24;
 
     auto *build = store.emplace<w::LvText>("Build: 2026-07-23  |  SDK: LVGL 9.x", CLR_ON_SURFACE_VARIANT_2, scroll, w::LvText::FontSize20);
-    build->setAligment(LV_ALIGN_TOP_LEFT, 32, y);
+    build->setAlignment(LV_ALIGN_TOP_LEFT, 32, y);
     y += 24;
 
     auto *copy = store.emplace<w::LvText>("(c) 2024-2026 LVGL++ Team", CLR_PRIMARY_DIS_BG, scroll, w::LvText::FontSize20);
-    copy->setAligment(LV_ALIGN_TOP_LEFT, 32, y);
+    copy->setAlignment(LV_ALIGN_TOP_LEFT, 32, y);
     y += 28;
 
     auto *aboutBtn = store.emplace<w::PushButton>(140, 36, w::PushButton::Blue, lvTr("settings_view_license"), scroll);
-    aboutBtn->setAligment(LV_ALIGN_TOP_LEFT, 32, y);
+    aboutBtn->setAlignment(LV_ALIGN_TOP_LEFT, 32, y);
 }
 
 // ============================================================
@@ -483,9 +483,9 @@ protected:
         _navBtns.clear();
         _navBar.reset();
         _pageHost.reset();
-        if (auto *root = getRoot(); root != nullptr && root->getLvglItem() != nullptr)
+        if (auto *root = getRoot(); root != nullptr && root->lvObj() != nullptr)
         {
-            lv_obj_clean(root->getLvglItem());
+            lv_obj_clean(root->lvObj());
         }
 
         lvglpp::sys::BaseActivity::onConfigurationChanged(configuration);
@@ -514,7 +514,7 @@ private:
         // Pages are built lazily on first show; visited pages are kept alive.
         _pageHost = std::make_unique<w::PageHost>(root);
         _pageHost->setSize(cfg.width(), cfg.height() - 60);
-        _pageHost->setAligment(LV_ALIGN_TOP_MID, 0, 0);
+        _pageHost->setAlignment(LV_ALIGN_TOP_MID, 0, 0);
 
         _pageHost->addPage("Home", [](w::PageContext &ctx) { buildDashboard(ctx.root(), ctx.widgets()); });
         _pageHost->addPage("Rooms", [](w::PageContext &ctx) { buildRoomsPage(ctx.root(), ctx.widgets()); });
@@ -523,10 +523,10 @@ private:
         _pageHost->addPage("Settings", [](w::PageContext &ctx) { buildSettingsPage(ctx.root(), ctx.widgets()); });
 
         // Bottom nav bar. Flex row mirrors automatically under RTL.
-        _navBar = std::make_unique<w::BaseItem>(root);
+        _navBar = std::make_unique<w::Widget>(root);
         _navBar->setSize(cfg.width(), 60);
         _navBar->setBgColor(CLR_SURFACE_CONTAINER);
-        _navBar->setAligment(LV_ALIGN_BOTTOM_MID, 0, 0);
+        _navBar->setAlignment(LV_ALIGN_BOTTOM_MID, 0, 0);
         _navBar->setFlexFlow(LV_FLEX_FLOW_ROW);
         _navBar->setPaddingAll(2);
 
@@ -559,7 +559,7 @@ private:
         }
     }
 
-    std::unique_ptr<w::BaseItem>                _navBar;
+    std::unique_ptr<w::Widget>                _navBar;
     std::vector<std::unique_ptr<w::PushButton>> _navBtns;
     // Declared last: destroys page widgets before the nav wrappers.
     std::unique_ptr<w::PageHost> _pageHost;

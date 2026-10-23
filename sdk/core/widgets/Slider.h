@@ -1,14 +1,14 @@
 #ifndef LVGLPP_SLIDER_H
 #define LVGLPP_SLIDER_H
 
-#include "BaseItem.h"
+#include "Widget.h"
 
 namespace lvglpp::widgets {
 
-class Slider : public BaseItem
+class Slider : public Widget
 {
 public:
-    explicit Slider(BaseItem *parent = nullptr);
+    explicit Slider(Widget *parent = nullptr);
 
     /// Set the current value
     void setValue(int32_t value, bool animate = false);

@@ -19,7 +19,7 @@ void EventRecorder::stopRecording()
     _recording = false;
 }
 
-void EventRecorder::record(const std::string &type, widgets::BaseItem *item, int value)
+void EventRecorder::record(const std::string &type, widgets::Widget *item, int value)
 {
     if (!_recording) return;
     std::lock_guard<std::mutex> lock(_mutex);

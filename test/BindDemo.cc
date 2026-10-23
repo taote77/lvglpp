@@ -14,14 +14,14 @@ void BindDemo::onCreate(std::any arg)
 {
     _label = std::make_shared<lvglpp::widgets::Text>(_txt, form::design::CLR_SURFACE_CONTAINER, getRoot());
 
-    _label->setAligment(LV_ALIGN_CENTER, 0, -80);
+    _label->setAlignment(LV_ALIGN_CENTER, 0, -80);
 
     _btn = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "Click", getRoot());
 
     char buf[100]     = {0};
     char pre_buf[100] = {0};
     lv_subject_init_string(&_subject, buf, pre_buf, (100), "Start");
-    lv_label_bind_text(_label->getLvglItem(), &_subject, "%s");
+    lv_label_bind_text(_label->lvObj(), &_subject, "%s");
 
     lv_subject_add_observer(
         &_subject,
@@ -32,7 +32,7 @@ void BindDemo::onCreate(std::any arg)
         nullptr);
 
     _btn->setPos(480, 300);
-    _btn->setAligment(LV_ALIGN_CENTER, 0, 0);
+    _btn->setAlignment(LV_ALIGN_CENTER, 0, 0);
 
     _btn->setOnClickedListener([this]() {
         _txt = (_txt == "Start") ? "Stop" : "Start";

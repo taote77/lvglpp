@@ -1,7 +1,7 @@
 #ifndef LVGLPP_CALENDAR_H
 #define LVGLPP_CALENDAR_H
 
-#include "BaseItem.h"
+#include "Widget.h"
 #include <vector>
 
 namespace lvglpp::widgets {
@@ -12,10 +12,10 @@ struct CalendarDate {
     uint32_t day;
 };
 
-class Calendar : public BaseItem
+class Calendar : public Widget
 {
 public:
-    explicit Calendar(BaseItem *parent = nullptr);
+    explicit Calendar(Widget *parent = nullptr);
 
     /// Set the "today" date (highlighted)
     void setTodayDate(uint32_t year, uint32_t month, uint32_t day);

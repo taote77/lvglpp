@@ -1,7 +1,7 @@
 #ifndef SMART_HOME_ROOM_CARD_H
 #define SMART_HOME_ROOM_CARD_H
 
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 #include "core/widgets/LvText.h"
 #include <functional>
 #include <memory>
@@ -12,11 +12,11 @@ namespace w = ::lvglpp::widgets;
 namespace lvglpp::ui::widgets {
 
 /// A card showing room summary: name, temperature, humidity, device count
-class RoomCard : public w::BaseItem
+class RoomCard : public w::Widget
 {
 public:
     RoomCard(const std::string &name, const std::string &icon, int deviceCount,
-             float temperature, float humidity, w::BaseItem *parent = nullptr);
+             float temperature, float humidity, w::Widget *parent = nullptr);
 
     void setTemperature(float temp);
     void setHumidity(float humidity);

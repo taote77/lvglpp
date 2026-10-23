@@ -1,11 +1,11 @@
 #include "SwipeView.h"
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 #include "core/widgets/PushButton.h"
 #include "theme/theme_keeper.h"
 
 namespace lvglpp::ui::page {
 
-SwipeView::SwipeView(BaseItem *parent) : ScrollItem(parent)
+SwipeView::SwipeView(Widget *parent) : ScrollItem(parent)
 {
     init();
 }
@@ -17,14 +17,14 @@ void SwipeView::enableBounce(bool enable)
 {
     if (enable)
     {
-        lv_obj_add_flag(getLvglItem(), LV_OBJ_FLAG_SCROLL_ELASTIC);
+        lv_obj_add_flag(lvObj(), LV_OBJ_FLAG_SCROLL_ELASTIC);
     } else
     {
-        lv_obj_clear_flag(getLvglItem(), LV_OBJ_FLAG_SCROLL_ELASTIC);
+        lv_obj_clear_flag(lvObj(), LV_OBJ_FLAG_SCROLL_ELASTIC);
     }
 }
 
-void SwipeView::addPage(std::shared_ptr<BaseItem> page)
+void SwipeView::addPage(std::shared_ptr<Widget> page)
 {
     page->setParent(this);
     _pages.push_back(page);
@@ -42,18 +42,18 @@ void SwipeView::enableNavButtons(bool enable)
 
 void SwipeView::SetItemSpace(short space)
 {
-    lv_obj_set_style_pad_column(this->getLvglItem(), space, LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_column(this->lvObj(), space, LV_STATE_DEFAULT);
 }
 
 void SwipeView::init()
 {
     setScrollable(true);
-    lv_obj_add_flag(getLvglItem(), LV_OBJ_FLAG_SCROLL_ONE);
-    lv_obj_set_scroll_snap_x(getLvglItem(), LV_SCROLL_SNAP_CENTER);
-    lv_obj_set_flex_flow(getLvglItem(), LV_FLEX_FLOW_ROW);
-    lv_obj_set_scrollbar_mode(getLvglItem(), LV_SCROLLBAR_MODE_OFF);
-    lv_obj_set_style_pad_column(getLvglItem(), 0, LV_STATE_DEFAULT);
-    lv_obj_clear_flag(getLvglItem(), LV_OBJ_FLAG_SCROLL_ELASTIC);
+    lv_obj_add_flag(lvObj(), LV_OBJ_FLAG_SCROLL_ONE);
+    lv_obj_set_scroll_snap_x(lvObj(), LV_SCROLL_SNAP_CENTER);
+    lv_obj_set_flex_flow(lvObj(), LV_FLEX_FLOW_ROW);
+    lv_obj_set_scrollbar_mode(lvObj(), LV_SCROLLBAR_MODE_OFF);
+    lv_obj_set_style_pad_column(lvObj(), 0, LV_STATE_DEFAULT);
+    lv_obj_clear_flag(lvObj(), LV_OBJ_FLAG_SCROLL_ELASTIC);
 
     addLvglEventHandler(
         [](lv_event_t *e) -> void {
@@ -97,14 +97,14 @@ void SwipeView::createPages()
 void SwipeView::addLeftButton()
 {
     _left_btn = std::make_shared<RoundedButton>(240, 64, RoundedButton::Blue, ("<-"), getParent());
-    _left_btn->setAligment(LV_ALIGN_TOP_MID, 0, 376);
+    _left_btn->setAlignment(LV_ALIGN_TOP_MID, 0, 376);
     _left_btn->setPos(150, 380);
 }
 
 void SwipeView::addRightButton()
 {
     _right_btn = std::make_shared<RoundedButton>(240, 64, RoundedButton::Blue, ("->"), this->getParent());
-    _right_btn->setAligment(LV_ALIGN_TOP_MID, 0, 376);
+    _right_btn->setAlignment(LV_ALIGN_TOP_MID, 0, 376);
     _right_btn->setPos(408, 380);
 }
 

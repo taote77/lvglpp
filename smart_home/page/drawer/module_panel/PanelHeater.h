@@ -2,7 +2,7 @@
 #define PANEL_HEATER_H
 
 #include "components/progress_bar.h"
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 #include "core/widgets/LvText.h"
 #include "core/widgets/Image.h"
 #include "core/widgets/MouseArea.h"
@@ -14,7 +14,7 @@
 namespace lvglpp::ui::page {
 using namespace widgets;
 
-class PanelHeater : public BaseItem
+class PanelHeater : public Widget
 {
 public:
     static std::string double_to_one_digit_str(const double x, const short precision = 1)
@@ -36,7 +36,7 @@ public:
 
     void updateHeatStatus(int32_t scraperstate, int32_t scrapertype, int32_t resin_temp, bool resin_sensor, bool heater_equipped);
 
-    explicit PanelHeater(BaseItem *parent = nullptr);
+    explicit PanelHeater(Widget *parent = nullptr);
 
 private:
     bool switch_enable{false};
@@ -48,10 +48,10 @@ private:
     bool    _last_heater_equipped{false};
 
     std::shared_ptr<widgets::Image> _icon1;             // row1 图标
-    std::shared_ptr<ConsumeText>    _label_mod_scraper; // row1 txt
+    std::shared_ptr<LvText>    _label_mod_scraper; // row1 txt
 
     // std::shared_ptr<widgets::Image> _icon2;// row2 图标
-    std::shared_ptr<ConsumeText> _label_scraper_state; // row2 txt
+    std::shared_ptr<LvText> _label_scraper_state; // row2 txt
 
     std::shared_ptr<MouseArea>      _touch_area;
     std::shared_ptr<widgets::Image> _arrow_right;

@@ -33,7 +33,7 @@ core::ButtonStyle toThemeStyle(PushButton::ColorStyle type)
 
 } // namespace
 
-PushButton::PushButton(int width, int height, PushButton::ColorStyle type, const std::string &strMsg, BaseItem *parent) : BaseItem(parent), type_(type)
+PushButton::PushButton(int width, int height, PushButton::ColorStyle type, const std::string &strMsg, Widget *parent) : Widget(parent), type_(type)
 {
     init(width, height, type);
     initLabel(strMsg, type);
@@ -41,8 +41,8 @@ PushButton::PushButton(int width, int height, PushButton::ColorStyle type, const
     setFocusable(true);
 }
 
-PushButton::PushButton(int width, int height, PushButton::ColorStyle type, const std::string &strMsg, const std::string &strImgPath, BaseItem *parent) :
-    BaseItem(parent), type_(type)
+PushButton::PushButton(int width, int height, PushButton::ColorStyle type, const std::string &strMsg, const std::string &strImgPath, Widget *parent) :
+    Widget(parent), type_(type)
 {
     init(width, height, type);
     initImage(strImgPath);
@@ -59,17 +59,17 @@ void PushButton::init(int width, int height, PushButton::ColorStyle type)
 
 void PushButton::initLabel(const std::string &msg, PushButton::ColorStyle type)
 {
-    if (getLvglItem() == nullptr)
+    if (lvObj() == nullptr)
     {
         return;
     }
     label_.reset(new LvText(msg, CLR_PRIMARY_BLACK, this, LvText::FontSize20));
-    label_->setAligment(LV_ALIGN_CENTER, 0, 0);
+    label_->setAlignment(LV_ALIGN_CENTER, 0, 0);
 }
 
 void PushButton::setColorType(ColorStyle type)
 {
-    if (getLvglItem() == nullptr)
+    if (lvObj() == nullptr)
     {
         return;
     }
@@ -79,14 +79,14 @@ void PushButton::setColorType(ColorStyle type)
 
     if (palette.transparent)
     {
-        lv_obj_set_style_bg_opa(getLvglItem(), LV_OPA_TRANSP, LV_STATE_DEFAULT);
-        lv_obj_set_style_border_width(getLvglItem(), 1, LV_STATE_DEFAULT);
-        lv_obj_set_style_border_color(getLvglItem(), lv_color_hex(palette.border_color), LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_opa(lvObj(), LV_OPA_TRANSP, LV_STATE_DEFAULT);
+        lv_obj_set_style_border_width(lvObj(), 1, LV_STATE_DEFAULT);
+        lv_obj_set_style_border_color(lvObj(), lv_color_hex(palette.border_color), LV_STATE_DEFAULT);
     } else
     {
-        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(palette.normal_bg), LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(palette.pressed_bg), LV_STATE_PRESSED);
-        lv_obj_set_style_bg_color(getLvglItem(), lv_color_hex(palette.disabled_bg), LV_STATE_DISABLED);
+        lv_obj_set_style_bg_color(lvObj(), lv_color_hex(palette.normal_bg), LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_color(lvObj(), lv_color_hex(palette.pressed_bg), LV_STATE_PRESSED);
+        lv_obj_set_style_bg_color(lvObj(), lv_color_hex(palette.disabled_bg), LV_STATE_DISABLED);
     }
 
     if (label_ != nullptr)
@@ -97,12 +97,12 @@ void PushButton::setColorType(ColorStyle type)
 
 void PushButton::initImage(const std::string &url)
 {
-    if (getLvglItem() == nullptr)
+    if (lvObj() == nullptr)
     {
         return;
     }
     img_obj_ = std::make_unique<widgets::Image>(url, this);
-    img_obj_->setAligment(LV_ALIGN_CENTER, 0, 0);
+    img_obj_->setAlignment(LV_ALIGN_CENTER, 0, 0);
 }
 
 void PushButton::setImagePos(int x, int y)
@@ -129,7 +129,7 @@ void PushButton::setImagePos(lv_align_t align, int x, int y)
     {
         return;
     }
-    img_obj_->setAligment(align, (lv_coord_t)x, (lv_coord_t)y);
+    img_obj_->setAlignment(align, (lv_coord_t)x, (lv_coord_t)y);
 }
 
 void PushButton::setTextPos(lv_align_t align, int x, int y)
@@ -138,7 +138,7 @@ void PushButton::setTextPos(lv_align_t align, int x, int y)
     {
         return;
     }
-    label_->setAligment(align, (lv_coord_t)x, (lv_coord_t)y);
+    label_->setAlignment(align, (lv_coord_t)x, (lv_coord_t)y);
 }
 
 void PushButton::setTextAlignment(lv_text_align_t align_type)
@@ -158,9 +158,9 @@ void PushButton::setTextMsg(const std::string &str)
     label_->setText(str);
 }
 
-void PushButton::setEnable(bool enable)
+void PushButton::setEnabled(bool enable)
 {
-    BaseItem::setEnable(enable);
+    Widget::setEnabled(enable);
     if (label_ != nullptr)
     {
         const core::ButtonPalette &palette = core::Theme::instance().buttonPalette(toThemeStyle(type_));
@@ -179,7 +179,7 @@ void PushButton::changeImageAsset(const std::string &assetPath)
 void PushButton::setOnClickedListener(const std::function<void()> &l)
 {
     onButtonClicked_cb_ = l;
-    BaseItem::setOnClickedListener(std::bind(&PushButton::handleButtonClicked, this));
+    Widget::setOnClickedListener(std::bind(&PushButton::handleButtonClicked, this));
 }
 
 void PushButton::handleButtonClicked()

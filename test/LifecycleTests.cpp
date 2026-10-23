@@ -1,5 +1,5 @@
 #include "TestFramework.h"
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 #include "core/widgets/GridLayout.h"
 #include "core/widgets/WidgetStore.h"
 
@@ -10,16 +10,16 @@
 using namespace lvglpp::test;
 using namespace lvglpp::widgets;
 
-static_assert(!std::is_copy_constructible<BaseItem>::value, "BaseItem must not be copyable");
-static_assert(!std::is_move_constructible<BaseItem>::value, "BaseItem must not be movable");
+static_assert(!std::is_copy_constructible<Widget>::value, "Widget must not be copyable");
+static_assert(!std::is_move_constructible<Widget>::value, "Widget must not be movable");
 
-TEST(BaseItem_child_wrapper_can_die_while_object_lives)
+TEST(Widget_child_wrapper_can_die_while_object_lives)
 {
-    BaseItem parent;
+    Widget parent;
     parent.setSize(200, 100);
 
     {
-        auto child = std::make_unique<BaseItem>(&parent);
+        auto child = std::make_unique<Widget>(&parent);
         child->setName("child");
         CHECK_TRUE(child->isAttached());
     }
@@ -32,33 +32,33 @@ TEST(BaseItem_child_wrapper_can_die_while_object_lives)
     return true;
 }
 
-TEST(BaseItem_childAt_and_findChild_use_live_wrappers)
+TEST(Widget_childAt_and_findChild_use_live_wrappers)
 {
-    BaseItem parent;
-    auto     child = std::make_unique<BaseItem>(&parent);
+    Widget parent;
+    auto     child = std::make_unique<Widget>(&parent);
     child->setName("live-child");
     child->setSize(10, 10);
 
     CHECK_EQ(parent.childCount(), 1u);
     CHECK(parent.childAt(0) == child.get());
     CHECK(parent.findChild("live-child") == child.get());
-    CHECK(parent.findChildrenByType<BaseItem>().size() >= 2u);
+    CHECK(parent.findChildrenByType<Widget>().size() >= 2u);
     return true;
 }
 
-TEST(BaseItem_external_parent_delete_invalidates_wrappers)
+TEST(Widget_external_parent_delete_invalidates_wrappers)
 {
-    auto parent = std::make_unique<BaseItem>();
-    auto child  = std::make_unique<BaseItem>(parent.get());
+    auto parent = std::make_unique<Widget>();
+    auto child  = std::make_unique<Widget>(parent.get());
 
     CHECK_TRUE(parent->isAttached());
     CHECK_TRUE(child->isAttached());
 
-    lv_obj_delete(parent->getLvglItem());
+    lv_obj_delete(parent->lvObj());
 
     CHECK_FALSE(parent->isAttached());
     CHECK_FALSE(child->isAttached());
-    CHECK(child->getLvglItem() == nullptr);
+    CHECK(child->lvObj() == nullptr);
 
     // Every operation must be a safe no-op on a detached wrapper.
     child->setSize(10, 10);
@@ -70,13 +70,13 @@ TEST(BaseItem_external_parent_delete_invalidates_wrappers)
     return true;
 }
 
-TEST(BaseItem_owned_root_deletes_object)
+TEST(Widget_owned_root_deletes_object)
 {
     lv_obj_t      *screen = lv_scr_act();
     const uint32_t before = lv_obj_get_child_count(screen);
 
     {
-        BaseItem root;
+        Widget root;
         CHECK_TRUE(root.ownsLvglObject());
         CHECK_EQ(lv_obj_get_child_count(screen), before + 1);
     }
@@ -85,20 +85,20 @@ TEST(BaseItem_owned_root_deletes_object)
     return true;
 }
 
-TEST(BaseItem_callbacks_removed_when_wrapper_dies)
+TEST(Widget_callbacks_removed_when_wrapper_dies)
 {
-    auto parent = std::make_unique<BaseItem>();
+    auto parent = std::make_unique<Widget>();
     int  calls  = 0;
 
     {
-        auto child = std::make_unique<BaseItem>(parent.get());
+        auto child = std::make_unique<Widget>(parent.get());
         child->onClicked([&calls]() { calls++; });
-        lv_obj_t *child_obj = child->getLvglItem();
+        lv_obj_t *child_obj = child->lvObj();
         lv_obj_send_event(child_obj, LV_EVENT_CLICKED, nullptr);
         CHECK_EQ(calls, 1);
     }
 
-    lv_obj_t *surviving_child = lv_obj_get_child(parent->getLvglItem(), 0);
+    lv_obj_t *surviving_child = lv_obj_get_child(parent->lvObj(), 0);
     CHECK(surviving_child != nullptr);
 
     // The wrapper is gone; its event callbacks must have been removed, so this
@@ -110,51 +110,51 @@ TEST(BaseItem_callbacks_removed_when_wrapper_dies)
     return true;
 }
 
-TEST(BaseItem_connection_disconnects_handler)
+TEST(Widget_connection_disconnects_handler)
 {
-    auto parent = std::make_unique<BaseItem>();
-    auto child  = std::make_unique<BaseItem>(parent.get());
+    auto parent = std::make_unique<Widget>();
+    auto child  = std::make_unique<Widget>(parent.get());
     int  calls  = 0;
 
     auto conn = child->onClicked([&calls]() { calls++; });
-    lv_obj_send_event(child->getLvglItem(), LV_EVENT_CLICKED, nullptr);
+    lv_obj_send_event(child->lvObj(), LV_EVENT_CLICKED, nullptr);
     CHECK_EQ(calls, 1);
 
     conn.disconnect();
-    lv_obj_send_event(child->getLvglItem(), LV_EVENT_CLICKED, nullptr);
+    lv_obj_send_event(child->lvObj(), LV_EVENT_CLICKED, nullptr);
     CHECK_EQ(calls, 1);
     CHECK_FALSE(conn.connected());
     return true;
 }
 
-TEST(BaseItem_onDestroyed_fires_for_wrapper_destruction)
+TEST(Widget_onDestroyed_fires_for_wrapper_destruction)
 {
     int calls = 0;
     {
-        auto item = std::make_unique<BaseItem>();
+        auto item = std::make_unique<Widget>();
         item->onDestroyed([&calls]() { calls++; });
     }
     CHECK_EQ(calls, 1);
     return true;
 }
 
-TEST(BaseItem_onDestroyed_fires_for_external_delete)
+TEST(Widget_onDestroyed_fires_for_external_delete)
 {
-    auto item  = std::make_unique<BaseItem>();
+    auto item  = std::make_unique<Widget>();
     int  calls = 0;
     item->onDestroyed([&calls]() { calls++; });
 
-    lv_obj_delete(item->getLvglItem());
+    lv_obj_delete(item->lvObj());
     CHECK_EQ(calls, 1);
     CHECK_FALSE(item->isAttached());
     return true;
 }
 
-TEST(BaseItem_setParent_updates_parent_and_ownership)
+TEST(Widget_setParent_updates_parent_and_ownership)
 {
-    BaseItem first;
-    BaseItem second;
-    auto     child = std::make_unique<BaseItem>(&first);
+    Widget first;
+    Widget second;
+    auto     child = std::make_unique<Widget>(&first);
 
     child->setParent(&second);
     CHECK(child->getParent() == &second);
@@ -165,10 +165,10 @@ TEST(BaseItem_setParent_updates_parent_and_ownership)
 
 TEST(WidgetStore_keeps_wrappers_alive)
 {
-    BaseItem    parent;
+    Widget    parent;
     WidgetStore store;
 
-    BaseItem *stored = store.emplace<BaseItem>(&parent);
+    Widget *stored = store.emplace<Widget>(&parent);
     stored->setName("stored");
     CHECK_EQ(store.size(), 1u);
     CHECK(parent.findChild("stored") == stored);
@@ -181,7 +181,7 @@ TEST(WidgetStore_keeps_wrappers_alive)
     return true;
 }
 
-TEST(BaseItem_grid_descriptor_parser)
+TEST(Widget_grid_descriptor_parser)
 {
     std::vector<lv_coord_t> tracks;
     CHECK_TRUE(GridLayout::parseTracks("1fr 2fr auto 100px content", tracks));
@@ -202,27 +202,27 @@ TEST(BaseItem_grid_descriptor_parser)
     return true;
 }
 
-TEST(BaseItem_grid_two_axes_are_safe)
+TEST(Widget_grid_two_axes_are_safe)
 {
-    BaseItem container;
+    Widget container;
     container.setSize(200, 100);
 
     // Setting only one axis must not leave LVGL with a null descriptor.
     container.setGridColumns("1fr 1fr");
-    std::vector<std::unique_ptr<BaseItem>> children;
+    std::vector<std::unique_ptr<Widget>> children;
     for (int i = 0; i < 4; ++i)
     {
-        auto child = std::make_unique<BaseItem>(&container);
+        auto child = std::make_unique<Widget>(&container);
         child->setGridCell(static_cast<uint32_t>(i % 2), static_cast<uint32_t>(i / 2));
         child->setSize(10, 10);
         children.push_back(std::move(child));
     }
 
-    lv_obj_update_layout(container.getLvglItem());
+    lv_obj_update_layout(container.lvObj());
     CHECK_EQ(container.childCount(), 4u);
 
-    BaseItem *first  = container.childAt(0);
-    BaseItem *second = container.childAt(1);
+    Widget *first  = container.childAt(0);
+    Widget *second = container.childAt(1);
     CHECK(first != nullptr);
     CHECK(second != nullptr);
     if (first != nullptr && second != nullptr)

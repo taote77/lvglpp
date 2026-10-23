@@ -14,9 +14,9 @@ template <typename T, typename T2 = ListViewDelegate<T>>
 class ListView : public ScrollItem
 {
 public:
-    explicit ListView(BaseItem *parentItem = nullptr);
+    explicit ListView(Widget *parentItem = nullptr);
 
-    explicit ListView(const BaseModel<T> &model, BaseItem *parentItem = nullptr);
+    explicit ListView(const BaseModel<T> &model, Widget *parentItem = nullptr);
 
     ~ListView() override
     {
@@ -108,17 +108,17 @@ private:
 };
 
 template <typename T, typename T2>
-ListView<T, T2>::ListView(BaseItem *parentItem) : ScrollItem(parentItem)
+ListView<T, T2>::ListView(Widget *parentItem) : ScrollItem(parentItem)
 {
     initItem();
 }
 
 template <typename T, typename T2>
-ListView<T, T2>::ListView(const BaseModel<T> &model, BaseItem *parentItem) : ScrollItem(parentItem), list_view_model_(model)
+ListView<T, T2>::ListView(const BaseModel<T> &model, Widget *parentItem) : ScrollItem(parentItem), list_view_model_(model)
 {
     initItem();
     // update();
-    // LV_LOG_USER("ListView create!!%ld", getLvglItem());
+    // LV_LOG_USER("ListView create!!%ld", lvObj());
 }
 
 template <typename T, typename T2>
@@ -178,7 +178,7 @@ void ListView<T, T2>::update()
             return;
         }
 
-        lv_coord_t scroll_y        = lv_obj_get_scroll_y(getLvglItem());
+        lv_coord_t scroll_y        = lv_obj_get_scroll_y(lvObj());
         int        page_count      = scroll_y / view_height;
         int        page_item_count = (view_height / item_stride) + 1;
         if (refresh_page_index_ >= page_count)
@@ -218,9 +218,9 @@ template <typename T, typename T2>
 void ListView<T, T2>::initItem()
 {
     setScrollable(true);
-    lv_obj_set_flex_flow(getLvglItem(), LV_FLEX_FLOW_COLUMN);
-    lv_obj_set_scrollbar_mode(getLvglItem(), LV_SCROLLBAR_MODE_OFF);
-    lv_obj_set_style_pad_row(getLvglItem(), span_, LV_STATE_DEFAULT);
+    lv_obj_set_flex_flow(lvObj(), LV_FLEX_FLOW_COLUMN);
+    lv_obj_set_scrollbar_mode(lvObj(), LV_SCROLLBAR_MODE_OFF);
+    lv_obj_set_style_pad_row(lvObj(), span_, LV_STATE_DEFAULT);
 
     addLvglEventHandler(
         [](lv_event_t *e) -> void {
@@ -240,7 +240,7 @@ template <typename T, typename T2>
 void ListView<T, T2>::setSpan(int n)
 {
     span_ = n;
-    lv_obj_set_style_pad_row(getLvglItem(), span_, LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_row(lvObj(), span_, LV_STATE_DEFAULT);
 }
 
 template <typename T, typename T2>

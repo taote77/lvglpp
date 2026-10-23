@@ -9,19 +9,22 @@ void WidgetLuaBind::bindCommonMethods(sol::usertype<T>& usertype) {
     usertype["set_pos"] = &T::setPos;
     usertype["get_x"] = &T::getX;
     usertype["get_y"] = &T::getY;
-    usertype["set_alignment"] = &T::setAligment;
-    usertype["set_alignment_to"] = &T::setAligmentTo;
+    usertype["set_alignment"] = &T::setAlignment;
+    usertype["set_alignment_to"] = &T::setAlignmentTo;
     usertype["set_bg_color"] = &T::setBgColor;
-    usertype["set_disable_bg_color"] = &T::setDisableBgColor;
+    usertype["set_disable_bg_color"] = &T::setDisabledBgColor;
     usertype["set_opacity"] = &T::setOpacity;
     usertype["set_size"] = &T::setSize;
     usertype["set_width"] = &T::setWidth;
     usertype["get_width"] = &T::getWidth;
     usertype["get_height"] = &T::getHeight;
     usertype["set_visible"] = &T::setVisible;
-    usertype["get_visible"] = &T::getVisible;
-    usertype["set_enable"] = &T::setEnable;
-    usertype["get_enable"] = &T::getEnable;
+    usertype["get_visible"] = &T::isVisible;
+    usertype["is_visible"] = &T::isVisible;
+    usertype["set_enable"] = &T::setEnabled;
+    usertype["get_enable"] = &T::isEnabled;
+    usertype["set_enabled"] = &T::setEnabled;
+    usertype["is_enabled"] = &T::isEnabled;
     usertype["set_radius"] = &T::setRadius;
     usertype["get_radius"] = &T::getRadius;
     usertype["set_clip"] = &T::setClip;
@@ -33,27 +36,27 @@ void WidgetLuaBind::bindCommonMethods(sol::usertype<T>& usertype) {
     usertype["get_parent"] = &T::getParent;
 }
 
-void WidgetLuaBind::bindBaseItem(sol::state& lua) {
-    auto baseitem_type = lua.new_usertype<widgets::BaseItem>(
-        "BaseItem",
-        sol::constructors<widgets::BaseItem(widgets::BaseItem*)>()
+void WidgetLuaBind::bindWidget(sol::state& lua) {
+    auto widget_type = lua.new_usertype<widgets::Widget>(
+        "Widget",
+        sol::constructors<widgets::Widget(widgets::Widget*)>()
     );
     
-    bindCommonMethods(baseitem_type);
+    bindCommonMethods(widget_type);
     
-    baseitem_type["set_on_clicked"] = [](widgets::BaseItem& self, sol::function func) {
+    widget_type["set_on_clicked"] = [](widgets::Widget& self, sol::function func) {
         self.setOnClickedListener([func]() {
             func();
         });
     };
     
-    baseitem_type["set_on_pressed"] = [](widgets::BaseItem& self, sol::function func) {
+    widget_type["set_on_pressed"] = [](widgets::Widget& self, sol::function func) {
         self.setOnPressedListener([func]() {
             func();
         });
     };
     
-    baseitem_type["set_on_released"] = [](widgets::BaseItem& self, sol::function func) {
+    widget_type["set_on_released"] = [](widgets::Widget& self, sol::function func) {
         self.setOnReleasedListener([func]() {
             func();
         });
@@ -64,7 +67,7 @@ void WidgetLuaBind::bindLvText(sol::state& lua) {
     auto lvtext_type = lua.new_usertype<widgets::LvText>(
         "LvText",
         sol::constructors<
-            widgets::LvText(const std::string&, uint32_t, widgets::BaseItem*, widgets::LvText::TextStyle, widgets::LvText::FontType)
+            widgets::LvText(const std::string&, uint32_t, widgets::Widget*, widgets::LvText::TextStyle, widgets::LvText::FontType)
         >()
     );
     
@@ -107,7 +110,7 @@ void WidgetLuaBind::bindLvText(sol::state& lua) {
 void WidgetLuaBind::bindImage(sol::state& lua) {
     auto image_type = lua.new_usertype<widgets::Image>(
         "Image",
-        sol::constructors<widgets::Image(const std::string&, widgets::BaseItem*)>()
+        sol::constructors<widgets::Image(const std::string&, widgets::Widget*)>()
     );
     
     bindCommonMethods(image_type);
@@ -122,8 +125,8 @@ void WidgetLuaBind::bindPushButton(sol::state& lua) {
     auto button_type = lua.new_usertype<widgets::PushButton>(
         "PushButton",
         sol::constructors<
-            widgets::PushButton(int, int, widgets::PushButton::ColorStyle, const std::string&, widgets::BaseItem*),
-            widgets::PushButton(int, int, widgets::PushButton::ColorStyle, const std::string&, const std::string&, widgets::BaseItem*)
+            widgets::PushButton(int, int, widgets::PushButton::ColorStyle, const std::string&, widgets::Widget*),
+            widgets::PushButton(int, int, widgets::PushButton::ColorStyle, const std::string&, const std::string&, widgets::Widget*)
         >()
     );
     
@@ -174,7 +177,7 @@ void WidgetLuaBind::bindPushButton(sol::state& lua) {
 }
 
 void WidgetLuaBind::bindAll(sol::state& lua) {
-    bindBaseItem(lua);
+    bindWidget(lua);
     bindLvText(lua);
     bindImage(lua);
     bindPushButton(lua);

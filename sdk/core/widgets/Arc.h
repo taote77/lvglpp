@@ -1,14 +1,14 @@
 #ifndef LVGLPP_ARC_H
 #define LVGLPP_ARC_H
 
-#include "BaseItem.h"
+#include "Widget.h"
 
 namespace lvglpp::widgets {
 
-class Arc : public BaseItem
+class Arc : public Widget
 {
 public:
-    explicit Arc(BaseItem *parent = nullptr);
+    explicit Arc(Widget *parent = nullptr);
 
     /// Set the current value (angle)
     void setValue(int32_t value);

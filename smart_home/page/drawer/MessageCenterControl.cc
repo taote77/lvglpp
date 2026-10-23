@@ -12,12 +12,12 @@ using namespace form::design;
 
 static constexpr int container_width  = 672;
 static constexpr int container_height = 368;
-MessageCenterControl::MessageCenterControl(BaseItem *parent) : BaseItem(parent)
+MessageCenterControl::MessageCenterControl(Widget *parent) : Widget(parent)
 {
     this->setSize(container_width, container_height);
     this->setOpacity(1);
 
-    this->setEnable(true);
+    this->setEnabled(true);
     init();
 }
 
@@ -62,23 +62,23 @@ void MessageCenterControl::init()
     _toolbar_layout->setPos(0, 0);
 
     _toolbar_layout->setRadius(8);
-    lv_obj_set_style_pad_hor(_toolbar_layout->getLvglItem(), 24, LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_hor(_toolbar_layout->lvObj(), 24, LV_STATE_DEFAULT);
 
     _wifi_status = std::make_shared<StatusIcon>("image/32x32/wifi.png", _toolbar_layout.get());
     _wifi_status->setOpacity(1);
     _wifi_status->setPos(10, 10);
 
-    lv_obj_center(_wifi_status->getLvglItem());
+    lv_obj_center(_wifi_status->lvObj());
 
     _cloud_status = std::make_shared<StatusIcon>("image/32x32/cloud.png", _toolbar_layout.get());
-    lv_obj_center(_cloud_status->getLvglItem());
+    lv_obj_center(_cloud_status->lvObj());
 
     bool udisk_mounted = true;
     _udisk_status      = std::make_shared<StatusIcon>(udisk_mounted ? "image/32x32/udisk.png" : "image/32x32/usb_dis.png", _toolbar_layout.get());
-    lv_obj_center(_udisk_status->getLvglItem());
+    lv_obj_center(_udisk_status->lvObj());
 
     _reboot_status = std::make_shared<StatusIcon>("image/32x32/reboot.png", _toolbar_layout.get());
-    lv_obj_center(_reboot_status->getLvglItem());
+    lv_obj_center(_reboot_status->lvObj());
 
     _wifi_status->enable(true);
     _reboot_status->enable(true);

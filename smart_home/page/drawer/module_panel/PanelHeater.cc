@@ -68,7 +68,7 @@ void PanelHeater::updateHeatStatus(int32_t scraperstate, int32_t scrapertype, in
     }
 }
 
-PanelHeater::PanelHeater(BaseItem *parent) : BaseItem(parent)
+PanelHeater::PanelHeater(Widget *parent) : Widget(parent)
 {
     this->setSize(331, 115);
     this->setOpacity(1);
@@ -79,19 +79,19 @@ PanelHeater::PanelHeater(BaseItem *parent) : BaseItem(parent)
     constexpr short mod_item_edge_x{16};
     constexpr short mod_item_edge_row2_y{60};
 
-    _label_mod_scraper = std::make_shared<ConsumeText>(lvTr("heating_scraper"), CLR_ON_SURFACE, this, ConsumeText::FontSize22Bold);
+    _label_mod_scraper = std::make_shared<LvText>(lvTr("heating_scraper"), CLR_ON_SURFACE, this, LvText::FontSize22Bold);
     _label_mod_scraper->setPos(lv_coord_t(mod_item_edge_x + offset), lv_coord_t(18));
 
-    _label_scraper_state = std::make_shared<ConsumeText>("", CLR_WARNING, this, ConsumeText::FontSize22);
-    _label_scraper_state->setAligment(LV_ALIGN_BOTTOM_LEFT, 16, -21);
+    _label_scraper_state = std::make_shared<LvText>("", CLR_WARNING, this, LvText::FontSize22);
+    _label_scraper_state->setAlignment(LV_ALIGN_BOTTOM_LEFT, 16, -21);
 
     _touch_area = std::make_shared<widgets::MouseArea>(this);
     _touch_area->setSize(150, 92);
-    _touch_area->setAligment(LV_ALIGN_RIGHT_MID, 0, 0);
+    _touch_area->setAlignment(LV_ALIGN_RIGHT_MID, 0, 0);
 
     _arrow_right = std::make_shared<widgets::Image>("image/32x32/arrow_right.png", this);
     _arrow_right->setSize(32, 32);
-    _arrow_right->setAligment(LV_ALIGN_BOTTOM_RIGHT, -16, -15);
+    _arrow_right->setAlignment(LV_ALIGN_BOTTOM_RIGHT, -16, -15);
 
     _icon1 = std::make_shared<widgets::Image>("image/36x36/scraper.png", this);
     _icon1->setPos(lv_coord_t(mod_item_edge_x), lv_coord_t(18));

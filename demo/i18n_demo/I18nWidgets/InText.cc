@@ -4,7 +4,7 @@
 
 namespace lvglpp::widgets {
 
-I18nText::I18nText(const std::string &strMsg, uint32_t clr, BaseItem *parent, TextStyle style, FontType type) : LvText(strMsg, clr, parent, style, type)
+I18nText::I18nText(const std::string &strMsg, uint32_t clr, Widget *parent, TextStyle style, FontType type) : LvText(strMsg, clr, parent, style, type)
 {}
 
 I18nText::~I18nText()

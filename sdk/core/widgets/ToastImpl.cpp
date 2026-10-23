@@ -3,18 +3,18 @@
 #include "core/base/LvObjFactory.h"
 
 namespace lvglpp::widgets {
-ToastImpl::ToastImpl() : BaseItem(tools::LvObjFactory::createLvglDialog)
+ToastImpl::ToastImpl() : Widget(tools::LvObjFactory::createLvglDialog)
 {
-    lv_obj_clear_flag(getLvglItem(), LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_clear_flag(lvObj(), LV_OBJ_FLAG_SCROLLABLE);
     setBgColor(form::design::CLR_PRIMARY_DARK_BG);
     setRadius(8);
-    setAligment(LV_ALIGN_TOP_MID, 0, 70);
+    setAlignment(LV_ALIGN_TOP_MID, 0, 70);
 
     icon_ = std::make_unique<widgets::Image>("", this);
-    icon_->setAligment(LV_ALIGN_LEFT_MID, 8, 0);
+    icon_->setAlignment(LV_ALIGN_LEFT_MID, 8, 0);
 
     desc_ = std::make_unique<LvText>("", form::design::CLR_ON_SURFACE, this, LvText::FontSize24, LvText::SansSC);
-    desc_->setAligment(LV_ALIGN_LEFT_MID, 64, 0);
+    desc_->setAlignment(LV_ALIGN_LEFT_MID, 64, 0);
 }
 
 void ToastImpl::setMessage(const std::string &str_msg, ToastImpl::IconType type)

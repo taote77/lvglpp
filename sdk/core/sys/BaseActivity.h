@@ -56,9 +56,9 @@ public:
 
     /**
      * @brief Returns the root widget of this activity
-     * @return pointer to the root BaseItem
+     * @return pointer to the root Widget
      */
-    widgets::BaseItem *getRoot() const override;
+    widgets::Widget *getRoot() const override;
 
     /**
      * Rebuild the keyboard focus group from the currently visible widgets.
@@ -68,7 +68,7 @@ public:
     void refreshFocus() override;
 
 private:
-    std::unique_ptr<widgets::BaseItem> _root_win;
+    std::unique_ptr<widgets::Widget> _root_win;
 
     std::uint64_t _focus_scope = 0;
 };

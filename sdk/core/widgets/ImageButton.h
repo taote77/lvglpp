@@ -1,13 +1,13 @@
 #ifndef LVGLPP_IMAGEBUTTON_H
 #define LVGLPP_IMAGEBUTTON_H
 
-#include "BaseItem.h"
+#include "Widget.h"
 #include <cstdint>
 #include <string>
 
 namespace lvglpp::widgets {
 
-class ImageButton : public BaseItem
+class ImageButton : public Widget
 {
 public:
     enum class State {
@@ -19,7 +19,7 @@ public:
         CheckedDisabled = 5,
     };
 
-    explicit ImageButton(BaseItem *parent = nullptr);
+    explicit ImageButton(Widget *parent = nullptr);
 
     /**
      * Set the three-part image sources for one state from application assets.

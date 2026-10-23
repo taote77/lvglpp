@@ -15,17 +15,17 @@ constexpr lv_coord_t DIALOG_CONTENT_RADIUS{20};
 
 ModuleDetailResinDialog::ModuleDetailResinDialog(const std::string &resin_name, bool mod_switch) : BaseDialog(true), _change_dir_cb(nullptr), _cancel_cb(nullptr)
 {
-    _dialog_bg_item = std::make_shared<BaseItem>(this->getRoot());
+    _dialog_bg_item = std::make_shared<Widget>(this->getRoot());
     _dialog_bg_item->setSize(DIALOG_CONTENT_WIDTH, DIALOG_CONTENT_HEIGHT);
     _dialog_bg_item->setRadius(DIALOG_CONTENT_RADIUS);
     _dialog_bg_item->setBgColor(ThemeColor(CLR_SURFACE_CONTAINER));
-    _dialog_bg_item->setAligment(LV_ALIGN_TOP_MID, 0, 72);
+    _dialog_bg_item->setAlignment(LV_ALIGN_TOP_MID, 0, 72);
 
     std::string material_str = resin_name.empty() ? lvTr("empty_info") : resin_name;
-    _material_name_label     = std::make_shared<ConsumeText>(material_str, ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24Bold);
-    _material_name_label->setAligment(LV_ALIGN_TOP_LEFT, 24, 20);
+    _material_name_label     = std::make_shared<LvText>(material_str, ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), LvText::FontSize24Bold);
+    _material_name_label->setAlignment(LV_ALIGN_TOP_LEFT, 24, 20);
 
-    _btn_label = std::make_shared<ConsumeText>(lvTr("panel_autofill_label"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24);
+    _btn_label = std::make_shared<LvText>(lvTr("panel_autofill_label"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), LvText::FontSize24);
     _btn_label->setPos(24, 82);
 
     _auto_fill_switch = std::make_shared<widgets::SwitchButton>(72, 36, _dialog_bg_item.get());
@@ -51,15 +51,15 @@ ModuleDetailResinDialog::ModuleDetailResinDialog(const std::string &resin_name, 
         widgets::Toast::warn(lvTr(msg.c_str()));
     });
 
-    _status_label = std::make_shared<ConsumeText>(lvTr("panel_resin_remaining"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24);
+    _status_label = std::make_shared<LvText>(lvTr("panel_resin_remaining"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), LvText::FontSize24);
     _status_label->setPos(24, 82 + 32 + 15);
 
-    _remaing_info = std::make_shared<ConsumeText>(lvTr("empty_info"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24);
-    _remaing_info->setAligmentTo(*_status_label, LV_ALIGN_OUT_RIGHT_MID, 12, 0);
+    _remaing_info = std::make_shared<LvText>(lvTr("empty_info"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), LvText::FontSize24);
+    _remaing_info->setAlignmentTo(*_status_label, LV_ALIGN_OUT_RIGHT_MID, 12, 0);
 
     _close_button = std::make_shared<RoundedButton>(48, 48, RoundedButton::ColorStyle::Gray, "", "image/32x32/x_close.png", _dialog_bg_item.get());
     _close_button->setRadius(24);
-    _close_button->setAligment(LV_ALIGN_BOTTOM_MID, 0, -20);
+    _close_button->setAlignment(LV_ALIGN_BOTTOM_MID, 0, -20);
     _close_button->setOnClickedListener([this]() {
         LOG_DEBUG() << "close mod detail dialog";
         this->close();
@@ -84,7 +84,7 @@ void ModuleDetailResinDialog::setSwitchStatus(bool mod_switch, bool equipped)
     {
         _auto_fill_switch->setCheck(mod_switch);
 
-        _auto_fill_switch->setEnable(equipped);
+        _auto_fill_switch->setEnabled(equipped);
     }
 }
 
@@ -105,11 +105,11 @@ void ModuleDetailResinDialog::UpdateBottleInfo(const std::string &resin_name, co
             LOG_ERROR() << "UpdateBottleInfo error: " << e.what();
         }
 
-        // _rounded_button->setEnable(true);
+        // _rounded_button->setEnabled(true);
     } else
     {
         _remaing_info->setText(lvTr("empty_info"));
-        // _rounded_button->setEnable(false);
+        // _rounded_button->setEnabled(false);
     }
 
     if (_btn_label)

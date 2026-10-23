@@ -13,7 +13,7 @@ namespace lvglpp::core {
  * Copies of a Style share the same underlying lv_style_t. A style becomes
  * immutable on first application; create variants with clone().
  *
- * When applied through BaseItem::applyStyle() the style is kept alive by the
+ * When applied through Widget::applyStyle() the style is kept alive by the
  * object registry until the underlying lv_obj is deleted, so a stack-allocated
  * Style is safe to use.
  */
@@ -86,7 +86,7 @@ public:
     Style &shadow(lv_coord_t width, uint32_t color, lv_opa_t opacity, lv_coord_t offsetX, lv_coord_t offsetY);
     Style &opacity(lv_opa_t value);
 
-    /// Apply to an object. Prefer BaseItem::applyStyle() for lifetime safety.
+    /// Apply to an object. Prefer Widget::applyStyle() for lifetime safety.
     void applyTo(lv_obj_t *obj, lv_style_selector_t selector = LV_PART_MAIN | LV_STATE_DEFAULT) const;
 
 private:

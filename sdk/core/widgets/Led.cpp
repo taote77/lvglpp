@@ -3,33 +3,33 @@
 
 namespace lvglpp::widgets {
 
-Led::Led(BaseItem *parent)
-    : BaseItem(tools::LvObjFactory::createLvglLed, parent)
+Led::Led(Widget *parent)
+    : Widget(tools::LvObjFactory::createLvglLed, parent)
 {}
 
 void Led::on()
 {
-    lv_led_on(getLvglItem());
+    lv_led_on(lvObj());
 }
 
 void Led::off()
 {
-    lv_led_off(getLvglItem());
+    lv_led_off(lvObj());
 }
 
 void Led::setBrightness(uint8_t brightness)
 {
-    lv_led_set_brightness(getLvglItem(), brightness);
+    lv_led_set_brightness(lvObj(), brightness);
 }
 
 uint8_t Led::brightness() const
 {
-    return lv_led_get_brightness(getLvglItem());
+    return lv_led_get_brightness(lvObj());
 }
 
 void Led::toggle()
 {
-    lv_led_toggle(getLvglItem());
+    lv_led_toggle(lvObj());
 }
 
 bool Led::isOn() const

@@ -16,24 +16,24 @@ constexpr lv_coord_t DIALOG_CONTENT_RADIUS{20};
 
 ModuleDetailPulseDialog::ModuleDetailPulseDialog(const int progress, const int status) : BaseDialog(true), _change_dir_cb(nullptr), _cancel_cb(nullptr)
 {
-    _dialog_bg_item = std::make_shared<BaseItem>(this->getRoot());
+    _dialog_bg_item = std::make_shared<Widget>(this->getRoot());
     _dialog_bg_item->setSize(DIALOG_CONTENT_WIDTH, DIALOG_CONTENT_HEIGHT);
     _dialog_bg_item->setRadius(DIALOG_CONTENT_RADIUS);
     _dialog_bg_item->setBgColor(ThemeColor(CLR_SURFACE_CONTAINER));
 
-    _dialog_bg_item->setAligment(LV_ALIGN_TOP_MID, 0, 72);
+    _dialog_bg_item->setAlignment(LV_ALIGN_TOP_MID, 0, 72);
 
-    _title_label = std::make_shared<ConsumeText>(lvTr("electron_stack"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24Bold);
-    _title_label->setAligment(LV_ALIGN_TOP_LEFT, 24, 20);
+    _title_label = std::make_shared<LvText>(lvTr("electron_stack"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), LvText::FontSize24Bold);
+    _title_label->setAlignment(LV_ALIGN_TOP_LEFT, 24, 20);
 
-    _title_status_label = std::make_shared<ConsumeText>(lvTr("status_abnormal"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24Bold);
-    _title_status_label->setAligmentTo(*_dialog_bg_item.get(), LV_ALIGN_TOP_RIGHT, -24, 20);
+    _title_status_label = std::make_shared<LvText>(lvTr("status_abnormal"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), LvText::FontSize24Bold);
+    _title_status_label->setAlignmentTo(*_dialog_bg_item.get(), LV_ALIGN_TOP_RIGHT, -24, 20);
 
-    _progress_label = std::make_shared<ConsumeText>(lvTr("mod_used"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24);
-    _progress_label->setAligmentTo(*_title_label, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 24);
+    _progress_label = std::make_shared<LvText>(lvTr("mod_used"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), LvText::FontSize24);
+    _progress_label->setAlignmentTo(*_title_label, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 24);
 
     _progress_bar = std::make_shared<ProgressBar>(_dialog_bg_item.get(), 120, 20);
-    _progress_bar->setAligmentTo(*_progress_label, LV_ALIGN_OUT_RIGHT_MID, 12, 0);
+    _progress_bar->setAlignmentTo(*_progress_label, LV_ALIGN_OUT_RIGHT_MID, 12, 0);
     _progress_bar->updateValue(21);
     _progress_bar->setBgRadius(4);
     _progress_bar->setIndicatorRadius(4);
@@ -41,16 +41,16 @@ ModuleDetailPulseDialog::ModuleDetailPulseDialog(const int progress, const int s
     _progress_bar->setMainColor(ThemeColor(CLR_SURFACE_CONTAINER_LOWEST));
     _progress_bar->setIndicatorColor(ThemeColor(CLR_PROGRESS_NORMAL_FILL));
 
-    _status_label = std::make_shared<ConsumeText>(lvTr("panel_resin_remaining"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24);
+    _status_label = std::make_shared<LvText>(lvTr("panel_resin_remaining"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), LvText::FontSize24);
     _status_label->setPos(24, 82 + 32 + 15);
 
-    _status_value_label = std::make_shared<ConsumeText>("", ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24);
-    // _status_value_label = std::make_shared<ConsumeText>(lvTr("empty_info"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ConsumeText::FontSize24);
-    _status_value_label->setAligmentTo(*_status_label, LV_ALIGN_OUT_RIGHT_MID, 12, 0);
+    _status_value_label = std::make_shared<LvText>("", ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), LvText::FontSize24);
+    // _status_value_label = std::make_shared<LvText>(lvTr("empty_info"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), LvText::FontSize24);
+    _status_value_label->setAlignmentTo(*_status_label, LV_ALIGN_OUT_RIGHT_MID, 12, 0);
 
     _close_button = std::make_shared<RoundedButton>(48, 48, RoundedButton::ColorStyle::Gray, "", "image/32x32/x_close.png", _dialog_bg_item.get());
     _close_button->setRadius(24);
-    _close_button->setAligment(LV_ALIGN_BOTTOM_MID, 0, -20);
+    _close_button->setAlignment(LV_ALIGN_BOTTOM_MID, 0, -20);
     _close_button->setOnClickedListener([this]() {
         LOG_DEBUG() << "close mod detail dialog";
         this->close();

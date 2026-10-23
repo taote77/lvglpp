@@ -85,7 +85,7 @@ void GameActivity::init()
         _game_state.direction = LV_DIR_BOTTOM;
     });
 
-    _canvas = std::make_shared<widgets::BaseItem>(this->getRoot());
+    _canvas = std::make_shared<widgets::Widget>(this->getRoot());
     _canvas->setSize(600, 480);
     _canvas->setPos(100, 0);
 
@@ -237,7 +237,7 @@ void GameActivity::move()
 
 void GameActivity::updateFrame()
 {
-    auto parent = _canvas->getLvglItem();
+    auto parent = _canvas->lvObj();
     lv_obj_clean(parent); // 删除所有子对象
 
     if (!_game_state.exist_food)
@@ -246,7 +246,7 @@ void GameActivity::updateFrame()
         _game_state.exist_food = true;
     }
 
-    auto box = std::make_shared<widgets::BaseItem>(_canvas.get());
+    auto box = std::make_shared<widgets::Widget>(_canvas.get());
     box->setSize(box_length, box_length);
     box->setPos(_game_state.food.x * box_length, _game_state.food.y * box_length);
     box->setBgColor(0x00ff00);
@@ -268,7 +268,7 @@ void GameActivity::updateFrame()
     bool head{true};
     for (auto &point : _game_state.body_indexs)
     {
-        auto box = std::make_shared<widgets::BaseItem>(_canvas.get());
+        auto box = std::make_shared<widgets::Widget>(_canvas.get());
         box->setSize(box_length, box_length);
         box->setPos(point.x * box_length, point.y * box_length);
         box->setBgColor(0x000000);

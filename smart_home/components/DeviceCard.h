@@ -1,7 +1,7 @@
 #ifndef SMART_HOME_DEVICE_CARD_H
 #define SMART_HOME_DEVICE_CARD_H
 
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 #include "core/widgets/LvText.h"
 #include "core/widgets/SwitchButton.h"
 #include <functional>
@@ -13,11 +13,11 @@ namespace w = ::lvglpp::widgets;
 namespace lvglpp::ui::widgets {
 
 /// A card showing a smart device with icon, name, status, and toggle
-class DeviceCard : public w::BaseItem
+class DeviceCard : public w::Widget
 {
 public:
     DeviceCard(const std::string &name, const std::string &iconText,
-               bool initialState, w::BaseItem *parent = nullptr);
+               bool initialState, w::Widget *parent = nullptr);
 
     void setOn(bool on);
     bool isOn() const { return _on; }
@@ -32,7 +32,7 @@ private:
     bool _on = false;
     std::function<void(bool)> _toggleCb;
 
-    std::unique_ptr<w::BaseItem>        _iconArea;
+    std::unique_ptr<w::Widget>        _iconArea;
     std::unique_ptr<w::LvText>          _iconLabel;
     std::unique_ptr<w::LvText>          _nameLabel;
     std::unique_ptr<w::LvText>          _subtitleLabel;

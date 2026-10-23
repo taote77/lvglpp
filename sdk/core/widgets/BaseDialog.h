@@ -1,7 +1,7 @@
 #ifndef LVGLPP_BASEDIALOG_H
 #define LVGLPP_BASEDIALOG_H
 
-#include "BaseItem.h"
+#include "Widget.h"
 #include "core/base/Connection.h"
 #include <cstdint>
 #include <memory>
@@ -21,7 +21,7 @@ public:
 
     void setOnClicked(const std::function<void()> &func)
     {
-        background_item_ptr_->setEnable(true);
+        background_item_ptr_->setEnabled(true);
         background_item_ptr_->setOnClickedListener(func);
     }
 
@@ -31,11 +31,11 @@ public:
     }
 
 protected:
-    BaseItem *getRoot() const;
+    Widget *getRoot() const;
     virtual ~BaseDialog();
 
 private:
-    std::unique_ptr<BaseItem> background_item_ptr_;
+    std::unique_ptr<Widget> background_item_ptr_;
     std::uint64_t             focus_scope_ = 0;
     core::ScopedConnection    config_connection_;
 };

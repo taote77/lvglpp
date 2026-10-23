@@ -66,7 +66,7 @@ void PanelResinBottle::updateBottleInfo(const std::string &material, const int32
     // _slots_ProMachine = page::DataCenter::sigProMachine.connect([this](bool is_pro) { _is_pro = is_pro; });
 }
 
-PanelResinBottle::PanelResinBottle(BaseItem *parent) : BaseItem(parent)
+PanelResinBottle::PanelResinBottle(Widget *parent) : Widget(parent)
 {
     this->setSize(331, 115);
     this->setOpacity(1);
@@ -80,7 +80,7 @@ PanelResinBottle::PanelResinBottle(BaseItem *parent) : BaseItem(parent)
     _icon_bottle = std::make_shared<widgets::Image>("image/36x36/mod_resin_bottle.png", this);
     _icon_bottle->setPos(lv_coord_t(mod_item_edge_x), lv_coord_t(18));
 
-    _lbl_material_name = std::make_shared<ConsumeText>("", CLR_ON_SURFACE, this, ConsumeText::FontSize22Bold);
+    _lbl_material_name = std::make_shared<LvText>("", CLR_ON_SURFACE, this, LvText::FontSize22Bold);
 
     if (sys::Application::getLanguageType() == sys::Application::LanguageType::English)
     {
@@ -90,18 +90,18 @@ PanelResinBottle::PanelResinBottle(BaseItem *parent) : BaseItem(parent)
         _lbl_material_name->setPos(lv_coord_t(mod_item_edge_x + offset), lv_coord_t(18));
     }
 
-    // lv_obj_set_width(_lbl_material_name->getLvglItem(), 270);
+    // lv_obj_set_width(_lbl_material_name->lvObj(), 270);
     // _lbl_material_name->setLongMode(1);
     constexpr int panel_text_max_length{270};
     _lbl_material_name->setWidth(panel_text_max_length);
     // _lbl_material_name->setPos(mod_item_edge_x + offset, 18);
 
-    _lbl_bottle_status = std::make_shared<ConsumeText>("", CLR_ON_SURFACE, this, ConsumeText::FontSize22);
-    _lbl_bottle_status->setAligment(LV_ALIGN_BOTTOM_LEFT, 16, -12);
+    _lbl_bottle_status = std::make_shared<LvText>("", CLR_ON_SURFACE, this, LvText::FontSize22);
+    _lbl_bottle_status->setAlignment(LV_ALIGN_BOTTOM_LEFT, 16, -12);
 
     _touch_area = std::make_shared<widgets::MouseArea>(this);
     _touch_area->setSize(150, 92);
-    _touch_area->setAligment(LV_ALIGN_RIGHT_MID, 0, 0);
+    _touch_area->setAlignment(LV_ALIGN_RIGHT_MID, 0, 0);
 
     _touch_area->setOnClickedListener([this]() {
         LOG_DEBUG() << "  filling mod detail";
@@ -121,9 +121,9 @@ PanelResinBottle::PanelResinBottle(BaseItem *parent) : BaseItem(parent)
 
     _arrow_right = std::make_shared<widgets::Image>("image/32x32/arrow_right.png", this);
     _arrow_right->setSize(32, 32);
-    _arrow_right->setAligment(LV_ALIGN_BOTTOM_RIGHT, -16, -15);
+    _arrow_right->setAlignment(LV_ALIGN_BOTTOM_RIGHT, -16, -15);
 
-    static auto createProgressBar = [](BaseItem *parent) -> std::shared_ptr<wrapper::widgets::ProgressBar> {
+    static auto createProgressBar = [](Widget *parent) -> std::shared_ptr<wrapper::widgets::ProgressBar> {
         auto progress = std::make_shared<wrapper::widgets::ProgressBar>(parent, 120, 20, 0, 100, 0);
         progress->setBgRadius(4);
         progress->setIndicatorRadius(4);

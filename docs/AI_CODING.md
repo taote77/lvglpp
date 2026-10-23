@@ -14,7 +14,7 @@ The project root has:
 - test/ — test app
 
 Key architectural patterns:
-1. Every widget inherits BaseItem and takes tools::LvObjFactory::createXxx as Creator fn
+1. Every widget inherits Widget and takes tools::LvObjFactory::createXxx as Creator fn
 2. Activity lifecycle: onCreate (build UI) → onResume (show) → onPause (hide) → onDestroy
 3. Navigation: StackView::getInstance().pushView/popView
 4. Singleton: static T& getInstance() { static T inst; return inst; }
@@ -34,7 +34,7 @@ Rules:
 - Do NOT add new Boost dependencies — use C++17 std:: equivalents
 - Add modern alias (using ModernName = ClassName;) for new widgets
 - All widgets .cpp files that use LvObjFactory need #include "core/base/LvObjFactory.h"
-- Register events through BaseItem::onClicked/onKey/addLvglEventHandler, never raw callbacks with `this`
+- Register events through Widget::onClicked/onKey/addLvglEventHandler, never raw callbacks with `this`
 - Callback-bearing widgets must outlive their callbacks (member or widgets::WidgetStore)
 ```
 
@@ -43,7 +43,7 @@ Rules:
 ### Add a new widget
 
 ```
-Add a new widget class [ClassName] in sdk/core/widgets/ that inherits BaseItem.
+Add a new widget class [ClassName] in sdk/core/widgets/ that inherits Widget.
 It should:
 - Take [params] in constructor
 - Use tools::LvObjFactory::createXxx as the Creator function
@@ -108,15 +108,15 @@ Fix: Use static_cast to resolve overloaded method:
   static_cast<void (Widget::*)(int, Enum)>(&Widget::method)
 ```
 
-### "BaseItem::ItemType has not been declared"
+### "Widget::ItemType has not been declared"
 ```
-Fix: Replace BaseItem(BaseItem::Type, parent) with
-  BaseItem(tools::LvObjFactory::createXxx, parent)
+Fix: Replace Widget(Widget::Type, parent) with
+  Widget(tools::LvObjFactory::createXxx, parent)
 ```
 
 ### Double-free in Activity
 ```
-Fix: Use std::unique_ptr<BaseItem> for _root_win,
+Fix: Use std::unique_ptr<Widget> for _root_win,
   call .reset() in both destructor and onDestroy()
 ```
 
@@ -128,7 +128,7 @@ Fix: keep callback-bearing widgets in a member or widgets::WidgetStore.
 
 ### Calling a method on a widget whose parent tree was deleted
 ```
-All BaseItem methods are safe no-ops when isAttached() == false.
+All Widget methods are safe no-ops when isAttached() == false.
 Use onDestroyed() to observe deletion instead of keeping raw pointers.
 ```
 
@@ -139,8 +139,8 @@ The framework includes built-in support for AI agents to inspect and control the
 ```cpp
 // Tree navigation
 uint32_t count = item->childCount();
-BaseItem *child = item->childAt(0);
-BaseItem *found = item->findChild("name");
+Widget *child = item->childAt(0);
+Widget *found = item->findChild("name");
 auto allButtons = item->findChildrenByType<PushButton>();
 
 // State inspection

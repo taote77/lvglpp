@@ -3,7 +3,7 @@
 
 namespace wrapper::widgets
 {
-    StringEditor::StringEditor(BaseItem *parent) : BaseItem(parent),
+    StringEditor::StringEditor(Widget *parent) : Widget(parent),
                                                    max_len_(-1)
     {
     }

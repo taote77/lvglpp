@@ -1,17 +1,17 @@
 #ifndef LVGLPP_GIFIMAGE_H
 #define LVGLPP_GIFIMAGE_H
 
-#include "BaseItem.h"
+#include "Widget.h"
 
 #include <string>
 
 namespace lvglpp::widgets {
 
-class GifImage : public BaseItem
+class GifImage : public Widget
 {
 public:
     /// Load a GIF from the application assets (e.g. "gif/bird.gif").
-    explicit GifImage(const std::string &assetPath, BaseItem *parent = nullptr);
+    explicit GifImage(const std::string &assetPath, Widget *parent = nullptr);
 
     void setAsset(const std::string &assetPath);
 

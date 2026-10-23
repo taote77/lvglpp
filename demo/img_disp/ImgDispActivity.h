@@ -12,11 +12,11 @@
 
 using namespace lvglpp;
 
-class Widget : public ::sys::BaseActivity
+class ImgDispActivity : public ::sys::BaseActivity
 {
 public:
-    explicit Widget();
-    ~Widget();
+    explicit ImgDispActivity();
+    ~ImgDispActivity();
 
 protected:
     void onCreate(std::any arg) override;

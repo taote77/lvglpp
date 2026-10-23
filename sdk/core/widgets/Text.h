@@ -10,7 +10,7 @@ class Text : public LvText
 public:
     Text(const std::string         &strMsg,                        //
          uint32_t                   clr,                           //
-         lvglpp::widgets::BaseItem *parent,                        //
+         lvglpp::widgets::Widget *parent,                        //
          TextStyle                  style = TextStyle::FontSize20, //
          FontType                   type  = FontType::Auto);
 

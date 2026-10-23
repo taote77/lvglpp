@@ -2,7 +2,7 @@
 #ifndef MODULE_COLLECTOR_H
 #define MODULE_COLLECTOR_H
 
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 #include "module_panel/PanelHeater.h"
 #include "module_panel/PanelLCD.h"
 #include "module_panel/PanelPulseMod.h"
@@ -13,10 +13,10 @@
 namespace lvglpp::ui::page {
 using namespace widgets;
 
-class ModuleCollector : public BaseItem
+class ModuleCollector : public Widget
 {
 public:
-    explicit ModuleCollector(BaseItem *parent = nullptr);
+    explicit ModuleCollector(Widget *parent = nullptr);
 
     ~ModuleCollector();
 

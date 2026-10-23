@@ -1,7 +1,7 @@
 #ifndef LVGLPP_PAGEHOST_H
 #define LVGLPP_PAGEHOST_H
 
-#include "BaseItem.h"
+#include "Widget.h"
 #include "WidgetStore.h"
 
 #include <cstdint>
@@ -28,10 +28,10 @@ class PageContext
 public:
     using LifecycleHandler = std::function<void()>;
 
-    explicit PageContext(BaseItem *root) : root_(root)
+    explicit PageContext(Widget *root) : root_(root)
     {}
 
-    BaseItem *root() const
+    Widget *root() const
     {
         return root_;
     }
@@ -73,7 +73,7 @@ private:
     void invokeDestroy();
     void clearWidgets();
 
-    BaseItem        *root_ = nullptr;
+    Widget        *root_ = nullptr;
     WidgetStore      widgets_;
     LifecycleHandler show_handler_;
     LifecycleHandler hide_handler_;
@@ -91,7 +91,7 @@ private:
  *
  * UI-thread only.
  */
-class PageHost : public BaseItem
+class PageHost : public Widget
 {
 public:
     using Builder = std::function<void(PageContext &)>;
@@ -102,7 +102,7 @@ public:
         MaxCached,
     };
 
-    explicit PageHost(BaseItem *parent = nullptr);
+    explicit PageHost(Widget *parent = nullptr);
 
     ~PageHost() override;
 
@@ -125,12 +125,12 @@ public:
     bool show(int index);
 
     /// Built page or nullptr.
-    BaseItem *page(int index) const;
+    Widget *page(int index) const;
 
     /// Build a page without showing it. Returns nullptr for an invalid index.
-    BaseItem *ensurePage(int index);
+    Widget *ensurePage(int index);
 
-    BaseItem *currentPage() const;
+    Widget *currentPage() const;
 
     bool isBuilt(int index) const;
 
@@ -141,7 +141,7 @@ public:
 
     void setCachePolicy(CachePolicy policy, int maxCached = 0);
 
-    void setOnPageChanged(std::function<void(int, BaseItem *)> handler)
+    void setOnPageChanged(std::function<void(int, Widget *)> handler)
     {
         page_changed_ = std::move(handler);
     }
@@ -152,7 +152,7 @@ protected:
 private:
     struct Page;
 
-    BaseItem *buildPage(int index);
+    Widget *buildPage(int index);
 
     void destroyPage(int index);
 
@@ -168,7 +168,7 @@ private:
 
     int max_cached_ = 0;
 
-    std::function<void(int, BaseItem *)> page_changed_;
+    std::function<void(int, Widget *)> page_changed_;
 };
 
 } // namespace lvglpp::widgets

@@ -1,20 +1,20 @@
 #ifndef LVGLPP_TABVIEW_H
 #define LVGLPP_TABVIEW_H
 
-#include "BaseItem.h"
+#include "Widget.h"
 #include <memory>
 #include <string>
 
 namespace lvglpp::widgets {
 
-class TabView : public BaseItem
+class TabView : public Widget
 {
 public:
-    explicit TabView(BaseItem *parent = nullptr);
+    explicit TabView(Widget *parent = nullptr);
 
     /// Add a tab with the given name. The returned wrapper owns nothing; keep
     /// it alive if you attach callbacks/content to the page.
-    std::unique_ptr<BaseItem> addTab(const std::string &name);
+    std::unique_ptr<Widget> addTab(const std::string &name);
 
     /// Rename a tab
     void renameTab(uint32_t tabIdx, const std::string &newName);

@@ -1,7 +1,7 @@
 #ifndef NOTICE_DELEGATE_H
 #define NOTICE_DELEGATE_H
 
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 #include "core/widgets/LvText.h"
 #include "core/widgets/Image.h"
 #include "core/widgets/ListViewDelegate.hpp"
@@ -30,17 +30,17 @@ struct NoticeData {
 class NoticeDelegate : public ListViewDelegate<NoticeData>
 {
 public:
-    explicit NoticeDelegate(int index, BaseItem *parent = nullptr);
+    explicit NoticeDelegate(int index, Widget *parent = nullptr);
 
 protected:
     void draw(const NoticeData &data) override;
 
 private:
-    std::shared_ptr<BaseItem> _bg_item;
+    std::shared_ptr<Widget> _bg_item;
 
     std::shared_ptr<widgets::Image> _head_icon;
-    std::shared_ptr<ConsumeText>    _head_date_label;
-    std::shared_ptr<ConsumeText>    _msg_label;
+    std::shared_ptr<LvText>    _head_date_label;
+    std::shared_ptr<LvText>    _msg_label;
 };
 
 } // namespace lvglpp::ui::lDelegate

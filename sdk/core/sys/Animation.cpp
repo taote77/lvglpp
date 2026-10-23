@@ -11,7 +11,7 @@ struct Animation::Impl {
     std::function<void()> start_cb;
     std::function<void()> completed_cb;
     std::function<void()> deleted_cb;
-    widgets::BaseItem   *target = nullptr;
+    widgets::Widget   *target = nullptr;
     core::ScopedConnection target_connection;
     bool                 started  = false;
     bool                 running  = false;
@@ -49,7 +49,7 @@ Animation::Animation(Animation &&other) noexcept = default;
 
 Animation &Animation::operator=(Animation &&other) noexcept = default;
 
-Animation &Animation::setTarget(widgets::BaseItem *target)
+Animation &Animation::setTarget(widgets::Widget *target)
 {
     if (impl_->target == target)
     {

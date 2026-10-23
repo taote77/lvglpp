@@ -1,7 +1,7 @@
 #ifndef LVGLPP_EVENT_RECORDER_H
 #define LVGLPP_EVENT_RECORDER_H
 
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 #include <chrono>
 #include <fstream>
 #include <functional>
@@ -14,7 +14,7 @@ namespace lvglpp::sys {
 /// A single recorded UI event
 struct RecordedEvent {
     std::string type;       // "click", "press", "release", "value_change", "scroll"
-    std::string widgetName; // BaseItem::name()
+    std::string widgetName; // Widget::name()
     std::string widgetType; // typeid(*item).name()
     int x = 0, y = 0;      // screen coordinates
     int value = 0;         // for value_change events
@@ -39,7 +39,7 @@ public:
     bool isRecording() const { return _recording; }
 
     /// Record an event manually (call from LVGL event callbacks)
-    void record(const std::string &type, widgets::BaseItem *item, int value = 0);
+    void record(const std::string &type, widgets::Widget *item, int value = 0);
 
     /// Get all recorded events
     const std::vector<RecordedEvent> &events() const { return _events; }

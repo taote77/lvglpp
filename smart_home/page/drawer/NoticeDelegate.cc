@@ -6,7 +6,7 @@ using namespace lvglpp;
 using namespace form;
 using namespace form::design;
 
-NoticeDelegate::NoticeDelegate(int index, BaseItem *parent) : ListViewDelegate(index, parent)
+NoticeDelegate::NoticeDelegate(int index, Widget *parent) : ListViewDelegate(index, parent)
 {}
 
 void NoticeDelegate::draw(const NoticeData &data)
@@ -15,7 +15,7 @@ void NoticeDelegate::draw(const NoticeData &data)
     constexpr short msg_height = 94;
     setSize(msg_width, msg_height);
 
-    _bg_item = std::make_shared<BaseItem>(this);
+    _bg_item = std::make_shared<Widget>(this);
     _bg_item->setSize(msg_width - 10, msg_height);
     _bg_item->setPos(0, 0);
     _bg_item->setRadius(8);
@@ -33,11 +33,11 @@ void NoticeDelegate::draw(const NoticeData &data)
     }
     _bg_item->setOpacity(1);
 
-    _head_date_label = std::make_shared<ConsumeText>("2022-04-25 10:31", CLR_ON_SURFACE, _bg_item.get(), ConsumeText::FontSize20);
+    _head_date_label = std::make_shared<LvText>("2022-04-25 10:31", CLR_ON_SURFACE, _bg_item.get(), LvText::FontSize20);
 
     _head_date_label->setPos(20, 10);
 
-    _msg_label = std::make_shared<ConsumeText>(data.message, CLR_ON_SURFACE, _bg_item.get(), ConsumeText::FontSize24);
+    _msg_label = std::make_shared<LvText>(data.message, CLR_ON_SURFACE, _bg_item.get(), LvText::FontSize24);
     _msg_label->setBgColor(design::ThemeColor(CLR_ON_SECONDARY));
     _msg_label->setPos(20, 30);
 }

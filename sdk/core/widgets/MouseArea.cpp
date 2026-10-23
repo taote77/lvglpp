@@ -1,7 +1,7 @@
 #include "MouseArea.h"
 
 namespace lvglpp::widgets {
-MouseArea::MouseArea(BaseItem *parent) : BaseItem(parent), pressing_cb_(nullptr), released_cb_(nullptr)
+MouseArea::MouseArea(Widget *parent) : Widget(parent), pressing_cb_(nullptr), released_cb_(nullptr)
 {
     this->setOpacity(0);
     addLvglEventHandler(

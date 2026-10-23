@@ -36,7 +36,7 @@ cmake -S . -B build-static -DLVGLPP_ENABLE_ROTATION=OFF -DLVGLPP_ENABLE_RTL=OFF
 
 | 头文件 | 内容 |
 |---|---|
-| `core/widgets/BaseItem.h` | 所有控件的基类 |
+| `core/widgets/Widget.h` | 所有控件的基类 |
 | `core/widgets/WidgetStore.h` | 长生命周期包装对象容器 |
 | `core/base/Connection.h` | 事件连接 token |
 | `core/widgets/KeyEvent.h` | 按键事件类型 |
@@ -52,12 +52,12 @@ cmake -S . -B build-static -DLVGLPP_ENABLE_ROTATION=OFF -DLVGLPP_ENABLE_RTL=OFF
 ### 2.1 基本规则
 
 - **LVGL 父对象拥有子 `lv_obj_t`**。
-- `BaseItem` 包装对象是子对象的**非拥有句柄**：子包装对象可以在任意时刻销毁，LVGL 对象仍由父级持有。
+- `Widget` 包装对象是子对象的**非拥有句柄**：子包装对象可以在任意时刻销毁，LVGL 对象仍由父级持有。
 - 只有以下包装对象在析构时删除自己的 `lv_obj`：
   - 没有逻辑父对象的顶层对象（Activity root）；
   - creator 实际把对象挂到 `lv_layer_top()/lv_layer_sys()` 的层对象（`BaseDialog` 根、`ToastImpl` 等）；
   - 通过 `ownsLvglObject()` 可查询是否为拥有者。
-- `BaseItem` 禁止拷贝与移动。
+- `Widget` 禁止拷贝与移动。
 
 ```cpp
 // 合法且常见：局部包装对象只用于构建 UI
@@ -102,8 +102,8 @@ ok->onClicked([] { /* ... */ });
 ### 2.4 包装已存在的对象（adoption）
 
 ```cpp
-auto *page = new widgets::BaseItem(
-    widgets::BaseItem::AdoptExistingTag::Adopt,
+auto *page = new widgets::Widget(
+    widgets::Widget::AdoptExistingTag::Adopt,
     lv_tabview_add_tab(tabview, "Tab"), tabview, false);
 ```
 
@@ -117,7 +117,7 @@ auto *page = new widgets::BaseItem(
 
 ## 3. 事件与信号
 
-### 3.1 BaseItem 事件
+### 3.1 Widget 事件
 
 ```cpp
 auto conn = button->onClicked([] { /* ... */ });
@@ -139,7 +139,7 @@ item->addLvglEventHandler(myCallback, LV_EVENT_VALUE_CHANGED, context);
 item->addChildLvglEventHandler(childObj, cb, LV_EVENT_CLICKED, context);
 ```
 
-回调会随包装对象析构自动移除。请勿再直接对由 `BaseItem` 管理的对象调用 `lv_obj_add_event_cb(..., this)`，否则可能在包装对象销毁后悬垂。
+回调会随包装对象析构自动移除。请勿再直接对由 `Widget` 管理的对象调用 `lv_obj_add_event_cb(..., this)`，否则可能在包装对象销毁后悬垂。
 
 ### 3.3 Object 信号
 
@@ -241,7 +241,7 @@ item->applyStyle(card);
 
 - `Style` 是共享句柄，拷贝共享同一个 `lv_style_t`。
 - **首次 apply 后不可变**；继续调用 setter 会记录错误并 no-op。派生变体请用 `clone()`。
-- `BaseItem::applyStyle()` 会把 Style 保存在对象 keepalive 中，因此栈上 Style 离开作用域也安全。
+- `Widget::applyStyle()` 会把 Style 保存在对象 keepalive 中，因此栈上 Style 离开作用域也安全。
 - `removeStyle(style, selector)` 移除并释放对应 keepalive。
 
 ### 5.2 Theme
@@ -315,10 +315,10 @@ bool portrait = cfg.isPortrait();
 
 - 所有 `request*` 都是线程安全的原子请求；`Application::exec()` 在 `lv_timer_handler()` 前调用 `UiConfig::processPending()`，所以不要在 LVGL 回调里同步重建 UI。
 - `StackView` 把配置变更分发给每个 `Activity::onConfigurationChanged`；`BaseActivity` 调整 root 尺寸，具体页面通过 `PageHost::releaseAll()+show(currentIndex)` 重建。当前页索引保留，滚动位置和打开的对话框不保留。
-- `BaseItem::setAlignment/setAlignmentTo/setPos` 会按 RTL 镜像显式 LEFT/RIGHT/OUT_* 和 x 偏移。**flex/grid 的 RTL 反向由 LVGL 自动完成，不要手动镜像**。`setMirrorInRtl(false)` 可关闭某个控件的镜像；`LvChart` 固定 LTR。
+- `Widget::setAlignment/setAlignmentTo/setPos` 会按 RTL 镜像显式 LEFT/RIGHT/OUT_* 和 x 偏移。**flex/grid 的 RTL 反向由 LVGL 自动完成，不要手动镜像**。`setMirrorInRtl(false)` 可关闭某个控件的镜像；`LvChart` 固定 LTR。
 - 方向图片使用 `Image::setRtlAsset(path)`；LVGL 9.3 不支持负 scale 镜像。
 - 启动/调试环境变量：`LVGLPP_ORIENTATION=landscape|portrait|reverse-landscape|reverse-portrait`、`LVGLPP_RTL=1`、`LVGLPP_PANEL_ROTATION_OFFSET=90`、`LVGLPP_SDL_FIXED_PANEL=1`、`LVGLPP_DISABLE_PANEL_ROTATION=1`。smart_home 还支持 `1/2/3/4` 切换四方向、`R` 切换 RTL。
-- 静态产品零开销：`-DLVGLPP_ENABLE_ROTATION=OFF -DLVGLPP_ENABLE_RTL=OFF`，相关代码、每控件镜像状态、矩阵变换和每帧 `processPending` 调用都会在编译期移除。
+- 静态产品零开销：`-DLVGLPP_ENABLE_ROTATION=OFF -DLVGLPP_ENABLE_RTL=OFF`，旋转/RTL 代码、每控件镜像状态和矩阵变换都会在编译期移除；`processPending()` 仍保留（每帧一次原子读取），用于语言切换时的页面重建。
 - 平台：FBDEV 用 PARTIAL 软件旋转；SDL 默认通过窗口 reshape 模拟横竖屏（fixed-panel 仅 0/180）；DRM 用 DIRECT + matrix 软件旋转，CPU 成本需实测。`LV_DRAW_TRANSFORM_USE_MATRIX` 由 rotation 开关自动定义。
 
 ---
@@ -326,6 +326,20 @@ bool portrait = cfg.isPortrait();
 ## 7. 控件
 
 原有控件：`LvText/Label`、`PushButton/Button`、`Image`、`Base64Image`、`GifImage`、`LottieCanvas`、`QrCode`、`Video`、`Arc`、`ProgressBar/Bar`、`Slider`、`SpinBox`、`CheckBox`、`SwitchButton`、`Dropdown`、`Roller`、`TextArea`、`Keyboard`、`Led`、`Line`、`LvChart/Chart`、`Table`、`Calendar`、`TabView`、`ListView`、`PageView`、`PageIndicator`、`Loader`、`MouseArea`、`BaseDialog`、`Toast` 等。
+
+所有控件都继承 `widgets::Widget`（原 `BaseItem`）。常用现代命名：
+
+```cpp
+widget->lvObj();                 // 底层 lv_obj_t*（原 getLvglItem）
+widget->setEnabled(false);       // 只切换 LV_STATE_DISABLED，不再隐式改 CLICKABLE
+widget->isEnabled();             // 原 getEnable
+widget->isVisible();             // 原 getVisible
+widget->setAlignment(...);       // 原拼写 setAligment
+```
+
+旧名称仍以 `[[deprecated]]` inline 转发保留在头文件中，新代码请使用现代名称。`Image` 是例外：`setEnabled(true)` 会把它变成可点击目标（返回箭头等既有用法因此保持有效）。
+
+`LvText::setMaxLen(n)` 按“显示字符预算”工作：`n > 3` 时中间插入 `...`，`n <= 3` 时只保留前 n 个字符；`LvText::setLongMode(maxWidth, AutoEllipsis|MiddleEllipsis)` 按像素宽度逐行省略，二者都按 UTF-8 字符簇切分，不会拆开中文或组合字符。`setLongMode(lv_label_long_mode_t)` 直接设置 LVGL 原生 long mode。启用 recolor 标记时自动省略会关闭，避免截断 `#RRGGBB` 标记。
 
 新增控件：
 
@@ -380,7 +394,7 @@ tools::ImageManager::setCacheLimits(16, 32ull * 1024 * 1024);
 tools::ImageHandle handle = tools::ImageManager::load("image/20x20/icon_model20.png");
 lv_image_set_src(obj, handle->descriptor());
 // handle 必须至少活到 lv_obj 不再渲染该图；Image 控件会自动
-// 把它放进 BaseItem 注册表 keepalive。
+// 把它放进 Widget 注册表 keepalive。
 
 tools::ImageManager::prefetch(std::vector<std::string>{"image/a.png", "image/b.png"});
 tools::ImageManager::waitForPrefetch();   // 测试/退出时等待队列排空
@@ -424,7 +438,7 @@ anim.setTarget(&widget)
     .setDuration(300)
     .setValues(0, 100)
     .setRepeatCount(LV_ANIM_REPEAT_INFINITE)
-    .setExecCallback([](widgets::BaseItem *target, int32_t value) {
+    .setExecCallback([](widgets::Widget *target, int32_t value) {
         target->setOpacity(value / 100.0);
     })
     .start();
@@ -450,7 +464,7 @@ anim.setTarget(&widget)
 
 ## 10. 迁移注意事项
 
-1. `BaseItem`/`Object` 已禁止拷贝与移动。
+1. `Widget`/`Object` 已禁止拷贝与移动。
 2. `getParent()` 返回最近存活包装对象祖先，而不是构造时缓存的指针。
 3. `getWidth()/getHeight()` 返回实时尺寸（带请求尺寸回退）。
 4. 包装对象析构后其事件回调失效；带回调的控件请放入成员或 `WidgetStore`。
@@ -525,7 +539,7 @@ smart_home 已迁移到 `PageHost`：启动时只构建 Home 页，其余四个 
 
 ### 11.3 TabView / PageView
 
-- `TabView::addTab(name)` 返回 `std::unique_ptr<BaseItem>`：包装对象是页面内容的非拥有句柄，控件本身由 TabView 持有；`TabView::content(idx)` 返回对应页面 `lv_obj_t*`。
+- `TabView::addTab(name)` 返回 `std::unique_ptr<Widget>`：包装对象是页面内容的非拥有句柄，控件本身由 TabView 持有；`TabView::content(idx)` 返回对应页面 `lv_obj_t*`。
 - `PageView` 的滚动索引有边界与宽度保护；挂起的异步页面创建会在包装对象销毁或 lv_obj 删除时取消。
 - `ListView`/`PageView` 目前只增不回收 delegate；数据量很大时应实现窗口化复用，避免隐藏行持续占用内存。
 

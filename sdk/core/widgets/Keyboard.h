@@ -1,16 +1,16 @@
 #ifndef LVGLPP_KEYBOARD_H
 #define LVGLPP_KEYBOARD_H
 
-#include "BaseItem.h"
+#include "Widget.h"
 
 namespace lvglpp::widgets {
 
 class TextArea; // forward declaration
 
-class Keyboard : public BaseItem
+class Keyboard : public Widget
 {
 public:
-    explicit Keyboard(BaseItem *parent = nullptr);
+    explicit Keyboard(Widget *parent = nullptr);
 
     /// Attach this keyboard to a TextArea (shows/hides automatically)
     void attach(TextArea *textarea);

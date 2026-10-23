@@ -7,8 +7,8 @@ namespace lvglpp::ui::widgets {
 
 using namespace form::design;
 
-LightWidget::LightWidget(const std::string &lightName, w::BaseItem *parent)
-    : w::BaseItem(parent)
+LightWidget::LightWidget(const std::string &lightName, w::Widget *parent)
+    : w::Widget(parent)
 {
     setSize(360, 160);
     setBgColor(CLR_SURFACE_CONTAINER);
@@ -16,11 +16,11 @@ LightWidget::LightWidget(const std::string &lightName, w::BaseItem *parent)
 
     // Name
     _nameLabel = std::make_unique<w::LvText>(lightName, CLR_ON_SURFACE, this, w::LvText::FontSize24Bold);
-    _nameLabel->setAligment(LV_ALIGN_TOP_LEFT, 12, 12);
+    _nameLabel->setAlignment(LV_ALIGN_TOP_LEFT, 12, 12);
 
     // Power toggle
     _powerBtn = std::make_unique<w::PushButton>(60, 36, w::PushButton::Dark, lvTr("common_off"), this);
-    _powerBtn->setAligment(LV_ALIGN_TOP_RIGHT, -12, 12);
+    _powerBtn->setAlignment(LV_ALIGN_TOP_RIGHT, -12, 12);
     _powerBtn->setOnClickedListener([this]() {
         _on = !_on;
         _updateUI();
@@ -31,7 +31,7 @@ LightWidget::LightWidget(const std::string &lightName, w::BaseItem *parent)
     _brightnessSlider->setSize(320, 20);
     _brightnessSlider->setRange(0, 100);
     _brightnessSlider->setValue(_brightness);
-    _brightnessSlider->setAligment(LV_ALIGN_CENTER, 0, -10);
+    _brightnessSlider->setAlignment(LV_ALIGN_CENTER, 0, -10);
     _brightnessSlider->setOnClickedListener([this]() {
         _brightness = _brightnessSlider->value();
         _valueLabel->setText(lvTrFmt("common_percent", _brightness));
@@ -40,17 +40,17 @@ LightWidget::LightWidget(const std::string &lightName, w::BaseItem *parent)
 
     // Value label
     _valueLabel = std::make_unique<w::LvText>(lvTrFmt("common_percent", 100), CLR_ON_SURFACE_VARIANT_1, this, w::LvText::FontSize28Bold);
-    _valueLabel->setAligment(LV_ALIGN_CENTER, 0, 25);
+    _valueLabel->setAlignment(LV_ALIGN_CENTER, 0, 25);
 
     // Color presets
     _warmBtn = std::make_unique<w::PushButton>(70, 30, w::PushButton::Gray, lvTr("common_warm"), this);
-    _warmBtn->setAligment(LV_ALIGN_BOTTOM_LEFT, 12, -12);
+    _warmBtn->setAlignment(LV_ALIGN_BOTTOM_LEFT, 12, -12);
 
     _coolBtn = std::make_unique<w::PushButton>(70, 30, w::PushButton::Gray, lvTr("common_cool"), this);
-    _coolBtn->setAligment(LV_ALIGN_BOTTOM_LEFT, 90, -12);
+    _coolBtn->setAlignment(LV_ALIGN_BOTTOM_LEFT, 90, -12);
 
     _dayBtn = std::make_unique<w::PushButton>(70, 30, w::PushButton::Gray, lvTr("common_day"), this);
-    _dayBtn->setAligment(LV_ALIGN_BOTTOM_LEFT, 168, -12);
+    _dayBtn->setAlignment(LV_ALIGN_BOTTOM_LEFT, 168, -12);
 }
 
 void LightWidget::setBrightness(int percent) {

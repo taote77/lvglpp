@@ -3,14 +3,14 @@
 
 namespace lvglpp::widgets {
 
-Spinner::Spinner(BaseItem *parent) : BaseItem(tools::LvObjFactory::createLvglSpinner, parent)
+Spinner::Spinner(Widget *parent) : Widget(tools::LvObjFactory::createLvglSpinner, parent)
 {}
 
 Spinner &Spinner::setAnimParams(uint32_t durationMs, uint32_t arcAngle)
 {
-    if (getLvglItem() != nullptr)
+    if (lvObj() != nullptr)
     {
-        lv_spinner_set_anim_params(getLvglItem(), durationMs, arcAngle);
+        lv_spinner_set_anim_params(lvObj(), durationMs, arcAngle);
     }
     return *this;
 }

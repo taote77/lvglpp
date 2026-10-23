@@ -1,7 +1,7 @@
 #ifndef GROUP_CHECK_BUTTON_H
 #define GROUP_CHECK_BUTTON_H
 
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 #include "core/widgets/LvText.h"
 #include "core/widgets/Image.h"
 #include <memory>
@@ -9,11 +9,11 @@
 namespace wrapper::widgets {
 using namespace lvglpp::widgets;
 
-class SelectedItem : public BaseItem
+class SelectedItem : public Widget
 {
 public:
     enum State { UnCheck, Check };
-    explicit SelectedItem(const std::string &display, BaseItem *parent = nullptr);
+    explicit SelectedItem(const std::string &display, Widget *parent = nullptr);
 
     void updateState(State sta);
 
@@ -26,15 +26,15 @@ public:
     State getSelectedState() const { return getSlectedState(); }
 
 private:
-    std::shared_ptr<ConsumeText>    display_label_;
+    std::shared_ptr<LvText>    display_label_;
     std::shared_ptr<widgets::Image> icon_;
     State                           state_;
 };
 
-class GroupCheckButton : public BaseItem
+class GroupCheckButton : public Widget
 {
 public:
-    explicit GroupCheckButton(const std::string &txt1, const std::string &txt2, BaseItem *parent = nullptr);
+    explicit GroupCheckButton(const std::string &txt1, const std::string &txt2, Widget *parent = nullptr);
 
     void SelectItem1(bool selected);
 

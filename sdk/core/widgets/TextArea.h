@@ -1,15 +1,15 @@
 #ifndef LVGLPP_TEXTAREA_H
 #define LVGLPP_TEXTAREA_H
 
-#include "BaseItem.h"
+#include "Widget.h"
 #include <string>
 
 namespace lvglpp::widgets {
 
-class TextArea : public BaseItem
+class TextArea : public Widget
 {
 public:
-    explicit TextArea(BaseItem *parent = nullptr);
+    explicit TextArea(Widget *parent = nullptr);
 
     /// Set the text content
     void setText(const std::string &text);

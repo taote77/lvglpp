@@ -1,7 +1,7 @@
 #ifndef LVGLPP_AUTOMATION_CONTROLLER_H
 #define LVGLPP_AUTOMATION_CONTROLLER_H
 
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 #include <chrono>
 #include <functional>
 #include <string>
@@ -23,31 +23,31 @@ public:
     AutomationController &operator=(const AutomationController &) = delete;
 
     /// Simulate a click on the given widget
-    void click(widgets::BaseItem *item);
+    void click(widgets::Widget *item);
 
     /// Simulate a long press (ms duration)
-    void longPress(widgets::BaseItem *item, int durationMs = 500);
+    void longPress(widgets::Widget *item, int durationMs = 500);
 
     /// Set text on a text-based widget (LvText/Text/SpinBox)
-    void typeText(widgets::BaseItem *item, const std::string &text);
+    void typeText(widgets::Widget *item, const std::string &text);
 
     /// Scroll the widget to a position
-    void scrollTo(widgets::BaseItem *item, lv_coord_t x, lv_coord_t y);
+    void scrollTo(widgets::Widget *item, lv_coord_t x, lv_coord_t y);
 
     /// Scroll by delta
-    void scrollBy(widgets::BaseItem *item, lv_coord_t dx, lv_coord_t dy);
+    void scrollBy(widgets::Widget *item, lv_coord_t dx, lv_coord_t dy);
 
     /// Move to a screen coordinate and click (absolute position)
     void clickAt(lv_coord_t x, lv_coord_t y);
 
     /// Navigate to parent widget
-    widgets::BaseItem *goBack(widgets::BaseItem *current);
+    widgets::Widget *goBack(widgets::Widget *current);
 
     /// Get text content of a widget (if it has text)
-    std::string getText(widgets::BaseItem *item);
+    std::string getText(widgets::Widget *item);
 
     /// Find the widget at a given screen coordinate
-    widgets::BaseItem *hitTest(lv_coord_t x, lv_coord_t y);
+    widgets::Widget *hitTest(lv_coord_t x, lv_coord_t y);
 
 private:
     AutomationController() = default;

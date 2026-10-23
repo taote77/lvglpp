@@ -1,7 +1,7 @@
 #ifndef LVGLPP_WIDGETSTORE_H
 #define LVGLPP_WIDGETSTORE_H
 
-#include "BaseItem.h"
+#include "Widget.h"
 
 #include <cstddef>
 #include <memory>
@@ -14,7 +14,7 @@ namespace lvglpp::widgets {
  * Owns the C++ wrappers for a group of widgets whose lv_obj objects are owned
  * by the LVGL tree (or by another long-lived wrapper).
  *
- * Background: BaseItem wrappers are non-owning handles for child lv_obj
+ * Background: Widget wrappers are non-owning handles for child lv_obj
  * objects and event handlers are removed when the wrapper dies. Application
  * code that creates an interactive widget in a local scope must keep its
  * wrapper alive, otherwise the widget stays visible but becomes inert.
@@ -72,7 +72,7 @@ public:
     }
 
 private:
-    std::vector<std::unique_ptr<BaseItem>> items_;
+    std::vector<std::unique_ptr<Widget>> items_;
 };
 
 } // namespace lvglpp::widgets

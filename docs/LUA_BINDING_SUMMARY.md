@@ -10,7 +10,7 @@
 
 #### 头文件
 - **LvglLuaBind.h** - Lua 绑定核心类，管理 Lua 状态和绑定注册
-- **WidgetLuaBind.h** - BaseItem 及其子类的 Lua 绑定声明
+- **WidgetLuaBind.h** - Widget 及其子类的 Lua 绑定声明
 - **LuaUtils.h** - Lua 工具函数声明
 
 #### 实现文件
@@ -21,7 +21,7 @@
   - 管理 root 控件
 
 - **WidgetLuaBind.cpp** - Widget Lua 绑定实现
-  - 绑定 BaseItem 基类（通用方法）
+  - 绑定 Widget 基类（通用方法）
   - 绑定 LvText（文本控件）
   - 绑定 Image（图片控件）
   - 绑定 PushButton（按钮控件）
@@ -80,13 +80,14 @@
 
 ## 支持的控件
 
-### BaseItem（基础控件）
+### Widget（基础控件）
 所有控件的基础类，提供通用方法：
 - 位置：`set_pos(x, y)`, `get_x()`, `get_y()`
 - 大小：`set_size(w, h)`, `set_width(w)`, `get_width()`, `get_height()`
 - 对齐：`set_alignment(align, x, y)`, `set_alignment_to(item, align, x, y)`
 - 外观：`set_bg_color(color)`, `set_opacity(opacity)`, `set_radius(radius)`
-- 状态：`set_visible(bool)`, `get_visible()`, `set_enable(bool)`, `get_enable()`
+- 状态：`set_visible(bool)`, `get_visible()` / `is_visible()`, `set_enable(bool)` / `set_enabled(bool)`, `get_enable()` / `is_enabled()`
+  - `set_enable`/`get_enable` 为兼容键；新脚本建议使用 `set_enabled`/`is_enabled`。`set_enabled(false)` 只设置 `LV_STATE_DISABLED`，不会改变 `CLICKABLE`。
 - 事件：`set_on_clicked(func)`, `set_on_pressed(func)`, `set_on_released(func)`
 - 其他：`set_border(w, color)`, `set_padding_*()`, `set_parent()`
 
@@ -94,7 +95,7 @@
 - 文本：`set_text(text)`, `get_text()`
 - 样式：`set_text_color(color)`, `set_text_align(align)`
 - 字体：支持多种字体大小和类型
-- 高级：`set_recolor_enable()`, `set_max_len()`, `set_long_mode()`
+- 高级：`set_recolor_enable()`, `set_max_len()`（含 `...` 的显示字符预算）, `set_long_mode(maxWidth, LvText.LongMode)`（像素宽度逐行省略）
 
 ### Image（图片控件）
 - 路径：`set_image_src_path(path)` / `set_asset(path)`, `set_file(path)`, `get_image_src_path()`（路径为资产逻辑路径）

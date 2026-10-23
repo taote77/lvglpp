@@ -1,7 +1,7 @@
 #include "TestFramework.h"
 #include "core/sys/InputManager.h"
 #include "core/widgets/BaseDialog.h"
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 #include "core/widgets/KeyEvent.h"
 #include "lvgl.h"
 
@@ -22,17 +22,17 @@ public:
 
     ~TestDialog() override = default;
 
-    BaseItem *addFocusable()
+    Widget *addFocusable()
     {
-        auto item = std::make_unique<BaseItem>(getRoot());
+        auto item = std::make_unique<Widget>(getRoot());
         item->setFocusable(true);
-        BaseItem *raw = item.get();
+        Widget *raw = item.get();
         items_.push_back(std::move(item));
         return raw;
     }
 
 private:
-    std::vector<std::unique_ptr<BaseItem>> items_;
+    std::vector<std::unique_ptr<Widget>> items_;
 };
 
 lv_indev_data_t g_fake_key_data{};
@@ -77,9 +77,9 @@ TEST(KeyEvent_maps_lvgl_keys)
 TEST(Input_scope_focuses_first_focusable)
 {
     InputReset reset;
-    auto       root = std::make_unique<BaseItem>();
-    auto       a    = std::make_unique<BaseItem>(root.get());
-    auto       b    = std::make_unique<BaseItem>(root.get());
+    auto       root = std::make_unique<Widget>();
+    auto       a    = std::make_unique<Widget>(root.get());
+    auto       b    = std::make_unique<Widget>(root.get());
 
     a->setFocusable(true);
     b->setFocusable(true);
@@ -102,7 +102,7 @@ TEST(Input_scope_focuses_first_focusable)
 TEST(Input_sink_when_scope_has_no_focusables)
 {
     InputReset reset;
-    auto       root = std::make_unique<BaseItem>();
+    auto       root = std::make_unique<Widget>();
 
     auto token = InputManager::getInstance().pushScope(root.get());
     CHECK(InputManager::getInstance().focusedItem() == root.get());
@@ -114,12 +114,12 @@ TEST(Input_sink_when_scope_has_no_focusables)
 TEST(Input_focus_sink_replaced_by_dynamic_focusable)
 {
     InputReset reset;
-    auto       root  = std::make_unique<BaseItem>();
+    auto       root  = std::make_unique<Widget>();
     auto       token = InputManager::getInstance().pushScope(root.get());
 
     CHECK(InputManager::getInstance().focusedItem() == root.get()); // sink
 
-    auto child = std::make_unique<BaseItem>(root.get());
+    auto child = std::make_unique<Widget>(root.get());
     child->setFocusable(true);
 
     CHECK(InputManager::getInstance().focusedItem() == child.get());
@@ -132,10 +132,10 @@ TEST(Input_focus_sink_replaced_by_dynamic_focusable)
 TEST(Input_dynamic_focusable_registration)
 {
     InputReset reset;
-    auto       root  = std::make_unique<BaseItem>();
+    auto       root  = std::make_unique<Widget>();
     auto       token = InputManager::getInstance().pushScope(root.get());
 
-    auto child = std::make_unique<BaseItem>(root.get());
+    auto child = std::make_unique<Widget>(root.get());
     child->setFocusable(true);
     CHECK_TRUE(InputManager::getInstance().requestFocus(child.get()));
     CHECK(child->hasFocus());
@@ -150,9 +150,9 @@ TEST(Input_dynamic_focusable_registration)
 TEST(Input_key_bubbles_to_ancestor_then_global)
 {
     InputReset reset;
-    auto       root   = std::make_unique<BaseItem>();
-    auto       parent = std::make_unique<BaseItem>(root.get());
-    auto       child  = std::make_unique<BaseItem>(parent.get());
+    auto       root   = std::make_unique<Widget>();
+    auto       parent = std::make_unique<Widget>(root.get());
+    auto       child  = std::make_unique<Widget>(parent.get());
 
     child->setFocusable(true);
 
@@ -203,7 +203,7 @@ TEST(Input_key_bubbles_to_ancestor_then_global)
 TEST(Input_global_handler_and_back_handler)
 {
     InputReset reset;
-    auto       root = std::make_unique<BaseItem>();
+    auto       root = std::make_unique<Widget>();
 
     int back_calls   = 0;
     int global_calls = 0;
@@ -246,8 +246,8 @@ TEST(Input_global_handler_and_back_handler)
 TEST(Input_posted_key_reaches_focused_widget)
 {
     InputReset reset;
-    auto       root  = std::make_unique<BaseItem>();
-    auto       child = std::make_unique<BaseItem>(root.get());
+    auto       root  = std::make_unique<Widget>();
+    auto       child = std::make_unique<Widget>(root.get());
     child->setFocusable(true);
 
     int presses  = 0;
@@ -283,8 +283,8 @@ TEST(Input_posted_key_reaches_focused_widget)
 TEST(Input_lvgl_key_event_path)
 {
     InputReset reset;
-    auto       root  = std::make_unique<BaseItem>();
-    auto       child = std::make_unique<BaseItem>(root.get());
+    auto       root  = std::make_unique<Widget>();
+    auto       child = std::make_unique<Widget>(root.get());
     child->setFocusable(true);
 
     int presses  = 0;
@@ -334,12 +334,12 @@ TEST(Input_modal_scope_restores_previous_focus)
 {
     InputReset reset;
 
-    auto root1 = std::make_unique<BaseItem>();
-    auto a     = std::make_unique<BaseItem>(root1.get());
+    auto root1 = std::make_unique<Widget>();
+    auto a     = std::make_unique<Widget>(root1.get());
     a->setFocusable(true);
 
-    auto root2 = std::make_unique<BaseItem>();
-    auto b     = std::make_unique<BaseItem>(root2.get());
+    auto root2 = std::make_unique<Widget>();
+    auto b     = std::make_unique<Widget>(root2.get());
     b->setFocusable(true);
 
     auto activity = InputManager::getInstance().pushScope(root1.get());
@@ -359,15 +359,15 @@ TEST(Input_dialog_modal_scope_closes_on_escape)
 {
     InputReset reset;
 
-    auto root           = std::make_unique<BaseItem>();
-    auto activity_child = std::make_unique<BaseItem>(root.get());
+    auto root           = std::make_unique<Widget>();
+    auto activity_child = std::make_unique<Widget>(root.get());
     activity_child->setFocusable(true);
 
     auto activity_token = InputManager::getInstance().pushScope(root.get());
     CHECK(InputManager::getInstance().focusedItem() == activity_child.get());
 
     TestDialog dialog;
-    BaseItem  *dialog_child = dialog.addFocusable();
+    Widget  *dialog_child = dialog.addFocusable();
 
     dialog.open();
     CHECK_TRUE(dialog.isOpen());
@@ -386,13 +386,13 @@ TEST(Input_dialog_modal_scope_closes_on_escape)
 TEST(Input_focus_style_is_applied)
 {
     InputReset reset;
-    auto       root  = std::make_unique<BaseItem>();
-    auto       child = std::make_unique<BaseItem>(root.get());
+    auto       root  = std::make_unique<Widget>();
+    auto       child = std::make_unique<Widget>(root.get());
 
     child->setFocusable(true);
     auto token = InputManager::getInstance().pushScope(root.get());
     CHECK_TRUE(child->hasFocus());
-    CHECK_EQ(lv_obj_get_style_outline_width(child->getLvglItem(), LV_PART_MAIN), 2);
+    CHECK_EQ(lv_obj_get_style_outline_width(child->lvObj(), LV_PART_MAIN), 2);
     InputManager::getInstance().popScope(token);
     return true;
 }

@@ -12,7 +12,7 @@ namespace detail {
 /**
  * Shared state behind a Connection token.
  *
- * The owner (Object/BaseItem) marks the state disconnected when the slot is
+ * The owner (Object/Widget) marks the state disconnected when the slot is
  * removed or the sender is destroyed. Calling disconnect() is idempotent and
  * safe even after the sender has gone away.
  */

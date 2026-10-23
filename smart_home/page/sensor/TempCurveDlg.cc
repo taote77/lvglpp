@@ -24,7 +24,7 @@ void TempCurveDlg::init()
     const int   chartW = std::min(600, cfg.width() - 32);
     const int   chartX = std::max(0, (cfg.width() - chartW) / 2);
 
-    bg_ = std::make_shared<widgets::BaseItem>(this->getRoot());
+    bg_ = std::make_shared<widgets::Widget>(this->getRoot());
     bg_->setSize(cfg.width(), cfg.height());
     // bg_->setBgColor(CLR_SURFACE_DIM);
     bg_->setPos(0, 0);
@@ -37,42 +37,42 @@ void TempCurveDlg::init()
     chart_->setSize(chartW, 300);
     chart_->setPos(chartX, 116);
 
-    lv_obj_set_style_pad_all(chart_->getLvglItem(), 0, LV_PART_MAIN);
-    lv_obj_set_style_pad_bottom(chart_->getLvglItem(), 2, LV_PART_MAIN);
-    lv_obj_set_style_pad_right(chart_->getLvglItem(), 1, LV_PART_MAIN);
-    lv_chart_set_type(chart_->getLvglItem(), LV_CHART_TYPE_LINE);
-    lv_chart_set_range(chart_->getLvglItem(), LV_CHART_AXIS_PRIMARY_Y, -20, 30);
-    lv_chart_set_point_count(chart_->getLvglItem(), 150);
-    lv_obj_set_style_size(chart_->getLvglItem(), 0, LV_STATE_DEFAULT, LV_PART_INDICATOR);
-    lv_chart_set_div_line_count(chart_->getLvglItem(), 6, 0);
-    lv_chart_set_div_line_count(chart_->getLvglItem(), 6, 3);
-    lv_obj_set_style_bg_opa(chart_->getLvglItem(), LV_OPA_TRANSP, LV_PART_MAIN);
-    lv_obj_set_style_border_width(chart_->getLvglItem(), 0, LV_PART_MAIN);
+    lv_obj_set_style_pad_all(chart_->lvObj(), 0, LV_PART_MAIN);
+    lv_obj_set_style_pad_bottom(chart_->lvObj(), 2, LV_PART_MAIN);
+    lv_obj_set_style_pad_right(chart_->lvObj(), 1, LV_PART_MAIN);
+    lv_chart_set_type(chart_->lvObj(), LV_CHART_TYPE_LINE);
+    lv_chart_set_range(chart_->lvObj(), LV_CHART_AXIS_PRIMARY_Y, -20, 30);
+    lv_chart_set_point_count(chart_->lvObj(), 150);
+    lv_obj_set_style_size(chart_->lvObj(), 0, LV_STATE_DEFAULT, LV_PART_INDICATOR);
+    lv_chart_set_div_line_count(chart_->lvObj(), 6, 0);
+    lv_chart_set_div_line_count(chart_->lvObj(), 6, 3);
+    lv_obj_set_style_bg_opa(chart_->lvObj(), LV_OPA_TRANSP, LV_PART_MAIN);
+    lv_obj_set_style_border_width(chart_->lvObj(), 0, LV_PART_MAIN);
 
     chart_->addLvglEventHandler(TempCurveDlg::draw_event_cb, LV_EVENT_DRAW_TASK_ADDED, this);
-    lv_obj_add_flag(chart_->getLvglItem(), LV_OBJ_FLAG_SEND_DRAW_TASK_EVENTS);
+    lv_obj_add_flag(chart_->lvObj(), LV_OBJ_FLAG_SEND_DRAW_TASK_EVENTS);
 
     time_label_1_ = std::make_shared<LvText>("", CLR_ON_SURFACE, bg_.get());
-    lv_obj_align_to(time_label_1_->getLvglItem(), chart_->getLvglItem(), LV_ALIGN_OUT_BOTTOM_MID, chartW / 2, 16);
+    lv_obj_align_to(time_label_1_->lvObj(), chart_->lvObj(), LV_ALIGN_OUT_BOTTOM_MID, chartW / 2, 16);
 
     time_label_2_ = std::make_shared<LvText>("", CLR_ON_SURFACE, bg_.get());
-    lv_obj_align_to(time_label_2_->getLvglItem(), chart_->getLvglItem(), LV_ALIGN_OUT_BOTTOM_MID, 0, 16);
+    lv_obj_align_to(time_label_2_->lvObj(), chart_->lvObj(), LV_ALIGN_OUT_BOTTOM_MID, 0, 16);
 
     time_label_3_ = std::make_shared<LvText>("", CLR_ON_SURFACE, bg_.get());
-    lv_obj_align_to(time_label_3_->getLvglItem(), chart_->getLvglItem(), LV_ALIGN_OUT_BOTTOM_MID, -chartW / 2, 16);
+    lv_obj_align_to(time_label_3_->lvObj(), chart_->lvObj(), LV_ALIGN_OUT_BOTTOM_MID, -chartW / 2, 16);
 
-    ser2_ = lv_chart_add_series(chart_->getLvglItem(), lv_color_hex(CLR_PRIMARY_DARK_BLUE), LV_CHART_AXIS_PRIMARY_Y);
-    lv_chart_set_all_value(chart_->getLvglItem(), ser2_, 0);
+    ser2_ = lv_chart_add_series(chart_->lvObj(), lv_color_hex(CLR_PRIMARY_DARK_BLUE), LV_CHART_AXIS_PRIMARY_Y);
+    lv_chart_set_all_value(chart_->lvObj(), ser2_, 0);
 
-    ser1_ = lv_chart_add_series(chart_->getLvglItem(), lv_color_hex(CLR_PRIMARY_BLUE), LV_CHART_AXIS_PRIMARY_Y);
+    ser1_ = lv_chart_add_series(chart_->lvObj(), lv_color_hex(CLR_PRIMARY_BLUE), LV_CHART_AXIS_PRIMARY_Y);
 
     back_icon_ = std::make_shared<widgets::Image>("image/56x56/Back.png", bg_.get());
     back_icon_->setPos(24, 24);
-    back_icon_->setEnable(true);
+    back_icon_->setEnabled(true);
     back_icon_->setOnClickedListener([this]() -> void { this->close(); });
 
     peak_force_curve_label = std::make_shared<LvText>("", CLR_ON_SURFACE, bg_.get(), LvText::FontSize24);
-    peak_force_curve_label->setAligmentTo(*back_icon_, LV_ALIGN_OUT_RIGHT_MID, 30, 0);
+    peak_force_curve_label->setAlignmentTo(*back_icon_, LV_ALIGN_OUT_RIGHT_MID, 30, 0);
     peak_force_curve_label->setReColorEnable(true);
 
     peak_value_ = std::make_shared<LvText>(lvTrFmt("common_newton", "0.00"), CLR_ON_SURFACE, bg_.get(), LvText::FontSize20);
@@ -94,9 +94,9 @@ void TempCurveDlg::updateTime()
     time_label_3_->setText(time_text_3);
 
     const int halfWidth = chart_->getWidth() > 0 ? chart_->getWidth() / 2 : 300;
-    lv_obj_align_to(time_label_1_->getLvglItem(), chart_->getLvglItem(), LV_ALIGN_OUT_BOTTOM_MID, halfWidth, 16);
-    lv_obj_align_to(time_label_2_->getLvglItem(), chart_->getLvglItem(), LV_ALIGN_OUT_BOTTOM_MID, 0, 16);
-    lv_obj_align_to(time_label_3_->getLvglItem(), chart_->getLvglItem(), LV_ALIGN_OUT_BOTTOM_MID, -halfWidth, 16);
+    lv_obj_align_to(time_label_1_->lvObj(), chart_->lvObj(), LV_ALIGN_OUT_BOTTOM_MID, halfWidth, 16);
+    lv_obj_align_to(time_label_2_->lvObj(), chart_->lvObj(), LV_ALIGN_OUT_BOTTOM_MID, 0, 16);
+    lv_obj_align_to(time_label_3_->lvObj(), chart_->lvObj(), LV_ALIGN_OUT_BOTTOM_MID, -halfWidth, 16);
 }
 
 static void hook_division_lines(lv_event_t *e) // 内置曲线
@@ -199,7 +199,7 @@ void TempCurveDlg::addChartIndex(int index)
 
     zero_label_->setPos(85, peak_pos_y + 10 + (max_index / (max_index - min_index) * (trough_pos_y - peak_pos_y)));
 
-    lv_chart_set_range(chart_->getLvglItem(), LV_CHART_AXIS_PRIMARY_Y, min_index < -10 ? min_index - 10 : -20, max_index > 15 ? max_index + 15 : 30);
+    lv_chart_set_range(chart_->lvObj(), LV_CHART_AXIS_PRIMARY_Y, min_index < -10 ? min_index - 10 : -20, max_index > 15 ? max_index + 15 : 30);
 
     double axis_y_low  = min_index < -10 ? min_index - 10 : -20;
     double axis_y_high = max_index > 15 ? max_index + 15 : 30;
@@ -207,8 +207,8 @@ void TempCurveDlg::addChartIndex(int index)
     peak_value_->setText(lvTrFmt("common_newton", axis_y_low));
     trough_value_->setText(lvTrFmt("common_newton", max_index));
 
-    lv_chart_set_next_value(chart_->getLvglItem(), ser1_, index / 100.0);
-    lv_chart_set_next_value(chart_->getLvglItem(), ser2_, 0);
+    lv_chart_set_next_value(chart_->lvObj(), ser1_, index / 100.0);
+    lv_chart_set_next_value(chart_->lvObj(), ser2_, 0);
 
-    lv_chart_refresh(chart_->getLvglItem());
+    lv_chart_refresh(chart_->lvObj());
 }

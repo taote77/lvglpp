@@ -33,13 +33,13 @@ public:
     void close() override;
 
 private:
-    std::shared_ptr<BaseItem> _dialog_bg_item;
+    std::shared_ptr<Widget> _dialog_bg_item;
 
-    std::shared_ptr<ConsumeText> _material_name_label;
-    std::shared_ptr<ConsumeText> _status_label;
-    std::shared_ptr<ConsumeText> _remaing_info;
+    std::shared_ptr<LvText> _material_name_label;
+    std::shared_ptr<LvText> _status_label;
+    std::shared_ptr<LvText> _remaing_info;
 
-    std::shared_ptr<ConsumeText>           _btn_label;
+    std::shared_ptr<LvText>           _btn_label;
     std::shared_ptr<widgets::SwitchButton> _auto_fill_switch;
 
     std::shared_ptr<RoundedButton> _close_button;

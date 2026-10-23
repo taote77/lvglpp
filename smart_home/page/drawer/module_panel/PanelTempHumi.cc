@@ -39,7 +39,7 @@ void PanelTempHumi::updateSensor(int32_t senser_state, int32_t temp, int32_t hum
     }
 }
 
-PanelTempHumi::PanelTempHumi(BaseItem *parent) : BaseItem(parent)
+PanelTempHumi::PanelTempHumi(Widget *parent) : Widget(parent)
 {
     this->setSize(331, 115);
     this->setOpacity(1);
@@ -50,8 +50,8 @@ PanelTempHumi::PanelTempHumi(BaseItem *parent) : BaseItem(parent)
     constexpr short mod_item_edge_x{16};
     constexpr short mod_item_edge_row2_y{60};
 
-    _text  = std::make_shared<ConsumeText>("", CLR_ON_SURFACE, this, ConsumeText::FontSize22Bold);
-    _text1 = std::make_shared<ConsumeText>("", CLR_ON_SURFACE, this, ConsumeText::FontSize22Bold);
+    _text  = std::make_shared<LvText>("", CLR_ON_SURFACE, this, LvText::FontSize22Bold);
+    _text1 = std::make_shared<LvText>("", CLR_ON_SURFACE, this, LvText::FontSize22Bold);
     _text->setPos(mod_item_edge_x + offset, 16);
     _text1->setPos(mod_item_edge_x + offset, 60);
 

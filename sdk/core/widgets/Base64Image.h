@@ -2,7 +2,7 @@
 #ifndef LVGLPP_BASE64IMAGE_H
 #define LVGLPP_BASE64IMAGE_H
 
-#include "BaseItem.h"
+#include "Widget.h"
 #include <memory>
 #include <string>
 
@@ -10,10 +10,10 @@ namespace lvglpp {
 
 namespace widgets {
 
-class Base64Image : public BaseItem
+class Base64Image : public Widget
 {
 public:
-    explicit Base64Image(std::string base64, int w, int h, BaseItem *parent);
+    explicit Base64Image(std::string base64, int w, int h, Widget *parent);
     void updateImage(const std::string &data);
 
 private:

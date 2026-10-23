@@ -8,16 +8,16 @@ namespace wrapper::widgets
     using namespace form::design;
 
 
-    SelectedItem::SelectedItem(const std::string &display, BaseItem *parent) : BaseItem(parent),
+    SelectedItem::SelectedItem(const std::string &display, Widget *parent) : Widget(parent),
                                                                                state_(State::UnCheck)
     {
         icon_ = std::make_shared<widgets::Image>("", this);
-        icon_->setAligment(LV_ALIGN_LEFT_MID, 0, 0);
-        display_label_ = std::make_shared<ConsumeText>(display, ThemeColor(CLR_ON_SURFACE), this, ConsumeText::FontSize24);
-        display_label_->setAligment(LV_ALIGN_CENTER, 0, 0);
+        icon_->setAlignment(LV_ALIGN_LEFT_MID, 0, 0);
+        display_label_ = std::make_shared<LvText>(display, ThemeColor(CLR_ON_SURFACE), this, LvText::FontSize24);
+        display_label_->setAlignment(LV_ALIGN_CENTER, 0, 0);
         updateState(State::UnCheck);
 
-        this->setEnable(true);
+        this->setEnabled(true);
     }
 
     void SelectedItem::updateState(SelectedItem::State sta)
@@ -33,7 +33,7 @@ namespace wrapper::widgets
         }
     }
 
-    GroupCheckButton::GroupCheckButton(const std::string &txt1, const std::string &txt2, BaseItem *parent) : BaseItem(parent)
+    GroupCheckButton::GroupCheckButton(const std::string &txt1, const std::string &txt2, Widget *parent) : Widget(parent)
     {
         constexpr int cont_width{186};
         constexpr int cont_height{56};
@@ -45,14 +45,14 @@ namespace wrapper::widgets
 
         _item1 = std::make_shared<SelectedItem>(txt1, this);
         _item1->setSize(cont_width / 2 - 2, cont_height - 2);
-        _item1->setAligment(LV_ALIGN_CENTER, -cont_width / 4, 0);
+        _item1->setAlignment(LV_ALIGN_CENTER, -cont_width / 4, 0);
         _item1->setRadius(RADIUS_10);
 
         _item1->updateState(SelectedItem::State::Check);
 
         _item2 = std::make_shared<SelectedItem>(txt2, this);
         _item2->setSize(cont_width / 2 - 2, cont_height - 2);
-        _item2->setAligment(LV_ALIGN_CENTER, cont_width / 4, 0);
+        _item2->setAlignment(LV_ALIGN_CENTER, cont_width / 4, 0);
         _item2->setRadius(RADIUS_10);
     }
 

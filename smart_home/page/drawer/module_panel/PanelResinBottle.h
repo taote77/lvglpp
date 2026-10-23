@@ -3,7 +3,7 @@
 
 #include "DetailResinDialog.h"
 #include "components/progress_bar.h"
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 #include "core/widgets/LvText.h"
 #include "core/widgets/Image.h"
 #include "core/widgets/MouseArea.h"
@@ -15,7 +15,7 @@
 namespace lvglpp::ui::page {
 using namespace widgets;
 
-class PanelResinBottle : public BaseItem
+class PanelResinBottle : public Widget
 {
 public:
     static std::string double_to_one_digit_str(const double x, const short precision = 1)
@@ -35,7 +35,7 @@ public:
     void updateBottleInfo(const std::string &material, const int32_t tank_size, const int32_t remaining, const int32_t bottlestate, const int32_t printerthsensorstate,
                           bool fill_equipped);
 
-    explicit PanelResinBottle(BaseItem *parent = nullptr);
+    explicit PanelResinBottle(Widget *parent = nullptr);
 
 private:
     bool _switch_enable{false};
@@ -50,8 +50,8 @@ private:
 
     std::shared_ptr<widgets::Image> _icon_bottle;       // row1 图标
     std::shared_ptr<widgets::Image> _icon2;             // row2 图标
-    std::shared_ptr<ConsumeText>    _lbl_material_name; // row1 txt
-    std::shared_ptr<ConsumeText>    _lbl_bottle_status; // row2 txt
+    std::shared_ptr<LvText>    _lbl_material_name; // row1 txt
+    std::shared_ptr<LvText>    _lbl_bottle_status; // row2 txt
 
     std::shared_ptr<MouseArea>      _touch_area;
     std::shared_ptr<widgets::Image> _arrow_right;

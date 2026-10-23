@@ -6,13 +6,13 @@
 #include <unistd.h>
 
 namespace lvglpp::widgets {
-BaseItem *BaseDialog::getRoot() const
+Widget *BaseDialog::getRoot() const
 {
     return background_item_ptr_.get();
 }
 
 BaseDialog::BaseDialog(bool is_sys_dialog) //
-    : background_item_ptr_(new BaseItem(is_sys_dialog ? tools::LvObjFactory::createLvglSysDialog : tools::LvObjFactory::createLvglDialog))
+    : background_item_ptr_(new Widget(is_sys_dialog ? tools::LvObjFactory::createLvglSysDialog : tools::LvObjFactory::createLvglDialog))
 {
     background_item_ptr_->setOpacity(1);
     background_item_ptr_->setSize(sys::UiConfig::instance().width(), sys::UiConfig::instance().height());
@@ -34,7 +34,7 @@ BaseDialog::~BaseDialog()
 
 void BaseDialog::open()
 {
-    if (!background_item_ptr_ || background_item_ptr_->getVisible())
+    if (!background_item_ptr_ || background_item_ptr_->isVisible())
     {
         return;
     }
@@ -63,6 +63,6 @@ void BaseDialog::close()
 
 bool BaseDialog::isOpen()
 {
-    return background_item_ptr_->getVisible();
+    return background_item_ptr_->isVisible();
 }
 } // namespace lvglpp::widgets

@@ -5,7 +5,7 @@
 
 namespace lvglpp::widgets {
 
-LottieCanvas::LottieCanvas(const std::string &assetPath, BaseItem *parent) : BaseItem(tools::LvObjFactory::createLvglLottie, parent)
+LottieCanvas::LottieCanvas(const std::string &assetPath, Widget *parent) : Widget(tools::LvObjFactory::createLvglLottie, parent)
 {
     setAsset(assetPath);
 }
@@ -13,7 +13,7 @@ LottieCanvas::LottieCanvas(const std::string &assetPath, BaseItem *parent) : Bas
 void LottieCanvas::setAsset(const std::string &assetPath)
 {
     src_path_ = assetPath;
-    if (getLvglItem() == nullptr || assetPath.empty())
+    if (lvObj() == nullptr || assetPath.empty())
     {
         return;
     }
@@ -27,21 +27,21 @@ void LottieCanvas::setAsset(const std::string &assetPath)
 
     // ThorVG parses the JSON immediately (copy=true); the bytes need not stay
     // alive after this call.
-    lv_lottie_set_src_data(getLvglItem(), asset->data(), asset->size());
+    lv_lottie_set_src_data(lvObj(), asset->data(), asset->size());
 }
 
 void LottieCanvas::setFile(const std::string &fsPath)
 {
     src_path_ = fsPath;
-    if (getLvglItem() != nullptr && !fsPath.empty())
+    if (lvObj() != nullptr && !fsPath.empty())
     {
-        lv_lottie_set_src_file(getLvglItem(), fsPath.c_str());
+        lv_lottie_set_src_file(lvObj(), fsPath.c_str());
     }
 }
 
 void LottieCanvas::setCacheSize(int32_t width, int32_t height)
 {
-    auto lottie_obj = getLvglItem();
+    auto lottie_obj = lvObj();
     if (lottie_obj == nullptr)
     {
         return;

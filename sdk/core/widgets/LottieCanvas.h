@@ -1,17 +1,17 @@
 #ifndef LVGLPP_LOTTIECANVAS_H
 #define LVGLPP_LOTTIECANVAS_H
 
-#include "BaseItem.h"
+#include "Widget.h"
 #include <string>
 #include <vector>
 
 namespace lvglpp::widgets {
 
-class LottieCanvas : public BaseItem
+class LottieCanvas : public Widget
 {
 public:
     /// Load a Lottie JSON from the application assets.
-    explicit LottieCanvas(const std::string &assetPath, BaseItem *parent = nullptr);
+    explicit LottieCanvas(const std::string &assetPath, Widget *parent = nullptr);
 
     void setAsset(const std::string &assetPath);
 

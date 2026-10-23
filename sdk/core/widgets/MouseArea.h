@@ -1,7 +1,7 @@
 #ifndef LVGLPP_MOUSEAREA_H
 #define LVGLPP_MOUSEAREA_H
 
-#include "BaseItem.h"
+#include "Widget.h"
 #include <functional>
 
 namespace lvglpp::widgets {
@@ -24,10 +24,10 @@ struct Point {
 typedef std::function<void(const Point &)> MousePressingCB;
 typedef std::function<void(const Point &)> MouseReleaseCB;
 
-class MouseArea : public BaseItem
+class MouseArea : public Widget
 {
 public:
-    explicit MouseArea(BaseItem *parent = nullptr);
+    explicit MouseArea(Widget *parent = nullptr);
     void setMousePressingListener(MousePressingCB cb)
     {
         pressing_cb_ = cb;

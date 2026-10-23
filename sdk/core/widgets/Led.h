@@ -1,14 +1,14 @@
 #ifndef LVGLPP_LED_H
 #define LVGLPP_LED_H
 
-#include "BaseItem.h"
+#include "Widget.h"
 
 namespace lvglpp::widgets {
 
-class Led : public BaseItem
+class Led : public Widget
 {
 public:
-    explicit Led(BaseItem *parent = nullptr);
+    explicit Led(Widget *parent = nullptr);
 
     /// Turn LED on (full brightness)
     void on();

@@ -15,10 +15,10 @@ void ScenesPage::onCreate(std::any arg) {
     getRoot()->setBgColor(CLR_SURFACE);
 
     _title = std::make_unique<w::LvText>("Scenes", CLR_ON_SURFACE, getRoot(), w::LvText::FontSize28Bold);
-    _title->setAligment(LV_ALIGN_TOP_LEFT, 20, 10);
+    _title->setAlignment(LV_ALIGN_TOP_LEFT, 20, 10);
 
     _activeSceneLabel = std::make_unique<w::LvText>("Active: None", CLR_ON_SURFACE_VARIANT_1, getRoot(), w::LvText::FontSize20);
-    _activeSceneLabel->setAligment(LV_ALIGN_TOP_RIGHT, -20, 15);
+    _activeSceneLabel->setAlignment(LV_ALIGN_TOP_RIGHT, -20, 15);
 
     struct SceneDef { const char *icon; const char *name; const char *desc; };
     SceneDef scenes[] = {
@@ -31,7 +31,7 @@ void ScenesPage::onCreate(std::any arg) {
     int x = 20, y = 50;
     for (int i = 0; i < 4; i++) {
         auto btn = std::make_unique<ui::widgets::SceneButton>(scenes[i].icon, scenes[i].name, scenes[i].desc, getRoot());
-        btn->setAligment(LV_ALIGN_TOP_LEFT, x, y);
+        btn->setAlignment(LV_ALIGN_TOP_LEFT, x, y);
         btn->setOnActivate([this, name = std::string(scenes[i].name)]() {
             _activeSceneLabel->setText("Active: " + name);
             w::Toast::success((name + " activated").c_str());

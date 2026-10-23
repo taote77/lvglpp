@@ -2,15 +2,15 @@
 #ifndef LVGLPP_SPINBOX_H
 #define LVGLPP_SPINBOX_H
 
-#include "BaseItem.h"
+#include "Widget.h"
 
 namespace lvglpp {
 namespace widgets {
 
-class SpinBox : public BaseItem
+class SpinBox : public Widget
 {
 public:
-    explicit SpinBox(BaseItem *parent = nullptr);
+    explicit SpinBox(Widget *parent = nullptr);
 
     void setRange(int min, int max);
 

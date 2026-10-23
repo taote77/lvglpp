@@ -133,14 +133,14 @@ void StackView::enterAnim(const Activity *act)
     {
         return;
     }
-    auto d = lv_obj_get_disp(root_item->getLvglItem());
+    auto d = lv_obj_get_disp(root_item->lvObj());
     if (d == nullptr)
     {
         return;
     }
     lv_anim_t a_enter;
     lv_anim_init(&a_enter);
-    lv_anim_set_var(&a_enter, root_item->getLvglItem());
+    lv_anim_set_var(&a_enter, root_item->lvObj());
     lv_anim_set_time(&a_enter, enter_anim_ms_);
     lv_anim_set_exec_cb(&a_enter, [](void *obj, int32_t v) -> void {
         if (obj != nullptr)
@@ -166,7 +166,7 @@ void StackView::popAnim(const Activity *act)
         processPendingOps();
         return;
     }
-    auto d = lv_obj_get_disp(root_item->getLvglItem());
+    auto d = lv_obj_get_disp(root_item->lvObj());
     if (d == nullptr)
     {
         animating_ = false;
@@ -175,7 +175,7 @@ void StackView::popAnim(const Activity *act)
     }
     lv_anim_t a_pop;
     lv_anim_init(&a_pop);
-    lv_anim_set_var(&a_pop, root_item->getLvglItem());
+    lv_anim_set_var(&a_pop, root_item->lvObj());
     lv_anim_set_user_data(&a_pop, this);
     lv_anim_set_ready_cb(&a_pop, [](struct _lv_anim_t *an_t) -> void {
         if (an_t->user_data != nullptr)
@@ -376,7 +376,7 @@ void StackView::cancelAnimations(Activity *activity)
     }
     if (activity->getRoot()->isAttached())
     {
-        lv_anim_delete(activity->getRoot()->getLvglItem(), nullptr);
+        lv_anim_delete(activity->getRoot()->lvObj(), nullptr);
     }
 }
 
@@ -432,9 +432,9 @@ void StackView::cancelRootAnimations()
 {
     for (auto &activity : view_manager_)
     {
-        if (activity && activity->getRoot() != nullptr && activity->getRoot()->getLvglItem() != nullptr)
+        if (activity && activity->getRoot() != nullptr && activity->getRoot()->lvObj() != nullptr)
         {
-            lv_anim_delete(activity->getRoot()->getLvglItem(), nullptr);
+            lv_anim_delete(activity->getRoot()->lvObj(), nullptr);
         }
     }
 }

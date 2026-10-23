@@ -44,11 +44,11 @@ struct PageHost::Page {
     bool                         lazy       = true;
     bool                         built      = false;
     std::uint32_t                last_shown = 0;
-    std::unique_ptr<BaseItem>    container;
+    std::unique_ptr<Widget>    container;
     std::unique_ptr<PageContext> context;
 };
 
-PageHost::PageHost(BaseItem *parent) : BaseItem(parent)
+PageHost::PageHost(Widget *parent) : Widget(parent)
 {}
 
 PageHost::~PageHost()
@@ -87,7 +87,7 @@ std::string PageHost::pageName(int index) const
     return pages_[index]->name;
 }
 
-BaseItem *PageHost::buildPage(int index)
+Widget *PageHost::buildPage(int index)
 {
     if (index < 0 || index >= static_cast<int>(pages_.size()))
     {
@@ -100,7 +100,7 @@ BaseItem *PageHost::buildPage(int index)
         return page.container.get();
     }
 
-    page.container = std::make_unique<BaseItem>(this);
+    page.container = std::make_unique<Widget>(this);
     page.container->setSizePercent(100, 100);
     page.container->setAlignment(LV_ALIGN_TOP_LEFT, 0, 0);
     page.container->setVisible(false);
@@ -112,7 +112,7 @@ BaseItem *PageHost::buildPage(int index)
     return page.container.get();
 }
 
-BaseItem *PageHost::ensurePage(int index)
+Widget *PageHost::ensurePage(int index)
 {
     return buildPage(index);
 }
@@ -149,7 +149,7 @@ bool PageHost::show(int index)
         destroyPage(previous);
     }
 
-    BaseItem *target = buildPage(index);
+    Widget *target = buildPage(index);
     if (target == nullptr)
     {
         return false;
@@ -173,7 +173,7 @@ bool PageHost::show(int index)
     return true;
 }
 
-BaseItem *PageHost::page(int index) const
+Widget *PageHost::page(int index) const
 {
     if (index < 0 || index >= static_cast<int>(pages_.size()) || !pages_[index]->built)
     {
@@ -182,7 +182,7 @@ BaseItem *PageHost::page(int index) const
     return pages_[index]->container.get();
 }
 
-BaseItem *PageHost::currentPage() const
+Widget *PageHost::currentPage() const
 {
     return page(current_);
 }
@@ -224,7 +224,7 @@ void PageHost::destroyPage(int index)
         page.context->clearWidgets();
     }
 
-    lv_obj_t *obj = page.container && page.container->isAttached() ? page.container->getLvglItem() : nullptr;
+    lv_obj_t *obj = page.container && page.container->isAttached() ? page.container->lvObj() : nullptr;
     if (obj != nullptr && lv_obj_is_valid(obj))
     {
         lv_obj_delete(obj);

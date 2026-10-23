@@ -5,17 +5,17 @@
 #include "MessageCenterControl.h"
 #include "ModuleCollector.h"
 #include "SwipeView.h"
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 #include "core/widgets/MouseArea.h"
 #include "core/widgets/PageIndicator.h"
 
 namespace lvglpp::ui::page {
 using namespace widgets;
 
-class TopDrawer : public BaseItem
+class TopDrawer : public Widget
 {
 public:
-    explicit TopDrawer(BaseItem *parent = nullptr);
+    explicit TopDrawer(Widget *parent = nullptr);
 
     void updateDeviceInfo(void *data);
 
@@ -36,12 +36,12 @@ private:
 private:
     int content_height_ = 480;
 
-    std::shared_ptr<BaseItem>  bg_item_;
+    std::shared_ptr<Widget>  bg_item_;
     std::shared_ptr<MouseArea> touch_area_;
 
     std::shared_ptr<SwipeView> _page_container;
 
-    std::shared_ptr<widgets::BaseItem> _ctrl_panel;
+    std::shared_ptr<widgets::Widget> _ctrl_panel;
 
     std::shared_ptr<ModuleCollector> _mod_panel;
 

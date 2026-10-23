@@ -5,26 +5,26 @@
 
 namespace lvglpp::widgets {
 
-PageIndicator::PageIndicator(int count, BaseItem *parent) : BaseItem(parent), count_(count), current_index_(-1)
+PageIndicator::PageIndicator(int count, Widget *parent) : Widget(parent), count_(count), current_index_(-1)
 {
     setSize((lv_coord_t)(12 * count + 8 * (count - 1)), 12);
-    lv_obj_set_flex_flow(getLvglItem(), LV_FLEX_FLOW_ROW);
-    lv_obj_set_style_pad_column(getLvglItem(), 8, LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(getLvglItem(), LV_OPA_TRANSP, LV_STATE_DEFAULT);
+    lv_obj_set_flex_flow(lvObj(), LV_FLEX_FLOW_ROW);
+    lv_obj_set_style_pad_column(lvObj(), 8, LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(lvObj(), LV_OPA_TRANSP, LV_STATE_DEFAULT);
     for (int i = 0; i < count_; i++)
     {
-        indicator_vec_.emplace_back(std::make_unique<BaseItem>(this));
+        indicator_vec_.emplace_back(std::make_unique<Widget>(this));
         indicator_vec_[i]->setSize(12, 12);
         indicator_vec_[i]->setRadius(6);
     }
     update();
 }
 
-PageIndicator::PageIndicator(BaseItem *parent) : BaseItem(parent), count_(0), current_index_(-1)
+PageIndicator::PageIndicator(Widget *parent) : Widget(parent), count_(0), current_index_(-1)
 {
-    lv_obj_set_flex_flow(getLvglItem(), LV_FLEX_FLOW_ROW);
-    lv_obj_set_style_pad_column(getLvglItem(), 8, LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(getLvglItem(), LV_OPA_TRANSP, LV_STATE_DEFAULT);
+    lv_obj_set_flex_flow(lvObj(), LV_FLEX_FLOW_ROW);
+    lv_obj_set_style_pad_column(lvObj(), 8, LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(lvObj(), LV_OPA_TRANSP, LV_STATE_DEFAULT);
 }
 
 void PageIndicator::update()
@@ -55,11 +55,11 @@ void PageIndicator::setPageCount(int n)
 {
     count_ = n;
     setSize((lv_coord_t)(12 * count_ + 8 * (count_ - 1)), 12);
-    lv_obj_clean(getLvglItem());
+    lv_obj_clean(lvObj());
     indicator_vec_.clear();
     for (int i = 0; i < count_; i++)
     {
-        indicator_vec_.emplace_back(std::make_unique<BaseItem>(this));
+        indicator_vec_.emplace_back(std::make_unique<Widget>(this));
         indicator_vec_[i]->setSize(12, 12);
         indicator_vec_[i]->setRadius(6);
     }

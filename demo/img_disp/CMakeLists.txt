@@ -13,8 +13,8 @@ add_executable(${PROJECT_NAME})
 
 target_sources(${PROJECT_NAME} PRIVATE
     main.cc
-    Widget.h
-    Widget.cc
+    ImgDispActivity.h
+    ImgDispActivity.cc
 )
 
 

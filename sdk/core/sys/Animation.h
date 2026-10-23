@@ -1,7 +1,7 @@
 #ifndef LVGLPP_ANIMATION_H
 #define LVGLPP_ANIMATION_H
 
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 #include <cstdint>
 #include <functional>
 #include <memory>
@@ -18,7 +18,7 @@ namespace lvglpp::sys {
 class Animation
 {
 public:
-    using AnimCallback = std::function<void(widgets::BaseItem *, int32_t)>;
+    using AnimCallback = std::function<void(widgets::Widget *, int32_t)>;
 
     Animation();
     ~Animation();
@@ -28,7 +28,7 @@ public:
     Animation(Animation &&) noexcept;
     Animation &operator=(Animation &&) noexcept;
 
-    Animation &setTarget(widgets::BaseItem *target);
+    Animation &setTarget(widgets::Widget *target);
 
     Animation &setDuration(uint32_t ms);
 

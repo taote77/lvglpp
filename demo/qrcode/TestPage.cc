@@ -22,7 +22,7 @@ void TestPage::onCreate(std::any arg)
     _qr_code->setData(info);
 
     _qr_code->setImgSrc("zhihu.png");
-    _qr_code->setAligment(LV_ALIGN_CENTER, 0, 0);
+    _qr_code->setAlignment(LV_ALIGN_CENTER, 0, 0);
 }
 
 void TestPage::onNotifyUI(const sys::Event &evt)

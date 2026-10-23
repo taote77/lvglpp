@@ -1,7 +1,7 @@
 #ifndef LVGLPP_IMAGE_H
 #define LVGLPP_IMAGE_H
 
-#include "BaseItem.h"
+#include "Widget.h"
 #include "core/tools/ImageResource.h"
 #include <memory>
 #include <string>
@@ -13,14 +13,14 @@ struct FileSource {
     std::string path;
 };
 
-class Image : public BaseItem
+class Image : public Widget
 {
 public:
     /// Load an image from the application assets (AssetManager logical path).
-    explicit Image(const std::string &assetPath, BaseItem *parent = nullptr);
+    explicit Image(const std::string &assetPath, Widget *parent = nullptr);
 
     /// Load an image from a real filesystem path.
-    explicit Image(FileSource source, BaseItem *parent = nullptr);
+    explicit Image(FileSource source, Widget *parent = nullptr);
 
     /// Load from the application assets, e.g. "image/40x40/icon.png".
     void setAsset(const std::string &assetPath);
@@ -56,7 +56,7 @@ public:
         return file_source_;
     }
 
-    void setEnable(bool enable) override;
+    void setEnabled(bool enable) override;
 
 private:
     void applySource(const std::string &path, bool fileSource);

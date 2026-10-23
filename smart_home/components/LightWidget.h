@@ -1,7 +1,7 @@
 #ifndef SMART_HOME_LIGHT_WIDGET_H
 #define SMART_HOME_LIGHT_WIDGET_H
 
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 #include "core/widgets/LvText.h"
 #include "core/widgets/PushButton.h"
 #include "core/widgets/Slider.h"
@@ -13,10 +13,10 @@ namespace w = ::lvglpp::widgets;
 namespace lvglpp::ui::widgets {
 
 /// Light control panel with brightness slider and color presets
-class LightWidget : public w::BaseItem
+class LightWidget : public w::Widget
 {
 public:
-    LightWidget(const std::string &lightName, w::BaseItem *parent = nullptr);
+    LightWidget(const std::string &lightName, w::Widget *parent = nullptr);
 
     void setBrightness(int percent);
     int brightness() const { return _brightness; }

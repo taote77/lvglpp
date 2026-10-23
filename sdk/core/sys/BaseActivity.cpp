@@ -19,7 +19,7 @@ BaseActivity::~BaseActivity() noexcept
 void BaseActivity::onCreate(std::any arg)
 {
     LOG_DEBUG() << "BaseActivity onCreate,class name:" << typeid(*this).name();
-    _root_win = std::make_unique<widgets::BaseItem>();
+    _root_win = std::make_unique<widgets::Widget>();
     _root_win->setSize(UiConfig::instance().width(), UiConfig::instance().height());
 }
 
@@ -75,7 +75,7 @@ void BaseActivity::onDestroy()
     _root_win.reset();
 }
 
-widgets::BaseItem *BaseActivity::getRoot() const
+widgets::Widget *BaseActivity::getRoot() const
 {
     return _root_win.get();
 }

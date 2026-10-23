@@ -12,7 +12,7 @@ Description: Component base class for use with Loader
 namespace lvglpp {
 namespace widgets {
 using namespace lvglpp::sys;
-class BaseItem;
+class Widget;
 class Component
 {
 public:
@@ -24,7 +24,7 @@ protected:
      * @param parent the parent widget (passed from Loader)
      * @return true on success
      */
-    virtual bool onLoad(BaseItem *parent) = 0;
+    virtual bool onLoad(Widget *parent) = 0;
     /**
      * @brief Called before the component is destroyed
      */

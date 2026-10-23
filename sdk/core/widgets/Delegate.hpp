@@ -9,7 +9,7 @@ template <class T>
 class Delegate : public ScrollItem
 {
 public:
-    explicit Delegate(BaseItem *parent = nullptr) : ScrollItem(parent)
+    explicit Delegate(Widget *parent = nullptr) : ScrollItem(parent)
     {}
 
     ~Delegate() override;
@@ -40,7 +40,7 @@ Delegate<T>::~Delegate()
     // ListView/PageView rely on a delegate removing its row when the wrapper
     // is cleared from the model. The delete watchdog detaches this wrapper
     // safely if the parent tree was destroyed first.
-    lv_obj_t *obj = getLvglItem();
+    lv_obj_t *obj = lvObj();
     if (obj != nullptr && lv_obj_is_valid(obj))
     {
         lv_obj_delete(obj);

@@ -1,7 +1,7 @@
 #include "TestFramework.h"
 #include "core/style/Style.h"
 #include "core/style/Theme.h"
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 
 #include <memory>
 #include <vector>
@@ -12,24 +12,24 @@ using namespace lvglpp::widgets;
 
 TEST(Style_applies_properties)
 {
-    BaseItem item;
+    Widget item;
 
     Style style;
     style.bgColor(0x112233).radius(7).padAll(3).border(2, 0x445566);
 
     item.applyStyle(style);
 
-    CHECK(lv_color_eq(lv_obj_get_style_bg_color(item.getLvglItem(), LV_PART_MAIN), lv_color_hex(0x112233)));
-    CHECK_EQ(lv_obj_get_style_radius(item.getLvglItem(), LV_PART_MAIN), 7);
-    CHECK_EQ(lv_obj_get_style_pad_top(item.getLvglItem(), LV_PART_MAIN), 3);
-    CHECK_EQ(lv_obj_get_style_border_width(item.getLvglItem(), LV_PART_MAIN), 2);
+    CHECK(lv_color_eq(lv_obj_get_style_bg_color(item.lvObj(), LV_PART_MAIN), lv_color_hex(0x112233)));
+    CHECK_EQ(lv_obj_get_style_radius(item.lvObj(), LV_PART_MAIN), 7);
+    CHECK_EQ(lv_obj_get_style_pad_top(item.lvObj(), LV_PART_MAIN), 3);
+    CHECK_EQ(lv_obj_get_style_border_width(item.lvObj(), LV_PART_MAIN), 2);
     CHECK_TRUE(style.isAttached());
     return true;
 }
 
 TEST(Style_is_immutable_after_application)
 {
-    BaseItem item;
+    Widget item;
 
     Style style;
     style.radius(7);
@@ -37,26 +37,26 @@ TEST(Style_is_immutable_after_application)
 
     // Must be ignored: the style is already attached.
     style.radius(21);
-    CHECK_EQ(lv_obj_get_style_radius(item.getLvglItem(), LV_PART_MAIN), 7);
+    CHECK_EQ(lv_obj_get_style_radius(item.lvObj(), LV_PART_MAIN), 7);
 
     Style variant = style.clone();
     variant.radius(21);
-    CHECK_EQ(lv_obj_get_style_radius(item.getLvglItem(), LV_PART_MAIN), 7);
+    CHECK_EQ(lv_obj_get_style_radius(item.lvObj(), LV_PART_MAIN), 7);
     CHECK_FALSE(variant.isAttached());
     return true;
 }
 
 TEST(Style_keepalive_survives_wrapper_destruction)
 {
-    auto parent = std::make_unique<BaseItem>();
+    auto parent = std::make_unique<Widget>();
 
     lv_obj_t *child_obj = nullptr;
     {
-        auto  child = std::make_unique<BaseItem>(parent.get());
+        auto  child = std::make_unique<Widget>(parent.get());
         Style style;
         style.bgColor(0x445566).radius(5);
         child->applyStyle(style);
-        child_obj = child->getLvglItem();
+        child_obj = child->lvObj();
     }
 
     // Wrapper and stack Style are gone; LVGL still references the style.
@@ -68,15 +68,15 @@ TEST(Style_keepalive_survives_wrapper_destruction)
 
 TEST(Style_can_be_removed)
 {
-    BaseItem item;
+    Widget item;
 
     Style style;
     style.radius(9);
     item.applyStyle(style);
-    CHECK_EQ(lv_obj_get_style_radius(item.getLvglItem(), LV_PART_MAIN), 9);
+    CHECK_EQ(lv_obj_get_style_radius(item.lvObj(), LV_PART_MAIN), 9);
 
     item.removeStyle(style);
-    CHECK_EQ(lv_obj_get_style_radius(item.getLvglItem(), LV_PART_MAIN), 0);
+    CHECK_EQ(lv_obj_get_style_radius(item.lvObj(), LV_PART_MAIN), 0);
     return true;
 }
 
@@ -99,11 +99,11 @@ TEST(Theme_mode_switches_palette)
 
 TEST(Theme_focus_style_applies_outline)
 {
-    BaseItem item;
+    Widget item;
     item.applyStyle(Theme::instance().focusStyle(), LV_PART_MAIN | LV_STATE_FOCUS_KEY);
     item.addState(LV_STATE_FOCUS_KEY);
 
-    CHECK_EQ(lv_obj_get_style_outline_width(item.getLvglItem(), LV_PART_MAIN), 2);
+    CHECK_EQ(lv_obj_get_style_outline_width(item.lvObj(), LV_PART_MAIN), 2);
     return true;
 }
 
@@ -121,29 +121,29 @@ TEST(Theme_button_palettes_are_distinct)
 
 TEST(Grid_layout_places_cells)
 {
-    BaseItem container;
+    Widget container;
     container.setSize(200, 100);
     container.setGridColumns("100px 100px");
     container.setGridRows("50px 50px");
 
-    std::vector<std::unique_ptr<BaseItem>> children;
+    std::vector<std::unique_ptr<Widget>> children;
     for (uint32_t row = 0; row < 2; ++row)
     {
         for (uint32_t col = 0; col < 2; ++col)
         {
-            auto child = std::make_unique<BaseItem>(&container);
+            auto child = std::make_unique<Widget>(&container);
             child->setGridCell(col, row);
             child->setSize(10, 10);
             children.push_back(std::move(child));
         }
     }
 
-    lv_obj_update_layout(container.getLvglItem());
+    lv_obj_update_layout(container.lvObj());
 
-    const BaseItem::Rect container_rect = container.bounds();
-    const BaseItem::Rect r00            = children[0]->bounds();
-    const BaseItem::Rect r10            = children[1]->bounds();
-    const BaseItem::Rect r01            = children[2]->bounds();
+    const Widget::Rect container_rect = container.bounds();
+    const Widget::Rect r00            = children[0]->bounds();
+    const Widget::Rect r10            = children[1]->bounds();
+    const Widget::Rect r01            = children[2]->bounds();
 
     CHECK_EQ(r00.x, container_rect.x);
     CHECK(r10.x >= r00.x + 100);
@@ -153,16 +153,16 @@ TEST(Grid_layout_places_cells)
 
 TEST(Grid_layout_supports_spans)
 {
-    BaseItem container;
+    Widget container;
     container.setSize(200, 100);
     container.setGridColumns("1fr 1fr");
     container.setGridRows("1fr 1fr");
 
-    auto span = std::make_unique<BaseItem>(&container);
+    auto span = std::make_unique<Widget>(&container);
     span->setGridCell(0, 0, 2, 1);
     span->setSize(10, 10);
 
-    lv_obj_update_layout(container.getLvglItem());
+    lv_obj_update_layout(container.lvObj());
 
     CHECK_EQ(span->getWidth(), 200);
     return true;
@@ -170,20 +170,20 @@ TEST(Grid_layout_supports_spans)
 
 TEST(Grid_layout_cell_alignment_preserves_position)
 {
-    BaseItem container;
+    Widget container;
     container.setSize(200, 100);
     container.setGridColumns("100px 100px");
     container.setGridRows("50px 50px");
 
-    auto child = std::make_unique<BaseItem>(&container);
+    auto child = std::make_unique<Widget>(&container);
     child->setGridCell(1, 1);
     child->setSize(10, 10);
     child->setGridCellColumnAlign(LV_GRID_ALIGN_CENTER);
 
-    lv_obj_update_layout(container.getLvglItem());
+    lv_obj_update_layout(container.lvObj());
 
-    const BaseItem::Rect container_rect = container.bounds();
-    const BaseItem::Rect child_rect     = child->bounds();
+    const Widget::Rect container_rect = container.bounds();
+    const Widget::Rect child_rect     = child->bounds();
 
     // Changing the column alignment must not reset the cell to (0, 0).
     CHECK(child_rect.x >= container_rect.x + 100);
@@ -193,7 +193,7 @@ TEST(Grid_layout_cell_alignment_preserves_position)
 
 TEST(Grid_layout_invalid_descriptor_is_rejected)
 {
-    BaseItem container;
+    Widget container;
     container.setSize(200, 100);
     container.setGridColumns("1fr 1fr");
     container.setGridRows("1fr");
@@ -201,11 +201,11 @@ TEST(Grid_layout_invalid_descriptor_is_rejected)
     // Invalid input must leave the previous template intact (no crash).
     container.setGridColumns("1fr nope");
 
-    auto child = std::make_unique<BaseItem>(&container);
+    auto child = std::make_unique<Widget>(&container);
     child->setGridCell(1, 0);
     child->setSize(10, 10);
 
-    lv_obj_update_layout(container.getLvglItem());
+    lv_obj_update_layout(container.lvObj());
     CHECK_EQ(container.childCount(), 1u);
     return true;
 }

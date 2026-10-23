@@ -9,7 +9,7 @@
 
 namespace lvglpp::widgets {
 
-Video::Video(const std::string &path, BaseItem *parent) : BaseItem(tools::LvObjFactory::createLvglVideo, parent)
+Video::Video(const std::string &path, Widget *parent) : Widget(tools::LvObjFactory::createLvglVideo, parent)
 {
     setVideoSrcPath(path);
 }
@@ -21,17 +21,17 @@ void Video::setVideoSrcPath(const std::string &path)
 #else
     src_path_ = "." + path;
 #endif
-    if (getLvglItem() != nullptr && !src_path_.empty())
+    if (lvObj() != nullptr && !src_path_.empty())
     {
         auto persistent = std::make_shared<std::string>(src_path_);
         setObjectKeepalive("video.src", persistent);
-        lv_ffmpeg_player_set_src(getLvglItem(), persistent->c_str());
+        lv_ffmpeg_player_set_src(lvObj(), persistent->c_str());
     }
 }
 
 void Video::setVideoAutoRestart(bool b)
 {
-    lv_ffmpeg_player_set_auto_restart(getLvglItem(), b);
+    lv_ffmpeg_player_set_auto_restart(lvObj(), b);
 }
 
 void Video::setVisible(bool visible)
@@ -39,18 +39,18 @@ void Video::setVisible(bool visible)
     visible_ = visible;
     if (lv_time_update_visible_ == nullptr)
     {
-        BaseItem::setVisible(visible);
+        Widget::setVisible(visible);
     }
 }
 
 void Video::setVideoCmd(lv_ffmpeg_player_cmd_t cmd)
 {
-    if (getLvglItem() != nullptr && !src_path_.empty())
+    if (lvObj() != nullptr && !src_path_.empty())
     {
         if (cmd == LV_FFMPEG_PLAYER_CMD_START)
         {
-            BaseItem::setVisible(false);
-            lv_ffmpeg_player_set_cmd(getLvglItem(), cmd);
+            Widget::setVisible(false);
+            lv_ffmpeg_player_set_cmd(lvObj(), cmd);
             lv_time_update_visible_ = lv_timer_create(
                 [](struct _lv_timer_t *t) -> void {
                     auto  user_data = lv_timer_get_user_data(t);
@@ -59,14 +59,14 @@ void Video::setVideoCmd(lv_ffmpeg_player_cmd_t cmd)
                     {
                         return;
                     }
-                    if (video->getLvglItem() != nullptr)
+                    if (video->lvObj() != nullptr)
                     {
                         if (video->visible_)
                         {
-                            lv_obj_clear_flag(video->getLvglItem(), LV_OBJ_FLAG_HIDDEN);
+                            lv_obj_clear_flag(video->lvObj(), LV_OBJ_FLAG_HIDDEN);
                         } else
                         {
-                            lv_obj_add_flag(video->getLvglItem(), LV_OBJ_FLAG_HIDDEN);
+                            lv_obj_add_flag(video->lvObj(), LV_OBJ_FLAG_HIDDEN);
                         }
                     }
                     video->cleanupTimer();
@@ -74,7 +74,7 @@ void Video::setVideoCmd(lv_ffmpeg_player_cmd_t cmd)
                 66, this);
         } else
         {
-            lv_ffmpeg_player_set_cmd(getLvglItem(), cmd);
+            lv_ffmpeg_player_set_cmd(lvObj(), cmd);
         }
     } else
     {

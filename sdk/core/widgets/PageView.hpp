@@ -12,9 +12,9 @@ template <typename T, typename T2 = PageViewDelegate<T>>
 class PageView : public ScrollItem
 {
 public:
-    explicit PageView(BaseItem *parentItem = nullptr);
+    explicit PageView(Widget *parentItem = nullptr);
 
-    explicit PageView(const BaseModel<T> &model, BaseItem *parentItem = nullptr);
+    explicit PageView(const BaseModel<T> &model, Widget *parentItem = nullptr);
 
     ~PageView() override;
 
@@ -63,13 +63,13 @@ private:
 };
 
 template <typename T, typename T2>
-PageView<T, T2>::PageView(BaseItem *parentItem) : ScrollItem(parentItem), show_content_vec_(50)
+PageView<T, T2>::PageView(Widget *parentItem) : ScrollItem(parentItem), show_content_vec_(50)
 {
     initItem();
 }
 
 template <typename T, typename T2>
-PageView<T, T2>::PageView(const BaseModel<T> &model, BaseItem *parentItem) : ScrollItem(parentItem), page_view_model_(model), show_content_vec_(50)
+PageView<T, T2>::PageView(const BaseModel<T> &model, Widget *parentItem) : ScrollItem(parentItem), page_view_model_(model), show_content_vec_(50)
 {
     initItem();
 }
@@ -78,11 +78,11 @@ template <typename T, typename T2>
 void PageView<T, T2>::initItem()
 {
     setScrollable(true);
-    lv_obj_add_flag(getLvglItem(), LV_OBJ_FLAG_SCROLL_ONE);
-    lv_obj_set_scroll_snap_x(getLvglItem(), LV_SCROLL_SNAP_CENTER);
-    lv_obj_set_flex_flow(getLvglItem(), LV_FLEX_FLOW_ROW);
-    lv_obj_set_scrollbar_mode(getLvglItem(), LV_SCROLLBAR_MODE_OFF);
-    lv_obj_set_style_pad_column(getLvglItem(), 0, LV_STATE_DEFAULT);
+    lv_obj_add_flag(lvObj(), LV_OBJ_FLAG_SCROLL_ONE);
+    lv_obj_set_scroll_snap_x(lvObj(), LV_SCROLL_SNAP_CENTER);
+    lv_obj_set_flex_flow(lvObj(), LV_FLEX_FLOW_ROW);
+    lv_obj_set_scrollbar_mode(lvObj(), LV_SCROLLBAR_MODE_OFF);
+    lv_obj_set_style_pad_column(lvObj(), 0, LV_STATE_DEFAULT);
     addLvglEventHandler(
         [](lv_event_t *e) -> void {
             auto lobj = static_cast<lv_obj_t *>(lv_event_get_target(e));
@@ -192,7 +192,7 @@ void PageView<T, T2>::setCurrentIndex(int n)
     }
 
     int scroll_x = n * page_width;
-    lv_obj_scroll_to_x(getLvglItem(), scroll_x, LV_ANIM_ON);
+    lv_obj_scroll_to_x(lvObj(), scroll_x, LV_ANIM_ON);
 }
 
 template <typename T, typename T2>

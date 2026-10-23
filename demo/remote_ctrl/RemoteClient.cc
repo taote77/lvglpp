@@ -195,11 +195,11 @@ void RemoteClient::onCreate(std::any arg)
 
     _label = std::make_shared<lvglpp::widgets::LvText>(("Demo"), CLR_SUCCESS_CONTAINER, getRoot());
 
-    _label->setAligment(LV_ALIGN_CENTER, 0, -120);
+    _label->setAlignment(LV_ALIGN_CENTER, 0, -120);
 
     _btn_test = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "截图", getRoot());
     _btn_test->setPos(480, 300);
-    _btn_test->setAligment(LV_ALIGN_CENTER, 0, 150);
+    _btn_test->setAlignment(LV_ALIGN_CENTER, 0, 150);
     _btn_test->setOnClickedListener([this]() {
         LOG_DEBUG() << "snapshoot";
         _btn_test->emitSignal("snapshoot");
@@ -207,7 +207,7 @@ void RemoteClient::onCreate(std::any arg)
 
     Object::connect(_btn_test.get(), "snapshoot", [this]() {
         lv_obj_t *screen = lv_scr_act();
-        // getRoot()->getLvglItem();
+        // getRoot()->lvObj();
         if (takeScreenshot(screen, "screenshot.png"))
         {
             std::ifstream file("./screenshot.jpg", std::ios::binary); // 读取文件内容到缓冲区
@@ -229,7 +229,7 @@ void RemoteClient::onCreate(std::any arg)
 
     _btn_simu = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "重置", getRoot());
 
-    _btn_simu->setAligment(LV_ALIGN_TOP_RIGHT, 0, 0);
+    _btn_simu->setAlignment(LV_ALIGN_TOP_RIGHT, 0, 0);
     _btn_simu->setOnClickedListener([this]() {
         LOG_DEBUG() << "Simu lang";
         _count = 0;

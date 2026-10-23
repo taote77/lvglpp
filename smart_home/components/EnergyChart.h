@@ -1,7 +1,7 @@
 #ifndef SMART_HOME_ENERGY_CHART_H
 #define SMART_HOME_ENERGY_CHART_H
 
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 #include "core/widgets/LvChart.h"
 #include "core/widgets/LvText.h"
 #include "core/widgets/PushButton.h"
@@ -14,10 +14,10 @@ namespace w = ::lvglpp::widgets;
 namespace lvglpp::ui::widgets {
 
 /// Energy usage chart with day/week toggle
-class EnergyChart : public w::BaseItem
+class EnergyChart : public w::Widget
 {
 public:
-    EnergyChart(const std::string &title, w::BaseItem *parent = nullptr);
+    EnergyChart(const std::string &title, w::Widget *parent = nullptr);
     void setData(const std::vector<int32_t> &values, const std::vector<std::string> &labels);
     void setTotal(float kWh);
 

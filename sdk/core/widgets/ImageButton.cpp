@@ -7,7 +7,7 @@
 
 namespace lvglpp::widgets {
 
-ImageButton::ImageButton(BaseItem *parent) : BaseItem(tools::LvObjFactory::createLvglImageButton, parent)
+ImageButton::ImageButton(Widget *parent) : Widget(tools::LvObjFactory::createLvglImageButton, parent)
 {
     setFocusable(true);
 }
@@ -24,7 +24,7 @@ ImageButton &ImageButton::setSourceFile(State state, const std::string &left, co
 
 ImageButton &ImageButton::applySource(State state, const std::string &left, const std::string &middle, const std::string &right, bool fileSource)
 {
-    if (getLvglItem() == nullptr)
+    if (lvObj() == nullptr)
     {
         return *this;
     }
@@ -41,7 +41,7 @@ ImageButton &ImageButton::applySource(State state, const std::string &left, cons
     tools::ImageHandle middleHandle = load(middle);
     tools::ImageHandle rightHandle  = load(right);
 
-    lv_imagebutton_set_src(getLvglItem(), static_cast<lv_imagebutton_state_t>(state), leftHandle ? leftHandle->descriptor() : nullptr,
+    lv_imagebutton_set_src(lvObj(), static_cast<lv_imagebutton_state_t>(state), leftHandle ? leftHandle->descriptor() : nullptr,
                            middleHandle ? middleHandle->descriptor() : nullptr, rightHandle ? rightHandle->descriptor() : nullptr);
 
     const std::string prefix = "imagebutton.resource." + std::to_string(static_cast<int>(state)) + ".";
@@ -54,9 +54,9 @@ ImageButton &ImageButton::applySource(State state, const std::string &left, cons
 ImageButton &ImageButton::setState(State state)
 {
     state_ = state;
-    if (getLvglItem() != nullptr)
+    if (lvObj() != nullptr)
     {
-        lv_imagebutton_set_state(getLvglItem(), static_cast<lv_imagebutton_state_t>(state));
+        lv_imagebutton_set_state(lvObj(), static_cast<lv_imagebutton_state_t>(state));
     }
     return *this;
 }

@@ -12,7 +12,7 @@
 
 ## 支持的控件
 
-- **BaseItem** - 基础控件
+- **Widget** - 基础控件
 - **LvText** - 文本控件
 - **Image** - 图片控件
 - **PushButton** - 按钮控件
@@ -61,7 +61,7 @@ protected:
         setEnableStackView(false);   // Lua owns the UI root
         lua_bind_->initialize();
 
-        auto root = std::make_shared<widgets::BaseItem>(nullptr);
+        auto root = std::make_shared<widgets::Widget>(nullptr);
         root->setSize(800, 480);
         lua_bind_->setRootItem(root);
 
@@ -115,7 +115,7 @@ switch:set_pos(200, 200)
 **参数:**
 - `text` (string) - 文本内容
 - `color` (number) - 文本颜色（十六进制，如 0xFFFFFF）
-- `parent` (BaseItem) - 父控件
+- `parent` (Widget) - 父控件
 
 **返回:** LvText 对象
 
@@ -125,7 +125,7 @@ switch:set_pos(200, 200)
 **参数:**
 - `text` (string) - 文本内容
 - `color` (number) - 文本颜色
-- `parent` (BaseItem) - 父控件
+- `parent` (Widget) - 父控件
 - `style` (LvText.TextStyle) - 文本样式
 - `font_type` (LvText.FontType) - 字体类型
 
@@ -136,7 +136,7 @@ switch:set_pos(200, 200)
 
 **参数:**
 - `path` (string) - 资产逻辑路径，例如 `image/40x40/icon_warn.png`
-- `parent` (BaseItem) - 父控件
+- `parent` (Widget) - 父控件
 
 **返回:** Image 对象
 
@@ -147,7 +147,7 @@ switch:set_pos(200, 200)
 - `width` (number) - 按钮宽度
 - `height` (number) - 按钮高度
 - `text` (string) - 按钮文本
-- `parent` (BaseItem) - 父控件
+- `parent` (Widget) - 父控件
 
 **返回:** PushButton 对象
 
@@ -159,7 +159,7 @@ switch:set_pos(200, 200)
 - `height` (number) - 按钮高度
 - `color_style` (PushButton.ColorStyle) - 按钮样式
 - `text` (string) - 按钮文本
-- `parent` (BaseItem) - 父控件
+- `parent` (Widget) - 父控件
 
 **返回:** PushButton 对象
 
@@ -171,7 +171,7 @@ switch:set_pos(200, 200)
 - `height` (number) - 高度
 - `bg_color` (number) - 背景颜色
 - `check_color` (number) - 选中颜色
-- `parent` (BaseItem) - 父控件
+- `parent` (Widget) - 父控件
 
 **返回:** CheckBox 对象
 
@@ -181,7 +181,7 @@ switch:set_pos(200, 200)
 **参数:**
 - `width` (number) - 宽度
 - `height` (number) - 高度
-- `parent` (BaseItem) - 父控件
+- `parent` (Widget) - 父控件
 
 **返回:** SwitchButton 对象
 
@@ -202,9 +202,9 @@ switch:set_pos(200, 200)
 - `set_height(height)` - 设置高度
 - `get_height()` - 获取高度
 - `set_visible(visible)` - 设置可见性
-- `get_visible()` - 获取可见性
-- `set_enable(enable)` - 设置启用状态
-- `get_enable()` - 获取启用状态
+- `get_visible()` / `is_visible()` - 获取可见性
+- `set_enable(enable)` / `set_enabled(enable)` - 设置启用状态（只切换 `LV_STATE_DISABLED`）
+- `get_enable()` / `is_enabled()` - 获取启用状态
 - `set_radius(radius)` - 设置圆角半径
 - `get_radius()` - 获取圆角半径
 - `set_clip(clip)` - 设置裁剪

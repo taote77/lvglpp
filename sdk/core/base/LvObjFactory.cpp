@@ -7,7 +7,7 @@ namespace lvglpp::tools {
 namespace {
 
 /// Shared default container style. Using a shared style (instead of local
-/// style props) allows callers to override properties with BaseItem::applyStyle().
+/// style props) allows callers to override properties with Widget::applyStyle().
 const core::Style &containerBaseStyle()
 {
     // Process-lifetime style: LVGL objects reference it until lv_deinit().

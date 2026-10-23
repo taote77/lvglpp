@@ -33,19 +33,19 @@ public:
 
 protected:
 private:
-    std::shared_ptr<BaseItem> _dialog_bg_item;
+    std::shared_ptr<Widget> _dialog_bg_item;
 
-    std::shared_ptr<ConsumeText> _title_label;
+    std::shared_ptr<LvText> _title_label;
 
-    std::shared_ptr<ConsumeText> _title_status_label;
+    std::shared_ptr<LvText> _title_status_label;
 
-    std::shared_ptr<ConsumeText> _progress_label;
+    std::shared_ptr<LvText> _progress_label;
 
     std::shared_ptr<ProgressBar> _progress_bar;
 
-    std::shared_ptr<ConsumeText> _status_label;
+    std::shared_ptr<LvText> _status_label;
 
-    std::shared_ptr<ConsumeText> _status_value_label;
+    std::shared_ptr<LvText> _status_value_label;
 
     std::shared_ptr<RoundedButton> _close_button;
 

@@ -3,7 +3,7 @@
 
 #include "DetailPulseDialog.h"
 #include "components/progress_bar.h"
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 #include "core/widgets/LvText.h"
 #include "core/widgets/Image.h"
 #include "core/widgets/MouseArea.h"
@@ -12,14 +12,14 @@
 namespace lvglpp::ui::page {
 using namespace widgets;
 
-class PanelPusleMod : public BaseItem
+class PanelPusleMod : public Widget
 {
 public:
     bool mod_switch{false};
 
     void updatePulseFilmLife(double inflator_worktime, int32_t tanktype, int32_t airmod_state);
 
-    explicit PanelPusleMod(BaseItem *parent = nullptr);
+    explicit PanelPusleMod(Widget *parent = nullptr);
 
 private:
     double  _last_usesdtime{-1.0F};
@@ -27,10 +27,10 @@ private:
     int32_t _last_airmod_state{-1};
 
     std::shared_ptr<widgets::Image> _icon1_mod_pulse; // row1 图标
-    std::shared_ptr<ConsumeText>    _label_mod_pulse; // row1 txt
+    std::shared_ptr<LvText>    _label_mod_pulse; // row1 txt
 
     std::shared_ptr<widgets::Image> _icon2;        // row2 图标
-    std::shared_ptr<ConsumeText>    _label_status; // row2 txt
+    std::shared_ptr<LvText>    _label_status; // row2 txt
 
     std::shared_ptr<MouseArea>      _touch_area;
     std::shared_ptr<widgets::Image> _arrow_right;

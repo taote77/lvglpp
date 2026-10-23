@@ -2,7 +2,7 @@
 #ifndef LVGLPP_LOADER_H
 #define LVGLPP_LOADER_H
 
-#include "BaseItem.h"
+#include "Widget.h"
 #include "core/sys/Event.h"
 #include <memory>
 
@@ -11,10 +11,10 @@ namespace lvglpp::widgets {
 using namespace lvglpp::sys;
 
 class Component;
-class Loader : public BaseItem
+class Loader : public Widget
 {
 public:
-    explicit Loader(BaseItem *parent = nullptr);
+    explicit Loader(Widget *parent = nullptr);
     void       setSourceComponent(std::unique_ptr<Component> &component);
     Component *getSourceComponent() const
     {

@@ -3,7 +3,7 @@
 
 namespace lvglpp::widgets {
 
-Loader::Loader(BaseItem *parent) : BaseItem(parent)
+Loader::Loader(Widget *parent) : Widget(parent)
 {}
 
 void Loader::setSourceComponent(std::unique_ptr<Component> &component)
@@ -15,7 +15,7 @@ void Loader::setSourceComponent(std::unique_ptr<Component> &component)
     if (loader_component_ptr_ != nullptr)
     {
         loader_component_ptr_->onDestroy();
-        lv_obj_clean(this->getLvglItem());
+        lv_obj_clean(this->lvObj());
     }
     loader_component_ptr_ = std::move(component);
     if (loader_component_ptr_ != nullptr)

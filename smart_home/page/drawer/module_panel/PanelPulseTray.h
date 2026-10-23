@@ -4,7 +4,7 @@
 // #include "DetailPulseTrayDialog.h"
 #include "components/progress_bar.h"
 #include "core/widgets/BaseDialog.h"
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 #include "core/widgets/LvText.h"
 #include "core/widgets/Image.h"
 #include "core/widgets/MouseArea.h"
@@ -44,30 +44,30 @@ public:
 
 protected:
 private:
-    std::shared_ptr<BaseItem> _dialog_bg_item;
+    std::shared_ptr<Widget> _dialog_bg_item;
 
-    std::shared_ptr<ConsumeText> _title_label;
-    std::shared_ptr<ConsumeText> _tray_state_label;
+    std::shared_ptr<LvText> _title_label;
+    std::shared_ptr<LvText> _tray_state_label;
 
     // ---
-    std::shared_ptr<ConsumeText> _progress_label;
+    std::shared_ptr<LvText> _progress_label;
     std::shared_ptr<ProgressBar> _progress_bar;
-    std::shared_ptr<ConsumeText> _progress_bar_replace;
-    std::shared_ptr<ConsumeText> _warn_lbl;
+    std::shared_ptr<LvText> _progress_bar_replace;
+    std::shared_ptr<LvText> _warn_lbl;
 
     // ---
-    std::shared_ptr<ConsumeText> _status_label;
-    std::shared_ptr<ConsumeText> _resin_remain_label;
+    std::shared_ptr<LvText> _status_label;
+    std::shared_ptr<LvText> _resin_remain_label;
 
     // 温度
-    std::shared_ptr<ConsumeText> _temperature_tag_label;
-    std::shared_ptr<ConsumeText> _temperature_value_label;
+    std::shared_ptr<LvText> _temperature_tag_label;
+    std::shared_ptr<LvText> _temperature_value_label;
 
     // ---
-    std::shared_ptr<BaseItem>    _warn_bar_bg;
+    std::shared_ptr<Widget>    _warn_bar_bg;
     std::shared_ptr<Image>       _warn_icon;
-    std::shared_ptr<ConsumeText> _warn_bar_0;
-    std::shared_ptr<ConsumeText> _warn_bar_1;
+    std::shared_ptr<LvText> _warn_bar_0;
+    std::shared_ptr<LvText> _warn_bar_1;
     // ---
     std::shared_ptr<RoundedButton> _close_button;
 
@@ -76,7 +76,7 @@ private:
     HandleCancel _cancel_cb;
 };
 
-class PanelPulseTray : public BaseItem
+class PanelPulseTray : public Widget
 {
 public:
     static std::string double_to_one_digit_str(const double val, const short precision = 1)
@@ -94,7 +94,7 @@ public:
     void updateTrayInfo(const int32_t peeled_count, const int32_t resin_level, const int32_t tank_type, const int32_t tank_state, const bool sensor_resin,
                         const int32_t remain_resin, const int32_t resin_temperature);
 
-    explicit PanelPulseTray(BaseItem *parent = nullptr);
+    explicit PanelPulseTray(Widget *parent = nullptr);
 
 private:
     int32_t _last_peeled_count{-1};
@@ -110,8 +110,8 @@ private:
 
     std::shared_ptr<widgets::Image> _icon_tray;        // row1 图标
     std::shared_ptr<widgets::Image> _icon2;            // row2 图标
-    std::shared_ptr<ConsumeText>    _label_tray_text;  // row1 txt
-    std::shared_ptr<ConsumeText>    _label_mod_status; // row2 txt
+    std::shared_ptr<LvText>    _label_tray_text;  // row1 txt
+    std::shared_ptr<LvText>    _label_mod_status; // row2 txt
 
     std::shared_ptr<MouseArea>      _touch_area;
     std::shared_ptr<widgets::Image> _arrow_right;

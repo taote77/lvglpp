@@ -1,6 +1,6 @@
 #include "InputManager.h"
 
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 
 #include <algorithm>
 #include <utility>
@@ -71,7 +71,7 @@ void InputManager::shutdown()
 
 // ---------------------------------------------------------------- focus scopes
 
-InputManager::ScopeToken InputManager::pushScope(widgets::BaseItem *root, BackHandler back)
+InputManager::ScopeToken InputManager::pushScope(widgets::Widget *root, BackHandler back)
 {
     install();
 
@@ -87,7 +87,7 @@ InputManager::ScopeToken InputManager::pushScope(widgets::BaseItem *root, BackHa
     return scopes_.back().id;
 }
 
-InputManager::ScopeToken InputManager::pushModalScope(widgets::BaseItem *root, BackHandler back)
+InputManager::ScopeToken InputManager::pushModalScope(widgets::Widget *root, BackHandler back)
 {
     const ScopeToken token = pushScope(root, std::move(back));
     if (!scopes_.empty())
@@ -130,7 +130,7 @@ void InputManager::refresh(ScopeToken token)
     }
 }
 
-bool InputManager::refreshScopeContaining(widgets::BaseItem *item)
+bool InputManager::refreshScopeContaining(widgets::Widget *item)
 {
     if (item == nullptr || scopes_.empty())
     {
@@ -147,9 +147,9 @@ bool InputManager::refreshScopeContaining(widgets::BaseItem *item)
     return true;
 }
 
-void InputManager::refreshFor(widgets::BaseItem *item)
+void InputManager::refreshFor(widgets::Widget *item)
 {
-    if (item == nullptr || scopes_.empty() || item->getLvglItem() == nullptr)
+    if (item == nullptr || scopes_.empty() || item->lvObj() == nullptr)
     {
         return;
     }
@@ -160,35 +160,35 @@ void InputManager::refreshFor(widgets::BaseItem *item)
         return;
     }
 
-    const bool visible = item->getVisible();
-    const bool enabled = item->getEnable();
+    const bool visible = item->isVisible();
+    const bool enabled = item->isEnabled();
     if (item->isFocusable() && visible && enabled)
     {
-        if (lv_obj_get_group(item->getLvglItem()) != scope.group)
+        if (lv_obj_get_group(item->lvObj()) != scope.group)
         {
-            lv_group_add_obj(scope.group, item->getLvglItem());
+            lv_group_add_obj(scope.group, item->lvObj());
         }
 
         // Replace a focus sink once a real focusable widget appears.
-        if (scope.sink != nullptr && lv_group_get_focused(scope.group) == scope.sink->getLvglItem())
+        if (scope.sink != nullptr && lv_group_get_focused(scope.group) == scope.sink->lvObj())
         {
-            widgets::BaseItem *sink = scope.sink;
+            widgets::Widget *sink = scope.sink;
             scope.sink              = nullptr;
-            lv_group_remove_obj(sink->getLvglItem());
-            lv_group_focus_obj(item->getLvglItem());
+            lv_group_remove_obj(sink->lvObj());
+            lv_group_focus_obj(item->lvObj());
         } else if (lv_group_get_focused(scope.group) == nullptr)
         {
-            lv_group_focus_obj(item->getLvglItem());
+            lv_group_focus_obj(item->lvObj());
         }
     } else
     {
-        lv_group_remove_obj(item->getLvglItem());
+        lv_group_remove_obj(item->lvObj());
     }
 }
 
-bool InputManager::requestFocus(widgets::BaseItem *item)
+bool InputManager::requestFocus(widgets::Widget *item)
 {
-    if (item == nullptr || item->getLvglItem() == nullptr || scopes_.empty() || !item->isFocusable())
+    if (item == nullptr || item->lvObj() == nullptr || scopes_.empty() || !item->isFocusable())
     {
         return false;
     }
@@ -199,19 +199,19 @@ bool InputManager::requestFocus(widgets::BaseItem *item)
         return false;
     }
 
-    lv_group_add_obj(scope.group, item->getLvglItem());
-    lv_group_focus_obj(item->getLvglItem());
-    return lv_group_get_focused(scope.group) == item->getLvglItem();
+    lv_group_add_obj(scope.group, item->lvObj());
+    lv_group_focus_obj(item->lvObj());
+    return lv_group_get_focused(scope.group) == item->lvObj();
 }
 
-widgets::BaseItem *InputManager::focusedItem() const
+widgets::Widget *InputManager::focusedItem() const
 {
     lv_group_t *group = activeGroup();
     if (group == nullptr)
     {
         return nullptr;
     }
-    return widgets::BaseItem::fromLvglObject(lv_group_get_focused(group));
+    return widgets::Widget::fromLvglObject(lv_group_get_focused(group));
 }
 
 void InputManager::focusFirst()
@@ -254,7 +254,7 @@ void InputManager::activateScope(Scope &scope)
     std::vector<lv_obj_t *> focusables;
     if (scope.root != nullptr)
     {
-        collectFocusables(scope.root->getLvglItem(), focusables);
+        collectFocusables(scope.root->lvObj(), focusables);
     }
 
     for (lv_obj_t *obj : focusables)
@@ -262,11 +262,11 @@ void InputManager::activateScope(Scope &scope)
         lv_group_add_obj(scope.group, obj);
     }
 
-    if (focusables.empty() && scope.root != nullptr && scope.root->getLvglItem() != nullptr)
+    if (focusables.empty() && scope.root != nullptr && scope.root->lvObj() != nullptr)
     {
         // Focus sink: keeps global key routing working in an otherwise empty UI.
         scope.sink = scope.root;
-        lv_group_add_obj(scope.group, scope.root->getLvglItem());
+        lv_group_add_obj(scope.group, scope.root->lvObj());
     }
 
     syncIndevs();
@@ -276,7 +276,7 @@ void InputManager::activateScope(Scope &scope)
         lv_group_focus_obj(focusables.front());
     } else if (scope.sink != nullptr)
     {
-        lv_group_focus_obj(scope.sink->getLvglItem());
+        lv_group_focus_obj(scope.sink->lvObj());
     }
 }
 
@@ -317,9 +317,9 @@ void InputManager::collectFocusables(lv_obj_t *obj, std::vector<lv_obj_t *> &out
 
     if (visible)
     {
-        if (widgets::BaseItem *item = widgets::BaseItem::fromLvglObject(obj); item != nullptr)
+        if (widgets::Widget *item = widgets::Widget::fromLvglObject(obj); item != nullptr)
         {
-            if (item->isFocusable() && item->getEnable())
+            if (item->isFocusable() && item->isEnabled())
             {
                 out.push_back(obj);
             }
@@ -338,15 +338,15 @@ void InputManager::collectFocusables(lv_obj_t *obj, std::vector<lv_obj_t *> &out
     }
 }
 
-bool InputManager::isUnderScope(const Scope &scope, const widgets::BaseItem *item) const
+bool InputManager::isUnderScope(const Scope &scope, const widgets::Widget *item) const
 {
-    if (scope.root == nullptr || scope.root->getLvglItem() == nullptr || item == nullptr || item->getLvglItem() == nullptr)
+    if (scope.root == nullptr || scope.root->lvObj() == nullptr || item == nullptr || item->lvObj() == nullptr)
     {
         return false;
     }
 
-    lv_obj_t *root_obj = scope.root->getLvglItem();
-    for (lv_obj_t *obj = item->getLvglItem(); obj != nullptr; obj = lv_obj_get_parent(obj))
+    lv_obj_t *root_obj = scope.root->lvObj();
+    for (lv_obj_t *obj = item->lvObj(); obj != nullptr; obj = lv_obj_get_parent(obj))
     {
         if (obj == root_obj)
         {
@@ -396,7 +396,7 @@ void InputManager::postKeyRaw(uint32_t raw, bool pressed)
 
 bool InputManager::dispatchKey(widgets::KeyEvent &event)
 {
-    widgets::BaseItem *focused = focusedItem();
+    widgets::Widget *focused = focusedItem();
     if (focused != nullptr)
     {
         focused->dispatchKeyEvent(event);

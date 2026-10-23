@@ -6,7 +6,7 @@ Description:圆角按钮
 #ifndef LVGLPP_PUSHBUTTON_H
 #define LVGLPP_PUSHBUTTON_H
 
-#include "BaseItem.h"
+#include "Widget.h"
 #include "Image.h"
 #include "LvText.h"
 #include <chrono>
@@ -16,7 +16,7 @@ Description:圆角按钮
 
 namespace lvglpp::widgets {
 
-class PushButton : public BaseItem
+class PushButton : public Widget
 {
 public:
     enum ColorStyle {
@@ -28,9 +28,9 @@ public:
         Red,
         DarkGray,
     };
-    PushButton(int width, int height, ColorStyle type, const std::string &strMsg, BaseItem *parent);
+    PushButton(int width, int height, ColorStyle type, const std::string &strMsg, Widget *parent);
 
-    PushButton(int width, int height, ColorStyle type, const std::string &strMsg, const std::string &strImgPath, BaseItem *parent);
+    PushButton(int width, int height, ColorStyle type, const std::string &strMsg, const std::string &strImgPath, Widget *parent);
 
     void setImagePos(int x, int y);
 
@@ -44,7 +44,7 @@ public:
 
     void setTextMsg(const std::string &str);
 
-    void setEnable(bool enable) override;
+    void setEnabled(bool enable) override;
 
     void changeImageAsset(const std::string &assetPath);
 

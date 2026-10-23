@@ -1,13 +1,13 @@
 #ifndef LVGLPP_LVTEXT_H
 #define LVGLPP_LVTEXT_H
 
-#include "BaseItem.h"
+#include "Widget.h"
 #include "lvgl.h"
 #include <string>
 
 namespace lvglpp::widgets {
 
-class LvText : public BaseItem
+class LvText : public Widget
 {
 public:
     enum TextStyle {
@@ -36,61 +36,65 @@ public:
         int      width = 0;
     };
 
-    LvText(const std::string &strMsg, uint32_t clr, BaseItem *parent, TextStyle style = TextStyle::FontSize20, FontType type = FontType::Auto);
+    LvText(const std::string &strMsg, uint32_t clr, Widget *parent, TextStyle style = TextStyle::FontSize20, FontType type = FontType::Auto);
 
     ~LvText() override;
-    /**
-     * 设置文本内容
-     * @param strMsg
-     */
+
+    /// Set the source text. The displayed text may be truncated by setMaxLen()
+    /// or setLongMode(); getText() still returns the original string.
     void setText(const std::string &strMsg);
 
     const std::string &getText() const
     {
         return text_;
     }
-    /**
-     * 设置文本颜色
-     * @param clr
-     */
+
     void setTextClr(uint32_t clr);
 
     void setTextAlign(lv_text_align_t align);
 
     void setTextOpa(lv_opa_t opa);
-    /**
-     * 字体重渲染，用于局部文本显示不同的颜色
-     * @param enable
-     */
+
+    /// Enable LVGL recolor markup (#RRGGBB ... #). Automatic truncation is
+    /// disabled while recolor is enabled so markup is never cut in half.
     void setReColorEnable(bool enable);
+
     /**
-     * 设置文本显示的最大长度，过长时中间省略显示
-     * @param n
+     * Limit the displayed text to n user-perceived characters, inserting
+     * "..." in the middle when it does not fit. n <= 0 disables the limit.
      */
     void setMaxLen(int n);
 
+    /// Width of the text currently rendered (maximum line width).
     int getDisplayTextWidth() const;
 
-    void setEnable(bool enable) override;
-
+    /// Pixel-width based ellipsis. Applies per line and keeps the rendered
+    /// text within maxWidth whenever possible.
     void setLongMode(int maxWidth, LongMode longMode);
 
-    /// Set long mode by LVGL constant (e.g. LV_LABEL_LONG_WRAP, LV_LABEL_LONG_SCROLL)
-    void setLongMode(int mode);
+    /// Set the native LVGL label long mode (wrap/dots/scroll/...).
+    void setLongMode(lv_label_long_mode_t mode);
 
 private:
-    std::string getLongModeStr(std::string src);
+    void             refreshDisplayText();
+    std::string      buildDisplayText(const std::string &text) const;
+    std::string      applyCharLimit(const std::string &text, int maxClusters) const;
+    std::string      applyPixelLimit(const std::string &text) const;
+    std::string      ellipsizeLine(const std::string &line, LongMode mode) const;
+    int              measure(const char *text, uint32_t bytes) const;
+    int              measureLine(const std::string &line) const;
+    int              letterSpace() const;
+    const lv_font_t *measurementFont() const;
 
-    std::string    text_;
-    int            max_len_;
-    TextStyle      text_style_;
-    FontType       font_type_;
-    lv_font_t      font_;
-    LongModeStruct long_mode_;
+    std::string      text_;
+    int              max_len_ = -1;
+    LongModeStruct   long_mode_{};
+    const lv_font_t *font_    = nullptr;
+    bool             recolor_ = false;
 };
-// Modern aliases
-using Label       = LvText;
-using ConsumeText = LvText; // backward compatibility
+
+// Modern alias
+using Label = LvText;
 
 } // namespace lvglpp::widgets
 

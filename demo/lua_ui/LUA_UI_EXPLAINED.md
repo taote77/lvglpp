@@ -29,7 +29,7 @@ Lua 脚本就是一个文本文件，里面写的是 Lua 代码。这些代码�
                ▼
 ┌─────────────────────────────────────────────────────────────┐
 │     3. 创建根控件 (root)                         │
-│     root_item_ = new BaseItem()                   │
+│     root_item_ = new Widget()                   │
 │     - 800x480 的容器                              │
 │     - 所有其他控件的父容器                          │
 └──────────────┬────────────────────────────────────────────┘
@@ -117,7 +117,7 @@ void LvglLuaBind::initialize() {
 
 ```cpp
 // main.cpp - onInit() 函数
-root_item_ = new BaseItem(nullptr);
+root_item_ = new Widget(nullptr);
 root_item_->setSize(800, 480);  // 设置窗口大小
 root_item_->setBgColor(0x1a1a1a); // 设置背景色
 

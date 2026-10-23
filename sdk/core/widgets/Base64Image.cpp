@@ -119,14 +119,14 @@ void Base64Resize(const std::string &src, std::string &output, int width, int he
     }
 }
 
-Base64Image::Base64Image(std::string base64, int w, int h, BaseItem *parent) : BaseItem(tools::LvObjFactory::createLvglImage, parent), w_(w), h_(h), base64Data_(std::move(base64))
+Base64Image::Base64Image(std::string base64, int w, int h, Widget *parent) : Widget(tools::LvObjFactory::createLvglImage, parent), w_(w), h_(h), base64Data_(std::move(base64))
 {
     updateImage(base64Data_);
 }
 
 void Base64Image::updateImage(const std::string &data)
 {
-    if (data.empty() || getLvglItem() == nullptr)
+    if (data.empty() || lvObj() == nullptr)
     {
         return;
     }
@@ -189,7 +189,7 @@ void Base64Image::updateImage(const std::string &data)
     state->dsc.data          = draw_buf->data;
 
     // Switch LVGL to the new descriptor before releasing the previous state.
-    lv_image_set_src(getLvglItem(), &state->dsc);
+    lv_image_set_src(lvObj(), &state->dsc);
     setObjectKeepalive("base64image.dsc", state);
     image_state_ = std::move(state);
 }

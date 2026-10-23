@@ -4,7 +4,7 @@ namespace lvglpp::widgets {
 
 Text::Text(const std::string &strMsg, //
            uint32_t           clr,    //
-           BaseItem          *parent, //
+           Widget          *parent, //
            LvText::TextStyle  style,  //
            FontType           type)             //
     : lvglpp::widgets::LvText(strMsg, clr, parent, style, type)

@@ -1,6 +1,6 @@
 #include "TopDrawer.h"
 #include "core/sys/UiConfig.h"
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 #include "core/base/LvObjFactory.h"
 #include "core/widgets/PageIndicator.h"
 #include "theme/form_design.h"
@@ -10,7 +10,7 @@
 namespace lvglpp::ui::page {
 using namespace form::design;
 
-TopDrawer::TopDrawer(BaseItem *parent) : BaseItem(tools::LvObjFactory::createLvglSysDialog, parent)
+TopDrawer::TopDrawer(Widget *parent) : Widget(tools::LvObjFactory::createLvglSysDialog, parent)
 {
     const auto &cfg       = sys::UiConfig::instance();
     const int   width     = cfg.width();
@@ -20,15 +20,15 @@ TopDrawer::TopDrawer(BaseItem *parent) : BaseItem(tools::LvObjFactory::createLvg
     setOpacity(0);
     setClip(false);
     setBgColor(CLR_SURFACE);
-    setEnable(false);
+    setEnabled(false);
 
-    bg_item_ = std::make_shared<BaseItem>(this);
+    bg_item_ = std::make_shared<Widget>(this);
     bg_item_->setSize(width, content_height_ - 30);
     bg_item_->setPos(0, -content_height_);
     bg_item_->setOpacity(1);
 
     _page_indicator = std::make_shared<PageIndicator>(bg_item_.get());
-    _page_indicator->setAligment(LV_ALIGN_TOP_MID, 0, 50);
+    _page_indicator->setAlignment(LV_ALIGN_TOP_MID, 0, 50);
     _page_indicator->setPageCount(2);
 
     const int container_width  = std::min(width, 672 + 64 * 2);
@@ -51,7 +51,7 @@ TopDrawer::TopDrawer(BaseItem *parent) : BaseItem(tools::LvObjFactory::createLvg
     touch_area_ = std::make_shared<MouseArea>(this);
     touch_area_->setOpacity(0);
     touch_area_->setSize(300, 60);
-    touch_area_->setAligment(LV_ALIGN_TOP_MID, 0, -10);
+    touch_area_->setAlignment(LV_ALIGN_TOP_MID, 0, -10);
     touch_area_->setMousePressingListener([this](const Point &pt) -> void { changePagePos(pt.y); });
     touch_area_->setMouseReleasedListener([this](const Point &pt) -> void {
         if (pt.y < content_height_ / 2)
@@ -63,15 +63,15 @@ TopDrawer::TopDrawer(BaseItem *parent) : BaseItem(tools::LvObjFactory::createLvg
         }
     });
 
-    _ctrl_panel = std::make_shared<widgets::BaseItem>(this);
+    _ctrl_panel = std::make_shared<widgets::Widget>(this);
     _ctrl_panel->setSize(200, 8);
     _ctrl_panel->setOpacity(1);
 
     _ctrl_panel->setBgColor(design::ThemeColor(design::CLR_SURFACE_CONTAINER_HIGHEST));
 
     _ctrl_panel->setRadius(100);
-    _ctrl_panel->setAligment(LV_ALIGN_TOP_MID, 0, 6);
-    _ctrl_panel->setEnable(false);
+    _ctrl_panel->setAlignment(LV_ALIGN_TOP_MID, 0, 6);
+    _ctrl_panel->setEnabled(false);
 }
 
 void TopDrawer::updateDeviceInfo(void *data)
@@ -108,7 +108,7 @@ void TopDrawer::hide()
     }
     if (touch_area_)
     {
-        touch_area_->setEnable(false);
+        touch_area_->setEnabled(false);
     }
 }
 
@@ -120,7 +120,7 @@ void TopDrawer::show()
     }
     if (touch_area_)
     {
-        touch_area_->setEnable(true);
+        touch_area_->setEnabled(true);
     }
 }
 
@@ -133,7 +133,7 @@ void TopDrawer::changePagePos(int ypos)
     touch_area_->setPos(0, ypos - 30);
     int bar_y = -(ypos / static_cast<double>(content_height_)) * 18 + 6;
 
-    _ctrl_panel->setAligmentTo(*touch_area_, LV_ALIGN_CENTER, 0, bar_y);
+    _ctrl_panel->setAlignmentTo(*touch_area_, LV_ALIGN_CENTER, 0, bar_y);
 
     //        std::cout << "bar_y: " << bar_y<<" " << ypos<< std::endl;
     static auto stepPercentage = [](double input) -> double {
@@ -168,7 +168,7 @@ void TopDrawer::pageEnterAnim()
         auto d = (TopDrawer *)p->var;
         if (d != nullptr)
         {
-            d->setEnable(true);
+            d->setEnabled(true);
         }
     });
     lv_anim_set_values(&a_page_enter, bg_item_->getY() + content_height_, content_height_);
@@ -192,7 +192,7 @@ void TopDrawer::pagePopAnim()
         auto d = (TopDrawer *)p->var;
         if (d != nullptr)
         {
-            d->setEnable(false);
+            d->setEnabled(false);
         }
     });
     lv_anim_set_values(&a_page_pop, bg_item_->getY() + content_height_, 0);

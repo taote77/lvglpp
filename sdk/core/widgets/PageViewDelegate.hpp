@@ -10,7 +10,7 @@ template <typename T>
 class PageViewDelegate : public Delegate<T>
 {
 public:
-    explicit PageViewDelegate(BaseItem *parent = nullptr) : Delegate<T>(parent)
+    explicit PageViewDelegate(Widget *parent = nullptr) : Delegate<T>(parent)
     {}
 
 private:

@@ -10,7 +10,7 @@ using namespace lvglpp::widgets;
 class I18nText : public LvText
 {
 public:
-    I18nText(const std::string &strMsg, uint32_t clr, BaseItem *parent, TextStyle style = TextStyle::FontSize20, FontType type = FontType::Auto);
+    I18nText(const std::string &strMsg, uint32_t clr, Widget *parent, TextStyle style = TextStyle::FontSize20, FontType type = FontType::Auto);
 
     ~I18nText() override;
 

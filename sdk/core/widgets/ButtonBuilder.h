@@ -28,7 +28,7 @@ public:
     ButtonBuilder &withOnClickedListener(const std::function<void()> &cb);
 
     // 创建并返回 PushButton 对象
-    std::unique_ptr<PushButton> build(BaseItem *parent);
+    std::unique_ptr<PushButton> build(Widget *parent);
 
 private:
     int                    width_  = 100;

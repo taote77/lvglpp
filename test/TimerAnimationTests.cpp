@@ -1,7 +1,7 @@
 #include "TestFramework.h"
 #include "core/sys/Animation.h"
 #include "core/sys/Timer.h"
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 #include "lvgl.h"
 
 #include <memory>
@@ -95,11 +95,11 @@ TEST(Timer_can_restart_after_finish)
 
 TEST(Animation_start_and_stop)
 {
-    BaseItem  target;
+    Widget  target;
     Animation anim;
     int       ticks = 0;
 
-    anim.setTarget(&target).setDuration(1000).setValues(0, 100).setExecCallback([&ticks](BaseItem *, int32_t) { ticks++; });
+    anim.setTarget(&target).setDuration(1000).setValues(0, 100).setExecCallback([&ticks](Widget *, int32_t) { ticks++; });
 
     anim.start();
     CHECK_TRUE(anim.isRunning());
@@ -111,11 +111,11 @@ TEST(Animation_start_and_stop)
 
 TEST(Animation_stops_when_target_is_destroyed)
 {
-    auto      target = std::make_unique<BaseItem>();
+    auto      target = std::make_unique<Widget>();
     Animation anim;
     int       ticks = 0;
 
-    anim.setTarget(target.get()).setDuration(1000).setValues(0, 100).setRepeatCount(LV_ANIM_REPEAT_INFINITE).setExecCallback([&ticks](BaseItem *, int32_t) { ticks++; });
+    anim.setTarget(target.get()).setDuration(1000).setValues(0, 100).setRepeatCount(LV_ANIM_REPEAT_INFINITE).setExecCallback([&ticks](Widget *, int32_t) { ticks++; });
 
     anim.start();
     CHECK_TRUE(anim.isRunning());
@@ -127,11 +127,11 @@ TEST(Animation_stops_when_target_is_destroyed)
 
 TEST(Animation_is_safe_to_move_after_start)
 {
-    BaseItem  target;
+    Widget  target;
     Animation anim;
     int       ticks = 0;
 
-    anim.setTarget(&target).setDuration(1000).setValues(0, 100).setRepeatCount(LV_ANIM_REPEAT_INFINITE).setExecCallback([&ticks](BaseItem *, int32_t) { ticks++; });
+    anim.setTarget(&target).setDuration(1000).setValues(0, 100).setRepeatCount(LV_ANIM_REPEAT_INFINITE).setExecCallback([&ticks](Widget *, int32_t) { ticks++; });
 
     anim.start();
 

@@ -2,7 +2,7 @@
 #define SMART_HOME_THERMOSTAT_WIDGET_H
 
 #include "core/widgets/Arc.h"
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 #include "core/widgets/LvText.h"
 #include "core/widgets/PushButton.h"
 #include <functional>
@@ -14,13 +14,13 @@ namespace w = ::lvglpp::widgets;
 namespace lvglpp::ui::widgets {
 
 /// Thermostat control with Arc dial, +/- buttons, mode selector
-class ThermostatWidget : public w::BaseItem
+class ThermostatWidget : public w::Widget
 {
 public:
     enum Mode { Off, Heat, Cool, Auto };
 
     ThermostatWidget(float currentTemp = 22.0f, float targetTemp = 21.0f,
-                     w::BaseItem *parent = nullptr);
+                     w::Widget *parent = nullptr);
 
     void setCurrentTemp(float temp);
     void setTargetTemp(float temp);

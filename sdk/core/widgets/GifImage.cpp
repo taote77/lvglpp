@@ -3,7 +3,7 @@
 
 namespace lvglpp::widgets {
 
-GifImage::GifImage(const std::string &assetPath, BaseItem *parent) : BaseItem(tools::LvObjFactory::createLvglGif, parent)
+GifImage::GifImage(const std::string &assetPath, Widget *parent) : Widget(tools::LvObjFactory::createLvglGif, parent)
 {
     setAsset(assetPath);
 }
@@ -28,21 +28,21 @@ void GifImage::setFsPath(const std::string &lvglPath)
 void GifImage::applyLvglPath(const std::string &lvglPath)
 {
     lvgl_path_ = lvglPath;
-    if (getLvglItem() == nullptr)
+    if (lvObj() == nullptr)
     {
         return;
     }
 
     if (lvgl_path_.empty())
     {
-        lv_gif_set_src(getLvglItem(), nullptr);
+        lv_gif_set_src(lvObj(), nullptr);
         clearObjectKeepalive("gif.src");
         return;
     }
 
     auto persistent = std::make_shared<std::string>(lvgl_path_);
     setObjectKeepalive("gif.src", persistent);
-    lv_gif_set_src(getLvglItem(), persistent->c_str());
+    lv_gif_set_src(lvObj(), persistent->c_str());
 }
 
 } // namespace lvglpp::widgets

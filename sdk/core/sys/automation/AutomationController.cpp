@@ -13,7 +13,7 @@ void AutomationController::_sendClickEvent(lv_obj_t *obj)
     lv_obj_send_event(obj, LV_EVENT_RELEASED, nullptr);
 }
 
-void AutomationController::click(widgets::BaseItem *item)
+void AutomationController::click(widgets::Widget *item)
 {
     if (!item)
         return;
@@ -23,15 +23,15 @@ void AutomationController::click(widgets::BaseItem *item)
     {
         std::this_thread::sleep_for(minInterval - (now - _lastClickTime));
     }
-    _sendClickEvent(item->getLvglItem());
+    _sendClickEvent(item->lvObj());
     _lastClickTime = std::chrono::steady_clock::now();
 }
 
-void AutomationController::longPress(widgets::BaseItem *item, int durationMs)
+void AutomationController::longPress(widgets::Widget *item, int durationMs)
 {
     if (!item)
         return;
-    auto *obj = item->getLvglItem();
+    auto *obj = item->lvObj();
     lv_obj_send_event(obj, LV_EVENT_PRESSED, nullptr);
     if (durationMs > 0)
     {
@@ -41,25 +41,25 @@ void AutomationController::longPress(widgets::BaseItem *item, int durationMs)
     lv_obj_send_event(obj, LV_EVENT_RELEASED, nullptr);
 }
 
-void AutomationController::typeText(widgets::BaseItem *item, const std::string &text)
+void AutomationController::typeText(widgets::Widget *item, const std::string &text)
 {
     if (!item)
         return;
-    lv_label_set_text(item->getLvglItem(), text.c_str());
+    lv_label_set_text(item->lvObj(), text.c_str());
 }
 
-void AutomationController::scrollTo(widgets::BaseItem *item, lv_coord_t x, lv_coord_t y)
+void AutomationController::scrollTo(widgets::Widget *item, lv_coord_t x, lv_coord_t y)
 {
     if (!item)
         return;
-    lv_obj_scroll_to(item->getLvglItem(), x, y, LV_ANIM_ON);
+    lv_obj_scroll_to(item->lvObj(), x, y, LV_ANIM_ON);
 }
 
-void AutomationController::scrollBy(widgets::BaseItem *item, lv_coord_t dx, lv_coord_t dy)
+void AutomationController::scrollBy(widgets::Widget *item, lv_coord_t dx, lv_coord_t dy)
 {
     if (!item)
         return;
-    lv_obj_scroll_by(item->getLvglItem(), dx, dy, LV_ANIM_ON);
+    lv_obj_scroll_by(item->lvObj(), dx, dy, LV_ANIM_ON);
 }
 
 void AutomationController::clickAt(lv_coord_t x, lv_coord_t y)
@@ -71,25 +71,25 @@ void AutomationController::clickAt(lv_coord_t x, lv_coord_t y)
         _sendClickEvent(obj);
 }
 
-widgets::BaseItem *AutomationController::goBack(widgets::BaseItem *current)
+widgets::Widget *AutomationController::goBack(widgets::Widget *current)
 {
     return current ? current->getParent() : nullptr;
 }
 
-std::string AutomationController::getText(widgets::BaseItem *item)
+std::string AutomationController::getText(widgets::Widget *item)
 {
     if (!item)
         return {};
-    return lv_label_get_text(item->getLvglItem());
+    return lv_label_get_text(item->lvObj());
 }
 
-widgets::BaseItem *AutomationController::hitTest(lv_coord_t x, lv_coord_t y)
+widgets::Widget *AutomationController::hitTest(lv_coord_t x, lv_coord_t y)
 {
     lv_point_t pt  = {x, y};
     lv_obj_t  *obj = lv_indev_search_obj(lv_layer_top(), &pt);
     if (!obj)
         return nullptr;
-    return widgets::BaseItem::fromLvglObject(obj);
+    return widgets::Widget::fromLvglObject(obj);
 }
 
 } // namespace lvglpp::sys

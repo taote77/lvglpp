@@ -1,4 +1,4 @@
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 #include "core/widgets/PushButton.h"
 #include "core/widgets/ScrollItem.h"
 #include <vector>
@@ -9,7 +9,7 @@ using namespace lvglpp::widgets;
 class SwipeView : public ScrollItem
 {
 public:
-    explicit SwipeView(BaseItem *parent = nullptr);
+    explicit SwipeView(Widget *parent = nullptr);
 
     ~SwipeView();
 
@@ -20,7 +20,7 @@ public:
      */
     void enableBounce(bool enable);
 
-    void addPage(std::shared_ptr<BaseItem> page);
+    void addPage(std::shared_ptr<Widget> page);
 
     void enableNavButtons(bool enable = true);
 
@@ -49,7 +49,7 @@ private:
 
 private:
     int                                    _page_count = 0;
-    std::vector<std::shared_ptr<BaseItem>> _pages;
+    std::vector<std::shared_ptr<Widget>> _pages;
 
     std::shared_ptr<RoundedButton> _left_btn;
     std::shared_ptr<RoundedButton> _right_btn;

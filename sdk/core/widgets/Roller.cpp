@@ -3,42 +3,42 @@
 
 namespace lvglpp::widgets {
 
-Roller::Roller(BaseItem *parent)
-    : BaseItem(tools::LvObjFactory::createLvglRoller, parent)
+Roller::Roller(Widget *parent)
+    : Widget(tools::LvObjFactory::createLvglRoller, parent)
 {
     setFocusable(true);
 }
 
 void Roller::setOptions(const std::string &options, lv_roller_mode_t mode)
 {
-    lv_roller_set_options(getLvglItem(), options.c_str(), mode);
+    lv_roller_set_options(lvObj(), options.c_str(), mode);
 }
 
 void Roller::setSelected(uint32_t index, bool animate)
 {
-    lv_roller_set_selected(getLvglItem(), index, animate ? LV_ANIM_ON : LV_ANIM_OFF);
+    lv_roller_set_selected(lvObj(), index, animate ? LV_ANIM_ON : LV_ANIM_OFF);
 }
 
 uint32_t Roller::selected() const
 {
-    return lv_roller_get_selected(getLvglItem());
+    return lv_roller_get_selected(lvObj());
 }
 
 std::string Roller::selectedText() const
 {
     char buf[256] = {};
-    lv_roller_get_selected_str(getLvglItem(), buf, sizeof(buf));
+    lv_roller_get_selected_str(lvObj(), buf, sizeof(buf));
     return std::string(buf);
 }
 
 uint32_t Roller::optionCount() const
 {
-    return lv_roller_get_option_count(getLvglItem());
+    return lv_roller_get_option_count(lvObj());
 }
 
 void Roller::setVisibleRowCount(uint32_t rows)
 {
-    lv_roller_set_visible_row_count(getLvglItem(), rows);
+    lv_roller_set_visible_row_count(lvObj(), rows);
 }
 
 } // namespace lvglpp::widgets

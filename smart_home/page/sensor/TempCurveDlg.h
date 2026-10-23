@@ -2,7 +2,7 @@
 #define TEMP_CURVE_DLG_H
 
 #include "core/widgets/BaseDialog.h"
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 #include "core/widgets/Image.h"
 #include "core/widgets/LvChart.h"
 #include "core/widgets/LvText.h"
@@ -29,7 +29,7 @@ private:
     static void draw_event_cb(lv_event_t *e);
 
 private:
-    std::shared_ptr<widgets::BaseItem> bg_;
+    std::shared_ptr<widgets::Widget> bg_;
     std::shared_ptr<widgets::Image>    back_icon_;
     std::shared_ptr<widgets::LvText>   peak_force_curve_label;
 

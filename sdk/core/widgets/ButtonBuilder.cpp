@@ -53,7 +53,7 @@ ButtonBuilder &ButtonBuilder::withOnClickedListener(const std::function<void()> 
 }
 
 // 创建并返回 PushButton 对象
-std::unique_ptr<PushButton> ButtonBuilder::build(BaseItem *parent)
+std::unique_ptr<PushButton> ButtonBuilder::build(Widget *parent)
 {
     auto button = std::make_unique<PushButton>(width_, height_, type_, text_, image_path_, parent);
 

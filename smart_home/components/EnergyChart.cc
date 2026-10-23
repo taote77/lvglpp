@@ -7,8 +7,8 @@ namespace lvglpp::ui::widgets {
 
 using namespace form::design;
 
-EnergyChart::EnergyChart(const std::string &title, w::BaseItem *parent)
-    : w::BaseItem(parent)
+EnergyChart::EnergyChart(const std::string &title, w::Widget *parent)
+    : w::Widget(parent)
 {
     setSize(380, 220);
     setBgColor(CLR_SURFACE_CONTAINER);
@@ -16,16 +16,16 @@ EnergyChart::EnergyChart(const std::string &title, w::BaseItem *parent)
 
     // Title
     _titleLabel = std::make_unique<w::LvText>(title, CLR_ON_SURFACE_VARIANT_0, this, w::LvText::FontSize22Bold);
-    _titleLabel->setAligment(LV_ALIGN_TOP_LEFT, 12, 8);
+    _titleLabel->setAlignment(LV_ALIGN_TOP_LEFT, 12, 8);
 
     // Total kWh
     _totalLabel = std::make_unique<w::LvText>(lvTrFmt("common_energy_kwh", 0.0f), CLR_PRIMARY, this, w::LvText::FontSize28Bold);
-    _totalLabel->setAligment(LV_ALIGN_TOP_RIGHT, -12, 8);
+    _totalLabel->setAlignment(LV_ALIGN_TOP_RIGHT, -12, 8);
 
     // Chart
     _chart = std::make_unique<w::LvChart>(this);
     _chart->setSize(350, 120);
-    _chart->setAligment(LV_ALIGN_TOP_MID, 0, 40);
+    _chart->setAlignment(LV_ALIGN_TOP_MID, 0, 40);
     _chart->setType(w::LvChart::Bar);
     _chart->setPointCount(7);
     _chart->setAxisRange(w::LvChart::PrimaryY, 0, 50);
@@ -35,10 +35,10 @@ EnergyChart::EnergyChart(const std::string &title, w::BaseItem *parent)
 
     // Day/Week toggle buttons
     _dayBtn = std::make_unique<w::PushButton>(50, 28, w::PushButton::Blue, lvTr("common_day"), this);
-    _dayBtn->setAligment(LV_ALIGN_BOTTOM_LEFT, 12, -8);
+    _dayBtn->setAlignment(LV_ALIGN_BOTTOM_LEFT, 12, -8);
 
     _weekBtn = std::make_unique<w::PushButton>(50, 28, w::PushButton::Gray, lvTr("common_week"), this);
-    _weekBtn->setAligment(LV_ALIGN_BOTTOM_LEFT, 68, -8);
+    _weekBtn->setAlignment(LV_ALIGN_BOTTOM_LEFT, 68, -8);
 }
 
 void EnergyChart::setData(const std::vector<int32_t> &values, const std::vector<std::string> &) {

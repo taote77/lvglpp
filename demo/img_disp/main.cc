@@ -1,4 +1,4 @@
-#include "Widget.h"
+#include "ImgDispActivity.h"
 #include "core/sys/Application.h"
 #include "core/sys/StackView.h"
 #include <pthread.h>
@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    lvglpp::sys::StackView::getInstance().pushView(std::make_shared<Widget>());
+    lvglpp::sys::StackView::getInstance().pushView(std::make_shared<ImgDispActivity>());
 
     return app->exec();
 }

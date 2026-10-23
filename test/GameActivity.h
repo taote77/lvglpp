@@ -20,7 +20,7 @@ public:
     struct GameState {
         std::list<lv_point_t> body_indexs;
 
-        std::vector<std::shared_ptr<widgets::BaseItem>> _images; // 蛇体部件集合
+        std::vector<std::shared_ptr<widgets::Widget>> _images; // 蛇体部件集合
 
         bool       exist_food{false}; // 是否有食物
         lv_point_t food{0, 0};        // 食物部件
@@ -88,7 +88,7 @@ private:
     std::shared_ptr<widgets::RoundedButton> _btn_right;
     std::shared_ptr<widgets::RoundedButton> _btn_down;
 
-    std::shared_ptr<widgets::BaseItem> _canvas;
+    std::shared_ptr<widgets::Widget> _canvas;
 
     GameState _game_state;
 

@@ -9,7 +9,7 @@ namespace wrapper::widgets {
 class LineEditor : public StringEditor
 {
 public:
-    explicit LineEditor(BaseItem *parent = nullptr);
+    explicit LineEditor(Widget *parent = nullptr);
 
     void setUnit(const std::string &str);
 
@@ -17,8 +17,8 @@ protected:
     void draw(const std::string &display) override;
 
 private:
-    std::shared_ptr<ConsumeText> display_label_;
-    std::shared_ptr<ConsumeText> unit_label_;
+    std::shared_ptr<LvText> display_label_;
+    std::shared_ptr<LvText> unit_label_;
     std::string                  unit_str_;
 };
 

@@ -1,16 +1,16 @@
 #ifndef LVGLPP_QRCODE_H
 #define LVGLPP_QRCODE_H
 
-#include "BaseItem.h"
+#include "Widget.h"
 #include "Image.h"
 #include <memory>
 
 namespace lvglpp::widgets {
 
-class QrCode : public BaseItem
+class QrCode : public Widget
 {
 public:
-    explicit QrCode(uint32_t length, lv_color_t back_color, lv_color_t front_color, BaseItem *parent = nullptr);
+    explicit QrCode(uint32_t length, lv_color_t back_color, lv_color_t front_color, Widget *parent = nullptr);
 
     void setData(const std::string &data);
 

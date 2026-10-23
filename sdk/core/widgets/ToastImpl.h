@@ -2,14 +2,14 @@
 #ifndef LVGLPP_TOASTIMPL_H
 #define LVGLPP_TOASTIMPL_H
 
-#include "BaseItem.h"
+#include "Widget.h"
 #include "Image.h"
 #include "LvText.h"
 #include <memory>
 
 namespace lvglpp::widgets {
 
-class ToastImpl : public BaseItem
+class ToastImpl : public Widget
 {
 public:
     enum IconType { Succeed, Error, Warn };

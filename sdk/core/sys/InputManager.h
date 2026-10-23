@@ -13,7 +13,7 @@
 #include <vector>
 
 namespace lvglpp::widgets {
-class BaseItem;
+class Widget;
 }
 
 namespace lvglpp::sys {
@@ -49,10 +49,10 @@ public:
     }
 
     /// Activity-level focus scope.
-    ScopeToken pushScope(widgets::BaseItem *root, BackHandler back = {});
+    ScopeToken pushScope(widgets::Widget *root, BackHandler back = {});
 
     /// Modal (dialog) focus scope.
-    ScopeToken pushModalScope(widgets::BaseItem *root, BackHandler back = {});
+    ScopeToken pushModalScope(widgets::Widget *root, BackHandler back = {});
 
     void popScope(ScopeToken token);
 
@@ -64,14 +64,14 @@ public:
      * visibility changes). Does nothing when a modal scope is on top.
      * Returns true when a scope was refreshed.
      */
-    bool refreshScopeContaining(widgets::BaseItem *item);
+    bool refreshScopeContaining(widgets::Widget *item);
 
     /// Add/remove one widget when its focusable flag changes.
-    void refreshFor(widgets::BaseItem *item);
+    void refreshFor(widgets::Widget *item);
 
-    bool requestFocus(widgets::BaseItem *item);
+    bool requestFocus(widgets::Widget *item);
 
-    widgets::BaseItem *focusedItem() const;
+    widgets::Widget *focusedItem() const;
 
     void focusFirst();
 
@@ -107,11 +107,11 @@ private:
 
     struct Scope {
         ScopeToken         id    = 0;
-        widgets::BaseItem *root  = nullptr;
+        widgets::Widget *root  = nullptr;
         lv_group_t        *group = nullptr;
         bool               modal = false;
         BackHandler        back;
-        widgets::BaseItem *sink = nullptr;
+        widgets::Widget *sink = nullptr;
     };
 
     struct GlobalSlot {
@@ -137,7 +137,7 @@ private:
 
     void collectFocusables(lv_obj_t *obj, std::vector<lv_obj_t *> &out) const;
 
-    bool isUnderScope(const Scope &scope, const widgets::BaseItem *item) const;
+    bool isUnderScope(const Scope &scope, const widgets::Widget *item) const;
 
     void removeGlobalHandler(std::uint64_t id);
 

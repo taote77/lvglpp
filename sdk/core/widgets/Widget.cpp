@@ -1,4 +1,4 @@
-#include "BaseItem.h"
+#include "Widget.h"
 
 #include "GridLayout.h"
 #include "core/base/LvObjFactory.h"
@@ -8,10 +8,56 @@
 #include "core/sys/UiConfig.h"
 
 #include <algorithm>
+#include <cstdio>
 #include <iostream>
 #include <typeinfo>
 #include <unordered_map>
 #include <utility>
+
+namespace {
+constexpr std::uint32_t kKeyRepeatMs             = 250;
+constexpr int           kMaxAncestorWalk         = 64;
+constexpr lv_coord_t    kMaxRequestedWidthSanity = 4096;
+
+std::string jsonEscape(const std::string &value)
+{
+    std::string out;
+    out.reserve(value.size());
+    for (const unsigned char c : value)
+    {
+        switch (c)
+        {
+        case '"':
+            out += "\\\"";
+            break;
+        case '\\':
+            out += "\\\\";
+            break;
+        case '\n':
+            out += "\\n";
+            break;
+        case '\r':
+            out += "\\r";
+            break;
+        case '\t':
+            out += "\\t";
+            break;
+        default:
+            if (c < 0x20)
+            {
+                char buffer[7];
+                std::snprintf(buffer, sizeof(buffer), "\\u%04X", c);
+                out += buffer;
+            } else
+            {
+                out += static_cast<char>(c);
+            }
+            break;
+        }
+    }
+    return out;
+}
+} // namespace
 
 #if LVGLPP_ENABLE_RTL
 
@@ -66,19 +112,28 @@ namespace lvglpp::widgets {
 
 /**
  * One registry entry per lv_obj. It survives wrapper destruction and is
- * released by the LV_EVENT_DELETE watchdog. Because it can outlive the
+ * released by the single LV_EVENT_DELETE watchdog. Because it can outlive the
  * wrapper it also owns "keepalive" data that LVGL stores by raw pointer
  * (grid templates, image source strings, styles).
+ *
+ * More than one wrapper can adopt the same lv_obj (e.g. re-wrapping a tab
+ * page). All of them are tracked here; the newest one is canonical for
+ * fromLvglObject().
  */
-struct BaseItemRegistryEntry {
-    lv_obj_t                                              *obj     = nullptr;
-    BaseItem                                              *wrapper = nullptr;
+struct WidgetRegistryEntry {
+    struct WrapperRef {
+        Widget              *widget = nullptr;
+        std::weak_ptr<bool>  alive;
+    };
+
+    lv_obj_t                                              *obj = nullptr;
+    std::vector<WrapperRef>                                wrappers;
     std::unordered_map<std::string, std::shared_ptr<void>> keepalive;
 };
 
 namespace {
 
-using Registry = std::unordered_map<lv_obj_t *, BaseItemRegistryEntry *>;
+using Registry = std::unordered_map<lv_obj_t *, WidgetRegistryEntry *>;
 
 Registry &registry()
 {
@@ -86,7 +141,7 @@ Registry &registry()
     return map;
 }
 
-BaseItemRegistryEntry *entryFor(lv_obj_t *obj)
+WidgetRegistryEntry *entryFor(lv_obj_t *obj)
 {
     auto it = registry().find(obj);
     return it == registry().end() ? nullptr : it->second;
@@ -96,24 +151,22 @@ BaseItemRegistryEntry *entryFor(lv_obj_t *obj)
 
 // ---------------------------------------------------------------- lifetime
 
-BaseItem::BaseItem(BaseItem *parentItem) : BaseItem(tools::LvObjFactory::createLvglItem, parentItem)
+Widget::Widget(Widget *parentItem) : Widget(tools::LvObjFactory::createLvglItem, parentItem)
 {}
 
-BaseItem::BaseItem(Creator creator, BaseItem *parentItem)
+Widget::Widget(Creator creator, Widget *parentItem)
 {
     initItem(creator, parentItem);
 }
 
-BaseItem::BaseItem(AdoptExistingTag, lv_obj_t *existing, BaseItem *logicalParent, bool takeOwnership)
+Widget::Widget(AdoptExistingTag, lv_obj_t *existing, bool takeOwnership)
 {
-    (void)logicalParent;
     owns_lv_obj_ = takeOwnership;
     attachToLvglObject(existing);
 }
 
-BaseItem::~BaseItem()
+Widget::~Widget()
 {
-    destroying_ = true;
     if (alive_token_)
     {
         *alive_token_ = false;
@@ -131,8 +184,11 @@ BaseItem::~BaseItem()
     lv_obj_t *obj = lv_base_ptr_;
     if (registry_entry_ != nullptr)
     {
-        // The entry may outlive the wrapper; the watchdog will release it.
-        registry_entry_->wrapper = nullptr;
+        // The entry may outlive the wrapper (it also owns keepalive data).
+        auto &wrappers = registry_entry_->wrappers;
+        wrappers.erase(std::remove_if(wrappers.begin(), wrappers.end(),
+                                      [this](const WidgetRegistryEntry::WrapperRef &ref) { return ref.widget == this; }),
+                       wrappers.end());
     }
     lv_base_ptr_ = nullptr;
 
@@ -151,17 +207,17 @@ BaseItem::~BaseItem()
     registry_entry_ = nullptr;
 }
 
-void BaseItem::initItem(const Creator &creator, BaseItem *parentItem)
+void Widget::initItem(const Creator &creator, Widget *parentItem)
 {
     lv_obj_t *expected_parent  = lv_scr_act();
-    BaseItem *effective_parent = parentItem;
+    Widget   *effective_parent = parentItem;
 
     if (effective_parent != nullptr)
     {
-        expected_parent = effective_parent->getLvglItem();
+        expected_parent = effective_parent->lvObj();
         if (expected_parent == nullptr)
         {
-            LOG_WARN() << "BaseItem parent has no lv_obj; attaching to the active screen";
+            LOG_WARN() << "Widget parent has no lv_obj; attaching to the active screen";
             effective_parent = nullptr;
             expected_parent  = lv_scr_act();
         }
@@ -169,14 +225,14 @@ void BaseItem::initItem(const Creator &creator, BaseItem *parentItem)
 
     if (!creator)
     {
-        LOG_ERROR() << "BaseItem created without a creator";
+        LOG_ERROR() << "Widget created without a creator";
         return;
     }
 
     lv_obj_t *obj = creator(expected_parent);
     if (obj == nullptr)
     {
-        LOG_ERROR() << "BaseItem creator returned nullptr";
+        LOG_ERROR() << "Widget creator returned nullptr";
         return;
     }
 
@@ -187,7 +243,7 @@ void BaseItem::initItem(const Creator &creator, BaseItem *parentItem)
     attachToLvglObject(obj);
 }
 
-void BaseItem::attachToLvglObject(lv_obj_t *obj)
+void Widget::attachToLvglObject(lv_obj_t *obj)
 {
     lv_base_ptr_ = obj;
     if (obj == nullptr)
@@ -195,21 +251,24 @@ void BaseItem::attachToLvglObject(lv_obj_t *obj)
         return;
     }
 
-    auto *entry     = new BaseItemRegistryEntry();
-    entry->obj      = obj;
-    entry->wrapper  = this;
-    registry_entry_ = entry;
-
-    auto existing = registry().find(obj);
-    if (existing != registry().end() && existing->second != nullptr && existing->second->wrapper != nullptr)
+    WidgetRegistryEntry *entry = entryFor(obj);
+    if (entry == nullptr)
     {
-        LOG_WARN() << "multiple BaseItem wrappers for one lv_obj; the newest is canonical";
-    }
-    registry()[obj] = entry;
+        entry           = new WidgetRegistryEntry();
+        entry->obj      = obj;
+        registry()[obj] = entry;
 
-    // The watchdog is registered with the Entry as user data (never `this`), so
-    // the wrapper destructor's callback sweep cannot remove it.
-    lv_obj_add_event_cb(obj, &BaseItem::objectDeleteWatchdog, LV_EVENT_DELETE, entry);
+        // The watchdog is registered with the Entry as user data (never
+        // `this`), so the wrapper destructor's callback sweep cannot remove
+        // it and only one watchdog exists per lv_obj.
+        lv_obj_add_event_cb(obj, &Widget::objectDeleteWatchdog, LV_EVENT_DELETE, entry);
+    } else if (!entry->wrappers.empty())
+    {
+        LOG_WARN() << "multiple Widget wrappers for one lv_obj; the newest is canonical";
+    }
+
+    entry->wrappers.push_back(WidgetRegistryEntry::WrapperRef{this, alive_token_});
+    registry_entry_ = entry;
 
     // Legacy callbacks are always available.
     ensureEventHandler(LV_EVENT_CLICKED);
@@ -223,27 +282,39 @@ void BaseItem::attachToLvglObject(lv_obj_t *obj)
     ensureEventHandler(LV_EVENT_DEFOCUSED);
 }
 
-void BaseItem::objectDeleteWatchdog(lv_event_t *e)
+void Widget::objectDeleteWatchdog(lv_event_t *e)
 {
-    auto *entry = static_cast<BaseItemRegistryEntry *>(lv_event_get_user_data(e));
+    auto *entry = static_cast<WidgetRegistryEntry *>(lv_event_get_user_data(e));
     if (entry == nullptr)
     {
         return;
     }
 
-    BaseItem *wrapper = entry->wrapper;
-    entry->wrapper    = nullptr;
-    registry().erase(entry->obj);
-
-    if (wrapper != nullptr)
+    auto it = registry().find(entry->obj);
+    if (it != registry().end() && it->second == entry)
     {
-        wrapper->handleUnderlyingObjectDeleted();
+        registry().erase(it);
+    }
+
+    // Copy the list first: handleUnderlyingObjectDeleted() must not observe a
+    // half-destroyed entry, and the entry itself is released at the end.
+    std::vector<WidgetRegistryEntry::WrapperRef> wrappers = std::move(entry->wrappers);
+    entry->wrappers.clear();
+    for (const auto &ref : wrappers)
+    {
+        // An observer of an earlier wrapper may have destroyed this wrapper;
+        // the alive token catches that before dereferencing it.
+        const auto alive = ref.alive.lock();
+        if (ref.widget != nullptr && alive && *alive)
+        {
+            ref.widget->handleUnderlyingObjectDeleted();
+        }
     }
 
     delete entry;
 }
 
-void BaseItem::handleUnderlyingObjectDeleted()
+void Widget::handleUnderlyingObjectDeleted()
 {
     lv_base_ptr_    = nullptr;
     registry_entry_ = nullptr;
@@ -291,24 +362,26 @@ void BaseItem::handleUnderlyingObjectDeleted()
     onLvglObjectDeleted();
 }
 
-BaseItem *BaseItem::fromLvglObject(lv_obj_t *obj)
+Widget *Widget::fromLvglObject(lv_obj_t *obj)
 {
     if (obj == nullptr)
     {
         return nullptr;
     }
     auto *entry = entryFor(obj);
-    return entry == nullptr ? nullptr : entry->wrapper;
-}
+    if (entry == nullptr || entry->wrappers.empty())
+    {
+        return nullptr;
+    }
 
-void BaseItem::setLvglItem(lv_obj_t *ptr)
-{
-    lv_base_ptr_ = ptr;
+    const auto &ref   = entry->wrappers.back();
+    const auto  alive = ref.alive.lock();
+    return alive && *alive ? ref.widget : nullptr;
 }
 
 // ---------------------------------------------------------------- keepalive
 
-void BaseItem::setObjectKeepalive(const std::string &key, std::shared_ptr<void> data)
+void Widget::setObjectKeepalive(const std::string &key, std::shared_ptr<void> data)
 {
     if (registry_entry_ != nullptr)
     {
@@ -316,7 +389,7 @@ void BaseItem::setObjectKeepalive(const std::string &key, std::shared_ptr<void> 
     }
 }
 
-void BaseItem::clearObjectKeepalive(const std::string &key)
+void Widget::clearObjectKeepalive(const std::string &key)
 {
     if (registry_entry_ != nullptr)
     {
@@ -326,14 +399,14 @@ void BaseItem::clearObjectKeepalive(const std::string &key)
 
 // ---------------------------------------------------------------- events
 
-std::shared_ptr<detail::ConnectionState> BaseItem::makeConnection(std::function<void()> onDisconnect)
+std::shared_ptr<detail::ConnectionState> Widget::makeConnection(std::function<void()> onDisconnect)
 {
     auto state           = std::make_shared<detail::ConnectionState>();
     state->on_disconnect = std::move(onDisconnect);
     return state;
 }
 
-void BaseItem::ensureEventHandler(lv_event_code_t code)
+void Widget::ensureEventHandler(lv_event_code_t code)
 {
     if (lv_base_ptr_ == nullptr)
     {
@@ -346,7 +419,7 @@ void BaseItem::ensureEventHandler(lv_event_code_t code)
         return;
     }
 
-    auto *dsc = lv_obj_add_event_cb(lv_base_ptr_, &BaseItem::eventTrampoline, code, this);
+    auto *dsc = lv_obj_add_event_cb(lv_base_ptr_, &Widget::eventTrampoline, code, this);
     if (dsc != nullptr)
     {
         registered_codes_.push_back(key);
@@ -354,16 +427,16 @@ void BaseItem::ensureEventHandler(lv_event_code_t code)
     }
 }
 
-void BaseItem::eventTrampoline(lv_event_t *e)
+void Widget::eventTrampoline(lv_event_t *e)
 {
-    auto *self = static_cast<BaseItem *>(lv_event_get_user_data(e));
+    auto *self = static_cast<Widget *>(lv_event_get_user_data(e));
     if (self != nullptr)
     {
         self->dispatchLvglEvent(e);
     }
 }
 
-void BaseItem::dispatchLvglEvent(lv_event_t *e)
+void Widget::dispatchLvglEvent(lv_event_t *e)
 {
     const auto raw_code = lv_event_get_code(e);
     const auto code     = static_cast<lv_event_code_t>(static_cast<int>(raw_code) & ~static_cast<int>(LV_EVENT_PREPROCESS));
@@ -444,87 +517,47 @@ void BaseItem::dispatchLvglEvent(lv_event_t *e)
     }
 }
 
-Connection BaseItem::onClicked(ClickHandler handler)
+Connection Widget::onSimpleEvent(lv_event_code_t code, ClickHandler handler)
 {
-    ensureEventHandler(LV_EVENT_CLICKED);
+    ensureEventHandler(code);
     const auto id    = next_slot_id_++;
-    auto       state = makeConnection([this, token = alive_token_, id]() {
+    auto       state = makeConnection([this, token = alive_token_, id, code]() {
         if (token && *token)
         {
-            removeEventHandler(LV_EVENT_CLICKED, id);
+            removeEventHandler(code, id);
         }
     });
 
-    event_handlers_[static_cast<int>(LV_EVENT_CLICKED)].push_back(EventSlot{id, state, [callback = std::move(handler)](lv_event_t *) {
-                                                                                if (callback)
-                                                                                {
-                                                                                    callback();
-                                                                                }
-                                                                            }});
+    event_handlers_[static_cast<int>(code)].push_back(EventSlot{id, state, [callback = std::move(handler)](lv_event_t *) {
+                                                                   if (callback)
+                                                                   {
+                                                                       callback();
+                                                                   }
+                                                               }});
     return Connection(state);
 }
 
-Connection BaseItem::onPressed(ClickHandler handler)
+Connection Widget::onClicked(ClickHandler handler)
 {
-    ensureEventHandler(LV_EVENT_PRESSED);
-    const auto id    = next_slot_id_++;
-    auto       state = makeConnection([this, token = alive_token_, id]() {
-        if (token && *token)
-        {
-            removeEventHandler(LV_EVENT_PRESSED, id);
-        }
-    });
-
-    event_handlers_[static_cast<int>(LV_EVENT_PRESSED)].push_back(EventSlot{id, state, [callback = std::move(handler)](lv_event_t *) {
-                                                                                if (callback)
-                                                                                {
-                                                                                    callback();
-                                                                                }
-                                                                            }});
-    return Connection(state);
+    return onSimpleEvent(LV_EVENT_CLICKED, std::move(handler));
 }
 
-Connection BaseItem::onReleased(ClickHandler handler)
+Connection Widget::onPressed(ClickHandler handler)
 {
-    ensureEventHandler(LV_EVENT_RELEASED);
-    const auto id    = next_slot_id_++;
-    auto       state = makeConnection([this, token = alive_token_, id]() {
-        if (token && *token)
-        {
-            removeEventHandler(LV_EVENT_RELEASED, id);
-        }
-    });
-
-    event_handlers_[static_cast<int>(LV_EVENT_RELEASED)].push_back(EventSlot{id, state, [callback = std::move(handler)](lv_event_t *) {
-                                                                                 if (callback)
-                                                                                 {
-                                                                                     callback();
-                                                                                 }
-                                                                             }});
-    return Connection(state);
+    return onSimpleEvent(LV_EVENT_PRESSED, std::move(handler));
 }
 
-Connection BaseItem::onLongPressed(ClickHandler handler)
+Connection Widget::onReleased(ClickHandler handler)
 {
-    ensureEventHandler(LV_EVENT_LONG_PRESSED);
-    const auto id    = next_slot_id_++;
-    auto       state = makeConnection([this, token = alive_token_, id]() {
-        if (token && *token)
-        {
-            removeEventHandler(LV_EVENT_LONG_PRESSED, id);
-        }
-    });
-
-    event_handlers_[static_cast<int>(LV_EVENT_LONG_PRESSED)].push_back(EventSlot{id, state, [callback = std::move(handler)](lv_event_t *) {
-                                                                                     if (callback)
-                                                                                     {
-                                                                                         callback();
-                                                                                     }
-                                                                                 }});
-    return Connection(state);
+    return onSimpleEvent(LV_EVENT_RELEASED, std::move(handler));
 }
 
-Connection BaseItem::onKey(KeyHandler handler)
+Connection Widget::onLongPressed(ClickHandler handler)
+{
+    return onSimpleEvent(LV_EVENT_LONG_PRESSED, std::move(handler));
+}
+
+Connection Widget::onKey(KeyHandler handler)
 {
     const auto id    = next_slot_id_++;
     auto       state = makeConnection([this, token = alive_token_, id]() {
@@ -538,7 +571,7 @@ Connection BaseItem::onKey(KeyHandler handler)
     return Connection(state);
 }
 
-Connection BaseItem::onFocus(FocusHandler handler)
+Connection Widget::onFocus(FocusHandler handler)
 {
     const auto id    = next_slot_id_++;
     auto       state = makeConnection([this, token = alive_token_, id]() {
@@ -552,7 +585,7 @@ Connection BaseItem::onFocus(FocusHandler handler)
     return Connection(state);
 }
 
-Connection BaseItem::onBlur(FocusHandler handler)
+Connection Widget::onBlur(FocusHandler handler)
 {
     return onFocus([callback = std::move(handler)](bool focused) {
         if (!focused && callback)
@@ -562,7 +595,7 @@ Connection BaseItem::onBlur(FocusHandler handler)
     });
 }
 
-void BaseItem::removeKeyHandler(std::uint64_t id)
+void Widget::removeKeyHandler(std::uint64_t id)
 {
     auto found = std::find_if(key_handlers_.begin(), key_handlers_.end(), [id](const KeySlot &slot) { return slot.id == id; });
     if (found == key_handlers_.end())
@@ -578,7 +611,7 @@ void BaseItem::removeKeyHandler(std::uint64_t id)
     key_handlers_.erase(found);
 }
 
-void BaseItem::removeFocusHandler(std::uint64_t id)
+void Widget::removeFocusHandler(std::uint64_t id)
 {
     auto found = std::find_if(focus_handlers_.begin(), focus_handlers_.end(), [id](const FocusSlot &slot) { return slot.id == id; });
     if (found == focus_handlers_.end())
@@ -594,7 +627,7 @@ void BaseItem::removeFocusHandler(std::uint64_t id)
     focus_handlers_.erase(found);
 }
 
-void BaseItem::invokeKeyHandlers(KeyEvent &event)
+void Widget::invokeKeyHandlers(KeyEvent &event)
 {
     auto slots = key_handlers_;
     for (auto &slot : slots)
@@ -610,7 +643,7 @@ void BaseItem::invokeKeyHandlers(KeyEvent &event)
     }
 }
 
-void BaseItem::notifyFocus(bool focused)
+void Widget::notifyFocus(bool focused)
 {
     auto slots = focus_handlers_;
     for (auto &slot : slots)
@@ -622,7 +655,7 @@ void BaseItem::notifyFocus(bool focused)
     }
 }
 
-void BaseItem::handleLvglKeyEvent(lv_event_t *e)
+void Widget::handleLvglKeyEvent(lv_event_t *e)
 {
     lv_indev_t *indev = lv_indev_active();
     if (indev == nullptr)
@@ -646,7 +679,7 @@ void BaseItem::handleLvglKeyEvent(lv_event_t *e)
     const uint32_t now    = lv_tick_get();
     KeyAction      action = KeyAction::Press;
 
-    if (pending_key_raw_ == raw && lv_tick_elaps(pending_key_tick_) < 250)
+    if (pending_key_raw_ == raw && lv_tick_elaps(pending_key_tick_) < kKeyRepeatMs)
     {
         action = KeyAction::Repeat;
     } else if (pending_key_raw_ != 0 && pending_key_raw_ != raw)
@@ -667,7 +700,7 @@ void BaseItem::handleLvglKeyEvent(lv_event_t *e)
     }
 }
 
-void BaseItem::synthReleasePendingKey()
+void Widget::synthReleasePendingKey()
 {
     if (pending_key_raw_ == 0)
     {
@@ -681,12 +714,12 @@ void BaseItem::synthReleasePendingKey()
     dispatchKeyEvent(event);
 }
 
-void BaseItem::dispatchKeyEvent(KeyEvent &event)
+void Widget::dispatchKeyEvent(KeyEvent &event)
 {
-    BaseItem *current = this;
+    Widget *current = this;
     int       guard   = 0;
 
-    while (current != nullptr && !event.consumed && guard++ < 64)
+    while (current != nullptr && !event.consumed && guard++ < kMaxAncestorWalk)
     {
         current->invokeKeyHandlers(event);
         if (event.consumed)
@@ -702,7 +735,7 @@ void BaseItem::dispatchKeyEvent(KeyEvent &event)
     }
 }
 
-BaseItem &BaseItem::setFocusable(bool focusable)
+Widget &Widget::setFocusable(bool focusable)
 {
     if (focusable_ == focusable)
     {
@@ -727,12 +760,12 @@ BaseItem &BaseItem::setFocusable(bool focusable)
     return *this;
 }
 
-bool BaseItem::requestFocus()
+bool Widget::requestFocus()
 {
     return sys::InputManager::getInstance().requestFocus(this);
 }
 
-bool BaseItem::hasFocus() const
+bool Widget::hasFocus() const
 {
     if (lv_base_ptr_ == nullptr)
     {
@@ -742,7 +775,7 @@ bool BaseItem::hasFocus() const
     return group != nullptr && lv_group_get_focused(group) == lv_base_ptr_;
 }
 
-Connection BaseItem::onDestroyed(std::function<void()> handler)
+Connection Widget::onDestroyed(std::function<void()> handler)
 {
     const auto id    = next_slot_id_++;
     auto       state = makeConnection([this, token = alive_token_, id]() {
@@ -756,7 +789,7 @@ Connection BaseItem::onDestroyed(std::function<void()> handler)
     return Connection(state);
 }
 
-lv_event_dsc_t *BaseItem::addLvglEventHandler(lv_event_cb_t cb, lv_event_code_t filter, void *userData)
+lv_event_dsc_t *Widget::addLvglEventHandler(lv_event_cb_t cb, lv_event_code_t filter, void *userData)
 {
     if (lv_base_ptr_ == nullptr || cb == nullptr)
     {
@@ -771,7 +804,7 @@ lv_event_dsc_t *BaseItem::addLvglEventHandler(lv_event_cb_t cb, lv_event_code_t 
     return dsc;
 }
 
-lv_event_dsc_t *BaseItem::addChildLvglEventHandler(lv_obj_t *child, lv_event_cb_t cb, lv_event_code_t filter, void *userData)
+lv_event_dsc_t *Widget::addChildLvglEventHandler(lv_obj_t *child, lv_event_cb_t cb, lv_event_code_t filter, void *userData)
 {
     if (child == nullptr || cb == nullptr)
     {
@@ -786,7 +819,7 @@ lv_event_dsc_t *BaseItem::addChildLvglEventHandler(lv_obj_t *child, lv_event_cb_
     return dsc;
 }
 
-void BaseItem::removeEventHandler(lv_event_code_t code, std::uint64_t id)
+void Widget::removeEventHandler(lv_event_code_t code, std::uint64_t id)
 {
     auto it = event_handlers_.find(static_cast<int>(code));
     if (it == event_handlers_.end())
@@ -814,7 +847,7 @@ void BaseItem::removeEventHandler(lv_event_code_t code, std::uint64_t id)
     }
 }
 
-void BaseItem::removeDestroyHandler(std::uint64_t id)
+void Widget::removeDestroyHandler(std::uint64_t id)
 {
     auto found = std::find_if(destroy_handlers_.begin(), destroy_handlers_.end(), [id](const DestroySlot &slot) { return slot.id == id; });
     if (found == destroy_handlers_.end())
@@ -830,7 +863,7 @@ void BaseItem::removeDestroyHandler(std::uint64_t id)
     destroy_handlers_.erase(found);
 }
 
-void BaseItem::notifyDestroyedObservers()
+void Widget::notifyDestroyedObservers()
 {
     if (destroy_notified_)
     {
@@ -858,7 +891,7 @@ void BaseItem::notifyDestroyedObservers()
     destroy_handlers_.clear();
 }
 
-void BaseItem::detachEventCallbacks()
+void Widget::detachEventCallbacks()
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -931,29 +964,29 @@ void BaseItem::detachEventCallbacks()
     focus_handlers_.clear();
 }
 
-void BaseItem::setOnClickedListener(const std::function<void()> &l)
+void Widget::setOnClickedListener(const std::function<void()> &l)
 {
     clicked_cb_ = l;
 }
 
-void BaseItem::setOnPressedListener(const std::function<void()> &l)
+void Widget::setOnPressedListener(const std::function<void()> &l)
 {
     pressed_cb_ = l;
 }
 
-void BaseItem::setOnReleasedListener(const std::function<void()> &l)
+void Widget::setOnReleasedListener(const std::function<void()> &l)
 {
     released_cb_ = l;
 }
 
-void BaseItem::setOnLongPressedListener(const std::function<void()> &l)
+void Widget::setOnLongPressedListener(const std::function<void()> &l)
 {
     long_pressed_cb_ = l;
 }
 
 // ---------------------------------------------------------------- geometry
 
-BaseItem &BaseItem::setPos(lv_coord_t x, lv_coord_t y)
+Widget &Widget::setPos(lv_coord_t x, lv_coord_t y)
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -962,7 +995,7 @@ BaseItem &BaseItem::setPos(lv_coord_t x, lv_coord_t y)
         {
             lv_obj_t  *parent = lv_obj_get_parent(lv_base_ptr_);
             lv_coord_t width  = lv_obj_get_width(lv_base_ptr_);
-            if (width <= 0 && requested_width_ > 0 && requested_width_ < 4096)
+            if (width <= 0 && requested_width_ > 0 && requested_width_ < kMaxRequestedWidthSanity)
             {
                 width = requested_width_;
             }
@@ -982,7 +1015,7 @@ BaseItem &BaseItem::setPos(lv_coord_t x, lv_coord_t y)
     return *this;
 }
 
-BaseItem &BaseItem::setPosPhysical(lv_coord_t x, lv_coord_t y)
+Widget &Widget::setPosPhysical(lv_coord_t x, lv_coord_t y)
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -995,17 +1028,17 @@ BaseItem &BaseItem::setPosPhysical(lv_coord_t x, lv_coord_t y)
     return *this;
 }
 
-lv_coord_t BaseItem::getX() const
+lv_coord_t Widget::getX() const
 {
     return lv_base_ptr_ != nullptr ? lv_obj_get_x(lv_base_ptr_) : 0;
 }
 
-lv_coord_t BaseItem::getY() const
+lv_coord_t Widget::getY() const
 {
     return lv_base_ptr_ != nullptr ? lv_obj_get_y(lv_base_ptr_) : 0;
 }
 
-BaseItem &BaseItem::setAlignment(lv_align_t align, lv_coord_t offsetX, lv_coord_t offsetY)
+Widget &Widget::setAlignment(lv_align_t align, lv_coord_t offsetX, lv_coord_t offsetY)
 {
 #if LVGLPP_ENABLE_RTL
     logical_align_     = align;
@@ -1022,7 +1055,7 @@ BaseItem &BaseItem::setAlignment(lv_align_t align, lv_coord_t offsetX, lv_coord_
     return *this;
 }
 
-BaseItem &BaseItem::setAlignmentPhysical(lv_align_t align, lv_coord_t offsetX, lv_coord_t offsetY)
+Widget &Widget::setAlignmentPhysical(lv_align_t align, lv_coord_t offsetX, lv_coord_t offsetY)
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -1034,7 +1067,7 @@ BaseItem &BaseItem::setAlignmentPhysical(lv_align_t align, lv_coord_t offsetX, l
     return *this;
 }
 
-BaseItem &BaseItem::setMirrorInRtl(bool enabled)
+Widget &Widget::setMirrorInRtl(bool enabled)
 {
 #if LVGLPP_ENABLE_RTL
     mirror_in_rtl_ = enabled;
@@ -1048,7 +1081,7 @@ BaseItem &BaseItem::setMirrorInRtl(bool enabled)
     return *this;
 }
 
-bool BaseItem::mirrorInRtl() const
+bool Widget::mirrorInRtl() const
 {
 #if LVGLPP_ENABLE_RTL
     return mirror_in_rtl_;
@@ -1057,7 +1090,7 @@ bool BaseItem::mirrorInRtl() const
 #endif
 }
 
-BaseItem &BaseItem::setBaseDir(lv_base_dir_t direction)
+Widget &Widget::setBaseDir(lv_base_dir_t direction)
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -1066,7 +1099,7 @@ BaseItem &BaseItem::setBaseDir(lv_base_dir_t direction)
     return *this;
 }
 
-void BaseItem::applyLogicalAlignment()
+void Widget::applyLogicalAlignment()
 {
 #if LVGLPP_ENABLE_RTL
     if (lv_base_ptr_ == nullptr || !has_logical_align_)
@@ -1087,9 +1120,9 @@ void BaseItem::applyLogicalAlignment()
 #endif
 }
 
-BaseItem &BaseItem::setAlignmentTo(const BaseItem &item, lv_align_t align, lv_coord_t offsetX, lv_coord_t offsetY)
+Widget &Widget::setAlignmentTo(const Widget &item, lv_align_t align, lv_coord_t offsetX, lv_coord_t offsetY)
 {
-    if (lv_base_ptr_ != nullptr && item.getLvglItem() != nullptr)
+    if (lv_base_ptr_ != nullptr && item.lvObj() != nullptr)
     {
 #if LVGLPP_ENABLE_RTL
         if (mirror_in_rtl_ && sys::UiConfig::instance().isRtl())
@@ -1098,12 +1131,12 @@ BaseItem &BaseItem::setAlignmentTo(const BaseItem &item, lv_align_t align, lv_co
             offsetX = -offsetX;
         }
 #endif
-        lv_obj_align_to(lv_base_ptr_, item.getLvglItem(), align, offsetX, offsetY);
+        lv_obj_align_to(lv_base_ptr_, item.lvObj(), align, offsetX, offsetY);
     }
     return *this;
 }
 
-BaseItem &BaseItem::setSize(lv_coord_t width, lv_coord_t height)
+Widget &Widget::setSize(lv_coord_t width, lv_coord_t height)
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -1114,7 +1147,7 @@ BaseItem &BaseItem::setSize(lv_coord_t width, lv_coord_t height)
     return *this;
 }
 
-BaseItem &BaseItem::setWidth(lv_coord_t w)
+Widget &Widget::setWidth(lv_coord_t w)
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -1124,7 +1157,7 @@ BaseItem &BaseItem::setWidth(lv_coord_t w)
     return *this;
 }
 
-BaseItem &BaseItem::setHeight(lv_coord_t h)
+Widget &Widget::setHeight(lv_coord_t h)
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -1134,7 +1167,7 @@ BaseItem &BaseItem::setHeight(lv_coord_t h)
     return *this;
 }
 
-lv_coord_t BaseItem::getWidth() const
+lv_coord_t Widget::getWidth() const
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -1147,7 +1180,7 @@ lv_coord_t BaseItem::getWidth() const
     return requested_width_;
 }
 
-lv_coord_t BaseItem::getHeight() const
+lv_coord_t Widget::getHeight() const
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -1160,7 +1193,7 @@ lv_coord_t BaseItem::getHeight() const
     return requested_height_;
 }
 
-BaseItem &BaseItem::setSizePercent(lv_coord_t widthPercent, lv_coord_t heightPercent)
+Widget &Widget::setSizePercent(lv_coord_t widthPercent, lv_coord_t heightPercent)
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -1173,7 +1206,7 @@ BaseItem &BaseItem::setSizePercent(lv_coord_t widthPercent, lv_coord_t heightPer
 
 // ---------------------------------------------------------------- appearance
 
-BaseItem &BaseItem::setBgColor(uint32_t clr)
+Widget &Widget::setBgColor(uint32_t clr)
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -1182,7 +1215,7 @@ BaseItem &BaseItem::setBgColor(uint32_t clr)
     return *this;
 }
 
-BaseItem &BaseItem::setDisableBgColor(uint32_t clr)
+Widget &Widget::setDisabledBgColor(uint32_t clr)
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -1191,7 +1224,7 @@ BaseItem &BaseItem::setDisableBgColor(uint32_t clr)
     return *this;
 }
 
-BaseItem &BaseItem::setBgOpacity(lv_opa_t opa)
+Widget &Widget::setBgOpacity(lv_opa_t opa)
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -1200,7 +1233,7 @@ BaseItem &BaseItem::setBgOpacity(lv_opa_t opa)
     return *this;
 }
 
-BaseItem &BaseItem::setOpacity(double opa)
+Widget &Widget::setOpacity(double opa)
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -1210,7 +1243,7 @@ BaseItem &BaseItem::setOpacity(double opa)
     return *this;
 }
 
-BaseItem &BaseItem::setRadius(lv_coord_t radius)
+Widget &Widget::setRadius(lv_coord_t radius)
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -1219,12 +1252,12 @@ BaseItem &BaseItem::setRadius(lv_coord_t radius)
     return *this;
 }
 
-lv_coord_t BaseItem::getRadius() const
+lv_coord_t Widget::getRadius() const
 {
     return lv_base_ptr_ != nullptr ? lv_obj_get_style_radius(lv_base_ptr_, LV_PART_MAIN) : 0;
 }
 
-BaseItem &BaseItem::setClip(bool clip)
+Widget &Widget::setClip(bool clip)
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -1233,7 +1266,7 @@ BaseItem &BaseItem::setClip(bool clip)
     return *this;
 }
 
-BaseItem &BaseItem::setBorder(lv_coord_t width, uint32_t color)
+Widget &Widget::setBorder(lv_coord_t width, uint32_t color)
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -1243,7 +1276,7 @@ BaseItem &BaseItem::setBorder(lv_coord_t width, uint32_t color)
     return *this;
 }
 
-BaseItem &BaseItem::applyStyle(const Style &style, lv_style_selector_t selector)
+Widget &Widget::applyStyle(const Style &style, lv_style_selector_t selector)
 {
     if (lv_base_ptr_ == nullptr)
     {
@@ -1258,7 +1291,7 @@ BaseItem &BaseItem::applyStyle(const Style &style, lv_style_selector_t selector)
     return *this;
 }
 
-BaseItem &BaseItem::removeStyle(const Style &style, lv_style_selector_t selector)
+Widget &Widget::removeStyle(const Style &style, lv_style_selector_t selector)
 {
     if (lv_base_ptr_ == nullptr)
     {
@@ -1286,7 +1319,7 @@ BaseItem &BaseItem::removeStyle(const Style &style, lv_style_selector_t selector
     return *this;
 }
 
-BaseItem &BaseItem::setState(lv_state_t state, bool enabled)
+Widget &Widget::setState(lv_state_t state, bool enabled)
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -1301,17 +1334,17 @@ BaseItem &BaseItem::setState(lv_state_t state, bool enabled)
     return *this;
 }
 
-BaseItem &BaseItem::addState(lv_state_t state)
+Widget &Widget::addState(lv_state_t state)
 {
     return setState(state, true);
 }
 
-BaseItem &BaseItem::clearState(lv_state_t state)
+Widget &Widget::clearState(lv_state_t state)
 {
     return setState(state, false);
 }
 
-void BaseItem::setVisible(bool visible)
+void Widget::setVisible(bool visible)
 {
     if (lv_base_ptr_ == nullptr)
     {
@@ -1326,36 +1359,33 @@ void BaseItem::setVisible(bool visible)
     }
 }
 
-bool BaseItem::getVisible() const
+bool Widget::isVisible() const
 {
     return lv_base_ptr_ != nullptr && !lv_obj_has_flag(lv_base_ptr_, LV_OBJ_FLAG_HIDDEN);
 }
 
-void BaseItem::setEnable(bool enable)
+void Widget::setEnabled(bool enable)
 {
     if (lv_base_ptr_ == nullptr)
     {
         return;
     }
-    if (enable)
-    {
-        lv_obj_add_flag(lv_base_ptr_, LV_OBJ_FLAG_CLICKABLE);
-        lv_obj_clear_state(lv_base_ptr_, LV_STATE_DISABLED);
-    } else
-    {
-        lv_obj_clear_flag(lv_base_ptr_, LV_OBJ_FLAG_CLICKABLE);
-        lv_obj_add_state(lv_base_ptr_, LV_STATE_DISABLED);
-    }
+
+    // LVGL's pointer/keypad indev already ignores LV_STATE_DISABLED objects.
+    // Do not touch LV_OBJ_FLAG_CLICKABLE here: "enabled" and "clickable" are
+    // independent properties (images, for example, are non-clickable by
+    // default but become click targets when explicitly enabled).
+    lv_obj_set_state(lv_base_ptr_, LV_STATE_DISABLED, !enable);
 }
 
-bool BaseItem::getEnable() const
+bool Widget::isEnabled() const
 {
-    return lv_base_ptr_ != nullptr && lv_obj_has_flag(lv_base_ptr_, LV_OBJ_FLAG_CLICKABLE);
+    return lv_base_ptr_ != nullptr && !lv_obj_has_state(lv_base_ptr_, LV_STATE_DISABLED);
 }
 
 // ---------------------------------------------------------------- padding / margin
 
-BaseItem &BaseItem::setPaddingAll(lv_coord_t padding)
+Widget &Widget::setPaddingAll(lv_coord_t padding)
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -1364,7 +1394,7 @@ BaseItem &BaseItem::setPaddingAll(lv_coord_t padding)
     return *this;
 }
 
-BaseItem &BaseItem::setPaddingHor(lv_coord_t padding)
+Widget &Widget::setPaddingHor(lv_coord_t padding)
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -1373,7 +1403,7 @@ BaseItem &BaseItem::setPaddingHor(lv_coord_t padding)
     return *this;
 }
 
-BaseItem &BaseItem::setPaddingVer(lv_coord_t padding)
+Widget &Widget::setPaddingVer(lv_coord_t padding)
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -1382,7 +1412,7 @@ BaseItem &BaseItem::setPaddingVer(lv_coord_t padding)
     return *this;
 }
 
-BaseItem &BaseItem::setPaddingTop(lv_coord_t padding)
+Widget &Widget::setPaddingTop(lv_coord_t padding)
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -1391,7 +1421,7 @@ BaseItem &BaseItem::setPaddingTop(lv_coord_t padding)
     return *this;
 }
 
-BaseItem &BaseItem::setPaddingBottom(lv_coord_t padding)
+Widget &Widget::setPaddingBottom(lv_coord_t padding)
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -1400,7 +1430,7 @@ BaseItem &BaseItem::setPaddingBottom(lv_coord_t padding)
     return *this;
 }
 
-BaseItem &BaseItem::setPaddingLeft(lv_coord_t padding)
+Widget &Widget::setPaddingLeft(lv_coord_t padding)
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -1409,7 +1439,7 @@ BaseItem &BaseItem::setPaddingLeft(lv_coord_t padding)
     return *this;
 }
 
-BaseItem &BaseItem::setPaddingRight(lv_coord_t padding)
+Widget &Widget::setPaddingRight(lv_coord_t padding)
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -1418,7 +1448,7 @@ BaseItem &BaseItem::setPaddingRight(lv_coord_t padding)
     return *this;
 }
 
-BaseItem &BaseItem::setPaddingRow(lv_coord_t padding)
+Widget &Widget::setPaddingRow(lv_coord_t padding)
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -1427,7 +1457,7 @@ BaseItem &BaseItem::setPaddingRow(lv_coord_t padding)
     return *this;
 }
 
-BaseItem &BaseItem::setPaddingColumn(lv_coord_t padding)
+Widget &Widget::setPaddingColumn(lv_coord_t padding)
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -1436,7 +1466,7 @@ BaseItem &BaseItem::setPaddingColumn(lv_coord_t padding)
     return *this;
 }
 
-BaseItem &BaseItem::setMarginAll(lv_coord_t margin)
+Widget &Widget::setMarginAll(lv_coord_t margin)
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -1448,7 +1478,7 @@ BaseItem &BaseItem::setMarginAll(lv_coord_t margin)
     return *this;
 }
 
-BaseItem &BaseItem::setMarginHor(lv_coord_t margin)
+Widget &Widget::setMarginHor(lv_coord_t margin)
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -1458,7 +1488,7 @@ BaseItem &BaseItem::setMarginHor(lv_coord_t margin)
     return *this;
 }
 
-BaseItem &BaseItem::setMarginVer(lv_coord_t margin)
+Widget &Widget::setMarginVer(lv_coord_t margin)
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -1468,7 +1498,7 @@ BaseItem &BaseItem::setMarginVer(lv_coord_t margin)
     return *this;
 }
 
-BaseItem &BaseItem::setMarginTop(lv_coord_t margin)
+Widget &Widget::setMarginTop(lv_coord_t margin)
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -1477,7 +1507,7 @@ BaseItem &BaseItem::setMarginTop(lv_coord_t margin)
     return *this;
 }
 
-BaseItem &BaseItem::setMarginBottom(lv_coord_t margin)
+Widget &Widget::setMarginBottom(lv_coord_t margin)
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -1486,7 +1516,7 @@ BaseItem &BaseItem::setMarginBottom(lv_coord_t margin)
     return *this;
 }
 
-BaseItem &BaseItem::setMarginLeft(lv_coord_t margin)
+Widget &Widget::setMarginLeft(lv_coord_t margin)
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -1495,7 +1525,7 @@ BaseItem &BaseItem::setMarginLeft(lv_coord_t margin)
     return *this;
 }
 
-BaseItem &BaseItem::setMarginRight(lv_coord_t margin)
+Widget &Widget::setMarginRight(lv_coord_t margin)
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -1506,7 +1536,7 @@ BaseItem &BaseItem::setMarginRight(lv_coord_t margin)
 
 // ---------------------------------------------------------------- tree
 
-BaseItem *BaseItem::getParent() const
+Widget *Widget::getParent() const
 {
     if (lv_base_ptr_ == nullptr)
     {
@@ -1516,7 +1546,7 @@ BaseItem *BaseItem::getParent() const
     lv_obj_t *parent = lv_obj_get_parent(lv_base_ptr_);
     while (parent != nullptr)
     {
-        if (BaseItem *wrapper = fromLvglObject(parent); wrapper != nullptr)
+        if (Widget *wrapper = fromLvglObject(parent); wrapper != nullptr)
         {
             return wrapper;
         }
@@ -1525,16 +1555,16 @@ BaseItem *BaseItem::getParent() const
     return nullptr;
 }
 
-void BaseItem::setParent(BaseItem *parent)
+void Widget::setParent(Widget *parent)
 {
     if (lv_base_ptr_ == nullptr)
     {
         return;
     }
 
-    if (parent != nullptr && parent->getLvglItem() != nullptr)
+    if (parent != nullptr && parent->lvObj() != nullptr)
     {
-        lv_obj_set_parent(lv_base_ptr_, parent->getLvglItem());
+        lv_obj_set_parent(lv_base_ptr_, parent->lvObj());
         owns_lv_obj_ = false;
         return;
     }
@@ -1548,12 +1578,12 @@ void BaseItem::setParent(BaseItem *parent)
 
 // ---------------------------------------------------------------- introspection
 
-uint32_t BaseItem::childCount() const
+uint32_t Widget::childCount() const
 {
     return lv_base_ptr_ != nullptr ? lv_obj_get_child_count(lv_base_ptr_) : 0;
 }
 
-BaseItem *BaseItem::childAt(uint32_t index) const
+Widget *Widget::childAt(uint32_t index) const
 {
     if (lv_base_ptr_ == nullptr)
     {
@@ -1562,14 +1592,14 @@ BaseItem *BaseItem::childAt(uint32_t index) const
     return fromLvglObject(lv_obj_get_child(lv_base_ptr_, static_cast<int32_t>(index)));
 }
 
-BaseItem *BaseItem::findChildInRawTree(lv_obj_t *obj, const std::string &name)
+Widget *Widget::findChildInRawTree(lv_obj_t *obj, const std::string &name)
 {
     if (obj == nullptr)
     {
         return nullptr;
     }
 
-    if (BaseItem *wrapper = fromLvglObject(obj); wrapper != nullptr && wrapper->name() == name)
+    if (Widget *wrapper = fromLvglObject(obj); wrapper != nullptr && wrapper->name() == name)
     {
         return wrapper;
     }
@@ -1577,7 +1607,7 @@ BaseItem *BaseItem::findChildInRawTree(lv_obj_t *obj, const std::string &name)
     const uint32_t count = lv_obj_get_child_count(obj);
     for (uint32_t i = 0; i < count; ++i)
     {
-        if (BaseItem *found = findChildInRawTree(lv_obj_get_child(obj, static_cast<int32_t>(i)), name); found != nullptr)
+        if (Widget *found = findChildInRawTree(lv_obj_get_child(obj, static_cast<int32_t>(i)), name); found != nullptr)
         {
             return found;
         }
@@ -1585,19 +1615,19 @@ BaseItem *BaseItem::findChildInRawTree(lv_obj_t *obj, const std::string &name)
     return nullptr;
 }
 
-BaseItem *BaseItem::findChild(const std::string &n) const
+Widget *Widget::findChild(const std::string &n) const
 {
     return findChildInRawTree(lv_base_ptr_, n);
 }
 
-void BaseItem::collectWrapperSubtree(lv_obj_t *obj, std::vector<BaseItem *> &out)
+void Widget::collectWrapperSubtree(lv_obj_t *obj, std::vector<Widget *> &out)
 {
     if (obj == nullptr)
     {
         return;
     }
 
-    if (BaseItem *wrapper = fromLvglObject(obj); wrapper != nullptr)
+    if (Widget *wrapper = fromLvglObject(obj); wrapper != nullptr)
     {
         out.push_back(wrapper);
     }
@@ -1609,7 +1639,7 @@ void BaseItem::collectWrapperSubtree(lv_obj_t *obj, std::vector<BaseItem *> &out
     }
 }
 
-void BaseItem::dumpTree(int depth) const
+void Widget::dumpTree(int depth) const
 {
     if (lv_base_ptr_ == nullptr)
     {
@@ -1619,10 +1649,10 @@ void BaseItem::dumpTree(int depth) const
 
     std::function<void(lv_obj_t *, int)> dump = [&](lv_obj_t *obj, int level) {
         const std::string indent(static_cast<size_t>(level) * 2, ' ');
-        if (BaseItem *wrapper = fromLvglObject(obj); wrapper != nullptr)
+        if (Widget *wrapper = fromLvglObject(obj); wrapper != nullptr)
         {
             std::cout << indent << (wrapper->name().empty() ? "(unnamed)" : wrapper->name()) << " [" << typeid(*wrapper).name() << "]"
-                      << " visible=" << wrapper->getVisible() << " pos=(" << wrapper->getX() << "," << wrapper->getY() << ")"
+                      << " visible=" << wrapper->isVisible() << " pos=(" << wrapper->getX() << "," << wrapper->getY() << ")"
                       << " size=(" << lv_obj_get_width(obj) << "," << lv_obj_get_height(obj) << ")" << std::endl;
         } else
         {
@@ -1639,7 +1669,7 @@ void BaseItem::dumpTree(int depth) const
     dump(lv_base_ptr_, depth);
 }
 
-std::string BaseItem::describeState() const
+std::string Widget::describeState() const
 {
     if (lv_base_ptr_ == nullptr)
     {
@@ -1649,16 +1679,16 @@ std::string BaseItem::describeState() const
     const Rect         r = bounds();
     std::ostringstream os;
     os << "{"
-       << R"("name":")" << _name << "\","
-       << R"("type":")" << typeid(*this).name() << "\","
-       << R"("visible":)" << (getVisible() ? "true" : "false") << ","
-       << R"("enabled":)" << (getEnable() ? "true" : "false") << ","
+       << R"("name":")" << jsonEscape(_name) << "\","
+       << R"("type":")" << jsonEscape(typeid(*this).name()) << "\","
+       << R"("visible":)" << (isVisible() ? "true" : "false") << ","
+       << R"("enabled":)" << (isEnabled() ? "true" : "false") << ","
        << R"("rect":{"x":)" << r.x << ",\"y\":" << r.y << ",\"w\":" << r.w << ",\"h\":" << r.h << "},"
        << R"("children":)" << childCount() << "}";
     return os.str();
 }
 
-BaseItem::Rect BaseItem::bounds() const
+Widget::Rect Widget::bounds() const
 {
     if (lv_base_ptr_ == nullptr)
     {
@@ -1672,7 +1702,7 @@ BaseItem::Rect BaseItem::bounds() const
 
 // ---------------------------------------------------------------- flex
 
-BaseItem &BaseItem::setFlexFlow(lv_flex_flow_t flow)
+Widget &Widget::setFlexFlow(lv_flex_flow_t flow)
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -1681,7 +1711,7 @@ BaseItem &BaseItem::setFlexFlow(lv_flex_flow_t flow)
     return *this;
 }
 
-BaseItem &BaseItem::setFlexAlign(lv_flex_align_t mainAxis, lv_flex_align_t crossAxis, lv_flex_align_t trackAlign)
+Widget &Widget::setFlexAlign(lv_flex_align_t mainAxis, lv_flex_align_t crossAxis, lv_flex_align_t trackAlign)
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -1690,7 +1720,7 @@ BaseItem &BaseItem::setFlexAlign(lv_flex_align_t mainAxis, lv_flex_align_t cross
     return *this;
 }
 
-BaseItem &BaseItem::setFlexGrow(uint8_t grow)
+Widget &Widget::setFlexGrow(uint8_t grow)
 {
     if (lv_base_ptr_ != nullptr)
     {
@@ -1701,7 +1731,7 @@ BaseItem &BaseItem::setFlexGrow(uint8_t grow)
 
 // ---------------------------------------------------------------- grid
 
-BaseItem::GridState &BaseItem::ensureGridState()
+Widget::GridState &Widget::ensureGridState()
 {
     if (!grid_)
     {
@@ -1710,7 +1740,7 @@ BaseItem::GridState &BaseItem::ensureGridState()
     return *grid_;
 }
 
-void BaseItem::applyGridTemplates()
+void Widget::applyGridTemplates()
 {
     if (lv_base_ptr_ == nullptr)
     {
@@ -1730,7 +1760,7 @@ void BaseItem::applyGridTemplates()
     setObjectKeepalive("grid", grid_);
 }
 
-void BaseItem::applyGridCell()
+void Widget::applyGridCell()
 {
     if (lv_base_ptr_ == nullptr)
     {
@@ -1741,7 +1771,7 @@ void BaseItem::applyGridCell()
                          static_cast<int32_t>(grid.row_span));
 }
 
-BaseItem &BaseItem::setGridColumns(const std::string &columnDescriptors)
+Widget &Widget::setGridColumns(const std::string &columnDescriptors)
 {
     std::vector<lv_coord_t> tracks;
     std::string             error;
@@ -1756,7 +1786,7 @@ BaseItem &BaseItem::setGridColumns(const std::string &columnDescriptors)
     return *this;
 }
 
-BaseItem &BaseItem::setGridRows(const std::string &rowDescriptors)
+Widget &Widget::setGridRows(const std::string &rowDescriptors)
 {
     std::vector<lv_coord_t> tracks;
     std::string             error;
@@ -1771,7 +1801,7 @@ BaseItem &BaseItem::setGridRows(const std::string &rowDescriptors)
     return *this;
 }
 
-BaseItem &BaseItem::setGridCell(uint32_t column, uint32_t row, uint32_t colSpan, uint32_t rowSpan)
+Widget &Widget::setGridCell(uint32_t column, uint32_t row, uint32_t colSpan, uint32_t rowSpan)
 {
     GridState &grid = ensureGridState();
     grid.col_pos    = column;
@@ -1782,14 +1812,14 @@ BaseItem &BaseItem::setGridCell(uint32_t column, uint32_t row, uint32_t colSpan,
     return *this;
 }
 
-BaseItem &BaseItem::setGridCellColumnAlign(lv_grid_align_t align)
+Widget &Widget::setGridCellColumnAlign(lv_grid_align_t align)
 {
     ensureGridState().col_align = align;
     applyGridCell();
     return *this;
 }
 
-BaseItem &BaseItem::setGridCellRowAlign(lv_grid_align_t align)
+Widget &Widget::setGridCellRowAlign(lv_grid_align_t align)
 {
     ensureGridState().row_align = align;
     applyGridCell();

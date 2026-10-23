@@ -1,5 +1,5 @@
 #include "TestFramework.h"
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 #include "core/widgets/ImageButton.h"
 #include "core/widgets/MsgBox.h"
 #include "core/widgets/Scale.h"
@@ -10,7 +10,7 @@ using namespace lvglpp::widgets;
 
 TEST(Spinner_creates_and_configures)
 {
-    BaseItem root;
+    Widget root;
     Spinner  spinner(&root);
 
     CHECK_TRUE(spinner.isAttached());
@@ -20,7 +20,7 @@ TEST(Spinner_creates_and_configures)
 
 TEST(ImageButton_sources_and_state)
 {
-    BaseItem    root;
+    Widget    root;
     ImageButton button(&root);
 
     CHECK_TRUE(button.isAttached());
@@ -35,7 +35,7 @@ TEST(ImageButton_sources_and_state)
 
 TEST(Scale_configures_ticks_and_range)
 {
-    BaseItem root;
+    Widget root;
     Scale    scale(&root);
 
     CHECK_TRUE(scale.isAttached());
@@ -46,21 +46,21 @@ TEST(Scale_configures_ticks_and_range)
 
 TEST(MsgBox_builds_content_and_buttons)
 {
-    BaseItem root;
+    Widget root;
     MsgBox   box(&root);
 
     box.setTitle("Title");
     box.addText("Body");
 
     int       calls  = 0;
-    BaseItem *button = box.addButton("OK", [&calls]() { calls++; });
+    Widget *button = box.addButton("OK", [&calls]() { calls++; });
     CHECK(button != nullptr);
     CHECK_TRUE(button->isFocusable());
     // title + text + footer container
     CHECK(box.childCount() >= 3u);
 
     // Clicking the native button must reach the wrapper callback and close.
-    lv_obj_send_event(button->getLvglItem(), LV_EVENT_CLICKED, nullptr);
+    lv_obj_send_event(button->lvObj(), LV_EVENT_CLICKED, nullptr);
     CHECK_EQ(calls, 1);
     CHECK_FALSE(box.isAttached());
     return true;
@@ -68,15 +68,15 @@ TEST(MsgBox_builds_content_and_buttons)
 
 TEST(MsgBox_button_callbacks_die_with_wrapper)
 {
-    BaseItem root;
+    Widget root;
     int      calls = 0;
 
     lv_obj_t *button_obj = nullptr;
     {
         MsgBox    box(&root);
-        BaseItem *button = box.addButton("OK", [&calls]() { calls++; }, false);
+        Widget *button = box.addButton("OK", [&calls]() { calls++; }, false);
         CHECK(button != nullptr);
-        button_obj = button->getLvglItem();
+        button_obj = button->lvObj();
     }
 
     // The MsgBox wrapper is gone; its button callbacks must have been removed.

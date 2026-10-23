@@ -1,7 +1,7 @@
 #ifndef CLICKABLE_CARD_H
 #define CLICKABLE_CARD_H
 
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 #include "core/widgets/LvText.h"
 #include "core/widgets/Image.h"
 #include <memory>
@@ -9,12 +9,12 @@
 namespace wrapper::widgets {
 using namespace lvglpp::widgets;
 
-class ClickableCard : public BaseItem
+class ClickableCard : public Widget
 {
 public:
-    explicit ClickableCard(const std::string &text, const std::string &icon_src, BaseItem *parent = nullptr);
+    explicit ClickableCard(const std::string &text, const std::string &icon_src, Widget *parent = nullptr);
 
-    ClickableCard(const std::string &text, const std::string &note, const std::string &icon_src, BaseItem *parent = nullptr);
+    ClickableCard(const std::string &text, const std::string &note, const std::string &icon_src, Widget *parent = nullptr);
 
     void setSelected(bool selected);
 
@@ -41,8 +41,8 @@ private:
 
     uint32_t _border_width{2};
 
-    std::shared_ptr<ConsumeText>    _label;
-    std::shared_ptr<ConsumeText>    _foot_label;
+    std::shared_ptr<LvText>    _label;
+    std::shared_ptr<LvText>    _foot_label;
     std::shared_ptr<widgets::Image> _icon_;
 };
 } // namespace wrapper::widgets

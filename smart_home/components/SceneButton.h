@@ -1,7 +1,7 @@
 #ifndef SMART_HOME_SCENE_BUTTON_H
 #define SMART_HOME_SCENE_BUTTON_H
 
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 #include "core/widgets/LvText.h"
 #include <functional>
 #include <memory>
@@ -12,11 +12,11 @@ namespace w = ::lvglpp::widgets;
 namespace lvglpp::ui::widgets {
 
 /// Large icon button for activating a scene
-class SceneButton : public w::BaseItem
+class SceneButton : public w::Widget
 {
 public:
     SceneButton(const std::string &icon, const std::string &name,
-                const std::string &description, w::BaseItem *parent = nullptr);
+                const std::string &description, w::Widget *parent = nullptr);
 
     void setActive(bool active);
     bool isActive() const { return _active; }

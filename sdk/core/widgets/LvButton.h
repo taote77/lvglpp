@@ -9,7 +9,7 @@ namespace lvglpp::widgets {
 class LvButton : public LvText
 {
 public:
-    LvButton(const std::string &strMsg, uint32_t clr, BaseItem *parent, TextStyle style = TextStyle::FontSize20, FontType type = FontType::Auto);
+    LvButton(const std::string &strMsg, uint32_t clr, Widget *parent, TextStyle style = TextStyle::FontSize20, FontType type = FontType::Auto);
 
     ~LvButton();
 };

@@ -1,15 +1,15 @@
 #ifndef STRING_VIEW_EDITOR_H
 #define STRING_VIEW_EDITOR_H
 
-#include "core/widgets/BaseItem.h"
+#include "core/widgets/Widget.h"
 #include <string>
 
 namespace wrapper::widgets {
 using namespace lvglpp::widgets;
-class StringEditor : public BaseItem
+class StringEditor : public Widget
 {
 public:
-    explicit StringEditor(BaseItem *parent = nullptr);
+    explicit StringEditor(Widget *parent = nullptr);
     void addLetter(const std::string &letter)
     {
         if (max_len_ != -1 && text_.length() >= max_len_)
