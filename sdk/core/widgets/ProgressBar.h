@@ -1,5 +1,5 @@
-#ifndef LVGLPP_BAR_H
-#define LVGLPP_BAR_H
+#ifndef LVGLPP_PROGRESSBAR_H
+#define LVGLPP_PROGRESSBAR_H
 
 #include "Widget.h"
 
@@ -44,9 +44,6 @@ public:
     lv_bar_orientation_t orientation() const;
 };
 
-// Alias for backward compatibility
-using Bar = ProgressBar;
-
 } // namespace lvglpp::widgets
 
-#endif // LVGLPP_BAR_H
+#endif // LVGLPP_PROGRESSBAR_H

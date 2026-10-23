@@ -15,7 +15,7 @@ LightWidget::LightWidget(const std::string &lightName, w::Widget *parent)
     setRadius(RADIUS_12);
 
     // Name
-    _nameLabel = std::make_unique<w::LvText>(lightName, CLR_ON_SURFACE, this, w::LvText::FontSize24Bold);
+    _nameLabel = std::make_unique<w::Label>(lightName, CLR_ON_SURFACE, this, w::Label::FontSize24Bold);
     _nameLabel->setAlignment(LV_ALIGN_TOP_LEFT, 12, 12);
 
     // Power toggle
@@ -39,7 +39,7 @@ LightWidget::LightWidget(const std::string &lightName, w::Widget *parent)
     });
 
     // Value label
-    _valueLabel = std::make_unique<w::LvText>(lvTrFmt("common_percent", 100), CLR_ON_SURFACE_VARIANT_1, this, w::LvText::FontSize28Bold);
+    _valueLabel = std::make_unique<w::Label>(lvTrFmt("common_percent", 100), CLR_ON_SURFACE_VARIANT_1, this, w::Label::FontSize28Bold);
     _valueLabel->setAlignment(LV_ALIGN_CENTER, 0, 25);
 
     // Color presets
@@ -64,8 +64,8 @@ void LightWidget::setOn(bool on) {
 }
 
 void LightWidget::_updateUI() {
-    _powerBtn->setTextMsg(_on ? lvTr("common_on") : lvTr("common_off"));
-    _powerBtn->setColorType(_on ? w::PushButton::Blue : w::PushButton::Dark);
+    _powerBtn->setText(_on ? lvTr("common_on") : lvTr("common_off"));
+    _powerBtn->setColorStyle(_on ? w::PushButton::Blue : w::PushButton::Dark);
     _brightnessSlider->setValue(_on ? _brightness : 0);
     _valueLabel->setText(lvTrFmt("common_percent", _on ? _brightness : 0));
 }

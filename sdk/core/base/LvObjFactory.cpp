@@ -33,12 +33,12 @@ const core::Style &canvasStyle()
 
 lv_obj_t *LvObjFactory::createLvglItem(lv_obj_t *parent)
 {
-    lv_obj_t *item = createLvglScrolable(parent);
+    lv_obj_t *item = createLvglScrollable(parent);
     lv_obj_clear_flag(item, LV_OBJ_FLAG_SCROLLABLE);
     return item;
 }
 
-lv_obj_t *LvObjFactory::createLvglScrolable(lv_obj_t *parent)
+lv_obj_t *LvObjFactory::createLvglScrollable(lv_obj_t *parent)
 {
     lv_obj_t *item = lv_obj_create(parent);
     canvasStyle().applyTo(item);

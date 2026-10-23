@@ -1,35 +1,47 @@
-#ifndef LVGLPP_LVCHART_H
-#define LVGLPP_LVCHART_H
+#ifndef LVGLPP_CHART_H
+#define LVGLPP_CHART_H
 
 #include "Widget.h"
 #include <vector>
 
 namespace lvglpp::widgets {
 
-class ChartSeries {
+class ChartSeries
+{
 public:
-    ChartSeries(lv_chart_series_t *ser) : _series(ser) {}
-    lv_chart_series_t *handle() const { return _series; }
+    ChartSeries(lv_chart_series_t *ser) : _series(ser)
+    {}
+    lv_chart_series_t *handle() const
+    {
+        return _series;
+    }
+
 private:
     lv_chart_series_t *_series;
 };
 
-class ChartCursor {
+class ChartCursor
+{
 public:
-    ChartCursor(lv_chart_cursor_t *cursor) : _cursor(cursor) {}
-    lv_chart_cursor_t *handle() const { return _cursor; }
+    ChartCursor(lv_chart_cursor_t *cursor) : _cursor(cursor)
+    {}
+    lv_chart_cursor_t *handle() const
+    {
+        return _cursor;
+    }
+
 private:
     lv_chart_cursor_t *_cursor;
 };
 
-class LvChart : public Widget
+class Chart : public Widget
 {
 public:
     /// Chart type
     enum Type {
-        None  = LV_CHART_TYPE_NONE,
-        Line  = LV_CHART_TYPE_LINE,
-        Bar   = LV_CHART_TYPE_BAR,
+        None    = LV_CHART_TYPE_NONE,
+        Line    = LV_CHART_TYPE_LINE,
+        Bar     = LV_CHART_TYPE_BAR,
         Scatter = LV_CHART_TYPE_SCATTER,
     };
 
@@ -43,11 +55,11 @@ public:
 
     /// Update mode
     enum UpdateMode {
-        Shift  = LV_CHART_UPDATE_MODE_SHIFT,
+        Shift    = LV_CHART_UPDATE_MODE_SHIFT,
         Circular = LV_CHART_UPDATE_MODE_CIRCULAR,
     };
 
-    explicit LvChart(Widget *parent = nullptr);
+    explicit Chart(Widget *parent = nullptr);
 
     /// Set chart type
     void setType(Type type);
@@ -68,7 +80,13 @@ public:
     void setUpdateMode(UpdateMode mode);
 
     /// Set divider line count (horizontal, vertical)
-    void setDivLineCount(uint8_t horizontal, uint8_t vertical);
+    void setDivisionLineCount(uint8_t horizontal, uint8_t vertical);
+
+    [[deprecated("use setDivisionLineCount()")]]
+    void setDivLineCount(uint8_t horizontal, uint8_t vertical)
+    {
+        setDivisionLineCount(horizontal, vertical);
+    }
 
     /// Add a data series. Returns a handle for setting data.
     ChartSeries *addSeries(lv_color_t color, Axis axis = Axis::PrimaryY);
@@ -85,8 +103,14 @@ public:
     /// Set the next value(s) for a series. Pass one value for line, two for bar (prev, next)
     void setNextValue(ChartSeries *series, int32_t value);
 
-    /// Set next value with X and Y (for scatter charts)
-    void setNextValue2(ChartSeries *series, int32_t xValue, int32_t yValue);
+    /// Set the next point with X and Y (for scatter charts)
+    void setNextPoint(ChartSeries *series, int32_t xValue, int32_t yValue);
+
+    [[deprecated("use setNextPoint()")]]
+    void setNextValue2(ChartSeries *series, int32_t xValue, int32_t yValue)
+    {
+        setNextPoint(series, xValue, yValue);
+    }
 
     /// Set the starting x-index for a series
     void setXStartPoint(ChartSeries *series, uint32_t id);
@@ -107,9 +131,6 @@ public:
     std::vector<ChartSeries *> series() const;
 };
 
-// Modern alias
-using Chart = LvChart;
-
 } // namespace lvglpp::widgets
 
-#endif // LV_CHART_H
+#endif // LVGLPP_CHART_H

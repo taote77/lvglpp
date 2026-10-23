@@ -22,11 +22,11 @@
 
 - **WidgetLuaBind.cpp** - Widget Lua 绑定实现
   - 绑定 Widget 基类（通用方法）
-  - 绑定 LvText（文本控件）
+  - 绑定 Label（文本控件）
   - 绑定 Image（图片控件）
   - 绑定 PushButton（按钮控件）
   - 绑定 CheckBox（复选框控件）
-  - 绑定 SwitchButton（开关按钮控件）
+  - 绑定 Switch（开关按钮控件）
 
 - **LuaUtils.cpp** - Lua 工具函数实现
   - 错误打印
@@ -91,11 +91,11 @@
 - 事件：`set_on_clicked(func)`, `set_on_pressed(func)`, `set_on_released(func)`
 - 其他：`set_border(w, color)`, `set_padding_*()`, `set_parent()`
 
-### LvText（文本控件）
+### Label（文本控件）
 - 文本：`set_text(text)`, `get_text()`
 - 样式：`set_text_color(color)`, `set_text_align(align)`
 - 字体：支持多种字体大小和类型
-- 高级：`set_recolor_enable()`, `set_max_len()`（含 `...` 的显示字符预算）, `set_long_mode(maxWidth, LvText.LongMode)`（像素宽度逐行省略）
+- 高级：`set_recolor_enable()`, `set_max_len()`（含 `...` 的显示字符预算）, `set_long_mode(maxWidth, Label.LongMode)`（像素宽度逐行省略）
 
 ### Image（图片控件）
 - 路径：`set_image_src_path(path)` / `set_asset(path)`, `set_file(path)`, `get_image_src_path()`（路径为资产逻辑路径）
@@ -109,7 +109,7 @@
 ### CheckBox（复选框控件）
 - 状态：`get_check_state()`
 
-### SwitchButton（开关按钮控件）
+### Switch（开关按钮控件）
 - 状态：`set_check(bool)`, `is_check()`
 
 ## Lua API

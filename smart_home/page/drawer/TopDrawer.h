@@ -6,7 +6,7 @@
 #include "ModuleCollector.h"
 #include "SwipeView.h"
 #include "core/widgets/Widget.h"
-#include "core/widgets/MouseArea.h"
+#include "core/widgets/TouchArea.h"
 #include "core/widgets/PageIndicator.h"
 
 namespace lvglpp::ui::page {
@@ -37,7 +37,7 @@ private:
     int content_height_ = 480;
 
     std::shared_ptr<Widget>  bg_item_;
-    std::shared_ptr<MouseArea> touch_area_;
+    std::shared_ptr<TouchArea> touch_area_;
 
     std::shared_ptr<SwipeView> _page_container;
 

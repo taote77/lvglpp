@@ -3,9 +3,9 @@
 
 #include "components/progress_bar.h"
 #include "core/widgets/Widget.h"
-#include "core/widgets/LvText.h"
+#include "core/widgets/Label.h"
 #include "core/widgets/Image.h"
-#include "core/widgets/MouseArea.h"
+#include "core/widgets/TouchArea.h"
 #include <cstdint>
 #include <iomanip>
 #include <iostream>
@@ -48,12 +48,12 @@ private:
     bool    _last_heater_equipped{false};
 
     std::shared_ptr<widgets::Image> _icon1;             // row1 图标
-    std::shared_ptr<LvText>    _label_mod_scraper; // row1 txt
+    std::shared_ptr<Label>    _label_mod_scraper; // row1 txt
 
     // std::shared_ptr<widgets::Image> _icon2;// row2 图标
-    std::shared_ptr<LvText> _label_scraper_state; // row2 txt
+    std::shared_ptr<Label> _label_scraper_state; // row2 txt
 
-    std::shared_ptr<MouseArea>      _touch_area;
+    std::shared_ptr<TouchArea>      _touch_area;
     std::shared_ptr<widgets::Image> _arrow_right;
 
     std::shared_ptr<wrapper::widgets::ProgressBar> _progress;

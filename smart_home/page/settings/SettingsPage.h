@@ -3,11 +3,11 @@
 
 #include "core/sys/BaseActivity.h"
 #include "core/widgets/Dropdown.h"
-#include "core/widgets/LvText.h"
+#include "core/widgets/Label.h"
 #include "core/widgets/PushButton.h"
 #include "core/widgets/Roller.h"
 #include "core/widgets/Slider.h"
-#include "core/widgets/SwitchButton.h"
+#include "core/widgets/Switch.h"
 #include <memory>
 
 namespace w = ::lvglpp::widgets;
@@ -32,11 +32,11 @@ private:
     void buildNetworkSection();
     void buildAboutSection();
 
-    std::unique_ptr<w::LvText>      _title;
+    std::unique_ptr<w::Label>      _title;
     std::unique_ptr<w::Dropdown>    _themeDropdown;
     std::unique_ptr<w::Roller>      _langRoller;
     std::unique_ptr<w::Slider>      _brightnessSlider;
-    std::unique_ptr<w::SwitchButton> _wifiSwitch;
+    std::unique_ptr<w::Switch> _wifiSwitch;
 };
 
 } // namespace lvglpp::ui::page

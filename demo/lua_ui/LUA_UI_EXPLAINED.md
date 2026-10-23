@@ -174,18 +174,18 @@ Lua 脚本                              C++ 代码
     │                                      │
     │                                      ▼
     │                                ┌─────────────────────────┐
-    │                                │  创建 LvText 对象     │
-    │                                │  new LvText(...)      │
+    │                                │  创建 Label 对象     │
+    │                                │  new Label(...)      │
     │                                └─────────────────────────┘
     │                                      │
     │                                      ▼
-    │                              返回 shared_ptr<LvText>
+    │                              返回 shared_ptr<Label>
     │                                      │
     ▼                                      ▼
   my_text 变量指向这个对象
 ```
 
-**结果：** 内存中创建了一个 LvText 对象，my_text 变量指向它
+**结果：** 内存中创建了一个 Label 对象，my_text 变量指向它
 
 ---
 
@@ -200,7 +200,7 @@ my_text:set_pos(50, 50)
 ```
 my_text (Lua 变量)
     │
-    ├─ 调用 set_pos()  ─────►  调用 C++ LvText::setPos(50, 50)
+    ├─ 调用 set_pos()  ─────►  调用 C++ Label::setPos(50, 50)
     │                           │
     │                           ▼
     │                    ┌─────────────────────────┐

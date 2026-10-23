@@ -4,9 +4,9 @@
 #include "DetailResinDialog.h"
 #include "components/progress_bar.h"
 #include "core/widgets/Widget.h"
-#include "core/widgets/LvText.h"
+#include "core/widgets/Label.h"
 #include "core/widgets/Image.h"
-#include "core/widgets/MouseArea.h"
+#include "core/widgets/TouchArea.h"
 #include <iomanip>
 #include <iostream>
 #include <sstream>
@@ -50,10 +50,10 @@ private:
 
     std::shared_ptr<widgets::Image> _icon_bottle;       // row1 图标
     std::shared_ptr<widgets::Image> _icon2;             // row2 图标
-    std::shared_ptr<LvText>    _lbl_material_name; // row1 txt
-    std::shared_ptr<LvText>    _lbl_bottle_status; // row2 txt
+    std::shared_ptr<Label>    _lbl_material_name; // row1 txt
+    std::shared_ptr<Label>    _lbl_bottle_status; // row2 txt
 
-    std::shared_ptr<MouseArea>      _touch_area;
+    std::shared_ptr<TouchArea>      _touch_area;
     std::shared_ptr<widgets::Image> _arrow_right;
 
     std::shared_ptr<ModuleDetailResinDialog> _resin_detail_dialog;

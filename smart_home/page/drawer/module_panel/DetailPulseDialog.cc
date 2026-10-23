@@ -23,13 +23,13 @@ ModuleDetailPulseDialog::ModuleDetailPulseDialog(const int progress, const int s
 
     _dialog_bg_item->setAlignment(LV_ALIGN_TOP_MID, 0, 72);
 
-    _title_label = std::make_shared<LvText>(lvTr("electron_stack"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), LvText::FontSize24Bold);
+    _title_label = std::make_shared<Label>(lvTr("electron_stack"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), Label::FontSize24Bold);
     _title_label->setAlignment(LV_ALIGN_TOP_LEFT, 24, 20);
 
-    _title_status_label = std::make_shared<LvText>(lvTr("status_abnormal"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), LvText::FontSize24Bold);
+    _title_status_label = std::make_shared<Label>(lvTr("status_abnormal"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), Label::FontSize24Bold);
     _title_status_label->setAlignmentTo(*_dialog_bg_item.get(), LV_ALIGN_TOP_RIGHT, -24, 20);
 
-    _progress_label = std::make_shared<LvText>(lvTr("mod_used"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), LvText::FontSize24);
+    _progress_label = std::make_shared<Label>(lvTr("mod_used"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), Label::FontSize24);
     _progress_label->setAlignmentTo(*_title_label, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 24);
 
     _progress_bar = std::make_shared<ProgressBar>(_dialog_bg_item.get(), 120, 20);
@@ -41,14 +41,14 @@ ModuleDetailPulseDialog::ModuleDetailPulseDialog(const int progress, const int s
     _progress_bar->setMainColor(ThemeColor(CLR_SURFACE_CONTAINER_LOWEST));
     _progress_bar->setIndicatorColor(ThemeColor(CLR_PROGRESS_NORMAL_FILL));
 
-    _status_label = std::make_shared<LvText>(lvTr("panel_resin_remaining"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), LvText::FontSize24);
+    _status_label = std::make_shared<Label>(lvTr("panel_resin_remaining"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), Label::FontSize24);
     _status_label->setPos(24, 82 + 32 + 15);
 
-    _status_value_label = std::make_shared<LvText>("", ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), LvText::FontSize24);
-    // _status_value_label = std::make_shared<LvText>(lvTr("empty_info"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), LvText::FontSize24);
+    _status_value_label = std::make_shared<Label>("", ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), Label::FontSize24);
+    // _status_value_label = std::make_shared<Label>(lvTr("empty_info"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), Label::FontSize24);
     _status_value_label->setAlignmentTo(*_status_label, LV_ALIGN_OUT_RIGHT_MID, 12, 0);
 
-    _close_button = std::make_shared<RoundedButton>(48, 48, RoundedButton::ColorStyle::Gray, "", "image/32x32/x_close.png", _dialog_bg_item.get());
+    _close_button = std::make_shared<PushButton>(48, 48, PushButton::ColorStyle::Gray, "", "image/32x32/x_close.png", _dialog_bg_item.get());
     _close_button->setRadius(24);
     _close_button->setAlignment(LV_ALIGN_BOTTOM_MID, 0, -20);
     _close_button->setOnClickedListener([this]() {
@@ -72,7 +72,7 @@ void ModuleDetailPulseDialog::updatePulseFilmInfo(double usedtime, int32_t tank_
     if (airmod_state == 1)
     {
         status_str = "status_normal";
-        _title_status_label->setTextClr(CLR_ON_INFO);
+        _title_status_label->setTextColor(CLR_ON_INFO);
 
         _progress_bar->setVisible(true);
 
@@ -93,7 +93,7 @@ void ModuleDetailPulseDialog::updatePulseFilmInfo(double usedtime, int32_t tank_
     } else
     {
         status_str = "status_abnormal";
-        _title_status_label->setTextClr(CLR_WARNING);
+        _title_status_label->setTextColor(CLR_WARNING);
 
         _progress_bar->setVisible(false);
     }

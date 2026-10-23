@@ -62,7 +62,7 @@ cmake -S . -B build-static -DLVGLPP_ENABLE_ROTATION=OFF -DLVGLPP_ENABLE_RTL=OFF
 ```cpp
 // 合法且常见：局部包装对象只用于构建 UI
 {
-    auto title = std::make_unique<widgets::LvText>("Hello", 0xFFFFFF, root);
+    auto title = std::make_unique<widgets::Label>("Hello", 0xFFFFFF, root);
     title->setAlignment(LV_ALIGN_TOP_LEFT, 16, 8);
 } // title 析构；label 仍存在于 root 下
 ```
@@ -315,7 +315,7 @@ bool portrait = cfg.isPortrait();
 
 - 所有 `request*` 都是线程安全的原子请求；`Application::exec()` 在 `lv_timer_handler()` 前调用 `UiConfig::processPending()`，所以不要在 LVGL 回调里同步重建 UI。
 - `StackView` 把配置变更分发给每个 `Activity::onConfigurationChanged`；`BaseActivity` 调整 root 尺寸，具体页面通过 `PageHost::releaseAll()+show(currentIndex)` 重建。当前页索引保留，滚动位置和打开的对话框不保留。
-- `Widget::setAlignment/setAlignmentTo/setPos` 会按 RTL 镜像显式 LEFT/RIGHT/OUT_* 和 x 偏移。**flex/grid 的 RTL 反向由 LVGL 自动完成，不要手动镜像**。`setMirrorInRtl(false)` 可关闭某个控件的镜像；`LvChart` 固定 LTR。
+- `Widget::setAlignment/setAlignmentTo/setPos` 会按 RTL 镜像显式 LEFT/RIGHT/OUT_* 和 x 偏移。**flex/grid 的 RTL 反向由 LVGL 自动完成，不要手动镜像**。`setMirrorInRtl(false)` 可关闭某个控件的镜像；`Chart` 固定 LTR。
 - 方向图片使用 `Image::setRtlAsset(path)`；LVGL 9.3 不支持负 scale 镜像。
 - 启动/调试环境变量：`LVGLPP_ORIENTATION=landscape|portrait|reverse-landscape|reverse-portrait`、`LVGLPP_RTL=1`、`LVGLPP_PANEL_ROTATION_OFFSET=90`、`LVGLPP_SDL_FIXED_PANEL=1`、`LVGLPP_DISABLE_PANEL_ROTATION=1`。smart_home 还支持 `1/2/3/4` 切换四方向、`R` 切换 RTL。
 - 静态产品零开销：`-DLVGLPP_ENABLE_ROTATION=OFF -DLVGLPP_ENABLE_RTL=OFF`，旋转/RTL 代码、每控件镜像状态和矩阵变换都会在编译期移除；`processPending()` 仍保留（每帧一次原子读取），用于语言切换时的页面重建。
@@ -325,7 +325,7 @@ bool portrait = cfg.isPortrait();
 
 ## 7. 控件
 
-原有控件：`LvText/Label`、`PushButton/Button`、`Image`、`Base64Image`、`GifImage`、`LottieCanvas`、`QrCode`、`Video`、`Arc`、`ProgressBar/Bar`、`Slider`、`SpinBox`、`CheckBox`、`SwitchButton`、`Dropdown`、`Roller`、`TextArea`、`Keyboard`、`Led`、`Line`、`LvChart/Chart`、`Table`、`Calendar`、`TabView`、`ListView`、`PageView`、`PageIndicator`、`Loader`、`MouseArea`、`BaseDialog`、`Toast` 等。
+原有控件：`Label/Label`、`PushButton/Button`、`Image`、`Base64Image`、`GifImage`、`LottieCanvas`、`QrCode`、`Video`、`Arc`、`ProgressBar/Bar`、`Slider`、`SpinBox`、`CheckBox`、`Switch`、`Dropdown`、`Roller`、`TextArea`、`Keyboard`、`Led`、`Line`、`Chart/Chart`、`Table`、`Calendar`、`TabView`、`ListView`、`PageView`、`PageIndicator`、`Loader`、`TouchArea`、`BaseDialog`、`Toast` 等。
 
 所有控件都继承 `widgets::Widget`（原 `BaseItem`）。常用现代命名：
 
@@ -339,7 +339,7 @@ widget->setAlignment(...);       // 原拼写 setAligment
 
 旧名称仍以 `[[deprecated]]` inline 转发保留在头文件中，新代码请使用现代名称。`Image` 是例外：`setEnabled(true)` 会把它变成可点击目标（返回箭头等既有用法因此保持有效）。
 
-`LvText::setMaxLen(n)` 按“显示字符预算”工作：`n > 3` 时中间插入 `...`，`n <= 3` 时只保留前 n 个字符；`LvText::setLongMode(maxWidth, AutoEllipsis|MiddleEllipsis)` 按像素宽度逐行省略，二者都按 UTF-8 字符簇切分，不会拆开中文或组合字符。`setLongMode(lv_label_long_mode_t)` 直接设置 LVGL 原生 long mode。启用 recolor 标记时自动省略会关闭，避免截断 `#RRGGBB` 标记。
+`Label::setMaxLength(n)` 按“显示字符预算”工作：`n > 3` 时中间插入 `...`，`n <= 3` 时只保留前 n 个字符；`Label::setLongMode(maxWidth, AutoEllipsis|MiddleEllipsis)` 按像素宽度逐行省略，二者都按 UTF-8 字符簇切分，不会拆开中文或组合字符。`setLongMode(lv_label_long_mode_t)` 直接设置 LVGL 原生 long mode。启用 recolor 标记时自动省略会关闭，避免截断 `#RRGGBB` 标记。
 
 新增控件：
 
@@ -350,7 +350,7 @@ widget->setAlignment(...);       // 原拼写 setAligment
 | `MsgBox` | 标题/正文/按钮消息框，按钮自动加入焦点组 |
 | `Scale` | 刻度尺，支持范围、刻度数、角度、模式 |
 
-交互控件（PushButton、Slider、SwitchButton、Dropdown、Roller、CheckBox、TextArea、Arc、Calendar、Table、ImageButton、Scale 等）默认 focusable。
+交互控件（PushButton、Slider、Switch、Dropdown、Roller、CheckBox、TextArea、Arc、Calendar、Table、ImageButton、Scale 等）默认 focusable。
 
 ### 7.1 资源管理
 
@@ -506,7 +506,7 @@ auto *host = new widgets::PageHost(root);       // 或放入成员 unique_ptr
 host->setSize(800, 420);
 
 host->addPage("Home", [](widgets::PageContext &ctx) {
-    auto *title = ctx.emplace<widgets::LvText>("Home", 0xFFFFFF, ctx.root());
+    auto *title = ctx.emplace<widgets::Label>("Home", 0xFFFFFF, ctx.root());
     title->setAlignment(LV_ALIGN_TOP_LEFT, 16, 8);
 
     ctx.onShow([] { /* 恢复定时器/动画 */ })

@@ -59,7 +59,7 @@ Add a new Activity page [PageName] in [location].
 It should:
 - Inherit BaseActivity
 - Override onCreate(std::any arg) to build the UI
-- Use LvText for labels, PushButton/Button for buttons
+- Use Label for labels, PushButton/Button for buttons
 - Use StackView::getInstance().pushView/popView for navigation
 - Build and verify it compiles
 ```

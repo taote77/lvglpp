@@ -18,13 +18,13 @@
 #include "core/sys/StackView.h"
 #include "core/widgets/Widget.h"
 #include "core/widgets/Dropdown.h"
-#include "core/widgets/LvText.h"
+#include "core/widgets/Label.h"
 #include "core/widgets/PageHost.h"
 #include "core/widgets/PushButton.h"
 #include "core/widgets/Roller.h"
-#include "core/widgets/ScrollItem.h"
+#include "core/widgets/ScrollView.h"
 #include "core/widgets/Slider.h"
-#include "core/widgets/SwitchButton.h"
+#include "core/widgets/Switch.h"
 #include "core/widgets/Toast.h"
 #include "core/sys/UiConfig.h"
 #include "core/widgets/WidgetStore.h"
@@ -49,11 +49,11 @@ namespace c = ::lvglpp::ui::widgets;
 static void buildDashboard(w::Widget *root, w::WidgetStore &store)
 {
     // Title
-    auto *title = store.emplace<w::LvText>(lvTr("home_title"), CLR_ON_SURFACE, root, w::LvText::FontSize28Bold);
+    auto *title = store.emplace<w::Label>(lvTr("home_title"), CLR_ON_SURFACE, root, w::Label::FontSize28Bold);
     title->setAlignment(LV_ALIGN_TOP_LEFT, 16, 8);
 
     // Weather
-    auto *weather = store.emplace<w::LvText>(lvTr("home_weather"), CLR_ON_SURFACE_VARIANT_1, root, w::LvText::FontSize22);
+    auto *weather = store.emplace<w::Label>(lvTr("home_weather"), CLR_ON_SURFACE_VARIANT_1, root, w::Label::FontSize22);
     weather->setAlignment(LV_ALIGN_TOP_RIGHT, -16, 12);
 
     // Quick actions row
@@ -111,7 +111,7 @@ static void buildDashboard(w::Widget *root, w::WidgetStore &store)
 
     // Security status
     const int securityY = portrait ? 580 : 370;
-    auto *secTitle = store.emplace<w::LvText>(lvTr("home_security"), CLR_ON_SURFACE_VARIANT_1, root, w::LvText::FontSize22Bold);
+    auto *secTitle = store.emplace<w::Label>(lvTr("home_security"), CLR_ON_SURFACE_VARIANT_1, root, w::Label::FontSize22Bold);
     secTitle->setAlignment(LV_ALIGN_TOP_LEFT, 16, securityY);
 
     auto *doorBadge = store.emplace<c::StatusBadge>(c::StatusBadge::Online, root);
@@ -132,11 +132,11 @@ static void buildRoomsPage(w::Widget *root, w::WidgetStore &store)
     const auto &cfg = sys::UiConfig::instance();
 
     // Scrollable container
-    auto *scroll = store.emplace<w::ScrollItem>(root);
+    auto *scroll = store.emplace<w::ScrollView>(root);
     scroll->setSize(cfg.width(), cfg.height() - 60);
     scroll->setAlignment(LV_ALIGN_TOP_MID, 0, 0);
 
-    auto *title = store.emplace<w::LvText>(lvTr("nav_rooms"), CLR_ON_SURFACE, scroll, w::LvText::FontSize28Bold);
+    auto *title = store.emplace<w::Label>(lvTr("nav_rooms"), CLR_ON_SURFACE, scroll, w::Label::FontSize28Bold);
     title->setAlignment(LV_ALIGN_TOP_LEFT, 16, 8);
 
     struct {
@@ -188,17 +188,17 @@ static void buildDevicesPage(w::Widget *root, w::WidgetStore &store)
     const lv_align_t cardAlign = portrait ? LV_ALIGN_TOP_MID : LV_ALIGN_TOP_LEFT;
     const lv_coord_t cardX     = portrait ? 0 : 16;
 
-    auto *scroll = store.emplace<w::ScrollItem>(root);
+    auto *scroll = store.emplace<w::ScrollView>(root);
     scroll->setSize(cfg.width(), cfg.height() - 60);
     scroll->setAlignment(LV_ALIGN_TOP_MID, 0, 0);
     scroll->setScrollable(true);
 
-    auto *title = store.emplace<w::LvText>(lvTr("nav_devices"), CLR_ON_SURFACE, scroll, w::LvText::FontSize28Bold);
+    auto *title = store.emplace<w::Label>(lvTr("nav_devices"), CLR_ON_SURFACE, scroll, w::Label::FontSize28Bold);
     title->setAlignment(LV_ALIGN_TOP_LEFT, 16, 8);
 
     int y = 42;
     // Lights section
-    auto *lightsHdr = store.emplace<w::LvText>(lvTr("home_lights"), CLR_ON_SURFACE_VARIANT_1, scroll, w::LvText::FontSize22Bold);
+    auto *lightsHdr = store.emplace<w::Label>(lvTr("home_lights"), CLR_ON_SURFACE_VARIANT_1, scroll, w::Label::FontSize22Bold);
     lightsHdr->setAlignment(LV_ALIGN_TOP_LEFT, 16, y);
     y += 30;
 
@@ -213,7 +213,7 @@ static void buildDevicesPage(w::Widget *root, w::WidgetStore &store)
     y += 64;
 
     // Thermostats
-    auto *thermHdr = store.emplace<w::LvText>(lvTr("home_climate"), CLR_ON_SURFACE_VARIANT_1, scroll, w::LvText::FontSize22Bold);
+    auto *thermHdr = store.emplace<w::Label>(lvTr("home_climate"), CLR_ON_SURFACE_VARIANT_1, scroll, w::Label::FontSize22Bold);
     thermHdr->setAlignment(LV_ALIGN_TOP_LEFT, 16, y);
     y += 30;
 
@@ -222,7 +222,7 @@ static void buildDevicesPage(w::Widget *root, w::WidgetStore &store)
     y += 210;
 
     // Security
-    auto *secHdr = store.emplace<w::LvText>(lvTr("home_security"), CLR_ON_SURFACE_VARIANT_1, scroll, w::LvText::FontSize22Bold);
+    auto *secHdr = store.emplace<w::Label>(lvTr("home_security"), CLR_ON_SURFACE_VARIANT_1, scroll, w::Label::FontSize22Bold);
     secHdr->setAlignment(LV_ALIGN_TOP_LEFT, 16, y);
     y += 30;
 
@@ -247,10 +247,10 @@ static void buildDevicesPage(w::Widget *root, w::WidgetStore &store)
 
 static void buildScenesPage(w::Widget *root, w::WidgetStore &store)
 {
-    auto *title = store.emplace<w::LvText>(lvTr("nav_scenes"), CLR_ON_SURFACE, root, w::LvText::FontSize28Bold);
+    auto *title = store.emplace<w::Label>(lvTr("nav_scenes"), CLR_ON_SURFACE, root, w::Label::FontSize28Bold);
     title->setAlignment(LV_ALIGN_TOP_LEFT, 16, 8);
 
-    auto *activeLabel = store.emplace<w::LvText>(lvTr("scenes_active"), CLR_ON_SURFACE_VARIANT_1, root, w::LvText::FontSize20);
+    auto *activeLabel = store.emplace<w::Label>(lvTr("scenes_active"), CLR_ON_SURFACE_VARIANT_1, root, w::Label::FontSize20);
     activeLabel->setAlignment(LV_ALIGN_TOP_RIGHT, -16, 12);
 
     struct {
@@ -354,22 +354,22 @@ static void buildSettingsPage(w::Widget *root, w::WidgetStore &store)
 {
     const auto &cfg = sys::UiConfig::instance();
 
-    auto *scroll = store.emplace<w::ScrollItem>(root);
+    auto *scroll = store.emplace<w::ScrollView>(root);
     scroll->setSize(cfg.width(), cfg.height() - 60);
     scroll->setAlignment(LV_ALIGN_TOP_MID, 0, 0);
     scroll->setScrollable(true);
 
-    auto *title = store.emplace<w::LvText>(lvTr("nav_settings"), CLR_ON_SURFACE, scroll, w::LvText::FontSize28Bold);
+    auto *title = store.emplace<w::Label>(lvTr("nav_settings"), CLR_ON_SURFACE, scroll, w::Label::FontSize28Bold);
     title->setAlignment(LV_ALIGN_TOP_LEFT, 16, 8);
 
     int y = 45;
 
     // ---- Appearance ----
-    auto *appHdr = store.emplace<w::LvText>(lvTr("settings_appearance"), CLR_PRIMARY, scroll, w::LvText::FontSize22Bold);
+    auto *appHdr = store.emplace<w::Label>(lvTr("settings_appearance"), CLR_PRIMARY, scroll, w::Label::FontSize22Bold);
     appHdr->setAlignment(LV_ALIGN_TOP_LEFT, 16, y);
     y += 30;
 
-    auto *themeLbl = store.emplace<w::LvText>(lvTr("settings_theme"), CLR_ON_SURFACE_VARIANT_0, scroll, w::LvText::FontSize20);
+    auto *themeLbl = store.emplace<w::Label>(lvTr("settings_theme"), CLR_ON_SURFACE_VARIANT_0, scroll, w::Label::FontSize20);
     themeLbl->setAlignment(LV_ALIGN_TOP_LEFT, 32, y);
     auto *themeDrop = store.emplace<w::Dropdown>(scroll);
     themeDrop->setSize(180, 36);
@@ -377,7 +377,7 @@ static void buildSettingsPage(w::Widget *root, w::WidgetStore &store)
     themeDrop->setAlignment(LV_ALIGN_TOP_LEFT, 200, y - 3);
     y += 44;
 
-    auto *brightLbl = store.emplace<w::LvText>(lvTr("settings_brightness"), CLR_ON_SURFACE_VARIANT_0, scroll, w::LvText::FontSize20);
+    auto *brightLbl = store.emplace<w::Label>(lvTr("settings_brightness"), CLR_ON_SURFACE_VARIANT_0, scroll, w::Label::FontSize20);
     brightLbl->setAlignment(LV_ALIGN_TOP_LEFT, 32, y);
     auto *brightSlider = store.emplace<w::Slider>(scroll);
     brightSlider->setSize(180, 20);
@@ -387,11 +387,11 @@ static void buildSettingsPage(w::Widget *root, w::WidgetStore &store)
     y += 30;
 
     // ---- Language ----
-    auto *langHdr = store.emplace<w::LvText>(lvTr("language"), CLR_PRIMARY, scroll, w::LvText::FontSize22Bold);
+    auto *langHdr = store.emplace<w::Label>(lvTr("language"), CLR_PRIMARY, scroll, w::Label::FontSize22Bold);
     langHdr->setAlignment(LV_ALIGN_TOP_LEFT, 16, y);
     y += 30;
 
-    auto *langLbl = store.emplace<w::LvText>(lvTr("language"), CLR_ON_SURFACE_VARIANT_0, scroll, w::LvText::FontSize20);
+    auto *langLbl = store.emplace<w::Label>(lvTr("language"), CLR_ON_SURFACE_VARIANT_0, scroll, w::Label::FontSize20);
     langLbl->setAlignment(LV_ALIGN_TOP_LEFT, 32, y);
     auto *langRoller = store.emplace<w::Roller>(scroll);
     langRoller->setSize(150, 100);
@@ -410,49 +410,49 @@ static void buildSettingsPage(w::Widget *root, w::WidgetStore &store)
     y += 110;
 
     // ---- Network ----
-    auto *netHdr = store.emplace<w::LvText>(lvTr("settings_network"), CLR_PRIMARY, scroll, w::LvText::FontSize22Bold);
+    auto *netHdr = store.emplace<w::Label>(lvTr("settings_network"), CLR_PRIMARY, scroll, w::Label::FontSize22Bold);
     netHdr->setAlignment(LV_ALIGN_TOP_LEFT, 16, y);
     y += 30;
 
-    auto *wifiLbl = store.emplace<w::LvText>(lvTr("settings_wifi"), CLR_ON_SURFACE_VARIANT_0, scroll, w::LvText::FontSize20);
+    auto *wifiLbl = store.emplace<w::Label>(lvTr("settings_wifi"), CLR_ON_SURFACE_VARIANT_0, scroll, w::Label::FontSize20);
     wifiLbl->setAlignment(LV_ALIGN_TOP_LEFT, 32, y);
-    auto *wifiSwitch = store.emplace<w::SwitchButton>(48, 24, scroll);
-    wifiSwitch->setCheck(true);
+    auto *wifiSwitch = store.emplace<w::Switch>(48, 24, scroll);
+    wifiSwitch->setChecked(true);
     wifiSwitch->setAlignment(LV_ALIGN_TOP_LEFT, 200, y);
     y += 30;
 
     // Mock network data, not UI copy.
-    auto *wifiInfo = store.emplace<w::LvText>("SSID: MyHomeWiFi  IP: 192.168.1.100", CLR_ON_SURFACE_VARIANT_2, scroll, w::LvText::FontSize20);
+    auto *wifiInfo = store.emplace<w::Label>("SSID: MyHomeWiFi  IP: 192.168.1.100", CLR_ON_SURFACE_VARIANT_2, scroll, w::Label::FontSize20);
     wifiInfo->setAlignment(LV_ALIGN_TOP_LEFT, 32, y);
     y += 28;
 
     // ---- Notifications ----
-    auto *notifHdr = store.emplace<w::LvText>(lvTr("settings_notifications"), CLR_PRIMARY, scroll, w::LvText::FontSize22Bold);
+    auto *notifHdr = store.emplace<w::Label>(lvTr("settings_notifications"), CLR_PRIMARY, scroll, w::Label::FontSize22Bold);
     notifHdr->setAlignment(LV_ALIGN_TOP_LEFT, 16, y);
     y += 30;
 
-    auto *pushLbl = store.emplace<w::LvText>(lvTr("settings_push_notifications"), CLR_ON_SURFACE_VARIANT_0, scroll, w::LvText::FontSize20);
+    auto *pushLbl = store.emplace<w::Label>(lvTr("settings_push_notifications"), CLR_ON_SURFACE_VARIANT_0, scroll, w::Label::FontSize20);
     pushLbl->setAlignment(LV_ALIGN_TOP_LEFT, 32, y);
-    auto *pushSwitch = store.emplace<w::SwitchButton>(48, 24, scroll);
-    pushSwitch->setCheck(true);
+    auto *pushSwitch = store.emplace<w::Switch>(48, 24, scroll);
+    pushSwitch->setChecked(true);
     pushSwitch->setAlignment(LV_ALIGN_TOP_LEFT, 200, y);
     y += 30;
 
     // ---- About ----
-    auto *aboutHdr = store.emplace<w::LvText>(lvTr("settings_about"), CLR_PRIMARY, scroll, w::LvText::FontSize22Bold);
+    auto *aboutHdr = store.emplace<w::Label>(lvTr("settings_about"), CLR_PRIMARY, scroll, w::Label::FontSize22Bold);
     aboutHdr->setAlignment(LV_ALIGN_TOP_LEFT, 16, y);
     y += 30;
 
     // Version/build/copyright are product data, not translatable copy.
-    auto *ver = store.emplace<w::LvText>("LVGL++ Smart Home v2.0", CLR_ON_SURFACE_VARIANT_1, scroll, w::LvText::FontSize20);
+    auto *ver = store.emplace<w::Label>("LVGL++ Smart Home v2.0", CLR_ON_SURFACE_VARIANT_1, scroll, w::Label::FontSize20);
     ver->setAlignment(LV_ALIGN_TOP_LEFT, 32, y);
     y += 24;
 
-    auto *build = store.emplace<w::LvText>("Build: 2026-07-23  |  SDK: LVGL 9.x", CLR_ON_SURFACE_VARIANT_2, scroll, w::LvText::FontSize20);
+    auto *build = store.emplace<w::Label>("Build: 2026-07-23  |  SDK: LVGL 9.x", CLR_ON_SURFACE_VARIANT_2, scroll, w::Label::FontSize20);
     build->setAlignment(LV_ALIGN_TOP_LEFT, 32, y);
     y += 24;
 
-    auto *copy = store.emplace<w::LvText>("(c) 2024-2026 LVGL++ Team", CLR_PRIMARY_DIS_BG, scroll, w::LvText::FontSize20);
+    auto *copy = store.emplace<w::Label>("(c) 2024-2026 LVGL++ Team", CLR_PRIMARY_DIS_BG, scroll, w::Label::FontSize20);
     copy->setAlignment(LV_ALIGN_TOP_LEFT, 32, y);
     y += 28;
 
@@ -555,7 +555,7 @@ private:
 
         for (size_t i = 0; i < _navBtns.size(); i++)
         {
-            _navBtns[i]->setColorType(static_cast<int>(i) == index ? w::PushButton::Blue : w::PushButton::Dark);
+            _navBtns[i]->setColorStyle(static_cast<int>(i) == index ? w::PushButton::Blue : w::PushButton::Dark);
         }
     }
 

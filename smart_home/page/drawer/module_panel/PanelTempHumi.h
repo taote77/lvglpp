@@ -2,7 +2,7 @@
 #define PANEL_TEMP_HUMI_H
 
 #include "core/widgets/Widget.h"
-#include "core/widgets/LvText.h"
+#include "core/widgets/Label.h"
 #include "core/widgets/Image.h"
 #include <cstdint>
 #include <iomanip>
@@ -22,8 +22,8 @@ public:
 private:
     std::shared_ptr<widgets::Image> _icon1; // row1 图标
     std::shared_ptr<widgets::Image> _icon2; // row2 图标
-    std::shared_ptr<LvText>    _text;  // row1 txt
-    std::shared_ptr<LvText>    _text1; // row2 txt
+    std::shared_ptr<Label>    _text;  // row1 txt
+    std::shared_ptr<Label>    _text1; // row2 txt
 
     int32_t last_sensor{-1};
     int32_t temp_last{-1};

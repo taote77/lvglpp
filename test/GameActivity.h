@@ -4,8 +4,8 @@
 #include "GameStateDialog.h"
 #include "core/sys/BaseActivity.h"
 #include "core/sys/Event.h"
-#include "core/widgets/LvButton.h"
-#include "core/widgets/LvText.h"
+#include "core/widgets/TextButton.h"
+#include "core/widgets/Label.h"
 #include "core/widgets/PushButton.h"
 #include <iostream>
 #include <iterator>
@@ -25,7 +25,7 @@ public:
         bool       exist_food{false}; // 是否有食物
         lv_point_t food{0, 0};        // 食物部件
 
-        std::shared_ptr<widgets::LvText> score_label; // 分数显示
+        std::shared_ptr<widgets::Label> score_label; // 分数显示
 
         lv_dir_t direction{lv_dir_t::LV_DIR_RIGHT}; // 当前移动方向
         // lv_dir_t direction{lv_dir_t::LV_DIR_TOP}; // 当up移动方向
@@ -83,10 +83,10 @@ private:
     static constexpr int ver_box_size = WINDOW_HEIGHT / 20;        // 480 / 20 = 24
     lv_timer_t          *_timer;
 
-    std::shared_ptr<widgets::RoundedButton> _btn_up;
-    std::shared_ptr<widgets::RoundedButton> _btn_left;
-    std::shared_ptr<widgets::RoundedButton> _btn_right;
-    std::shared_ptr<widgets::RoundedButton> _btn_down;
+    std::shared_ptr<widgets::PushButton> _btn_up;
+    std::shared_ptr<widgets::PushButton> _btn_left;
+    std::shared_ptr<widgets::PushButton> _btn_right;
+    std::shared_ptr<widgets::PushButton> _btn_down;
 
     std::shared_ptr<widgets::Widget> _canvas;
 

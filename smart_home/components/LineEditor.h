@@ -2,7 +2,7 @@
 #define LINE_EDITOR_H
 
 #include "StringEditor.h"
-#include "core/widgets/LvText.h"
+#include "core/widgets/Label.h"
 #include <memory>
 
 namespace wrapper::widgets {
@@ -17,8 +17,8 @@ protected:
     void draw(const std::string &display) override;
 
 private:
-    std::shared_ptr<LvText> display_label_;
-    std::shared_ptr<LvText> unit_label_;
+    std::shared_ptr<Label> display_label_;
+    std::shared_ptr<Label> unit_label_;
     std::string                  unit_str_;
 };
 

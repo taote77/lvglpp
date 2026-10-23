@@ -4,8 +4,8 @@
 #include "core/widgets/BaseDialog.h"
 #include "core/widgets/Widget.h"
 #include "core/widgets/Image.h"
-#include "core/widgets/LvChart.h"
-#include "core/widgets/LvText.h"
+#include "core/widgets/Chart.h"
+#include "core/widgets/Label.h"
 
 #include <memory>
 #include <vector>
@@ -31,19 +31,19 @@ private:
 private:
     std::shared_ptr<widgets::Widget> bg_;
     std::shared_ptr<widgets::Image>    back_icon_;
-    std::shared_ptr<widgets::LvText>   peak_force_curve_label;
+    std::shared_ptr<widgets::Label>   peak_force_curve_label;
 
-    std::shared_ptr<widgets::LvText>          abnormal_btn_label_;
-    std::shared_ptr<lvglpp::widgets::LvChart> chart_;
-    std::shared_ptr<widgets::LvText>          force_label_;
-    std::shared_ptr<widgets::LvText>          time_label_;
-    std::shared_ptr<widgets::LvText>          time_label_1_;
-    std::shared_ptr<widgets::LvText>          time_label_2_;
-    std::shared_ptr<widgets::LvText>          time_label_3_;
-    std::shared_ptr<widgets::LvText>          zero_label_;
+    std::shared_ptr<widgets::Label>          abnormal_btn_label_;
+    std::shared_ptr<lvglpp::widgets::Chart> chart_;
+    std::shared_ptr<widgets::Label>          force_label_;
+    std::shared_ptr<widgets::Label>          time_label_;
+    std::shared_ptr<widgets::Label>          time_label_1_;
+    std::shared_ptr<widgets::Label>          time_label_2_;
+    std::shared_ptr<widgets::Label>          time_label_3_;
+    std::shared_ptr<widgets::Label>          zero_label_;
 
-    std::shared_ptr<widgets::LvText> peak_value_;
-    std::shared_ptr<widgets::LvText> trough_value_;
+    std::shared_ptr<widgets::Label> peak_value_;
+    std::shared_ptr<widgets::Label> trough_value_;
 
     lv_chart_series_t  *ser1_;
     lv_chart_series_t  *ser2_;

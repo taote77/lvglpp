@@ -3,13 +3,13 @@
 
 #include "BaseModel.hpp"
 #include "PageViewDelegate.hpp"
-#include "ScrollItem.h"
+#include "ScrollView.h"
 #include <memory>
 
 namespace lvglpp::widgets {
 
 template <typename T, typename T2 = PageViewDelegate<T>>
-class PageView : public ScrollItem
+class PageView : public ScrollView
 {
 public:
     explicit PageView(Widget *parentItem = nullptr);
@@ -63,13 +63,13 @@ private:
 };
 
 template <typename T, typename T2>
-PageView<T, T2>::PageView(Widget *parentItem) : ScrollItem(parentItem), show_content_vec_(50)
+PageView<T, T2>::PageView(Widget *parentItem) : ScrollView(parentItem), show_content_vec_(50)
 {
     initItem();
 }
 
 template <typename T, typename T2>
-PageView<T, T2>::PageView(const BaseModel<T> &model, Widget *parentItem) : ScrollItem(parentItem), page_view_model_(model), show_content_vec_(50)
+PageView<T, T2>::PageView(const BaseModel<T> &model, Widget *parentItem) : ScrollView(parentItem), page_view_model_(model), show_content_vec_(50)
 {
     initItem();
 }

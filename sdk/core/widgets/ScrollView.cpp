@@ -1,12 +1,12 @@
 
-#include "ScrollItem.h"
+#include "ScrollView.h"
 
 namespace lvglpp::widgets {
 
-ScrollItem::ScrollItem(Widget *parent) : Widget(parent)
+ScrollView::ScrollView(Widget *parent) : Widget(parent)
 {}
 
-void ScrollItem::setScrollable(bool b)
+void ScrollView::setScrollable(bool b)
 {
     if (b)
     {
@@ -17,12 +17,12 @@ void ScrollItem::setScrollable(bool b)
     }
 }
 
-bool ScrollItem::getScrollable()
+bool ScrollView::isScrollable() const
 {
     return lv_obj_has_flag(lvObj(), LV_OBJ_FLAG_SCROLLABLE);
 }
 
-void ScrollItem::setFlickable(bool b)
+void ScrollView::setFlickable(bool b)
 {
     if (b)
     {
@@ -33,12 +33,12 @@ void ScrollItem::setFlickable(bool b)
     }
 }
 
-bool ScrollItem::getFlickable()
+bool ScrollView::isFlickable() const
 {
     return lv_obj_has_flag(lvObj(), LV_OBJ_FLAG_SCROLL_ELASTIC);
 }
 
-void ScrollItem::setScrollBarVisible(bool b)
+void ScrollView::setScrollbarVisible(bool b)
 {
     if (b)
     {
@@ -49,27 +49,27 @@ void ScrollItem::setScrollBarVisible(bool b)
     }
 }
 
-void ScrollItem::setScrollSnapping(lv_scroll_snap_t l)
+void ScrollView::setScrollSnapping(lv_scroll_snap_t l)
 {
     lv_obj_set_scroll_snap_x(lvObj(), l);
 }
 
-lv_coord_t ScrollItem::getScrollSnapX()
+lv_coord_t ScrollView::getScrollSnapX() const
 {
     return lv_obj_get_scroll_x(lvObj());
 }
 
-void ScrollItem::setScrollToX(lv_coord_t x, bool animEnable)
+void ScrollView::setScrollToX(lv_coord_t x, bool animEnable)
 {
     lv_obj_scroll_to_x(lvObj(), x, animEnable ? LV_ANIM_ON : LV_ANIM_OFF);
 }
 
-lv_coord_t ScrollItem::getScrollSnapY()
+lv_coord_t ScrollView::getScrollSnapY() const
 {
     return lv_obj_get_scroll_y(lvObj());
 }
 
-void ScrollItem::setScrollToY(lv_coord_t y, bool animEnable)
+void ScrollView::setScrollToY(lv_coord_t y, bool animEnable)
 {
     lv_obj_scroll_to_y(lvObj(), y, animEnable ? LV_ANIM_ON : LV_ANIM_OFF);
 }

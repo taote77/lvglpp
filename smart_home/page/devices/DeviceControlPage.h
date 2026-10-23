@@ -2,7 +2,7 @@
 #define SMART_HOME_DEVICE_CONTROL_PAGE_H
 
 #include "core/sys/BaseActivity.h"
-#include "core/widgets/LvText.h"
+#include "core/widgets/Label.h"
 #include <memory>
 #include <vector>
 
@@ -27,7 +27,7 @@ private:
     void buildThermostatsSection(int &y);
     void buildLocksSection(int &y);
 
-    std::unique_ptr<w::LvText> _title;
+    std::unique_ptr<w::Label> _title;
 };
 
 } // namespace lvglpp::ui::page

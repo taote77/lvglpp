@@ -37,17 +37,16 @@ PushButton::PushButton(int width, int height, PushButton::ColorStyle type, const
 {
     init(width, height, type);
     initLabel(strMsg, type);
-    setColorType(type);
+    setColorStyle(type);
     setFocusable(true);
 }
 
-PushButton::PushButton(int width, int height, PushButton::ColorStyle type, const std::string &strMsg, const std::string &strImgPath, Widget *parent) :
-    Widget(parent), type_(type)
+PushButton::PushButton(int width, int height, PushButton::ColorStyle type, const std::string &strMsg, const std::string &strImgPath, Widget *parent) : Widget(parent), type_(type)
 {
     init(width, height, type);
     initImage(strImgPath);
     initLabel(strMsg, type);
-    setColorType(type);
+    setColorStyle(type);
     setFocusable(true);
 }
 
@@ -63,11 +62,11 @@ void PushButton::initLabel(const std::string &msg, PushButton::ColorStyle type)
     {
         return;
     }
-    label_.reset(new LvText(msg, CLR_PRIMARY_BLACK, this, LvText::FontSize20));
+    label_.reset(new Label(msg, CLR_PRIMARY_BLACK, this, Label::FontSize20));
     label_->setAlignment(LV_ALIGN_CENTER, 0, 0);
 }
 
-void PushButton::setColorType(ColorStyle type)
+void PushButton::setColorStyle(ColorStyle type)
 {
     if (lvObj() == nullptr)
     {
@@ -91,7 +90,7 @@ void PushButton::setColorType(ColorStyle type)
 
     if (label_ != nullptr)
     {
-        label_->setTextClr(palette.label_color);
+        label_->setTextColor(palette.label_color);
     }
 }
 
@@ -149,7 +148,7 @@ void PushButton::setTextAlignment(lv_text_align_t align_type)
     }
 }
 
-void PushButton::setTextMsg(const std::string &str)
+void PushButton::setText(const std::string &str)
 {
     if (label_ == nullptr)
     {
@@ -164,11 +163,11 @@ void PushButton::setEnabled(bool enable)
     if (label_ != nullptr)
     {
         const core::ButtonPalette &palette = core::Theme::instance().buttonPalette(toThemeStyle(type_));
-        label_->setTextClr(enable ? palette.label_color : palette.label_disabled);
+        label_->setTextColor(enable ? palette.label_color : palette.label_disabled);
     }
 }
 
-void PushButton::changeImageAsset(const std::string &assetPath)
+void PushButton::setImageAsset(const std::string &assetPath)
 {
     if (img_obj_ != nullptr)
     {

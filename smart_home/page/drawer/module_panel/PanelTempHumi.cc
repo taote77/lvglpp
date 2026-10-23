@@ -50,8 +50,8 @@ PanelTempHumi::PanelTempHumi(Widget *parent) : Widget(parent)
     constexpr short mod_item_edge_x{16};
     constexpr short mod_item_edge_row2_y{60};
 
-    _text  = std::make_shared<LvText>("", CLR_ON_SURFACE, this, LvText::FontSize22Bold);
-    _text1 = std::make_shared<LvText>("", CLR_ON_SURFACE, this, LvText::FontSize22Bold);
+    _text  = std::make_shared<Label>("", CLR_ON_SURFACE, this, Label::FontSize22Bold);
+    _text1 = std::make_shared<Label>("", CLR_ON_SURFACE, this, Label::FontSize22Bold);
     _text->setPos(mod_item_edge_x + offset, 16);
     _text1->setPos(mod_item_edge_x + offset, 60);
 

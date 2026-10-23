@@ -2,7 +2,7 @@
 #define NOTICE_DELEGATE_H
 
 #include "core/widgets/Widget.h"
-#include "core/widgets/LvText.h"
+#include "core/widgets/Label.h"
 #include "core/widgets/Image.h"
 #include "core/widgets/ListViewDelegate.hpp"
 #include <memory>
@@ -39,8 +39,8 @@ private:
     std::shared_ptr<Widget> _bg_item;
 
     std::shared_ptr<widgets::Image> _head_icon;
-    std::shared_ptr<LvText>    _head_date_label;
-    std::shared_ptr<LvText>    _msg_label;
+    std::shared_ptr<Label>    _head_date_label;
+    std::shared_ptr<Label>    _msg_label;
 };
 
 } // namespace lvglpp::ui::lDelegate

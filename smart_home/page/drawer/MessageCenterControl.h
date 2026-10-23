@@ -4,7 +4,7 @@
 #include "NoticeDelegate.h"
 #include "RebootConfirmDialog.h"
 #include "core/widgets/Widget.h"
-#include "core/widgets/LvText.h"
+#include "core/widgets/Label.h"
 #include "core/widgets/Image.h"
 #include "core/widgets/ListView.hpp"
 #include "theme/form_design.h"
@@ -121,8 +121,8 @@ private:
     std::shared_ptr<StatusIcon> _udisk_status;
     std::shared_ptr<StatusIcon> _reboot_status;
 
-    std::shared_ptr<LvText> _txt1;
-    std::shared_ptr<LvText> _txt2;
+    std::shared_ptr<Label> _txt1;
+    std::shared_ptr<Label> _txt2;
 
     std::shared_ptr<ListView<NoticeData, lDelegate::NoticeDelegate>> _listview;
 

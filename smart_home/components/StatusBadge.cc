@@ -1,5 +1,5 @@
 #include "StatusBadge.h"
-#include "core/widgets/LvText.h"
+#include "core/widgets/Label.h"
 #include "theme/form_design.h"
 
 namespace lvglpp::ui::widgets {
@@ -27,7 +27,7 @@ StatusBadge::StatusBadge(State state, w::Widget *parent)
     _dot->setRadius(5);
     _dot->setAlignment(LV_ALIGN_LEFT_MID, 0, 0);
 
-    _label = std::make_unique<w::LvText>("", CLR_ON_SURFACE_VARIANT_1, this, w::LvText::FontSize20);
+    _label = std::make_unique<w::Label>("", CLR_ON_SURFACE_VARIANT_1, this, w::Label::FontSize20);
     _label->setAlignment(LV_ALIGN_LEFT_MID, 16, 0);
 
     _updateAppearance();
@@ -39,7 +39,7 @@ void StatusBadge::setState(State state) {
 }
 
 void StatusBadge::setLabel(const std::string &text) {
-    if (auto *t = dynamic_cast<w::LvText *>(_label.get())) {
+    if (auto *t = dynamic_cast<w::Label *>(_label.get())) {
         t->setText(text);
     }
 }

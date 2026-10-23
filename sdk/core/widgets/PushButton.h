@@ -6,9 +6,9 @@ Description:圆角按钮
 #ifndef LVGLPP_PUSHBUTTON_H
 #define LVGLPP_PUSHBUTTON_H
 
-#include "Widget.h"
 #include "Image.h"
-#include "LvText.h"
+#include "Label.h"
+#include "Widget.h"
 #include <chrono>
 #include <cmath>
 #include <functional>
@@ -42,15 +42,33 @@ public:
 
     void setTextAlignment(lv_text_align_t align_type);
 
-    void setTextMsg(const std::string &str);
+    void setText(const std::string &str);
+
+    [[deprecated("use setText()")]]
+    void setTextMsg(const std::string &str)
+    {
+        setText(str);
+    }
 
     void setEnabled(bool enable) override;
 
-    void changeImageAsset(const std::string &assetPath);
+    void setImageAsset(const std::string &assetPath);
+
+    [[deprecated("use setImageAsset()")]]
+    void changeImageAsset(const std::string &assetPath)
+    {
+        setImageAsset(assetPath);
+    }
 
     void setOnClickedListener(const std::function<void()> &l) override;
 
-    void setColorType(ColorStyle type);
+    void setColorStyle(ColorStyle type);
+
+    [[deprecated("use setColorStyle()")]]
+    void setColorType(ColorStyle type)
+    {
+        setColorStyle(type);
+    }
 
     void setRepeatMs(int n)
     {
@@ -58,7 +76,7 @@ public:
     }
 
 private:
-    std::unique_ptr<LvText>               label_;
+    std::unique_ptr<Label>                label_;
     std::unique_ptr<widgets::Image>       img_obj_;
     PushButton::ColorStyle                type_;
     int                                   repeat_ms_ = 500;
@@ -73,9 +91,6 @@ private:
 
     void handleButtonClicked();
 };
-// Modern aliases
-using Button        = PushButton;
-using RoundedButton = PushButton; // backward compatibility
 
 } // namespace lvglpp::widgets
 

@@ -193,11 +193,11 @@ void RemoteClient::onCreate(std::any arg)
         }
     });
 
-    _label = std::make_shared<lvglpp::widgets::LvText>(("Demo"), CLR_SUCCESS_CONTAINER, getRoot());
+    _label = std::make_shared<lvglpp::widgets::Label>(("Demo"), CLR_SUCCESS_CONTAINER, getRoot());
 
     _label->setAlignment(LV_ALIGN_CENTER, 0, -120);
 
-    _btn_test = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "截图", getRoot());
+    _btn_test = std::make_shared<widgets::PushButton>(200, 40, widgets::PushButton::ColorStyle::Gray, "截图", getRoot());
     _btn_test->setPos(480, 300);
     _btn_test->setAlignment(LV_ALIGN_CENTER, 0, 150);
     _btn_test->setOnClickedListener([this]() {
@@ -227,7 +227,7 @@ void RemoteClient::onCreate(std::any arg)
         }
     });
 
-    _btn_simu = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "重置", getRoot());
+    _btn_simu = std::make_shared<widgets::PushButton>(200, 40, widgets::PushButton::ColorStyle::Gray, "重置", getRoot());
 
     _btn_simu->setAlignment(LV_ALIGN_TOP_RIGHT, 0, 0);
     _btn_simu->setOnClickedListener([this]() {

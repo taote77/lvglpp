@@ -48,12 +48,12 @@ TopDrawer::TopDrawer(Widget *parent) : Widget(tools::LvObjFactory::createLvglSys
     _notice_panel = std::make_shared<MessageCenterControl>(this);
     _page_container->addPage(_notice_panel);
 
-    touch_area_ = std::make_shared<MouseArea>(this);
+    touch_area_ = std::make_shared<TouchArea>(this);
     touch_area_->setOpacity(0);
     touch_area_->setSize(300, 60);
     touch_area_->setAlignment(LV_ALIGN_TOP_MID, 0, -10);
-    touch_area_->setMousePressingListener([this](const Point &pt) -> void { changePagePos(pt.y); });
-    touch_area_->setMouseReleasedListener([this](const Point &pt) -> void {
+    touch_area_->setTouchPressingHandler([this](const TouchPoint &pt) -> void { changePagePos(pt.y); });
+    touch_area_->setTouchReleasedHandler([this](const TouchPoint &pt) -> void {
         if (pt.y < content_height_ / 2)
         {
             pagePopAnim();

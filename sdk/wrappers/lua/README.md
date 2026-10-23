@@ -13,11 +13,11 @@
 ## 支持的控件
 
 - **Widget** - 基础控件
-- **LvText** - 文本控件
+- **Label** - 文本控件
 - **Image** - 图片控件
 - **PushButton** - 按钮控件
 - **CheckBox** - 复选框控件
-- **SwitchButton** - 开关按钮控件
+- **Switch** - 开关按钮控件
 
 ## 编译
 
@@ -117,7 +117,7 @@ switch:set_pos(200, 200)
 - `color` (number) - 文本颜色（十六进制，如 0xFFFFFF）
 - `parent` (Widget) - 父控件
 
-**返回:** LvText 对象
+**返回:** Label 对象
 
 #### lvgl.create_text_ex(text, color, parent, style, font_type)
 创建一个带样式的文本控件。
@@ -126,10 +126,10 @@ switch:set_pos(200, 200)
 - `text` (string) - 文本内容
 - `color` (number) - 文本颜色
 - `parent` (Widget) - 父控件
-- `style` (LvText.TextStyle) - 文本样式
-- `font_type` (LvText.FontType) - 字体类型
+- `style` (Label.TextStyle) - 文本样式
+- `font_type` (Label.FontType) - 字体类型
 
-**返回:** LvText 对象
+**返回:** Label 对象
 
 #### lvgl.create_image(path, parent)
 创建一个图片控件。
@@ -183,7 +183,7 @@ switch:set_pos(200, 200)
 - `height` (number) - 高度
 - `parent` (Widget) - 父控件
 
-**返回:** SwitchButton 对象
+**返回:** Switch 对象
 
 ### 通用方法
 
@@ -221,7 +221,7 @@ switch:set_pos(200, 200)
 - `set_on_pressed(func)` - 设置按下事件回调
 - `set_on_released(func)` - 设置释放事件回调
 
-### LvText 特有方法
+### Label 特有方法
 
 - `set_text(text)` - 设置文本内容
 - `get_text()` - 获取文本内容
@@ -252,7 +252,7 @@ switch:set_pos(200, 200)
 
 - `get_check_state()` - 获取选中状态
 
-### SwitchButton 特有方法
+### Switch 特有方法
 
 - `set_check(checked)` - 设置开关状态
 - `is_check()` - 获取开关状态

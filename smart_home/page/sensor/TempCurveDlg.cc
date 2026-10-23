@@ -30,10 +30,10 @@ void TempCurveDlg::init()
     bg_->setPos(0, 0);
     bg_->setOpacity(1);
 
-    zero_label_ = std::make_shared<widgets::LvText>("0", CLR_ON_SURFACE, bg_.get());
+    zero_label_ = std::make_shared<widgets::Label>("0", CLR_ON_SURFACE, bg_.get());
     zero_label_->setPos(std::max(0, chartX - 10), 200);
 
-    chart_ = std::make_shared<lvglpp::widgets::LvChart>(bg_.get());
+    chart_ = std::make_shared<lvglpp::widgets::Chart>(bg_.get());
     chart_->setSize(chartW, 300);
     chart_->setPos(chartX, 116);
 
@@ -52,13 +52,13 @@ void TempCurveDlg::init()
     chart_->addLvglEventHandler(TempCurveDlg::draw_event_cb, LV_EVENT_DRAW_TASK_ADDED, this);
     lv_obj_add_flag(chart_->lvObj(), LV_OBJ_FLAG_SEND_DRAW_TASK_EVENTS);
 
-    time_label_1_ = std::make_shared<LvText>("", CLR_ON_SURFACE, bg_.get());
+    time_label_1_ = std::make_shared<Label>("", CLR_ON_SURFACE, bg_.get());
     lv_obj_align_to(time_label_1_->lvObj(), chart_->lvObj(), LV_ALIGN_OUT_BOTTOM_MID, chartW / 2, 16);
 
-    time_label_2_ = std::make_shared<LvText>("", CLR_ON_SURFACE, bg_.get());
+    time_label_2_ = std::make_shared<Label>("", CLR_ON_SURFACE, bg_.get());
     lv_obj_align_to(time_label_2_->lvObj(), chart_->lvObj(), LV_ALIGN_OUT_BOTTOM_MID, 0, 16);
 
-    time_label_3_ = std::make_shared<LvText>("", CLR_ON_SURFACE, bg_.get());
+    time_label_3_ = std::make_shared<Label>("", CLR_ON_SURFACE, bg_.get());
     lv_obj_align_to(time_label_3_->lvObj(), chart_->lvObj(), LV_ALIGN_OUT_BOTTOM_MID, -chartW / 2, 16);
 
     ser2_ = lv_chart_add_series(chart_->lvObj(), lv_color_hex(CLR_PRIMARY_DARK_BLUE), LV_CHART_AXIS_PRIMARY_Y);
@@ -71,13 +71,13 @@ void TempCurveDlg::init()
     back_icon_->setEnabled(true);
     back_icon_->setOnClickedListener([this]() -> void { this->close(); });
 
-    peak_force_curve_label = std::make_shared<LvText>("", CLR_ON_SURFACE, bg_.get(), LvText::FontSize24);
+    peak_force_curve_label = std::make_shared<Label>("", CLR_ON_SURFACE, bg_.get(), Label::FontSize24);
     peak_force_curve_label->setAlignmentTo(*back_icon_, LV_ALIGN_OUT_RIGHT_MID, 30, 0);
-    peak_force_curve_label->setReColorEnable(true);
+    peak_force_curve_label->setRecolorEnabled(true);
 
-    peak_value_ = std::make_shared<LvText>(lvTrFmt("common_newton", "0.00"), CLR_ON_SURFACE, bg_.get(), LvText::FontSize20);
+    peak_value_ = std::make_shared<Label>(lvTrFmt("common_newton", "0.00"), CLR_ON_SURFACE, bg_.get(), Label::FontSize20);
     peak_value_->setPos(28, peak_pos_y);
-    trough_value_ = std::make_shared<LvText>(lvTrFmt("common_newton", "0.00"), CLR_ON_SURFACE, bg_.get(), LvText::FontSize20);
+    trough_value_ = std::make_shared<Label>(lvTrFmt("common_newton", "0.00"), CLR_ON_SURFACE, bg_.get(), Label::FontSize20);
     trough_value_->setPos(28, trough_pos_y);
 }
 

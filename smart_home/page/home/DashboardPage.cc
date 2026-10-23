@@ -15,7 +15,7 @@ void DashboardPage::onCreate(std::any arg) {
     getRoot()->setBgColor(CLR_SURFACE);
 
     // Title
-    auto title = std::make_unique<w::LvText>("Smart Home", CLR_ON_SURFACE, getRoot(), w::LvText::FontSize28Bold);
+    auto title = std::make_unique<w::Label>("Smart Home", CLR_ON_SURFACE, getRoot(), w::Label::FontSize28Bold);
     title->setAlignment(LV_ALIGN_TOP_LEFT, 20, 10);
 
     buildWeatherBar();
@@ -28,7 +28,7 @@ void DashboardPage::onCreate(std::any arg) {
 }
 
 void DashboardPage::buildWeatherBar() {
-    _weatherLabel = std::make_unique<w::LvText>("Sunny  72F  45%", CLR_ON_SURFACE_VARIANT_1, getRoot(), w::LvText::FontSize22);
+    _weatherLabel = std::make_unique<w::Label>("Sunny  72F  45%", CLR_ON_SURFACE_VARIANT_1, getRoot(), w::Label::FontSize22);
     _weatherLabel->setAlignment(LV_ALIGN_TOP_RIGHT, -20, 15);
 }
 

@@ -2,7 +2,7 @@
 #define SMART_HOME_SCENE_BUTTON_H
 
 #include "core/widgets/Widget.h"
-#include "core/widgets/LvText.h"
+#include "core/widgets/Label.h"
 #include <functional>
 #include <memory>
 #include <string>
@@ -26,9 +26,9 @@ private:
     bool _active = false;
     std::function<void()> _activateCb;
 
-    std::unique_ptr<w::LvText> _iconLabel;
-    std::unique_ptr<w::LvText> _nameLabel;
-    std::unique_ptr<w::LvText> _descLabel;
+    std::unique_ptr<w::Label> _iconLabel;
+    std::unique_ptr<w::Label> _nameLabel;
+    std::unique_ptr<w::Label> _descLabel;
 };
 
 } // namespace lvglpp::ui::widgets

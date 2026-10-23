@@ -41,21 +41,21 @@ void WidgetLuaBind::bindWidget(sol::state& lua) {
         "Widget",
         sol::constructors<widgets::Widget(widgets::Widget*)>()
     );
-    
+
     bindCommonMethods(widget_type);
-    
+
     widget_type["set_on_clicked"] = [](widgets::Widget& self, sol::function func) {
         self.setOnClickedListener([func]() {
             func();
         });
     };
-    
+
     widget_type["set_on_pressed"] = [](widgets::Widget& self, sol::function func) {
         self.setOnPressedListener([func]() {
             func();
         });
     };
-    
+
     widget_type["set_on_released"] = [](widgets::Widget& self, sol::function func) {
         self.setOnReleasedListener([func]() {
             func();
@@ -63,48 +63,48 @@ void WidgetLuaBind::bindWidget(sol::state& lua) {
     };
 }
 
-void WidgetLuaBind::bindLvText(sol::state& lua) {
-    auto lvtext_type = lua.new_usertype<widgets::LvText>(
-        "LvText",
+void WidgetLuaBind::bindLabel(sol::state& lua) {
+    auto label_type = lua.new_usertype<widgets::Label>(
+        "Label",
         sol::constructors<
-            widgets::LvText(const std::string&, uint32_t, widgets::Widget*, widgets::LvText::TextStyle, widgets::LvText::FontType)
+            widgets::Label(const std::string&, uint32_t, widgets::Widget*, widgets::Label::TextStyle, widgets::Label::FontType)
         >()
     );
-    
-    bindCommonMethods(lvtext_type);
-    
-    lvtext_type["set_text"] = &widgets::LvText::setText;
-    lvtext_type["get_text"] = &widgets::LvText::getText;
-    lvtext_type["set_text_color"] = &widgets::LvText::setTextClr;
-    lvtext_type["set_text_align"] = &widgets::LvText::setTextAlign;
-    lvtext_type["set_recolor_enable"] = &widgets::LvText::setReColorEnable;
-    lvtext_type["set_max_len"] = &widgets::LvText::setMaxLen;
-    lvtext_type["get_display_text_width"] = &widgets::LvText::getDisplayTextWidth;
-    lvtext_type["set_long_mode"] = static_cast<void (widgets::LvText::*)(int, widgets::LvText::LongMode)>(&widgets::LvText::setLongMode);
-    
-    lvtext_type["TextStyle"] = lua.create_table();
-    lvtext_type["TextStyle"]["FontSize20"] = widgets::LvText::TextStyle::FontSize20;
-    lvtext_type["TextStyle"]["FontSize24"] = widgets::LvText::TextStyle::FontSize24;
-    lvtext_type["TextStyle"]["FontSize28"] = widgets::LvText::TextStyle::FontSize28;
-    lvtext_type["TextStyle"]["FontSize32"] = widgets::LvText::TextStyle::FontSize32;
-    lvtext_type["TextStyle"]["FontSize36"] = widgets::LvText::TextStyle::FontSize36;
-    lvtext_type["TextStyle"]["FontSize20Bold"] = widgets::LvText::TextStyle::FontSize20Bold;
-    lvtext_type["TextStyle"]["FontSize24Bold"] = widgets::LvText::TextStyle::FontSize24Bold;
-    lvtext_type["TextStyle"]["FontSize28Bold"] = widgets::LvText::TextStyle::FontSize28Bold;
-    lvtext_type["TextStyle"]["FontSize32Bold"] = widgets::LvText::TextStyle::FontSize32Bold;
-    lvtext_type["TextStyle"]["FontSize36Bold"] = widgets::LvText::TextStyle::FontSize36Bold;
-    lvtext_type["TextStyle"]["FontSize64Bold"] = widgets::LvText::TextStyle::FontSize64Bold;
-    
-    lvtext_type["FontType"] = lua.create_table();
-    lvtext_type["FontType"]["Auto"] = widgets::LvText::FontType::Auto;
-    lvtext_type["FontType"]["DMSans"] = widgets::LvText::FontType::DMSans;
-    lvtext_type["FontType"]["SansSC"] = widgets::LvText::FontType::SansSC;
-    lvtext_type["FontType"]["Oswald"] = widgets::LvText::FontType::Oswald;
-    
-    lvtext_type["LongMode"] = lua.create_table();
-    lvtext_type["LongMode"]["None"] = widgets::LvText::LongMode::None;
-    lvtext_type["LongMode"]["AutoEllipsis"] = widgets::LvText::LongMode::AutoEllipsis;
-    lvtext_type["LongMode"]["MiddleEllipsis"] = widgets::LvText::LongMode::MiddleEllipsis;
+
+    bindCommonMethods(label_type);
+
+    label_type["set_text"] = &widgets::Label::setText;
+    label_type["get_text"] = &widgets::Label::getText;
+    label_type["set_text_color"] = &widgets::Label::setTextColor;
+    label_type["set_text_align"] = &widgets::Label::setTextAlign;
+    label_type["set_recolor_enable"] = &widgets::Label::setRecolorEnabled;
+    label_type["set_max_len"] = &widgets::Label::setMaxLength;
+    label_type["get_display_text_width"] = &widgets::Label::getDisplayTextWidth;
+    label_type["set_long_mode"] = static_cast<void (widgets::Label::*)(int, widgets::Label::LongMode)>(&widgets::Label::setLongMode);
+
+    label_type["TextStyle"] = lua.create_table();
+    label_type["TextStyle"]["FontSize20"] = widgets::Label::TextStyle::FontSize20;
+    label_type["TextStyle"]["FontSize24"] = widgets::Label::TextStyle::FontSize24;
+    label_type["TextStyle"]["FontSize28"] = widgets::Label::TextStyle::FontSize28;
+    label_type["TextStyle"]["FontSize32"] = widgets::Label::TextStyle::FontSize32;
+    label_type["TextStyle"]["FontSize36"] = widgets::Label::TextStyle::FontSize36;
+    label_type["TextStyle"]["FontSize20Bold"] = widgets::Label::TextStyle::FontSize20Bold;
+    label_type["TextStyle"]["FontSize24Bold"] = widgets::Label::TextStyle::FontSize24Bold;
+    label_type["TextStyle"]["FontSize28Bold"] = widgets::Label::TextStyle::FontSize28Bold;
+    label_type["TextStyle"]["FontSize32Bold"] = widgets::Label::TextStyle::FontSize32Bold;
+    label_type["TextStyle"]["FontSize36Bold"] = widgets::Label::TextStyle::FontSize36Bold;
+    label_type["TextStyle"]["FontSize64Bold"] = widgets::Label::TextStyle::FontSize64Bold;
+
+    label_type["FontType"] = lua.create_table();
+    label_type["FontType"]["Auto"] = widgets::Label::FontType::Auto;
+    label_type["FontType"]["DMSans"] = widgets::Label::FontType::DMSans;
+    label_type["FontType"]["SansSC"] = widgets::Label::FontType::SansSC;
+    label_type["FontType"]["Oswald"] = widgets::Label::FontType::Oswald;
+
+    label_type["LongMode"] = lua.create_table();
+    label_type["LongMode"]["None"] = widgets::Label::LongMode::None;
+    label_type["LongMode"]["AutoEllipsis"] = widgets::Label::LongMode::AutoEllipsis;
+    label_type["LongMode"]["MiddleEllipsis"] = widgets::Label::LongMode::MiddleEllipsis;
 }
 
 void WidgetLuaBind::bindImage(sol::state& lua) {
@@ -112,9 +112,9 @@ void WidgetLuaBind::bindImage(sol::state& lua) {
         "Image",
         sol::constructors<widgets::Image(const std::string&, widgets::Widget*)>()
     );
-    
+
     bindCommonMethods(image_type);
-    
+
     image_type["set_image_src_path"] = &widgets::Image::setAsset;
     image_type["set_asset"] = &widgets::Image::setAsset;
     image_type["set_file"] = &widgets::Image::setFile;
@@ -129,43 +129,43 @@ void WidgetLuaBind::bindPushButton(sol::state& lua) {
             widgets::PushButton(int, int, widgets::PushButton::ColorStyle, const std::string&, const std::string&, widgets::Widget*)
         >()
     );
-    
+
     bindCommonMethods(button_type);
-    
+
     button_type["set_on_clicked"] = [](widgets::PushButton& self, sol::function func) {
         self.setOnClickedListener([func]() {
             func();
         });
     };
-    
+
     button_type["set_on_pressed"] = [](widgets::PushButton& self, sol::function func) {
         self.setOnPressedListener([func]() {
             func();
         });
     };
-    
+
     button_type["set_on_released"] = [](widgets::PushButton& self, sol::function func) {
         self.setOnReleasedListener([func]() {
             func();
         });
     };
-    
+
     button_type["set_image_pos"] = sol::overload(
         [](widgets::PushButton& self, int x, int y) { self.setImagePos(x, y); },
         [](widgets::PushButton& self, lv_align_t align, int x, int y) { self.setImagePos(align, x, y); }
     );
-    
+
     button_type["set_text_pos"] = sol::overload(
         [](widgets::PushButton& self, int x, int y) { self.setTextPos(x, y); },
         [](widgets::PushButton& self, lv_align_t align, int x, int y) { self.setTextPos(align, x, y); }
     );
-    
+
     button_type["set_text_alignment"] = &widgets::PushButton::setTextAlignment;
-    button_type["set_text_msg"] = &widgets::PushButton::setTextMsg;
-    button_type["change_image_asset"] = &widgets::PushButton::changeImageAsset;
-    button_type["set_color_type"] = &widgets::PushButton::setColorType;
+    button_type["set_text_msg"] = &widgets::PushButton::setText;
+    button_type["change_image_asset"] = &widgets::PushButton::setImageAsset;
+    button_type["set_color_type"] = &widgets::PushButton::setColorStyle;
     button_type["set_repeat_ms"] = &widgets::PushButton::setRepeatMs;
-    
+
     button_type["ColorStyle"] = lua.create_table();
     button_type["ColorStyle"]["Blue"] = widgets::PushButton::ColorStyle::Blue;
     button_type["ColorStyle"]["Dark"] = widgets::PushButton::ColorStyle::Dark;
@@ -178,7 +178,7 @@ void WidgetLuaBind::bindPushButton(sol::state& lua) {
 
 void WidgetLuaBind::bindAll(sol::state& lua) {
     bindWidget(lua);
-    bindLvText(lua);
+    bindLabel(lua);
     bindImage(lua);
     bindPushButton(lua);
 }

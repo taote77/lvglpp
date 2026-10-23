@@ -13,7 +13,7 @@ namespace wrapper::widgets
     {
         icon_ = std::make_shared<widgets::Image>("", this);
         icon_->setAlignment(LV_ALIGN_LEFT_MID, 0, 0);
-        display_label_ = std::make_shared<LvText>(display, ThemeColor(CLR_ON_SURFACE), this, LvText::FontSize24);
+        display_label_ = std::make_shared<Label>(display, ThemeColor(CLR_ON_SURFACE), this, Label::FontSize24);
         display_label_->setAlignment(LV_ALIGN_CENTER, 0, 0);
         updateState(State::UnCheck);
 

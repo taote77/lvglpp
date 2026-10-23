@@ -22,42 +22,42 @@ ModuleDetailResinDialog::ModuleDetailResinDialog(const std::string &resin_name, 
     _dialog_bg_item->setAlignment(LV_ALIGN_TOP_MID, 0, 72);
 
     std::string material_str = resin_name.empty() ? lvTr("empty_info") : resin_name;
-    _material_name_label     = std::make_shared<LvText>(material_str, ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), LvText::FontSize24Bold);
+    _material_name_label     = std::make_shared<Label>(material_str, ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), Label::FontSize24Bold);
     _material_name_label->setAlignment(LV_ALIGN_TOP_LEFT, 24, 20);
 
-    _btn_label = std::make_shared<LvText>(lvTr("panel_autofill_label"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), LvText::FontSize24);
+    _btn_label = std::make_shared<Label>(lvTr("panel_autofill_label"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), Label::FontSize24);
     _btn_label->setPos(24, 82);
 
-    _auto_fill_switch = std::make_shared<widgets::SwitchButton>(72, 36, _dialog_bg_item.get());
+    _auto_fill_switch = std::make_shared<widgets::Switch>(72, 36, _dialog_bg_item.get());
 
     _auto_fill_switch->setVisible(false);
 
     _auto_fill_switch->setPos(448, 82);
-    _auto_fill_switch->setCheck(mod_switch);
+    _auto_fill_switch->setChecked(mod_switch);
     _auto_fill_switch->setOnClickedListener([this]() -> void {
         LOG_INFO() << "open filling mod";
 
-        if (!_fill_mod_equipped && !_auto_fill_switch->isCheck())
+        if (!_fill_mod_equipped && !_auto_fill_switch->isChecked())
         {
             widgets::Toast::success(lvTr("check_fill_mod_tips"));
             return;
         }
 
-        // comm::OtherComm::SetAutomaticFillingEnable(!_auto_fill_switch->isCheck());
-        _auto_fill_switch->setCheck(!_auto_fill_switch->isCheck());
+        // comm::OtherComm::SetAutomaticFillingEnable(!_auto_fill_switch->isChecked());
+        _auto_fill_switch->setChecked(!_auto_fill_switch->isChecked());
 
-        std::string msg = _auto_fill_switch->isCheck() ? "auto_fill_open_tips" : "auto_fill_close_tips";
+        std::string msg = _auto_fill_switch->isChecked() ? "auto_fill_open_tips" : "auto_fill_close_tips";
 
         widgets::Toast::warn(lvTr(msg.c_str()));
     });
 
-    _status_label = std::make_shared<LvText>(lvTr("panel_resin_remaining"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), LvText::FontSize24);
+    _status_label = std::make_shared<Label>(lvTr("panel_resin_remaining"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), Label::FontSize24);
     _status_label->setPos(24, 82 + 32 + 15);
 
-    _remaing_info = std::make_shared<LvText>(lvTr("empty_info"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), LvText::FontSize24);
+    _remaing_info = std::make_shared<Label>(lvTr("empty_info"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), Label::FontSize24);
     _remaing_info->setAlignmentTo(*_status_label, LV_ALIGN_OUT_RIGHT_MID, 12, 0);
 
-    _close_button = std::make_shared<RoundedButton>(48, 48, RoundedButton::ColorStyle::Gray, "", "image/32x32/x_close.png", _dialog_bg_item.get());
+    _close_button = std::make_shared<PushButton>(48, 48, PushButton::ColorStyle::Gray, "", "image/32x32/x_close.png", _dialog_bg_item.get());
     _close_button->setRadius(24);
     _close_button->setAlignment(LV_ALIGN_BOTTOM_MID, 0, -20);
     _close_button->setOnClickedListener([this]() {
@@ -82,7 +82,7 @@ void ModuleDetailResinDialog::setSwitchStatus(bool mod_switch, bool equipped)
 {
     if (_auto_fill_switch)
     {
-        _auto_fill_switch->setCheck(mod_switch);
+        _auto_fill_switch->setChecked(mod_switch);
 
         _auto_fill_switch->setEnabled(equipped);
     }

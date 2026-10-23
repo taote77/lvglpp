@@ -4,9 +4,8 @@
 #include "core/sys/BaseActivity.h"
 #include "core/sys/Event.h"
 #include "core/widgets/Widget.h"
-#include "core/widgets/LvText.h"
+#include "core/widgets/Label.h"
 #include "core/widgets/PushButton.h"
-#include "core/widgets/Text.h"
 #include <core/widgets/QrCode.h>
 #include <memory>
 

@@ -13,9 +13,9 @@ namespace wrapper::widgets
         setRadius(8);
         setBgColor(design::ThemeColor(design::CLR_ON_INFO));
 
-        display_label_ = std::make_shared<LvText>("", design::ThemeColor(design::CLR_ON_SURFACE), this, LvText::FontSize28, LvText::DMSans);
+        display_label_ = std::make_shared<Label>("", design::ThemeColor(design::CLR_ON_SURFACE), this, Label::FontSize28, Label::DMSans);
         display_label_->setAlignment(LV_ALIGN_CENTER, 0, 0);
-        unit_label_ = std::make_shared<LvText>("", design::ThemeColor(design::CLR_ON_SURFACE), this, LvText::FontSize28, LvText::DMSans);
+        unit_label_ = std::make_shared<Label>("", design::ThemeColor(design::CLR_ON_SURFACE), this, Label::FontSize28, Label::DMSans);
         unit_label_->setAlignment(LV_ALIGN_RIGHT_MID, -20, 0);
     }
 

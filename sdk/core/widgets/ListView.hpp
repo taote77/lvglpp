@@ -3,7 +3,7 @@
 
 #include "BaseModel.hpp"
 #include "ListViewDelegate.hpp"
-#include "ScrollItem.h"
+#include "ScrollView.h"
 #include "lvgl/src/misc/lv_timer.h"
 #include <any>
 #include <memory>
@@ -11,7 +11,7 @@
 namespace lvglpp::widgets {
 
 template <typename T, typename T2 = ListViewDelegate<T>>
-class ListView : public ScrollItem
+class ListView : public ScrollView
 {
 public:
     explicit ListView(Widget *parentItem = nullptr);
@@ -108,13 +108,13 @@ private:
 };
 
 template <typename T, typename T2>
-ListView<T, T2>::ListView(Widget *parentItem) : ScrollItem(parentItem)
+ListView<T, T2>::ListView(Widget *parentItem) : ScrollView(parentItem)
 {
     initItem();
 }
 
 template <typename T, typename T2>
-ListView<T, T2>::ListView(const BaseModel<T> &model, Widget *parentItem) : ScrollItem(parentItem), list_view_model_(model)
+ListView<T, T2>::ListView(const BaseModel<T> &model, Widget *parentItem) : ScrollView(parentItem), list_view_model_(model)
 {
     initItem();
     // update();

@@ -1,15 +1,15 @@
 #ifndef LV_DELEGATE_H
 #define LV_DELEGATE_H
 
-#include "ScrollItem.h"
+#include "ScrollView.h"
 
 namespace lvglpp {
 namespace widgets {
 template <class T>
-class Delegate : public ScrollItem
+class Delegate : public ScrollView
 {
 public:
-    explicit Delegate(Widget *parent = nullptr) : ScrollItem(parent)
+    explicit Delegate(Widget *parent = nullptr) : ScrollView(parent)
     {}
 
     ~Delegate() override;

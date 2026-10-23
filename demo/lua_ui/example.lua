@@ -4,8 +4,8 @@ lvgl.print("Starting Lua UI Example...")
 
 -- Create title text
 local title = lvgl.create_text_ex("LVGL Lua UI Demo", 0xFFFFFF, root,
-    lvgl.LvText.TextStyle.FontSize32Bold,
-    lvgl.LvText.FontType.Auto)
+    lvgl.Label.TextStyle.FontSize32Bold,
+    lvgl.Label.FontType.Auto)
 title:set_pos(50, 30)
 title:set_alignment(LV_ALIGN_TOP_MID, 0, 0)
 

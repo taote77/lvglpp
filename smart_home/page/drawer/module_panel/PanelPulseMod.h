@@ -4,9 +4,9 @@
 #include "DetailPulseDialog.h"
 #include "components/progress_bar.h"
 #include "core/widgets/Widget.h"
-#include "core/widgets/LvText.h"
+#include "core/widgets/Label.h"
 #include "core/widgets/Image.h"
-#include "core/widgets/MouseArea.h"
+#include "core/widgets/TouchArea.h"
 #include <cstdint>
 
 namespace lvglpp::ui::page {
@@ -27,12 +27,12 @@ private:
     int32_t _last_airmod_state{-1};
 
     std::shared_ptr<widgets::Image> _icon1_mod_pulse; // row1 图标
-    std::shared_ptr<LvText>    _label_mod_pulse; // row1 txt
+    std::shared_ptr<Label>    _label_mod_pulse; // row1 txt
 
     std::shared_ptr<widgets::Image> _icon2;        // row2 图标
-    std::shared_ptr<LvText>    _label_status; // row2 txt
+    std::shared_ptr<Label>    _label_status; // row2 txt
 
-    std::shared_ptr<MouseArea>      _touch_area;
+    std::shared_ptr<TouchArea>      _touch_area;
     std::shared_ptr<widgets::Image> _arrow_right;
 
     std::shared_ptr<ModuleDetailPulseDialog> _pulse_detail_dialog;

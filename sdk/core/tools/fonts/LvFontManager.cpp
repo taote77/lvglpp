@@ -176,7 +176,7 @@ const lv_font_t *LvFontManager::getFontInfo(LvFontManager::FontName name, int si
     }
 #endif
 
-    // 48/64 are declared by LvText but have no bitmap faces; use 36 Bold.
+    // 48/64 are declared by Label but have no bitmap faces; use 36 Bold.
     if (size == 48 || size == 64)
     {
         return getBitmapFont(36, Bold);

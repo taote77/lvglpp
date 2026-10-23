@@ -2,7 +2,7 @@
 #define SMART_HOME_LIGHT_WIDGET_H
 
 #include "core/widgets/Widget.h"
-#include "core/widgets/LvText.h"
+#include "core/widgets/Label.h"
 #include "core/widgets/PushButton.h"
 #include "core/widgets/Slider.h"
 #include <functional>
@@ -34,8 +34,8 @@ private:
 
     std::function<void(int)> _brightnessCb;
 
-    std::unique_ptr<w::LvText>     _nameLabel;
-    std::unique_ptr<w::LvText>     _valueLabel;
+    std::unique_ptr<w::Label>     _nameLabel;
+    std::unique_ptr<w::Label>     _valueLabel;
     std::unique_ptr<w::Slider>     _brightnessSlider;
     std::unique_ptr<w::PushButton> _powerBtn;
     std::unique_ptr<w::PushButton> _warmBtn;

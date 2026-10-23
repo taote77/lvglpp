@@ -3,7 +3,7 @@
 
 #include "components/progress_bar.h"
 #include "core/widgets/BaseDialog.h"
-#include "core/widgets/LvText.h"
+#include "core/widgets/Label.h"
 #include "core/widgets/PushButton.h"
 
 namespace lvglpp::ui::page {
@@ -35,19 +35,19 @@ protected:
 private:
     std::shared_ptr<Widget> _dialog_bg_item;
 
-    std::shared_ptr<LvText> _title_label;
+    std::shared_ptr<Label> _title_label;
 
-    std::shared_ptr<LvText> _title_status_label;
+    std::shared_ptr<Label> _title_status_label;
 
-    std::shared_ptr<LvText> _progress_label;
+    std::shared_ptr<Label> _progress_label;
 
     std::shared_ptr<ProgressBar> _progress_bar;
 
-    std::shared_ptr<LvText> _status_label;
+    std::shared_ptr<Label> _status_label;
 
-    std::shared_ptr<LvText> _status_value_label;
+    std::shared_ptr<Label> _status_value_label;
 
-    std::shared_ptr<RoundedButton> _close_button;
+    std::shared_ptr<PushButton> _close_button;
 
     ChangeDirCB _change_dir_cb;
 

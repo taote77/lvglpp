@@ -23,13 +23,13 @@ ThermostatWidget::ThermostatWidget(float currentTemp, float targetTemp,
     _arc->setAlignment(LV_ALIGN_LEFT_MID, 10, 0);
 
     // Current temperature (large)
-    _currentLabel = std::make_unique<w::LvText>(
-        lvTrFmt("common_temperature_c", _currentTemp), CLR_ON_SURFACE, this, w::LvText::FontSize36Bold);
+    _currentLabel = std::make_unique<w::Label>(
+        lvTrFmt("common_temperature_c", _currentTemp), CLR_ON_SURFACE, this, w::Label::FontSize36Bold);
     _currentLabel->setAlignment(LV_ALIGN_CENTER, 30, -30);
 
     // Target temperature
-    _targetLabel = std::make_unique<w::LvText>(
-        lvTrFmt("thermostat_target", _targetTemp), CLR_ON_SURFACE_VARIANT_1, this, w::LvText::FontSize22);
+    _targetLabel = std::make_unique<w::Label>(
+        lvTrFmt("thermostat_target", _targetTemp), CLR_ON_SURFACE_VARIANT_1, this, w::Label::FontSize22);
     _targetLabel->setAlignment(LV_ALIGN_CENTER, 30, 10);
 
     // Minus button
@@ -80,7 +80,7 @@ void ThermostatWidget::_updateDisplay() {
     _targetLabel->setText(lvTrFmt("thermostat_target", _targetTemp));
 
     const char *modeNames[] = {lvTr("common_off"), lvTr("common_heat"), lvTr("common_cool"), lvTr("common_auto")};
-    _modeBtn->setTextMsg(modeNames[static_cast<int>(_mode)]);
+    _modeBtn->setText(modeNames[static_cast<int>(_mode)]);
 }
 
 } // namespace lvglpp::ui::widgets

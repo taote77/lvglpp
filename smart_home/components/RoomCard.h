@@ -2,7 +2,7 @@
 #define SMART_HOME_ROOM_CARD_H
 
 #include "core/widgets/Widget.h"
-#include "core/widgets/LvText.h"
+#include "core/widgets/Label.h"
 #include <functional>
 #include <memory>
 #include <string>
@@ -27,10 +27,10 @@ private:
     std::string _name;
     std::function<void()> _tapCb;
 
-    std::unique_ptr<w::LvText> _nameLabel;
-    std::unique_ptr<w::LvText> _tempLabel;
-    std::unique_ptr<w::LvText> _humidLabel;
-    std::unique_ptr<w::LvText> _deviceLabel;
+    std::unique_ptr<w::Label> _nameLabel;
+    std::unique_ptr<w::Label> _tempLabel;
+    std::unique_ptr<w::Label> _humidLabel;
+    std::unique_ptr<w::Label> _deviceLabel;
 };
 
 } // namespace lvglpp::ui::widgets

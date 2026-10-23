@@ -3,7 +3,7 @@
 
 #include "core/widgets/Arc.h"
 #include "core/widgets/Widget.h"
-#include "core/widgets/LvText.h"
+#include "core/widgets/Label.h"
 #include "core/widgets/PushButton.h"
 #include <functional>
 #include <memory>
@@ -42,8 +42,8 @@ private:
     std::function<void(float)> _tempCb;
 
     std::unique_ptr<w::Arc>        _arc;
-    std::unique_ptr<w::LvText>     _currentLabel;
-    std::unique_ptr<w::LvText>     _targetLabel;
+    std::unique_ptr<w::Label>     _currentLabel;
+    std::unique_ptr<w::Label>     _targetLabel;
     std::unique_ptr<w::PushButton> _minusBtn;
     std::unique_ptr<w::PushButton> _plusBtn;
     std::unique_ptr<w::PushButton> _modeBtn;

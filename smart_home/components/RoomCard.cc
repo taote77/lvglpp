@@ -16,26 +16,26 @@ RoomCard::RoomCard(const std::string &name, const std::string &icon, int deviceC
     setRadius(RADIUS_12);
 
     // Room icon/emoji
-    auto iconLabel = std::make_unique<w::LvText>(icon, CLR_ON_SURFACE, this, w::LvText::FontSize32);
+    auto iconLabel = std::make_unique<w::Label>(icon, CLR_ON_SURFACE, this, w::Label::FontSize32);
     iconLabel->setAlignment(LV_ALIGN_TOP_LEFT, 12, 10);
 
     // Room name
-    _nameLabel = std::make_unique<w::LvText>(name, CLR_ON_SURFACE_VARIANT_0, this, w::LvText::FontSize22Bold);
+    _nameLabel = std::make_unique<w::Label>(name, CLR_ON_SURFACE_VARIANT_0, this, w::Label::FontSize22Bold);
     _nameLabel->setAlignment(LV_ALIGN_TOP_LEFT, 12, 50);
 
     // Temperature
     auto tempStr = lvTrFmt("common_temperature_c", temperature);
-    _tempLabel = std::make_unique<w::LvText>(tempStr, CLR_PRIMARY, this, w::LvText::FontSize22Bold);
+    _tempLabel = std::make_unique<w::Label>(tempStr, CLR_PRIMARY, this, w::Label::FontSize22Bold);
     _tempLabel->setAlignment(LV_ALIGN_BOTTOM_LEFT, 12, -30);
 
     // Humidity
     auto humidStr = lvTrFmt("common_humidity_percent", humidity);
-    _humidLabel = std::make_unique<w::LvText>(humidStr, CLR_INFO, this, w::LvText::FontSize20);
+    _humidLabel = std::make_unique<w::Label>(humidStr, CLR_INFO, this, w::Label::FontSize20);
     _humidLabel->setAlignment(LV_ALIGN_BOTTOM_LEFT, 12, -10);
 
     // Device count
     auto devStr = lvTrFmt("common_device_count", deviceCount);
-    _deviceLabel = std::make_unique<w::LvText>(devStr, CLR_ON_SURFACE_VARIANT_2, this, w::LvText::FontSize20);
+    _deviceLabel = std::make_unique<w::Label>(devStr, CLR_ON_SURFACE_VARIANT_2, this, w::Label::FontSize20);
     _deviceLabel->setAlignment(LV_ALIGN_BOTTOM_RIGHT, -10, -30);
 
     setOnClickedListener([this]() { if (_tapCb) _tapCb(); });

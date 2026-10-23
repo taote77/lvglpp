@@ -3,7 +3,7 @@
 
 #include "components/SceneButton.h"
 #include "core/sys/BaseActivity.h"
-#include "core/widgets/LvText.h"
+#include "core/widgets/Label.h"
 #include "core/widgets/PushButton.h"
 #include <memory>
 
@@ -24,8 +24,8 @@ protected:
     void onDestroy() override;
 
 private:
-    std::unique_ptr<w::LvText> _title;
-    std::unique_ptr<w::LvText> _activeSceneLabel;
+    std::unique_ptr<w::Label> _title;
+    std::unique_ptr<w::Label> _activeSceneLabel;
 };
 
 } // namespace lvglpp::ui::page

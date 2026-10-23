@@ -25,24 +25,24 @@ RebootConfirmDialog::RebootConfirmDialog() : BaseDialog(true), change_dir_cb_(nu
     dialog_bg_item_->setAlignment(LV_ALIGN_CENTER, 0, 0);
     dialog_bg_item_->setOpacity(1.0);
 
-    title_label_ = std::make_shared<LvText>(lvTr("restart_tips"), design::ThemeColor(design::CLR_ON_SURFACE), dialog_bg_item_.get(), LvText::FontSize32Bold);
+    title_label_ = std::make_shared<Label>(lvTr("restart_tips"), design::ThemeColor(design::CLR_ON_SURFACE), dialog_bg_item_.get(), Label::FontSize32Bold);
     title_label_->setAlignment(LV_ALIGN_TOP_MID, 0, 170);
 
-    bt_btn_ = std::make_shared<RoundedButton>(200, 64, RoundedButton::Dark, lvTr("common_bootloader"), dialog_bg_item_.get());
+    bt_btn_ = std::make_shared<PushButton>(200, 64, PushButton::Dark, lvTr("common_bootloader"), dialog_bg_item_.get());
     bt_btn_->setBgColor(design::ThemeColor(design::CLR_SECONDARY_CONTAINER));
     bt_btn_->setAlignment(LV_ALIGN_TOP_MID, portrait ? 0 : -250, portrait ? 300 : 320);
     bt_btn_->setOnClickedListener([]() -> void {
         // todo
     });
 
-    reboot_btn_ = std::make_shared<RoundedButton>(200, 64, RoundedButton::Red, lvTr("click_reboot"), dialog_bg_item_.get());
+    reboot_btn_ = std::make_shared<PushButton>(200, 64, PushButton::Red, lvTr("click_reboot"), dialog_bg_item_.get());
     reboot_btn_->setAlignment(LV_ALIGN_TOP_MID, 0, portrait ? 390 : 320);
     reboot_btn_->setOnClickedListener([]() -> void {
         LogDebug << "====reboot====";
         ::system("reboot");
     });
 
-    cancel_btn_ = std::make_shared<RoundedButton>(200, 64, RoundedButton::Dark, lvTr("click_cancel"), dialog_bg_item_.get());
+    cancel_btn_ = std::make_shared<PushButton>(200, 64, PushButton::Dark, lvTr("click_cancel"), dialog_bg_item_.get());
     cancel_btn_->setBgColor(design::ThemeColor(design::CLR_SECONDARY));
     cancel_btn_->setAlignment(LV_ALIGN_TOP_MID, portrait ? 0 : 250, portrait ? 480 : 320);
     cancel_btn_->setOnClickedListener([this]() -> void {

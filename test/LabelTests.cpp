@@ -1,6 +1,6 @@
 #include "TestFramework.h"
 #include "core/widgets/Image.h"
-#include "core/widgets/LvText.h"
+#include "core/widgets/Label.h"
 #include "core/widgets/Widget.h"
 #include <lvgl.h>
 #include <memory>
@@ -11,7 +11,7 @@ using namespace lvglpp::widgets;
 
 namespace {
 
-std::string displayed(const LvText &text)
+std::string displayed(const Label &text)
 {
     return text.lvObj() != nullptr ? lv_label_get_text(text.lvObj()) : std::string();
 }
@@ -71,71 +71,71 @@ bool isValidUtf8(const std::string &value)
 
 } // namespace
 
-TEST(LvText_max_len_middle_ellipsis_ascii)
+TEST(Label_max_len_middle_ellipsis_ascii)
 {
     Widget parent;
-    LvText text("abcdefghij", 0, &parent);
+    Label  text("abcdefghij", 0, &parent);
 
-    text.setMaxLen(8);
+    text.setMaxLength(8);
     CHECK_EQ(displayed(text), std::string("abc...ij"));
     CHECK_EQ(text.getText(), std::string("abcdefghij"));
 
     // Idempotent: rebuilding from the source text must not chain ellipses.
-    text.setMaxLen(8);
+    text.setMaxLength(8);
     CHECK_EQ(displayed(text), std::string("abc...ij"));
     return true;
 }
 
-TEST(LvText_max_len_small_budgets)
+TEST(Label_max_len_small_budgets)
 {
     Widget parent;
-    LvText text("abcdefghij", 0, &parent);
+    Label  text("abcdefghij", 0, &parent);
 
-    text.setMaxLen(3);
+    text.setMaxLength(3);
     CHECK_EQ(displayed(text), std::string("abc"));
 
-    text.setMaxLen(1);
+    text.setMaxLength(1);
     CHECK_EQ(displayed(text), std::string("a"));
 
-    text.setMaxLen(0);
+    text.setMaxLength(0);
     CHECK_EQ(displayed(text), std::string("abcdefghij"));
     return true;
 }
 
-TEST(LvText_max_len_keeps_utf8_intact)
+TEST(Label_max_len_keeps_utf8_intact)
 {
     Widget parent;
-    LvText text("你好世界你好世界", 0, &parent);
+    Label  text("你好世界你好世界", 0, &parent);
 
-    text.setMaxLen(5);
+    text.setMaxLength(5);
     const std::string shown = displayed(text);
     CHECK_TRUE(isValidUtf8(shown));
     CHECK_EQ(shown, std::string("你...界"));
 
-    text.setMaxLen(3);
+    text.setMaxLength(3);
     CHECK_TRUE(isValidUtf8(displayed(text)));
     return true;
 }
 
-TEST(LvText_max_len_keeps_combining_marks_attached)
+TEST(Label_max_len_keeps_combining_marks_attached)
 {
     Widget parent;
-    LvText text(u8"éx", 0, &parent); // e + combining acute, then x
+    Label  text(u8"éx", 0, &parent); // e + combining acute, then x
 
-    text.setMaxLen(1);
+    text.setMaxLength(1);
     CHECK_EQ(displayed(text), std::string(u8"é"));
 
-    text.setMaxLen(2);
+    text.setMaxLength(2);
     CHECK_EQ(displayed(text), std::string(u8"éx"));
     return true;
 }
 
-TEST(LvText_max_len_keeps_arabic_marks_attached)
+TEST(Label_max_len_keeps_arabic_marks_attached)
 {
     Widget parent;
-    LvText text(u8"مُح", 0, &parent); // م + damma, then ح
+    Label  text(u8"مُح", 0, &parent); // م + damma, then ح
 
-    text.setMaxLen(1);
+    text.setMaxLength(1);
     const std::string shown = displayed(text);
     // LVGL's bidi/Arabic shaping stores presentation forms in the label, so
     // compare the cluster shape (base + damma) rather than the input bytes.
@@ -145,29 +145,29 @@ TEST(LvText_max_len_keeps_arabic_marks_attached)
     return true;
 }
 
-TEST(LvText_pixel_auto_ellipsis)
+TEST(Label_pixel_auto_ellipsis)
 {
     Widget parent;
-    LvText text("The quick brown fox jumps over the lazy dog", 0, &parent);
+    Label  text("The quick brown fox jumps over the lazy dog", 0, &parent);
 
-    text.setLongMode(80, LvText::AutoEllipsis);
+    text.setLongMode(80, Label::AutoEllipsis);
     const std::string shown = displayed(text);
     CHECK_TRUE(shown.size() >= 3);
     CHECK_EQ(shown.substr(shown.size() - 3), std::string("..."));
     CHECK_TRUE(text.getDisplayTextWidth() <= 80);
 
     // Repeated calls must produce the same result.
-    text.setLongMode(80, LvText::AutoEllipsis);
+    text.setLongMode(80, Label::AutoEllipsis);
     CHECK_EQ(displayed(text), shown);
     return true;
 }
 
-TEST(LvText_pixel_middle_ellipsis)
+TEST(Label_pixel_middle_ellipsis)
 {
     Widget parent;
-    LvText text("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", 0, &parent);
+    Label  text("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", 0, &parent);
 
-    text.setLongMode(100, LvText::MiddleEllipsis);
+    text.setLongMode(100, Label::MiddleEllipsis);
     const std::string shown = displayed(text);
     CHECK_TRUE(shown.find("...") != std::string::npos);
     CHECK_EQ(shown.front(), 'A');
@@ -176,23 +176,23 @@ TEST(LvText_pixel_middle_ellipsis)
     return true;
 }
 
-TEST(LvText_pixel_limit_smaller_than_dots)
+TEST(Label_pixel_limit_smaller_than_dots)
 {
     Widget parent;
-    LvText text("abcdefghij", 0, &parent);
+    Label  text("abcdefghij", 0, &parent);
 
-    text.setLongMode(1, LvText::AutoEllipsis);
+    text.setLongMode(1, Label::AutoEllipsis);
     CHECK_TRUE(displayed(text).empty());
 
-    text.setLongMode(1, LvText::MiddleEllipsis);
+    text.setLongMode(1, Label::MiddleEllipsis);
     CHECK_TRUE(displayed(text).empty());
     return true;
 }
 
-TEST(LvText_display_width_uses_widest_line)
+TEST(Label_display_width_uses_widest_line)
 {
     Widget parent;
-    LvText text("short\nlongerline", 0, &parent);
+    Label  text("short\nlongerline", 0, &parent);
 
     const int        width    = text.getDisplayTextWidth();
     const lv_font_t *font     = lv_obj_get_style_text_font(text.lvObj(), LV_PART_MAIN);
@@ -202,10 +202,10 @@ TEST(LvText_display_width_uses_widest_line)
     return true;
 }
 
-TEST(LvText_native_long_mode)
+TEST(Label_native_long_mode)
 {
     Widget parent;
-    LvText text("abcdefghij", 0, &parent);
+    Label  text("abcdefghij", 0, &parent);
 
     text.setLongMode(LV_LABEL_LONG_MODE_DOTS);
     CHECK_EQ(lv_label_get_long_mode(text.lvObj()), LV_LABEL_LONG_MODE_DOTS);
@@ -215,11 +215,11 @@ TEST(LvText_native_long_mode)
     return true;
 }
 
-TEST(LvText_set_text_reapplies_limits)
+TEST(Label_set_text_reapplies_limits)
 {
     Widget parent;
-    LvText text("abcdefghij", 0, &parent);
-    text.setMaxLen(8);
+    Label  text("abcdefghij", 0, &parent);
+    text.setMaxLength(8);
 
     text.setText("0123456789");
     CHECK_EQ(text.getText(), std::string("0123456789"));
@@ -227,27 +227,27 @@ TEST(LvText_set_text_reapplies_limits)
     return true;
 }
 
-TEST(LvText_recolor_disables_manual_truncation)
+TEST(Label_recolor_disables_manual_truncation)
 {
     Widget parent;
-    LvText text("#FF0000 red# and blue", 0, &parent);
+    Label  text("#FF0000 red# and blue", 0, &parent);
 
-    text.setReColorEnable(true);
-    text.setMaxLen(4);
+    text.setRecolorEnabled(true);
+    text.setMaxLength(4);
     CHECK_EQ(displayed(text), std::string("#FF0000 red# and blue"));
 
-    text.setReColorEnable(false);
+    text.setRecolorEnabled(false);
     CHECK_EQ(displayed(text), std::string("#..."));
     return true;
 }
 
-TEST(LvText_empty_text_is_safe)
+TEST(Label_empty_text_is_safe)
 {
     Widget parent;
-    LvText text("", 0, &parent);
+    Label  text("", 0, &parent);
 
-    text.setMaxLen(5);
-    text.setLongMode(10, LvText::AutoEllipsis);
+    text.setMaxLength(5);
+    text.setLongMode(10, Label::AutoEllipsis);
     CHECK_TRUE(displayed(text).empty());
     CHECK_EQ(text.getDisplayTextWidth(), 0);
     return true;

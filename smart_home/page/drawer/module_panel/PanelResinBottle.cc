@@ -32,13 +32,13 @@ void PanelResinBottle::updateBottleInfo(const std::string &material, const int32
             _lbl_material_name->setText(lvTr("empty_info"));
 
             _lbl_bottle_status->setText(lvTr("status_uninstalled"));
-            _lbl_bottle_status->setTextClr(CLR_WARNING);
+            _lbl_bottle_status->setTextColor(CLR_WARNING);
         } else
         {
             LOG_DEBUG() << "tank size: " << tank_size;
             _lbl_material_name->setText(lvTrFmt("common_material_kg", material, tank_size / 1000));
 
-            _lbl_bottle_status->setTextClr(CLR_ON_SURFACE);
+            _lbl_bottle_status->setTextColor(CLR_ON_SURFACE);
             // _lbl_bottle_status->setText(std::to_string(remaining) + " g");
             _lbl_bottle_status->setText(lvTrFmt("common_grams", remaining));
         }
@@ -80,7 +80,7 @@ PanelResinBottle::PanelResinBottle(Widget *parent) : Widget(parent)
     _icon_bottle = std::make_shared<widgets::Image>("image/36x36/mod_resin_bottle.png", this);
     _icon_bottle->setPos(lv_coord_t(mod_item_edge_x), lv_coord_t(18));
 
-    _lbl_material_name = std::make_shared<LvText>("", CLR_ON_SURFACE, this, LvText::FontSize22Bold);
+    _lbl_material_name = std::make_shared<Label>("", CLR_ON_SURFACE, this, Label::FontSize22Bold);
 
     if (sys::Application::getLanguageType() == sys::Application::LanguageType::English)
     {
@@ -96,10 +96,10 @@ PanelResinBottle::PanelResinBottle(Widget *parent) : Widget(parent)
     _lbl_material_name->setWidth(panel_text_max_length);
     // _lbl_material_name->setPos(mod_item_edge_x + offset, 18);
 
-    _lbl_bottle_status = std::make_shared<LvText>("", CLR_ON_SURFACE, this, LvText::FontSize22);
+    _lbl_bottle_status = std::make_shared<Label>("", CLR_ON_SURFACE, this, Label::FontSize22);
     _lbl_bottle_status->setAlignment(LV_ALIGN_BOTTOM_LEFT, 16, -12);
 
-    _touch_area = std::make_shared<widgets::MouseArea>(this);
+    _touch_area = std::make_shared<widgets::TouchArea>(this);
     _touch_area->setSize(150, 92);
     _touch_area->setAlignment(LV_ALIGN_RIGHT_MID, 0, 0);
 

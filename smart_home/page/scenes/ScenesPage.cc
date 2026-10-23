@@ -14,10 +14,10 @@ void ScenesPage::onCreate(std::any arg) {
     BaseActivity::onCreate(arg);
     getRoot()->setBgColor(CLR_SURFACE);
 
-    _title = std::make_unique<w::LvText>("Scenes", CLR_ON_SURFACE, getRoot(), w::LvText::FontSize28Bold);
+    _title = std::make_unique<w::Label>("Scenes", CLR_ON_SURFACE, getRoot(), w::Label::FontSize28Bold);
     _title->setAlignment(LV_ALIGN_TOP_LEFT, 20, 10);
 
-    _activeSceneLabel = std::make_unique<w::LvText>("Active: None", CLR_ON_SURFACE_VARIANT_1, getRoot(), w::LvText::FontSize20);
+    _activeSceneLabel = std::make_unique<w::Label>("Active: None", CLR_ON_SURFACE_VARIANT_1, getRoot(), w::Label::FontSize20);
     _activeSceneLabel->setAlignment(LV_ALIGN_TOP_RIGHT, -20, 15);
 
     struct SceneDef { const char *icon; const char *name; const char *desc; };

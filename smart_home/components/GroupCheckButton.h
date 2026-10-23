@@ -2,7 +2,7 @@
 #define GROUP_CHECK_BUTTON_H
 
 #include "core/widgets/Widget.h"
-#include "core/widgets/LvText.h"
+#include "core/widgets/Label.h"
 #include "core/widgets/Image.h"
 #include <memory>
 
@@ -26,7 +26,7 @@ public:
     State getSelectedState() const { return getSlectedState(); }
 
 private:
-    std::shared_ptr<LvText>    display_label_;
+    std::shared_ptr<Label>    display_label_;
     std::shared_ptr<widgets::Image> icon_;
     State                           state_;
 };

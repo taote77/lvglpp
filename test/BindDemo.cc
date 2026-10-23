@@ -12,11 +12,11 @@ BindDemo::~BindDemo()
 
 void BindDemo::onCreate(std::any arg)
 {
-    _label = std::make_shared<lvglpp::widgets::Text>(_txt, form::design::CLR_SURFACE_CONTAINER, getRoot());
+    _label = std::make_shared<lvglpp::widgets::Label>(_txt, form::design::CLR_SURFACE_CONTAINER, getRoot());
 
     _label->setAlignment(LV_ALIGN_CENTER, 0, -80);
 
-    _btn = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "Click", getRoot());
+    _btn = std::make_shared<widgets::PushButton>(200, 40, widgets::PushButton::ColorStyle::Gray, "Click", getRoot());
 
     char buf[100]     = {0};
     char pre_buf[100] = {0};

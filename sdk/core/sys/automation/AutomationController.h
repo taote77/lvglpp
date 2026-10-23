@@ -28,7 +28,7 @@ public:
     /// Simulate a long press (ms duration)
     void longPress(widgets::Widget *item, int durationMs = 500);
 
-    /// Set text on a text-based widget (LvText/Text/SpinBox)
+    /// Set text on a text-based widget (Label/Text/SpinBox)
     void typeText(widgets::Widget *item, const std::string &text);
 
     /// Scroll the widget to a position

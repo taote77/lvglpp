@@ -4,10 +4,9 @@
 #include "I18nWidgets/InText.h"
 #include "core/sys/BaseActivity.h"
 #include "core/sys/Event.h"
-#include "core/widgets/LvText.h"
+#include "core/widgets/Label.h"
 #include "core/widgets/PushButton.h"
 // #include "core/widgets/PushButton.h"
-#include "core/widgets/Text.h"
 #include <memory>
 
 using namespace lvglpp;
@@ -29,8 +28,8 @@ private:
     lv_subject_t _subject;
 
     std::string                      _txt{"Start"};
-    std::unique_ptr<widgets::LvText> _label;
-    std::unique_ptr<widgets::LvText> _label1;
+    std::unique_ptr<widgets::Label> _label;
+    std::unique_ptr<widgets::Label> _label1;
 
     std::unique_ptr<widgets::PushButton> _btn_chinese;
     std::unique_ptr<widgets::PushButton> _btn_english;

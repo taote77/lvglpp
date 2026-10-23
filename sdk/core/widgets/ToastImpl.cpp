@@ -13,7 +13,7 @@ ToastImpl::ToastImpl() : Widget(tools::LvObjFactory::createLvglDialog)
     icon_ = std::make_unique<widgets::Image>("", this);
     icon_->setAlignment(LV_ALIGN_LEFT_MID, 8, 0);
 
-    desc_ = std::make_unique<LvText>("", form::design::CLR_ON_SURFACE, this, LvText::FontSize24, LvText::SansSC);
+    desc_ = std::make_unique<Label>("", form::design::CLR_ON_SURFACE, this, Label::FontSize24, Label::SansSC);
     desc_->setAlignment(LV_ALIGN_LEFT_MID, 64, 0);
 }
 

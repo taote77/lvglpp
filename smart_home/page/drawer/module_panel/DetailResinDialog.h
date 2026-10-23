@@ -2,9 +2,9 @@
 #define MODULE_DETAIL_RESIN_DIALOG_H
 
 #include "core/widgets/BaseDialog.h"
-#include "core/widgets/LvText.h"
+#include "core/widgets/Label.h"
 #include "core/widgets/PushButton.h"
-#include "core/widgets/SwitchButton.h"
+#include "core/widgets/Switch.h"
 
 namespace lvglpp::ui::page {
 using namespace lvglpp::widgets;
@@ -35,14 +35,14 @@ public:
 private:
     std::shared_ptr<Widget> _dialog_bg_item;
 
-    std::shared_ptr<LvText> _material_name_label;
-    std::shared_ptr<LvText> _status_label;
-    std::shared_ptr<LvText> _remaing_info;
+    std::shared_ptr<Label> _material_name_label;
+    std::shared_ptr<Label> _status_label;
+    std::shared_ptr<Label> _remaing_info;
 
-    std::shared_ptr<LvText>           _btn_label;
-    std::shared_ptr<widgets::SwitchButton> _auto_fill_switch;
+    std::shared_ptr<Label>           _btn_label;
+    std::shared_ptr<widgets::Switch> _auto_fill_switch;
 
-    std::shared_ptr<RoundedButton> _close_button;
+    std::shared_ptr<PushButton> _close_button;
 
     bool _fill_mod_equipped{false};
 

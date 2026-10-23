@@ -1,6 +1,6 @@
 #include "core/base/LvObjFactory.h"
 
-#include "LvText.h"
+#include "Label.h"
 #include "core/sys/Application.h"
 #include "core/tools/fonts/LvFontManager.h"
 #include <algorithm>
@@ -19,12 +19,12 @@ struct TextStyleInfo {
     bool bold;
 };
 
-// Keep in sync with LvText::TextStyle.
+// Keep in sync with Label::TextStyle.
 constexpr TextStyleInfo kTextStyles[] = {
     {20, false}, {22, false}, {24, false}, {28, false}, {32, false}, {36, false}, {20, true}, {22, true}, {24, true}, {28, true}, {32, true}, {36, true}, {48, true}, {64, true},
 };
 
-static_assert(sizeof(kTextStyles) / sizeof(kTextStyles[0]) == LvText::TextStyle::FontSize64Bold + 1, "kTextStyles must cover every LvText::TextStyle value");
+static_assert(sizeof(kTextStyles) / sizeof(kTextStyles[0]) == Label::TextStyle::FontSize64Bold + 1, "kTextStyles must cover every Label::TextStyle value");
 
 bool isCombiningMark(uint32_t codepoint)
 {
@@ -94,23 +94,23 @@ std::vector<std::string> splitLines(const std::string &text)
     return lines;
 }
 
-const lv_font_t *fontForStyle(LvText::TextStyle style, LvText::FontType type)
+const lv_font_t *fontForStyle(Label::TextStyle style, Label::FontType type)
 {
     tools::LvFontManager::FontName fontName = tools::LvFontManager::DMSans;
     switch (type)
     {
-    case LvText::FontType::Auto:
+    case Label::FontType::Auto:
         fontName = (sys::Application::getLanguageType() == sys::Application::Chinese || sys::Application::getLanguageType() == sys::Application::Arabic) ?
                        tools::LvFontManager::SansSC :
                        tools::LvFontManager::DMSans;
         break;
-    case LvText::FontType::DMSans:
+    case Label::FontType::DMSans:
         fontName = tools::LvFontManager::DMSans;
         break;
-    case LvText::FontType::SansSC:
+    case Label::FontType::SansSC:
         fontName = tools::LvFontManager::SansSC;
         break;
-    case LvText::FontType::Oswald:
+    case Label::FontType::Oswald:
         fontName = tools::LvFontManager::Oswald;
         break;
     }
@@ -127,7 +127,7 @@ const lv_font_t *fontForStyle(LvText::TextStyle style, LvText::FontType type)
 
 } // namespace
 
-LvText::LvText(const std::string &strMsg, uint32_t clr, Widget *parent, TextStyle style, FontType type) : Widget(tools::LvObjFactory::createLvglLabel, parent), text_(strMsg)
+Label::Label(const std::string &strMsg, uint32_t clr, Widget *parent, TextStyle style, FontType type) : Widget(tools::LvObjFactory::createLvglLabel, parent), text_(strMsg)
 {
     font_ = fontForStyle(style, type);
     if (font_ == nullptr)
@@ -138,19 +138,19 @@ LvText::LvText(const std::string &strMsg, uint32_t clr, Widget *parent, TextStyl
     lv_obj_set_style_text_font(lvObj(), font_, LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(lvObj(), LV_TEXT_ALIGN_AUTO, LV_STATE_DEFAULT);
     lv_obj_set_style_text_line_space(lvObj(), 2, LV_STATE_DEFAULT);
-    setTextClr(clr);
+    setTextColor(clr);
     refreshDisplayText();
 }
 
-LvText::~LvText() = default;
+Label::~Label() = default;
 
-void LvText::setText(const std::string &strMsg)
+void Label::setText(const std::string &strMsg)
 {
     text_ = strMsg;
     refreshDisplayText();
 }
 
-void LvText::setTextClr(uint32_t clr)
+void Label::setTextColor(uint32_t clr)
 {
     if (lvObj() != nullptr)
     {
@@ -158,7 +158,7 @@ void LvText::setTextClr(uint32_t clr)
     }
 }
 
-void LvText::setTextAlign(lv_text_align_t align)
+void Label::setTextAlign(lv_text_align_t align)
 {
     if (lvObj() != nullptr)
     {
@@ -166,7 +166,7 @@ void LvText::setTextAlign(lv_text_align_t align)
     }
 }
 
-void LvText::setTextOpa(lv_opa_t opa)
+void Label::setTextOpacity(lv_opa_t opa)
 {
     if (lvObj() != nullptr)
     {
@@ -174,7 +174,7 @@ void LvText::setTextOpa(lv_opa_t opa)
     }
 }
 
-void LvText::setReColorEnable(bool enable)
+void Label::setRecolorEnabled(bool enable)
 {
     recolor_ = enable;
     if (lvObj() != nullptr)
@@ -185,13 +185,13 @@ void LvText::setReColorEnable(bool enable)
     refreshDisplayText();
 }
 
-void LvText::setMaxLen(int n)
+void Label::setMaxLength(int n)
 {
     max_len_ = n;
     refreshDisplayText();
 }
 
-int LvText::getDisplayTextWidth() const
+int Label::getDisplayTextWidth() const
 {
     std::string displayed;
     if (lvObj() != nullptr)
@@ -215,14 +215,14 @@ int LvText::getDisplayTextWidth() const
     return width;
 }
 
-void LvText::setLongMode(int maxWidth, LongMode longMode)
+void Label::setLongMode(int maxWidth, LongMode longMode)
 {
-    long_mode_.mode  = longMode;
-    long_mode_.width = maxWidth;
+    long_mode_       = longMode;
+    long_mode_width_ = maxWidth;
     refreshDisplayText();
 }
 
-void LvText::setLongMode(lv_label_long_mode_t mode)
+void Label::setLongMode(lv_label_long_mode_t mode)
 {
     if (lvObj() != nullptr)
     {
@@ -230,7 +230,7 @@ void LvText::setLongMode(lv_label_long_mode_t mode)
     }
 }
 
-void LvText::refreshDisplayText()
+void Label::refreshDisplayText()
 {
     if (lvObj() == nullptr)
     {
@@ -240,7 +240,7 @@ void LvText::refreshDisplayText()
     lv_label_set_text(lvObj(), shown.c_str());
 }
 
-std::string LvText::buildDisplayText(const std::string &text) const
+std::string Label::buildDisplayText(const std::string &text) const
 {
     // Truncating recolor markup would cut #RRGGBB sequences in half. Keep the
     // text intact and let LVGL handle overflow in that case.
@@ -253,7 +253,7 @@ std::string LvText::buildDisplayText(const std::string &text) const
     return applyPixelLimit(shown);
 }
 
-std::string LvText::applyCharLimit(const std::string &text, int maxClusters) const
+std::string Label::applyCharLimit(const std::string &text, int maxClusters) const
 {
     if (text.empty() || maxClusters <= 0)
     {
@@ -282,9 +282,9 @@ std::string LvText::applyCharLimit(const std::string &text, int maxClusters) con
     return out;
 }
 
-std::string LvText::applyPixelLimit(const std::string &text) const
+std::string Label::applyPixelLimit(const std::string &text) const
 {
-    if (long_mode_.mode == LongMode::None || long_mode_.width <= 0 || text.empty())
+    if (long_mode_ == LongMode::None || long_mode_width_ <= 0 || text.empty())
     {
         return text;
     }
@@ -301,7 +301,7 @@ std::string LvText::applyPixelLimit(const std::string &text) const
             line.pop_back();
         }
 
-        out += ellipsizeLine(line, long_mode_.mode);
+        out += ellipsizeLine(line, long_mode_);
         out += carriageReturn;
         if (i + 1 < lines.size())
         {
@@ -311,14 +311,14 @@ std::string LvText::applyPixelLimit(const std::string &text) const
     return out;
 }
 
-std::string LvText::ellipsizeLine(const std::string &line, LongMode mode) const
+std::string Label::ellipsizeLine(const std::string &line, LongMode mode) const
 {
     if (line.empty())
     {
         return line;
     }
 
-    const int limit = long_mode_.width;
+    const int limit = long_mode_width_;
     if (limit <= 0)
     {
         return std::string();
@@ -429,7 +429,7 @@ std::string LvText::ellipsizeLine(const std::string &line, LongMode mode) const
     return line.substr(0, offsets[static_cast<std::size_t>(best)]) + dots;
 }
 
-int LvText::measure(const char *text, uint32_t bytes) const
+int Label::measure(const char *text, uint32_t bytes) const
 {
     if (text == nullptr || bytes == 0)
     {
@@ -440,12 +440,12 @@ int LvText::measure(const char *text, uint32_t bytes) const
     return lv_text_get_width_with_flags(text, bytes, measurementFont(), letterSpace(), flags);
 }
 
-int LvText::measureLine(const std::string &line) const
+int Label::measureLine(const std::string &line) const
 {
     return measure(line.c_str(), static_cast<uint32_t>(line.size()));
 }
 
-int LvText::letterSpace() const
+int Label::letterSpace() const
 {
     if (lvObj() == nullptr)
     {
@@ -454,7 +454,7 @@ int LvText::letterSpace() const
     return lv_obj_get_style_text_letter_space(lvObj(), LV_PART_MAIN);
 }
 
-const lv_font_t *LvText::measurementFont() const
+const lv_font_t *Label::measurementFont() const
 {
     if (font_ != nullptr)
     {

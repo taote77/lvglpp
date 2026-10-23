@@ -32,13 +32,7 @@ public:
      * @param parent
      * @return
      */
-    static lv_obj_t *createLvglScrolable(lv_obj_t *parent);
-
-    /// Correct spelling: createLvglScrollable
-    static lv_obj_t *createLvglScrollable(lv_obj_t *parent)
-    {
-        return createLvglScrolable(parent);
-    }
+    static lv_obj_t *createLvglScrollable(lv_obj_t *parent);
 
     /**
      * Create an LVGL image object

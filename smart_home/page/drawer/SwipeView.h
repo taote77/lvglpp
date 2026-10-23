@@ -1,12 +1,12 @@
 #include "core/widgets/Widget.h"
 #include "core/widgets/PushButton.h"
-#include "core/widgets/ScrollItem.h"
+#include "core/widgets/ScrollView.h"
 #include <vector>
 
 namespace lvglpp::ui::page {
 using namespace lvglpp::widgets;
 
-class SwipeView : public ScrollItem
+class SwipeView : public ScrollView
 {
 public:
     explicit SwipeView(Widget *parent = nullptr);
@@ -51,8 +51,8 @@ private:
     int                                    _page_count = 0;
     std::vector<std::shared_ptr<Widget>> _pages;
 
-    std::shared_ptr<RoundedButton> _left_btn;
-    std::shared_ptr<RoundedButton> _right_btn;
+    std::shared_ptr<PushButton> _left_btn;
+    std::shared_ptr<PushButton> _right_btn;
 
     int _current_index = -1;
 };

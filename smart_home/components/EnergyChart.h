@@ -2,8 +2,8 @@
 #define SMART_HOME_ENERGY_CHART_H
 
 #include "core/widgets/Widget.h"
-#include "core/widgets/LvChart.h"
-#include "core/widgets/LvText.h"
+#include "core/widgets/Chart.h"
+#include "core/widgets/Label.h"
 #include "core/widgets/PushButton.h"
 #include <memory>
 #include <string>
@@ -22,12 +22,12 @@ public:
     void setTotal(float kWh);
 
 private:
-    std::unique_ptr<w::LvText>      _titleLabel;
-    std::unique_ptr<w::LvText>      _totalLabel;
-    std::unique_ptr<w::LvChart>     _chart;
+    std::unique_ptr<w::Label>      _titleLabel;
+    std::unique_ptr<w::Label>      _totalLabel;
+    std::unique_ptr<w::Chart>     _chart;
     std::unique_ptr<w::PushButton>  _dayBtn;
     std::unique_ptr<w::PushButton>  _weekBtn;
-    w::ChartSeries                 *_series = nullptr; // owned by LvChart
+    w::ChartSeries                 *_series = nullptr; // owned by Chart
 };
 
 } // namespace lvglpp::ui::widgets

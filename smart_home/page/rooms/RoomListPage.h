@@ -2,7 +2,7 @@
 #define SMART_HOME_ROOM_LIST_PAGE_H
 
 #include "core/sys/BaseActivity.h"
-#include "core/widgets/LvText.h"
+#include "core/widgets/Label.h"
 #include "core/widgets/PushButton.h"
 #include <memory>
 
@@ -25,7 +25,7 @@ protected:
 private:
     void showRoomDetail(const std::string &roomName);
 
-    std::unique_ptr<w::LvText> _title;
+    std::unique_ptr<w::Label> _title;
 };
 
 } // namespace lvglpp::ui::page

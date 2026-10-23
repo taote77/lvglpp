@@ -4,7 +4,7 @@
 
 #include "Widget.h"
 #include "Image.h"
-#include "LvText.h"
+#include "Label.h"
 #include <memory>
 
 namespace lvglpp::widgets {
@@ -18,7 +18,7 @@ public:
 
 private:
     std::unique_ptr<widgets::Image> icon_;
-    std::unique_ptr<LvText>         desc_;
+    std::unique_ptr<Label>         desc_;
 };
 
 } // namespace lvglpp::widgets

@@ -1,10 +1,9 @@
-#include "Bar.h"
+#include "ProgressBar.h"
 #include "core/base/LvObjFactory.h"
 
 namespace lvglpp::widgets {
 
-ProgressBar::ProgressBar(Widget *parent)
-    : Widget(tools::LvObjFactory::createLvglBar, parent)
+ProgressBar::ProgressBar(Widget *parent) : Widget(tools::LvObjFactory::createLvglBar, parent)
 {}
 
 void ProgressBar::setValue(int32_t value, bool animate)

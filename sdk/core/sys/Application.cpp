@@ -139,7 +139,7 @@ bool Application::initialize()
     UiConfig::instance().initialize(platform_.get());
 
     // Make the compiled-in Noto family the inherited default so widgets that
-    // do not use LvText (roller, dropdown, button internals) can render Arabic.
+    // do not use Label (roller, dropdown, button internals) can render Arabic.
     if (const lv_font_t *defaultFont = tools::LvFontManager::getDefaultFont())
     {
         for (lv_obj_t *root : {lv_screen_active(), lv_layer_top(), lv_layer_bottom(), lv_layer_sys()})

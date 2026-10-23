@@ -14,7 +14,7 @@ void EnergyPage::onCreate(std::any arg) {
     BaseActivity::onCreate(arg);
     getRoot()->setBgColor(CLR_SURFACE);
 
-    _title = std::make_unique<w::LvText>("Energy", CLR_ON_SURFACE, getRoot(), w::LvText::FontSize28Bold);
+    _title = std::make_unique<w::Label>("Energy", CLR_ON_SURFACE, getRoot(), w::Label::FontSize28Bold);
     _title->setAlignment(LV_ALIGN_TOP_LEFT, 20, 10);
 
     buildTodaySummary();
@@ -26,10 +26,10 @@ void EnergyPage::onCreate(std::any arg) {
 }
 
 void EnergyPage::buildTodaySummary() {
-    _todayUsage = std::make_unique<w::LvText>("Today: 12.4 kWh", CLR_PRIMARY, getRoot(), w::LvText::FontSize36Bold);
+    _todayUsage = std::make_unique<w::Label>("Today: 12.4 kWh", CLR_PRIMARY, getRoot(), w::Label::FontSize36Bold);
     _todayUsage->setAlignment(LV_ALIGN_TOP_MID, 0, 45);
 
-    auto subLabel = std::make_unique<w::LvText>("Estimated cost: $1.86", CLR_ON_SURFACE_VARIANT_2, getRoot(), w::LvText::FontSize20);
+    auto subLabel = std::make_unique<w::Label>("Estimated cost: $1.86", CLR_ON_SURFACE_VARIANT_2, getRoot(), w::Label::FontSize20);
     subLabel->setAlignment(LV_ALIGN_TOP_MID, 0, 85);
 }
 
@@ -44,7 +44,7 @@ void EnergyPage::buildWeeklyChart() {
 }
 
 void EnergyPage::buildRoomBreakdown() {
-    auto breakdownLabel = std::make_unique<w::LvText>("Per Room", CLR_ON_SURFACE_VARIANT_0, getRoot(), w::LvText::FontSize22Bold);
+    auto breakdownLabel = std::make_unique<w::Label>("Per Room", CLR_ON_SURFACE_VARIANT_0, getRoot(), w::Label::FontSize22Bold);
     breakdownLabel->setAlignment(LV_ALIGN_TOP_LEFT, 20, 350);
 
     struct RoomUsage { const char *name; float kWh; uint32_t color; };
@@ -57,7 +57,7 @@ void EnergyPage::buildRoomBreakdown() {
 
     int y = 378;
     for (auto &r : rooms) {
-        auto label = std::make_unique<w::LvText>(std::format("{} - {:.1f} kWh", r.name, r.kWh), CLR_ON_SURFACE_VARIANT_1, getRoot(), w::LvText::FontSize20);
+        auto label = std::make_unique<w::Label>(std::format("{} - {:.1f} kWh", r.name, r.kWh), CLR_ON_SURFACE_VARIANT_1, getRoot(), w::Label::FontSize20);
         label->setAlignment(LV_ALIGN_TOP_LEFT, 30, y);
 
         auto bar = std::make_unique<w::ProgressBar>(getRoot());
@@ -70,7 +70,7 @@ void EnergyPage::buildRoomBreakdown() {
 }
 
 void EnergyPage::buildTips() {
-    auto tipsLabel = std::make_unique<w::LvText>("Tip: Use LED bulbs to save up to 80% energy", CLR_SUCCESS, getRoot(), w::LvText::FontSize20);
+    auto tipsLabel = std::make_unique<w::Label>("Tip: Use LED bulbs to save up to 80% energy", CLR_SUCCESS, getRoot(), w::Label::FontSize20);
     tipsLabel->setAlignment(LV_ALIGN_BOTTOM_MID, 0, -15);
 }
 

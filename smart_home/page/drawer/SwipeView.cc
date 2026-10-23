@@ -5,7 +5,7 @@
 
 namespace lvglpp::ui::page {
 
-SwipeView::SwipeView(Widget *parent) : ScrollItem(parent)
+SwipeView::SwipeView(Widget *parent) : ScrollView(parent)
 {
     init();
 }
@@ -96,14 +96,14 @@ void SwipeView::createPages()
 
 void SwipeView::addLeftButton()
 {
-    _left_btn = std::make_shared<RoundedButton>(240, 64, RoundedButton::Blue, ("<-"), getParent());
+    _left_btn = std::make_shared<PushButton>(240, 64, PushButton::Blue, ("<-"), getParent());
     _left_btn->setAlignment(LV_ALIGN_TOP_MID, 0, 376);
     _left_btn->setPos(150, 380);
 }
 
 void SwipeView::addRightButton()
 {
-    _right_btn = std::make_shared<RoundedButton>(240, 64, RoundedButton::Blue, ("->"), this->getParent());
+    _right_btn = std::make_shared<PushButton>(240, 64, PushButton::Blue, ("->"), this->getParent());
     _right_btn->setAlignment(LV_ALIGN_TOP_MID, 0, 376);
     _right_btn->setPos(408, 380);
 }

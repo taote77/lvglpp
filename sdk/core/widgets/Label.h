@@ -1,5 +1,5 @@
-#ifndef LVGLPP_LVTEXT_H
-#define LVGLPP_LVTEXT_H
+#ifndef LVGLPP_LABEL_H
+#define LVGLPP_LABEL_H
 
 #include "Widget.h"
 #include "lvgl.h"
@@ -7,7 +7,7 @@
 
 namespace lvglpp::widgets {
 
-class LvText : public Widget
+class Label : public Widget
 {
 public:
     enum TextStyle {
@@ -31,17 +31,13 @@ public:
 
     enum LongMode { None, AutoEllipsis, MiddleEllipsis };
 
-    struct LongModeStruct {
-        LongMode mode  = LongMode::None;
-        int      width = 0;
-    };
+    Label(const std::string &strMsg, uint32_t clr, Widget *parent, TextStyle style = TextStyle::FontSize20, FontType type = FontType::Auto);
 
-    LvText(const std::string &strMsg, uint32_t clr, Widget *parent, TextStyle style = TextStyle::FontSize20, FontType type = FontType::Auto);
+    ~Label() override;
 
-    ~LvText() override;
-
-    /// Set the source text. The displayed text may be truncated by setMaxLen()
-    /// or setLongMode(); getText() still returns the original string.
+    /// Set the source text. The displayed text may be truncated by
+    /// setMaxLength() or setLongMode(); getText() still returns the original
+    /// string.
     void setText(const std::string &strMsg);
 
     const std::string &getText() const
@@ -49,21 +45,45 @@ public:
         return text_;
     }
 
-    void setTextClr(uint32_t clr);
+    void setTextColor(uint32_t clr);
+
+    [[deprecated("use setTextColor()")]]
+    void setTextClr(uint32_t clr)
+    {
+        setTextColor(clr);
+    }
 
     void setTextAlign(lv_text_align_t align);
 
-    void setTextOpa(lv_opa_t opa);
+    void setTextOpacity(lv_opa_t opa);
+
+    [[deprecated("use setTextOpacity()")]]
+    void setTextOpa(lv_opa_t opa)
+    {
+        setTextOpacity(opa);
+    }
 
     /// Enable LVGL recolor markup (#RRGGBB ... #). Automatic truncation is
     /// disabled while recolor is enabled so markup is never cut in half.
-    void setReColorEnable(bool enable);
+    void setRecolorEnabled(bool enable);
+
+    [[deprecated("use setRecolorEnabled()")]]
+    void setReColorEnable(bool enable)
+    {
+        setRecolorEnabled(enable);
+    }
 
     /**
      * Limit the displayed text to n user-perceived characters, inserting
      * "..." in the middle when it does not fit. n <= 0 disables the limit.
      */
-    void setMaxLen(int n);
+    void setMaxLength(int n);
+
+    [[deprecated("use setMaxLength()")]]
+    void setMaxLen(int n)
+    {
+        setMaxLength(n);
+    }
 
     /// Width of the text currently rendered (maximum line width).
     int getDisplayTextWidth() const;
@@ -87,15 +107,13 @@ private:
     const lv_font_t *measurementFont() const;
 
     std::string      text_;
-    int              max_len_ = -1;
-    LongModeStruct   long_mode_{};
-    const lv_font_t *font_    = nullptr;
-    bool             recolor_ = false;
+    int              max_len_         = -1;
+    LongMode         long_mode_       = LongMode::None;
+    int              long_mode_width_ = 0;
+    const lv_font_t *font_            = nullptr;
+    bool             recolor_         = false;
 };
-
-// Modern alias
-using Label = LvText;
 
 } // namespace lvglpp::widgets
 
-#endif // LVGLPP_LVTEXT_H
+#endif // LVGLPP_LABEL_H

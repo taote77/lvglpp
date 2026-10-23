@@ -6,7 +6,7 @@
 #include "components/SceneButton.h"
 #include "components/StatusBadge.h"
 #include "core/sys/BaseActivity.h"
-#include "core/widgets/LvText.h"
+#include "core/widgets/Label.h"
 #include "core/widgets/PushButton.h"
 #include <memory>
 #include <vector>
@@ -35,8 +35,8 @@ private:
     void buildSecurityStatus();
 
     // Weather
-    std::unique_ptr<w::LvText> _weatherLabel;
-    std::unique_ptr<w::LvText> _tempLabel;
+    std::unique_ptr<w::Label> _weatherLabel;
+    std::unique_ptr<w::Label> _tempLabel;
 
     // Quick actions
     std::unique_ptr<w::PushButton> _lightsOffBtn;

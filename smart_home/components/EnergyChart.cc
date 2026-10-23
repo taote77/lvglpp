@@ -15,23 +15,23 @@ EnergyChart::EnergyChart(const std::string &title, w::Widget *parent)
     setRadius(RADIUS_12);
 
     // Title
-    _titleLabel = std::make_unique<w::LvText>(title, CLR_ON_SURFACE_VARIANT_0, this, w::LvText::FontSize22Bold);
+    _titleLabel = std::make_unique<w::Label>(title, CLR_ON_SURFACE_VARIANT_0, this, w::Label::FontSize22Bold);
     _titleLabel->setAlignment(LV_ALIGN_TOP_LEFT, 12, 8);
 
     // Total kWh
-    _totalLabel = std::make_unique<w::LvText>(lvTrFmt("common_energy_kwh", 0.0f), CLR_PRIMARY, this, w::LvText::FontSize28Bold);
+    _totalLabel = std::make_unique<w::Label>(lvTrFmt("common_energy_kwh", 0.0f), CLR_PRIMARY, this, w::Label::FontSize28Bold);
     _totalLabel->setAlignment(LV_ALIGN_TOP_RIGHT, -12, 8);
 
     // Chart
-    _chart = std::make_unique<w::LvChart>(this);
+    _chart = std::make_unique<w::Chart>(this);
     _chart->setSize(350, 120);
     _chart->setAlignment(LV_ALIGN_TOP_MID, 0, 40);
-    _chart->setType(w::LvChart::Bar);
+    _chart->setType(w::Chart::Bar);
     _chart->setPointCount(7);
-    _chart->setAxisRange(w::LvChart::PrimaryY, 0, 50);
-    _chart->setDivLineCount(3, 0);
+    _chart->setAxisRange(w::Chart::PrimaryY, 0, 50);
+    _chart->setDivisionLineCount(3, 0);
 
-    _series = _chart->addSeries(lv_color_hex(CLR_PRIMARY), w::LvChart::PrimaryY);
+    _series = _chart->addSeries(lv_color_hex(CLR_PRIMARY), w::Chart::PrimaryY);
 
     // Day/Week toggle buttons
     _dayBtn = std::make_unique<w::PushButton>(50, 28, w::PushButton::Blue, lvTr("common_day"), this);

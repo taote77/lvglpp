@@ -1,12 +1,12 @@
 
-#include "SwitchButton.h"
+#include "Switch.h"
 #include "config/color_sheet.h"
 
 namespace lvglpp::widgets {
 
 using namespace form::design;
 
-SwitchButton::SwitchButton(lv_coord_t width, lv_coord_t height, Widget *parent) //
+Switch::Switch(lv_coord_t width, lv_coord_t height, Widget *parent) //
     : Widget(parent), width_(width), height_(height), check_state_(false)
 {
     setSize(width, height);
@@ -20,7 +20,7 @@ SwitchButton::SwitchButton(lv_coord_t width, lv_coord_t height, Widget *parent) 
     setFocusable(true);
 }
 
-void SwitchButton::update()
+void Switch::update()
 {
     if (check_state_)
     {
@@ -33,7 +33,7 @@ void SwitchButton::update()
     }
 }
 
-void SwitchButton::setCheck(bool checked)
+void Switch::setChecked(bool checked)
 {
     check_state_ = checked;
     update();

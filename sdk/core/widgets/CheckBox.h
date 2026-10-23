@@ -2,7 +2,7 @@
 #define LVGLPP_CHECKBOX_H
 
 #include "Widget.h"
-#include "MouseArea.h"
+#include "TouchArea.h"
 #include <memory>
 
 namespace lvglpp::widgets {
@@ -17,7 +17,7 @@ public:
 private:
     std::unique_ptr<Widget> check_item_;
 
-    std::unique_ptr<MouseArea> check_mouse_area_;
+    std::unique_ptr<TouchArea> check_mouse_area_;
 
     void init();
 

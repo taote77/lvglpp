@@ -2,7 +2,7 @@
 #define CLICKABLE_CARD_H
 
 #include "core/widgets/Widget.h"
-#include "core/widgets/LvText.h"
+#include "core/widgets/Label.h"
 #include "core/widgets/Image.h"
 #include <memory>
 
@@ -41,8 +41,8 @@ private:
 
     uint32_t _border_width{2};
 
-    std::shared_ptr<LvText>    _label;
-    std::shared_ptr<LvText>    _foot_label;
+    std::shared_ptr<Label>    _label;
+    std::shared_ptr<Label>    _foot_label;
     std::shared_ptr<widgets::Image> _icon_;
 };
 } // namespace wrapper::widgets

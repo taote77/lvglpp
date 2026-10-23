@@ -33,11 +33,11 @@ void NoticeDelegate::draw(const NoticeData &data)
     }
     _bg_item->setOpacity(1);
 
-    _head_date_label = std::make_shared<LvText>("2022-04-25 10:31", CLR_ON_SURFACE, _bg_item.get(), LvText::FontSize20);
+    _head_date_label = std::make_shared<Label>("2022-04-25 10:31", CLR_ON_SURFACE, _bg_item.get(), Label::FontSize20);
 
     _head_date_label->setPos(20, 10);
 
-    _msg_label = std::make_shared<LvText>(data.message, CLR_ON_SURFACE, _bg_item.get(), LvText::FontSize24);
+    _msg_label = std::make_shared<Label>(data.message, CLR_ON_SURFACE, _bg_item.get(), Label::FontSize24);
     _msg_label->setBgColor(design::ThemeColor(CLR_ON_SECONDARY));
     _msg_label->setPos(20, 30);
 }

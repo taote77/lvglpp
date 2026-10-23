@@ -3,9 +3,8 @@
 
 #include "core/sys/BaseActivity.h"
 #include "core/sys/Event.h"
-#include "core/widgets/LvText.h"
+#include "core/widgets/Label.h"
 #include "core/widgets/PushButton.h"
-#include "core/widgets/Text.h"
 #include <memory>
 
 using namespace lvglpp;
@@ -26,8 +25,8 @@ protected:
 private:
     lv_subject_t _subject;
 
-    std::shared_ptr<widgets::LvText>        _label;
-    std::shared_ptr<widgets::RoundedButton> _btn;
+    std::shared_ptr<widgets::Label>        _label;
+    std::shared_ptr<widgets::PushButton> _btn;
 };
 
 #endif // _HOME_H

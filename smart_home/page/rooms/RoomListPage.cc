@@ -18,7 +18,7 @@ void RoomListPage::onCreate(std::any arg) {
     BaseActivity::onCreate(arg);
     getRoot()->setBgColor(CLR_SURFACE);
 
-    _title = std::make_unique<w::LvText>("Rooms", CLR_ON_SURFACE, getRoot(), w::LvText::FontSize28Bold);
+    _title = std::make_unique<w::Label>("Rooms", CLR_ON_SURFACE, getRoot(), w::Label::FontSize28Bold);
     _title->setAlignment(LV_ALIGN_TOP_LEFT, 20, 10);
 
     struct RoomData { const char *name; const char *icon; int devices; float temp; float humidity; };

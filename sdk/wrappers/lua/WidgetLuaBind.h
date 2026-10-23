@@ -4,7 +4,7 @@
 #include <sol/sol.hpp>
 #include <memory>
 #include "core/widgets/Widget.h"
-#include "core/widgets/LvText.h"
+#include "core/widgets/Label.h"
 #include "core/widgets/Image.h"
 #include "core/widgets/PushButton.h"
 
@@ -13,7 +13,7 @@ namespace lvglpp::lua {
 class WidgetLuaBind {
 public:
     static void bindWidget(sol::state& lua);
-    static void bindLvText(sol::state& lua);
+    static void bindLabel(sol::state& lua);
     static void bindImage(sol::state& lua);
     static void bindPushButton(sol::state& lua);
     

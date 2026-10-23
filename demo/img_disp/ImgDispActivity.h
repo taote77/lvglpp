@@ -3,9 +3,8 @@
 
 #include "core/sys/BaseActivity.h"
 #include "core/sys/Event.h"
-#include "core/widgets/LvText.h"
+#include "core/widgets/Label.h"
 #include "core/widgets/PushButton.h"
-#include "core/widgets/Text.h"
 #include <core/widgets/GifImage.h>
 #include <core/widgets/Image.h>
 #include <memory>

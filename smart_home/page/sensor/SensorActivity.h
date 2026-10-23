@@ -5,7 +5,7 @@
 #include "core/sys/BaseActivity.h"
 #include "core/widgets/GifImage.h"
 #include "core/widgets/Image.h"
-#include "core/widgets/LvText.h"
+#include "core/widgets/Label.h"
 #include "core/widgets/PushButton.h"
 #include <memory>
 
@@ -25,14 +25,14 @@ protected:
     void onDestroy() override;
 
 private:
-    std::shared_ptr<widgets::LvText> wait_tips_label_;
+    std::shared_ptr<widgets::Label> wait_tips_label_;
 
     std::shared_ptr<widgets::GifImage> gif_icon_;
-    std::shared_ptr<widgets::LvText>   wait_tips_label_2_;
+    std::shared_ptr<widgets::Label>   wait_tips_label_2_;
 
     std::shared_ptr<widgets::Image> img_;
 
-    std::shared_ptr<widgets::RoundedButton> btn_;
+    std::shared_ptr<widgets::PushButton> btn_;
 
     std::unique_ptr<TempCurveDlg> force_dlg_;
 

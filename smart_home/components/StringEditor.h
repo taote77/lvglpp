@@ -37,7 +37,7 @@ public:
         text_ = str;
         draw(text_);
     }
-    void setMaxLen(int n)
+    void setMaxLength(int n)
     {
         max_len_ = n;
     }

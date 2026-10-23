@@ -16,12 +16,12 @@ GameStateDialog::GameStateDialog() : widgets::BaseDialog()
     // _bg_item->setBgColor(CLR_PRIMARY_BRIGHT);
     _bg_item->setOpacity(1);
 
-    _score_lbl = std::make_shared<lvglpp::widgets::LvText>("Game Over!!", CLR_SUCCESS_CONTAINER, _bg_item.get());
+    _score_lbl = std::make_shared<lvglpp::widgets::Label>("Game Over!!", CLR_SUCCESS_CONTAINER, _bg_item.get());
     _score_lbl->setOpacity(1);
 
     _score_lbl->setAlignment(LV_ALIGN_CENTER, -100, 0);
 
-    _btn = std::make_shared<widgets::RoundedButton>(200, 40, widgets::RoundedButton::ColorStyle::Gray, "Start", _bg_item.get());
+    _btn = std::make_shared<widgets::PushButton>(200, 40, widgets::PushButton::ColorStyle::Gray, "Start", _bg_item.get());
 
     _btn->setAlignmentTo(*_score_lbl, LV_ALIGN_LEFT_MID, 100, 0);
 }

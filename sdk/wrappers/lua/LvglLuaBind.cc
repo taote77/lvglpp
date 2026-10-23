@@ -118,7 +118,7 @@ void LvglLuaBind::registerLuaAPI()
 
     WidgetLuaBind::bindAll(*lua_state_);
 
-    lvgl["create_text"] = [this](const std::string &text, uint32_t color, sol::object parent_obj) -> std::shared_ptr<widgets::LvText> {
+    lvgl["create_text"] = [this](const std::string &text, uint32_t color, sol::object parent_obj) -> std::shared_ptr<widgets::Label> {
         widgets::Widget *parent = nullptr;
         if (parent_obj.is<widgets::Widget *>())
         {
@@ -128,11 +128,11 @@ void LvglLuaBind::registerLuaAPI()
             parent = parent_obj.as<std::shared_ptr<widgets::Widget>>().get();
         }
 
-        return std::make_shared<widgets::LvText>(text, color, parent, widgets::LvText::TextStyle::FontSize20, widgets::LvText::FontType::Auto);
+        return std::make_shared<widgets::Label>(text, color, parent, widgets::Label::TextStyle::FontSize20, widgets::Label::FontType::Auto);
     };
 
-    lvgl["create_text_ex"] = [this](const std::string &text, uint32_t color, sol::object parent_obj, widgets::LvText::TextStyle style,
-                                    widgets::LvText::FontType font_type) -> std::shared_ptr<widgets::LvText> {
+    lvgl["create_text_ex"] = [this](const std::string &text, uint32_t color, sol::object parent_obj, widgets::Label::TextStyle style,
+                                    widgets::Label::FontType font_type) -> std::shared_ptr<widgets::Label> {
         widgets::Widget *parent = nullptr;
         if (parent_obj.is<widgets::Widget *>())
         {
@@ -142,7 +142,7 @@ void LvglLuaBind::registerLuaAPI()
             parent = parent_obj.as<std::shared_ptr<widgets::Widget>>().get();
         }
 
-        return std::make_shared<widgets::LvText>(text, color, parent, style, font_type);
+        return std::make_shared<widgets::Label>(text, color, parent, style, font_type);
     };
 
     lvgl["create_image"] = [this](const std::string &path, sol::object parent_obj) -> std::shared_ptr<widgets::Image> {

@@ -161,7 +161,9 @@ public:
     Widget &setBorder(lv_coord_t width, uint32_t color);
 
     /// Apply a reusable style. The style is kept alive until the lv_obj dies.
-    Widget &applyStyle(const Style &style, lv_style_selector_t selector = LV_PART_MAIN | LV_STATE_DEFAULT);
+    Widget &applyStyle(const Style &style,
+                       lv_style_selector_t selector = static_cast<lv_style_selector_t>(LV_PART_MAIN)
+                                                        | static_cast<lv_style_selector_t>(LV_STATE_DEFAULT));
 
     /// Remove a style previously applied through applyStyle().
     Widget &removeStyle(const Style &style, lv_style_selector_t selector = 0);

@@ -18,7 +18,7 @@ void PanelPusleMod::updatePulseFilmLife(double inflator_worktime, int32_t tankty
             _progress->setVisible(false);
 
             _label_status->setText(lvTr("status_uninstalled"));
-            _label_status->setTextClr(CLR_WARNING);
+            _label_status->setTextColor(CLR_WARNING);
             _label_status->setVisible(true);
         } else
         {
@@ -66,19 +66,19 @@ PanelPusleMod::PanelPusleMod(Widget *parent) : Widget(parent)
     _icon1_mod_pulse = std::make_shared<widgets::Image>("image/36x36/mod_pulse.png", this);
     _icon1_mod_pulse->setPos(lv_coord_t(mod_item_edge_x), lv_coord_t(18));
 
-    _label_mod_pulse = std::make_shared<LvText>(lvTr("empty_info"), CLR_ON_SURFACE, this, LvText::FontSize22Bold);
+    _label_mod_pulse = std::make_shared<Label>(lvTr("empty_info"), CLR_ON_SURFACE, this, Label::FontSize22Bold);
     _label_mod_pulse->setPos(lv_coord_t(mod_item_edge_x + offset), lv_coord_t(18));
     // _label_mod_pulse->setAlignment(LV_ALIGN_BOTTOM_LEFT, 16, -12);
 
     _label_mod_pulse->setText(lvTr("electron_stack"));
     // _label_mod_pulse->setLongMode(1);
     constexpr int panel_text_max_length{270};
-    _label_mod_pulse->setLongMode(panel_text_max_length, LvText::LongMode::MiddleEllipsis);
+    _label_mod_pulse->setLongMode(panel_text_max_length, Label::LongMode::MiddleEllipsis);
 
-    _label_status = std::make_shared<LvText>(lvTr("empty_info"), CLR_ON_SURFACE, this, LvText::FontSize20);
+    _label_status = std::make_shared<Label>(lvTr("empty_info"), CLR_ON_SURFACE, this, Label::FontSize20);
     _label_status->setPos(mod_item_edge_x, 60);
 
-    _touch_area = std::make_shared<widgets::MouseArea>(this);
+    _touch_area = std::make_shared<widgets::TouchArea>(this);
     _touch_area->setSize(150, 92);
     _touch_area->setAlignment(LV_ALIGN_RIGHT_MID, 0, 0);
 

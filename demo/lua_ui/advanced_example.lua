@@ -19,8 +19,8 @@ header_bg:set_pos(0, 0)
 header_bg:set_bg_color(COLOR_GRAY)
 
 local title = lvgl.create_text_ex("Advanced UI Demo", COLOR_WHITE, header_bg,
-                                   lvgl.LvText.TextStyle.FontSize28Bold,
-                                   lvgl.LvText.FontType.Auto)
+                                   lvgl.Label.TextStyle.FontSize28Bold,
+                                   lvgl.Label.FontType.Auto)
 title:set_alignment(LV_ALIGN_CENTER, 0, 0)
 
 -- Create content area
@@ -28,8 +28,8 @@ local content_y = 80
 
 -- Section 1: Text Controls
 lvgl.create_text_ex("Text Controls", COLOR_BLUE, root,
-                      lvgl.LvText.TextStyle.FontSize24Bold,
-                      lvgl.LvText.FontType.Auto):set_pos(50, content_y)
+                      lvgl.Label.TextStyle.FontSize24Bold,
+                      lvgl.Label.FontType.Auto):set_pos(50, content_y)
 
 content_y = content_y + 40
 
@@ -37,21 +37,21 @@ local text1 = lvgl.create_text("Normal Text - FontSize20", COLOR_WHITE, root)
 text1:set_pos(50, content_y)
 
 local text2 = lvgl.create_text_ex("Bold Text - FontSize24Bold", COLOR_GREEN, root,
-                                    lvgl.LvText.TextStyle.FontSize24Bold,
-                                    lvgl.LvText.FontType.Auto)
+                                    lvgl.Label.TextStyle.FontSize24Bold,
+                                    lvgl.Label.FontType.Auto)
 text2:set_pos(50, content_y + 30)
 
 local text3 = lvgl.create_text_ex("Large Text - FontSize32Bold", COLOR_ORANGE, root,
-                                    lvgl.LvText.TextStyle.FontSize32Bold,
-                                    lvgl.LvText.FontType.Auto)
+                                    lvgl.Label.TextStyle.FontSize32Bold,
+                                    lvgl.Label.FontType.Auto)
 text3:set_pos(50, content_y + 70)
 
 content_y = content_y + 120
 
 -- Section 2: Button Styles
 lvgl.create_text_ex("Button Styles", COLOR_BLUE, root,
-                      lvgl.LvText.TextStyle.FontSize24Bold,
-                      lvgl.LvText.FontType.Auto):set_pos(50, content_y)
+                      lvgl.Label.TextStyle.FontSize24Bold,
+                      lvgl.Label.FontType.Auto):set_pos(50, content_y)
 
 content_y = content_y + 40
 
@@ -87,8 +87,8 @@ content_y = content_y + 60
 
 -- Section 3: Interactive Controls
 lvgl.create_text_ex("Interactive Controls", COLOR_BLUE, root,
-                      lvgl.LvText.TextStyle.FontSize24Bold,
-                      lvgl.LvText.FontType.Auto):set_pos(50, content_y)
+                      lvgl.Label.TextStyle.FontSize24Bold,
+                      lvgl.Label.FontType.Auto):set_pos(50, content_y)
 
 content_y = content_y + 40
 
@@ -163,8 +163,8 @@ content_y = content_y + 60
 
 -- Section 4: Action Buttons
 lvgl.create_text_ex("Actions", COLOR_BLUE, root,
-                      lvgl.LvText.TextStyle.FontSize24Bold,
-                      lvgl.LvText.FontType.Auto):set_pos(50, content_y)
+                      lvgl.Label.TextStyle.FontSize24Bold,
+                      lvgl.Label.FontType.Auto):set_pos(50, content_y)
 
 content_y = content_y + 40
 
@@ -220,8 +220,8 @@ status_bg:set_pos(0, 440)
 status_bg:set_bg_color(COLOR_GRAY)
 
 local status_text = lvgl.create_text_ex("Ready - Click controls to interact", COLOR_WHITE, status_bg,
-                                        lvgl.LvText.TextStyle.FontSize20,
-                                        lvgl.LvText.FontType.Auto)
+                                        lvgl.Label.TextStyle.FontSize20,
+                                        lvgl.Label.FontType.Auto)
 status_text:set_alignment(LV_ALIGN_CENTER, 0, 0)
 
 -- Update status when any control is clicked

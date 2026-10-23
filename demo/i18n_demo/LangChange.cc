@@ -3,7 +3,7 @@
 #include "config/color_sheet.h"
 #include "core/sys/StackView.h"
 #include "core/widgets/ButtonBuilder.h"
-#include "core/widgets/LvText.h"
+#include "core/widgets/Label.h"
 #include "session.h"
 #include <core/log/log.h>
 #include <fstream>
@@ -133,12 +133,12 @@ LangChangePage::~LangChangePage()
 
 void LangChangePage::onCreate(std::any arg)
 {
-    _label = std::make_unique<lvglpp::widgets::LvText>(("中文😀1"), CLR_SUCCESS_CONTAINER, getRoot(), lvglpp::widgets::LvText::TextStyle::FontSize20);
+    _label = std::make_unique<lvglpp::widgets::Label>(("中文😀1"), CLR_SUCCESS_CONTAINER, getRoot(), lvglpp::widgets::Label::TextStyle::FontSize20);
 
     _label->setAlignment(LV_ALIGN_CENTER, 0, -120);
 
     static auto createLabel = [this]() {
-        _label1 = std::make_unique<lvglpp::widgets::LvText>(lvglpp::LvTranslator::tr("ChangeLangWarnText"), CLR_SUCCESS_CONTAINER, getRoot());
+        _label1 = std::make_unique<lvglpp::widgets::Label>(lvglpp::LvTranslator::tr("ChangeLangWarnText"), CLR_SUCCESS_CONTAINER, getRoot());
 
         _label->setAlignment(LV_ALIGN_CENTER, 0, -140);
     };

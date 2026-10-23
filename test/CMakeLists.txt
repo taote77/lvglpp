@@ -42,7 +42,7 @@ add_executable(test_unit
     FontCoverageTests.cpp
     UiConfigTests.cpp
     RtlLayoutTests.cpp
-    LvTextTests.cpp
+    LabelTests.cpp
 )
 
 target_link_libraries(test_unit PRIVATE

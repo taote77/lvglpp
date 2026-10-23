@@ -3,9 +3,8 @@
 
 #include "core/sys/BaseActivity.h"
 #include "core/sys/Event.h"
-#include "core/widgets/LvText.h"
+#include "core/widgets/Label.h"
 #include "core/widgets/PushButton.h"
-#include "core/widgets/Text.h"
 #include <memory>
 
 using namespace lvglpp;
@@ -28,10 +27,10 @@ private:
 
     lv_timer_t *_timer;
 
-    std::shared_ptr<widgets::LvText> _label;
+    std::shared_ptr<widgets::Label> _label;
 
-    std::shared_ptr<widgets::RoundedButton> _btn_test;
-    std::shared_ptr<widgets::RoundedButton> _btn_simu;
+    std::shared_ptr<widgets::PushButton> _btn_test;
+    std::shared_ptr<widgets::PushButton> _btn_simu;
 
     int _count{0};
 };

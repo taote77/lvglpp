@@ -1,13 +1,13 @@
 #ifndef INTEXT_H
 #define INTEXT_H
 
-#include "core/widgets/LvText.h"
+#include "core/widgets/Label.h"
 
 namespace lvglpp::widgets {
 
 using namespace lvglpp::widgets;
 
-class I18nText : public LvText
+class I18nText : public Label
 {
 public:
     I18nText(const std::string &strMsg, uint32_t clr, Widget *parent, TextStyle style = TextStyle::FontSize20, FontType type = FontType::Auto);

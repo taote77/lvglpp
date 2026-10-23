@@ -2,8 +2,8 @@
 #define SMART_HOME_DEVICE_CARD_H
 
 #include "core/widgets/Widget.h"
-#include "core/widgets/LvText.h"
-#include "core/widgets/SwitchButton.h"
+#include "core/widgets/Label.h"
+#include "core/widgets/Switch.h"
 #include <functional>
 #include <memory>
 #include <string>
@@ -33,10 +33,10 @@ private:
     std::function<void(bool)> _toggleCb;
 
     std::unique_ptr<w::Widget>        _iconArea;
-    std::unique_ptr<w::LvText>          _iconLabel;
-    std::unique_ptr<w::LvText>          _nameLabel;
-    std::unique_ptr<w::LvText>          _subtitleLabel;
-    std::unique_ptr<w::SwitchButton>    _switch;
+    std::unique_ptr<w::Label>          _iconLabel;
+    std::unique_ptr<w::Label>          _nameLabel;
+    std::unique_ptr<w::Label>          _subtitleLabel;
+    std::unique_ptr<w::Switch>    _switch;
 };
 
 } // namespace lvglpp::ui::widgets

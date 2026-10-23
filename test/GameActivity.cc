@@ -58,26 +58,26 @@ void GameActivity::onDestroy()
 
 void GameActivity::init()
 {
-    _btn_up = std::make_shared<widgets::RoundedButton>(70, 40, widgets::RoundedButton::ColorStyle::Gray, "Up", getRoot());
+    _btn_up = std::make_shared<widgets::PushButton>(70, 40, widgets::PushButton::ColorStyle::Gray, "Up", getRoot());
     _btn_up->setPos(20, 100);
     _btn_up->setOnClickedListener([this]() -> void {
         //
         _game_state.direction = LV_DIR_TOP;
     });
 
-    _btn_left = std::make_shared<widgets::RoundedButton>(70, 40, widgets::RoundedButton::ColorStyle::Gray, "Left", getRoot());
+    _btn_left = std::make_shared<widgets::PushButton>(70, 40, widgets::PushButton::ColorStyle::Gray, "Left", getRoot());
     _btn_left->setPos(20, 220);
     _btn_left->setOnClickedListener([this]() -> void {
         //
         _game_state.direction = LV_DIR_LEFT;
     });
-    _btn_right = std::make_shared<widgets::RoundedButton>(70, 40, widgets::RoundedButton::ColorStyle::Gray, "Right", getRoot());
+    _btn_right = std::make_shared<widgets::PushButton>(70, 40, widgets::PushButton::ColorStyle::Gray, "Right", getRoot());
     _btn_right->setPos(720, 100);
     _btn_right->setOnClickedListener([this]() -> void {
         //
         _game_state.direction = LV_DIR_RIGHT;
     });
-    _btn_down = std::make_shared<widgets::RoundedButton>(70, 40, widgets::RoundedButton::ColorStyle::Gray, "Down", getRoot());
+    _btn_down = std::make_shared<widgets::PushButton>(70, 40, widgets::PushButton::ColorStyle::Gray, "Down", getRoot());
     _btn_down->setPos(720, 220);
 
     _btn_down->setOnClickedListener([this]() -> void {
