@@ -1,37 +1,43 @@
-#ifndef UI_FORM_DESIGN
-#define UI_FORM_DESIGN
+#ifndef LVGLPP_SMART_HOME_FORM_DESIGN_H
+#define LVGLPP_SMART_HOME_FORM_DESIGN_H
 
-/**************************************************************************
+/**
+ * Design-token facade used by smart_home.
+ *
+ * The values are no longer maintained here: design/tokens.json is the source
+ * of truth and sdk/tools/design/sync_tokens.py generates
+ * sdk/config/color_sheet.h (dark/base) and color_sheet_light.h (light).
+ */
 
-Class:定义全局变量。如颜色
+#include "config/color_sheet.h" // IWYU pragma: export
 
-Description:
+namespace form::design {
 
-**************************************************************************/
+using LColorType = uint32_t;
 
-#include "form_design_dark.h"
+enum class DesignStyle {
+    DARK    = 0,
+    SHALLOW = 1,
+};
 
-namespace form::design
+/**
+ * Legacy helper kept for existing call sites.
+ *
+ * The CLR_* constants are the dark/base palette. Widgets that must follow the
+ * runtime theme should use core::Theme::color(ColorRole) instead, or the
+ * explicit dark/light overload below.
+ */
+inline LColorType ThemeColor(LColorType color, DesignStyle = DesignStyle::DARK)
 {
+    return color;
+}
 
-    using LColorType = uint32_t;
+/// Explicit pair for theme-aware call sites.
+inline LColorType ThemeColor(LColorType dark, LColorType light, DesignStyle style)
+{
+    return style == DesignStyle::DARK ? dark : light;
+}
 
-    enum class DesignStyle
-    {
-        DARK = 0,
-        SHALLOW = 1,
-    };
+} // namespace form::design
 
-    static LColorType ThemeColor(LColorType color, DesignStyle style = DesignStyle::DARK)
-    {
-        if (style == DesignStyle::DARK)
-        {
-            return color;
-        }
-
-        return color;
-    };
-
-}// namespace form::design
-
-#endif// UI_FORM_DESIGN
+#endif // LVGLPP_SMART_HOME_FORM_DESIGN_H

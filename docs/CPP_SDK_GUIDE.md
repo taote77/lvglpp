@@ -263,11 +263,30 @@ item->applyStyle(theme.focusStyle(), LV_PART_MAIN | LV_STATE_FOCUS_KEY);
 ```
 
 - 语义色角色见 `core/style/Theme.h` 的 `ColorRole`。
-- 深色 palette 与既有 `config/color_sheet.h` 保持一致；浅色 palette 为新增。
+- 深色/浅色 palette 都来自设计令牌，不再手写：`design/tokens.json` 是唯一来源，
+  `sdk/tools/design/sync_tokens.py generate` 生成 `sdk/config/color_sheet.h`
+  （深色/基础值）与 `color_sheet_light.h`（浅色值）。
+- 设计令牌可从 Figma 同步（Tokens Studio 导出或 Figma Variables REST），
+  详见 `design/README.md`。生成头文件已提交，普通构建不依赖 Python 或网络。
 - **主题切换不回溯已创建控件**；请在构建 UI 之前设置模式。
 - `PushButton` 的配色由 `Theme::buttonPalette()` 驱动，仍保留 `ColorStyle` 枚举。
 
-### 5.3 状态
+### 5.3 设计令牌
+
+```bash
+# 修改 design/tokens.json 后重新生成
+python3 -I sdk/tools/design/sync_tokens.py generate
+
+# CI / 本地检查生成头文件是否过期
+cmake --build build --target design-check
+```
+
+- `form::design::CLR_*` 是深色/基础值；`form::design::light::CLR_*` 是浅色值。
+- 需要跟随运行时主题的控件请使用 `core::Theme::color(ColorRole)`。
+- 不要直接编辑生成的两个头文件；新增角色时同步更新 `Theme.cpp` 的 `kPalette`
+  （`static_assert` 会在漏掉角色时编译失败）。
+
+### 5.4 状态
 
 ```cpp
 item->setState(LV_STATE_CHECKED, true);

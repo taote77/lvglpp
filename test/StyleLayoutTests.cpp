@@ -97,6 +97,29 @@ TEST(Theme_mode_switches_palette)
     return true;
 }
 
+TEST(Theme_light_tokens_cover_semantic_roles)
+{
+    Theme &theme = Theme::instance();
+
+    theme.setMode(ThemeMode::Light);
+    CHECK_EQ(theme.hex(ColorRole::Warning), 0xED6C02);
+    CHECK_EQ(theme.hex(ColorRole::Info), 0x0288D1);
+    CHECK_EQ(theme.hex(ColorRole::SurfaceCanvas), 0xE7EBF2);
+    CHECK_EQ(theme.hex(ColorRole::ButtonRedPressed), 0x9A1F1F);
+    CHECK_EQ(theme.hex(ColorRole::ButtonDarkGrayBg), 0xD8DDE9);
+    // Disabled label and disabled button fill are distinct roles.
+    CHECK_EQ(theme.hex(ColorRole::Disabled), 0xB0B7C3);
+    CHECK_EQ(theme.hex(ColorRole::ButtonDisabled), 0xCFD4DF);
+
+    theme.setMode(ThemeMode::Dark);
+    CHECK_EQ(theme.hex(ColorRole::Warning), 0xF5A34A);
+    CHECK_EQ(theme.hex(ColorRole::Info), 0x34BAEF);
+    CHECK_EQ(theme.hex(ColorRole::SurfaceCanvas), 0x444E5B);
+    CHECK_EQ(theme.hex(ColorRole::ButtonRedPressed), 0x661616);
+    CHECK_EQ(theme.hex(ColorRole::ButtonDarkGrayBg), 0x485479);
+    return true;
+}
+
 TEST(Theme_focus_style_applies_outline)
 {
     Widget item;

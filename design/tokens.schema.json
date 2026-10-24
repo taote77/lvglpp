@@ -1,0 +1,96 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "LVGL++ design tokens",
+  "description": "Source of truth for generated colour/dimension headers.",
+  "type": "object",
+  "required": ["version", "colors"],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "version": {
+      "const": 1
+    },
+    "meta": {
+      "type": "object",
+      "properties": {
+        "figma": {
+          "type": "object",
+          "properties": {
+            "fileKey": {
+              "type": "string"
+            },
+            "lastSyncedAt": {
+              "type": ["string", "null"]
+            },
+            "themeMap": {
+              "type": "object",
+              "properties": {
+                "dark": {
+                  "type": "string"
+                },
+                "light": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "colors": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[A-Z][A-Z0-9_]*$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "required": ["dark"],
+        "properties": {
+          "dark": {
+            "$ref": "#/definitions/color"
+          },
+          "light": {
+            "$ref": "#/definitions/color"
+          },
+          "figma": {
+            "type": "string",
+            "description": "Optional Figma token path override used for import matching."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "dimensions": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[A-Z][A-Z0-9_]*$"
+      },
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "opacity": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[A-Z][A-Z0-9_]*$"
+      },
+      "additionalProperties": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+      }
+    }
+  },
+  "definitions": {
+    "color": {
+      "type": "string",
+      "pattern": "^#[0-9A-Fa-f]{6}$"
+    }
+  },
+  "additionalProperties": false
+}

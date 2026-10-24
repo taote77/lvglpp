@@ -52,3 +52,15 @@ endif ()
 add_subdirectory(smart_home)
 
 add_subdirectory(test)
+
+# Design-token headers are committed; this target verifies they match
+# design/tokens.json. Run it in CI or after editing the token file.
+find_package(Python3 COMPONENTS Interpreter QUIET)
+if (Python3_Interpreter_FOUND)
+    add_custom_target(design-check
+        COMMAND ${Python3_EXECUTABLE} -I ${CMAKE_CURRENT_LIST_DIR}/sdk/tools/design/sync_tokens.py generate --check
+        COMMENT "Checking design tokens and generated C++ headers"
+        VERBATIM)
+else ()
+    message(STATUS "Python3 not found: design-check target is disabled")
+endif ()

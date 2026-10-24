@@ -1,12 +1,73 @@
 #include "Theme.h"
 
 #include "config/color_sheet.h"
+#include "config/color_sheet_light.h"
 
 namespace lvglpp::core {
 
 namespace {
 
 using namespace form::design;
+namespace light = form::design::light;
+
+struct PaletteEntry {
+    ColorRole role;
+    uint32_t  dark;
+    uint32_t  light;
+};
+
+// Both themes are defined side by side so it is impossible to add a role to
+// one palette and forget the other.
+constexpr PaletteEntry kPalette[] = {
+    {ColorRole::Primary, CLR_PRIMARY, light::CLR_PRIMARY},
+    {ColorRole::OnPrimary, CLR_ON_PRIMARY, light::CLR_ON_PRIMARY},
+    {ColorRole::PrimaryContainer, CLR_PRIMARY_CONTAINER, light::CLR_PRIMARY_CONTAINER},
+    {ColorRole::OnPrimaryContainer, CLR_ON_PRIMARY_CONTAINER, light::CLR_ON_PRIMARY_CONTAINER},
+
+    {ColorRole::Secondary, CLR_SECONDARY, light::CLR_SECONDARY},
+    {ColorRole::OnSecondary, CLR_ON_SECONDARY, light::CLR_ON_SECONDARY},
+    {ColorRole::SecondaryContainer, CLR_SECONDARY_CONTAINER, light::CLR_SECONDARY_CONTAINER},
+    {ColorRole::OnSecondaryContainer, CLR_ON_SECONDARY_CONTAINER, light::CLR_ON_SECONDARY_CONTAINER},
+
+    {ColorRole::Surface, CLR_SURFACE, light::CLR_SURFACE},
+    {ColorRole::SurfaceDim, CLR_SURFACE_DIM, light::CLR_SURFACE_DIM},
+    {ColorRole::SurfaceCanvas, CLR_SURFACE_CANVAS, light::CLR_SURFACE_CANVAS},
+    {ColorRole::SurfaceContainer, CLR_SURFACE_CONTAINER, light::CLR_SURFACE_CONTAINER},
+    {ColorRole::SurfaceContainerHigh, CLR_SURFACE_CONTAINER_HIGH, light::CLR_SURFACE_CONTAINER_HIGH},
+    {ColorRole::SurfaceContainerHighest, CLR_SURFACE_CONTAINER_HIGHEST, light::CLR_SURFACE_CONTAINER_HIGHEST},
+
+    {ColorRole::OnSurface, CLR_ON_SURFACE, light::CLR_ON_SURFACE},
+    {ColorRole::OnSurfaceVariant, CLR_ON_SURFACE_VARIANT_1, light::CLR_ON_SURFACE_VARIANT_1},
+    {ColorRole::Outline, CLR_OUTLINE, light::CLR_OUTLINE},
+    {ColorRole::OutlineVariant, CLR_OUTLINE_VARIANT, light::CLR_OUTLINE_VARIANT},
+
+    {ColorRole::Error, CLR_ERROR, light::CLR_ERROR},
+    {ColorRole::OnError, CLR_ON_ERROR, light::CLR_ON_ERROR},
+    {ColorRole::Warning, CLR_WARNING, light::CLR_WARNING},
+    {ColorRole::OnWarning, CLR_ON_WARNING, light::CLR_ON_WARNING},
+    {ColorRole::Success, CLR_SUCCESS, light::CLR_SUCCESS},
+    {ColorRole::OnSuccess, CLR_ON_SUCCESS, light::CLR_ON_SUCCESS},
+    {ColorRole::Info, CLR_INFO, light::CLR_INFO},
+
+    {ColorRole::FocusRing, CLR_PRIMARY, light::CLR_PRIMARY},
+    {ColorRole::Disabled, CLR_PRIMARY_DIS_BG, light::CLR_PRIMARY_DIS_BG},
+    {ColorRole::DialogMask, CLR_DIALOG_BG_MASK, light::CLR_DIALOG_BG_MASK},
+
+    {ColorRole::ButtonBlue, CLR_WIDGET_BUTTON_BLUE, light::CLR_WIDGET_BUTTON_BLUE},
+    {ColorRole::ButtonBluePressed, CLR_WIDGET_BUTTON_BLUE_DIS, light::CLR_WIDGET_BUTTON_BLUE_DIS},
+    {ColorRole::ButtonDisabled, CLR_SURFACE_DIS_CONTAINER_1, light::CLR_SURFACE_DIS_CONTAINER_1},
+    {ColorRole::ButtonGrayPressed, CLR_WIDGET_BUTTON_GRAY_DIS, light::CLR_WIDGET_BUTTON_GRAY_DIS},
+    {ColorRole::ButtonDarkBg, CLR_PRIMARY_DARK_BG, light::CLR_PRIMARY_DARK_BG},
+    {ColorRole::ButtonDarkPressed, CLR_BUTTON_DARK_PRESSED, light::CLR_BUTTON_DARK_PRESSED},
+    {ColorRole::ButtonDarkDisabled, CLR_BUTTON_DARK_DISABLED, light::CLR_BUTTON_DARK_DISABLED},
+    {ColorRole::ButtonLightBlueBg, CLR_BUTTON_LIGHT_BLUE_BG, light::CLR_BUTTON_LIGHT_BLUE_BG},
+    {ColorRole::ButtonLightBluePressed, CLR_BUTTON_LIGHT_BLUE_PRESSED, light::CLR_BUTTON_LIGHT_BLUE_PRESSED},
+    {ColorRole::ButtonRedBg, CLR_WARNING_DARK, light::CLR_WARNING_DARK},
+    {ColorRole::ButtonRedPressed, CLR_BUTTON_RED_PRESSED, light::CLR_BUTTON_RED_PRESSED},
+    {ColorRole::ButtonDarkGrayBg, CLR_BUTTON_DARK_GRAY_BG, light::CLR_BUTTON_DARK_GRAY_BG},
+};
+
+static_assert(sizeof(kPalette) / sizeof(kPalette[0]) == static_cast<size_t>(ColorRole::Count), "every ColorRole needs dark and light design tokens");
 
 uint32_t &at(std::array<uint32_t, static_cast<size_t>(ColorRole::Count)> &palette, ColorRole role)
 {
@@ -90,102 +151,10 @@ const Style &Theme::buttonBaseStyle() const
 
 void Theme::rebuild()
 {
-    if (mode_ == ThemeMode::Dark)
+    const bool is_dark = mode_ == ThemeMode::Dark;
+    for (const auto &entry : kPalette)
     {
-        at(palette_, ColorRole::Primary)            = CLR_PRIMARY;
-        at(palette_, ColorRole::OnPrimary)          = CLR_ON_PRIMARY;
-        at(palette_, ColorRole::PrimaryContainer)   = CLR_PRIMARY_CONTAINER;
-        at(palette_, ColorRole::OnPrimaryContainer) = CLR_ON_PRIMARY_CONTAINER;
-
-        at(palette_, ColorRole::Secondary)            = CLR_SECONDARY;
-        at(palette_, ColorRole::OnSecondary)          = CLR_ON_SECONDARY;
-        at(palette_, ColorRole::SecondaryContainer)   = CLR_SECONDARY_CONTAINER;
-        at(palette_, ColorRole::OnSecondaryContainer) = CLR_ON_SECONDARY_CONTAINER;
-
-        at(palette_, ColorRole::Surface)                 = CLR_SURFACE;
-        at(palette_, ColorRole::SurfaceDim)              = CLR_SURFACE_DIM;
-        at(palette_, ColorRole::SurfaceCanvas)           = 0x444E5B;
-        at(palette_, ColorRole::SurfaceContainer)        = CLR_SURFACE_CONTAINER;
-        at(palette_, ColorRole::SurfaceContainerHigh)    = CLR_SURFACE_CONTAINER_HIGH;
-        at(palette_, ColorRole::SurfaceContainerHighest) = CLR_SURFACE_CONTAINER_HIGHEST;
-
-        at(palette_, ColorRole::OnSurface)        = CLR_ON_SURFACE;
-        at(palette_, ColorRole::OnSurfaceVariant) = CLR_ON_SURFACE_VARIANT_1;
-        at(palette_, ColorRole::Outline)          = CLR_OUTLINE;
-        at(palette_, ColorRole::OutlineVariant)   = CLR_OUTLINE_VARIANT;
-
-        at(palette_, ColorRole::Error)     = CLR_ERROR;
-        at(palette_, ColorRole::OnError)   = CLR_ON_ERROR;
-        at(palette_, ColorRole::Warning)   = CLR_WARNING;
-        at(palette_, ColorRole::OnWarning) = CLR_ON_WARNING;
-        at(palette_, ColorRole::Success)   = CLR_SUCCESS;
-        at(palette_, ColorRole::OnSuccess) = CLR_ON_SUCCESS;
-        at(palette_, ColorRole::Info)      = CLR_INFO;
-
-        at(palette_, ColorRole::FocusRing)  = CLR_PRIMARY;
-        at(palette_, ColorRole::Disabled)   = CLR_PRIMARY_DIS_BG;
-        at(palette_, ColorRole::DialogMask) = CLR_DIALOG_BG_MASK;
-
-        at(palette_, ColorRole::ButtonBlue)             = CLR_WIDGET_BUTTON_BLUE;
-        at(palette_, ColorRole::ButtonBluePressed)      = CLR_WIDGET_BUTTON_BLUE_DIS;
-        at(palette_, ColorRole::ButtonDisabled)         = CLR_SURFACE_DIS_CONTAINER_1;
-        at(palette_, ColorRole::ButtonGrayPressed)      = CLR_WIDGET_BUTTON_GRAY_DIS;
-        at(palette_, ColorRole::ButtonDarkBg)           = CLR_PRIMARY_DARK_BG;
-        at(palette_, ColorRole::ButtonDarkPressed)      = CLR_PRIMARY_BLACK;
-        at(palette_, ColorRole::ButtonDarkDisabled)     = CLR_PRIMARY_BLACK_HOVER;
-        at(palette_, ColorRole::ButtonLightBlueBg)      = 0xF7F9FF;
-        at(palette_, ColorRole::ButtonLightBluePressed) = 0xEAEFFF;
-        at(palette_, ColorRole::ButtonRedBg)            = CLR_WARNING_DARK;
-        at(palette_, ColorRole::ButtonRedPressed)       = 0x661616;
-        at(palette_, ColorRole::ButtonDarkGrayBg)       = CLR_SECONDARY_CONTAINER;
-    } else
-    {
-        at(palette_, ColorRole::Primary)            = 0x3760EA;
-        at(palette_, ColorRole::OnPrimary)          = 0xFFFFFF;
-        at(palette_, ColorRole::PrimaryContainer)   = 0xD5DDFB;
-        at(palette_, ColorRole::OnPrimaryContainer) = 0x11225D;
-
-        at(palette_, ColorRole::Secondary)            = 0x5A6070;
-        at(palette_, ColorRole::OnSecondary)          = 0xFFFFFF;
-        at(palette_, ColorRole::SecondaryContainer)   = 0xE6EAF8;
-        at(palette_, ColorRole::OnSecondaryContainer) = 0x191D2A;
-
-        at(palette_, ColorRole::Surface)                 = 0xF7F9FF;
-        at(palette_, ColorRole::SurfaceDim)              = 0xE6EAF8;
-        at(palette_, ColorRole::SurfaceCanvas)           = 0xE7EBF2;
-        at(palette_, ColorRole::SurfaceContainer)        = 0xEEF1F8;
-        at(palette_, ColorRole::SurfaceContainerHigh)    = 0xE2E6EF;
-        at(palette_, ColorRole::SurfaceContainerHighest) = 0xD8DDE9;
-
-        at(palette_, ColorRole::OnSurface)        = 0x161616;
-        at(palette_, ColorRole::OnSurfaceVariant) = 0x4A5060;
-        at(palette_, ColorRole::Outline)          = 0xC0C1D0;
-        at(palette_, ColorRole::OutlineVariant)   = 0xD5D8E2;
-
-        at(palette_, ColorRole::Error)     = 0xD32F2F;
-        at(palette_, ColorRole::OnError)   = 0xFFFFFF;
-        at(palette_, ColorRole::Warning)   = 0xED6C02;
-        at(palette_, ColorRole::OnWarning) = 0xFFFFFF;
-        at(palette_, ColorRole::Success)   = 0x2E7D32;
-        at(palette_, ColorRole::OnSuccess) = 0xFFFFFF;
-        at(palette_, ColorRole::Info)      = 0x0288D1;
-
-        at(palette_, ColorRole::FocusRing)  = 0x3760EA;
-        at(palette_, ColorRole::Disabled)   = 0xB0B7C3;
-        at(palette_, ColorRole::DialogMask) = 0x1A1D22;
-
-        at(palette_, ColorRole::ButtonBlue)             = 0x3760EA;
-        at(palette_, ColorRole::ButtonBluePressed)      = 0x2448B8;
-        at(palette_, ColorRole::ButtonDisabled)         = 0xCFD4DF;
-        at(palette_, ColorRole::ButtonGrayPressed)      = 0xB8BFCC;
-        at(palette_, ColorRole::ButtonDarkBg)           = 0xE2E6EF;
-        at(palette_, ColorRole::ButtonDarkPressed)      = 0xC9CFDA;
-        at(palette_, ColorRole::ButtonDarkDisabled)     = 0xA6ADB8;
-        at(palette_, ColorRole::ButtonLightBlueBg)      = 0xF7F9FF;
-        at(palette_, ColorRole::ButtonLightBluePressed) = 0xEAEFFF;
-        at(palette_, ColorRole::ButtonRedBg)            = 0xD32F2F;
-        at(palette_, ColorRole::ButtonRedPressed)       = 0x9A1F1F;
-        at(palette_, ColorRole::ButtonDarkGrayBg)       = 0xD8DDE9;
+        at(palette_, entry.role) = is_dark ? entry.dark : entry.light;
     }
 
     // ---- button palettes ----
@@ -214,7 +183,7 @@ void Theme::rebuild()
     light_blue.normal_bg      = hex(ColorRole::ButtonLightBlueBg);
     light_blue.pressed_bg     = hex(ColorRole::ButtonLightBluePressed);
     light_blue.disabled_bg    = hex(ColorRole::ButtonLightBlueBg);
-    light_blue.label_color    = 0x3760EA;
+    light_blue.label_color    = CLR_PRIMARY_BLUE;
     light_blue.label_disabled = hex(ColorRole::Disabled);
 
     auto &black_border          = buttons_[static_cast<size_t>(ButtonStyle::BlackBorder)];
@@ -223,7 +192,7 @@ void Theme::rebuild()
     black_border.pressed_bg     = 0;
     black_border.disabled_bg    = 0;
     black_border.border_color   = hex(ColorRole::Outline);
-    black_border.label_color    = mode_ == ThemeMode::Dark ? 0x161616 : hex(ColorRole::OnSurface);
+    black_border.label_color    = CLR_TEXT_PRIMARY_BLACK;
     black_border.label_disabled = hex(ColorRole::Disabled);
 
     auto &red          = buttons_[static_cast<size_t>(ButtonStyle::Red)];
@@ -246,7 +215,7 @@ void Theme::rebuild()
 
     card_style_ = std::make_unique<Style>();
     card_style_->bgColor(hex(ColorRole::SurfaceContainer));
-    card_style_->radius(16);
+    card_style_->radius(RADIUS_16);
     card_style_->border(2, hex(ColorRole::OutlineVariant));
 
     dialog_style_ = std::make_unique<Style>();
@@ -254,7 +223,7 @@ void Theme::rebuild()
     dialog_style_->radius(0);
 
     button_base_style_ = std::make_unique<Style>();
-    button_base_style_->radius(8);
+    button_base_style_->radius(RADIUS_8);
 }
 
 } // namespace lvglpp::core

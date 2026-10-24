@@ -84,8 +84,6 @@ target_sources(${PROJECT_NAME} PRIVATE
     i18n/translations/lv_i18n.c
 
     # Theme
-    theme/theme_keeper.h
-    theme/theme_keeper.cc
     theme/form_design.h
 )
 
