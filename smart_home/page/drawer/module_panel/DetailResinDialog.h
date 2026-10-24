@@ -1,7 +1,7 @@
 #ifndef MODULE_DETAIL_RESIN_DIALOG_H
 #define MODULE_DETAIL_RESIN_DIALOG_H
 
-#include "core/widgets/BaseDialog.h"
+#include "core/widgets/Dialog.h"
 #include "core/widgets/Label.h"
 #include "core/widgets/PushButton.h"
 #include "core/widgets/Switch.h"
@@ -12,7 +12,7 @@ using namespace lvglpp::widgets;
 using ChangeDirCB  = std::function<void(const std::string &)>;
 using HandleCancel = std::function<void(const std::string &)>;
 
-class ModuleDetailResinDialog : public BaseDialog
+class ModuleDetailResinDialog : public Dialog
 {
 public:
     explicit ModuleDetailResinDialog(const std::string &resin_name, bool mod_switch);

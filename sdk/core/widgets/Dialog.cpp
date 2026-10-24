@@ -1,4 +1,4 @@
-#include "BaseDialog.h"
+#include "Dialog.h"
 #include "config/color_sheet.h"
 #include "core/base/LvObjFactory.h"
 #include "core/sys/InputManager.h"
@@ -6,7 +6,7 @@
 
 namespace lvglpp::widgets {
 
-BaseDialog::BaseDialog(Layer layer) :
+Dialog::Dialog(Layer layer) :
     background_(std::make_unique<Widget>(layer == Layer::System ? tools::LvObjFactory::createLvglSysDialog
                                                                : tools::LvObjFactory::createLvglDialog))
 {
@@ -23,17 +23,17 @@ BaseDialog::BaseDialog(Layer layer) :
 #endif
 }
 
-BaseDialog::~BaseDialog()
+Dialog::~Dialog()
 {
     close();
 }
 
-Widget *BaseDialog::getRoot() const
+Widget *Dialog::getRoot() const
 {
     return background_.get();
 }
 
-void BaseDialog::open()
+void Dialog::open()
 {
     if (!background_ || background_->isVisible())
     {
@@ -48,7 +48,7 @@ void BaseDialog::open()
     }
 }
 
-void BaseDialog::close()
+void Dialog::close()
 {
     if (focus_scope_ != 0)
     {
@@ -62,12 +62,12 @@ void BaseDialog::close()
     }
 }
 
-bool BaseDialog::isOpen() const
+bool Dialog::isOpen() const
 {
     return background_ && background_->isVisible();
 }
 
-void BaseDialog::setOnBackgroundClicked(const std::function<void()> &func)
+void Dialog::setOnBackgroundClicked(const std::function<void()> &func)
 {
     if (background_)
     {
@@ -76,7 +76,7 @@ void BaseDialog::setOnBackgroundClicked(const std::function<void()> &func)
     }
 }
 
-void BaseDialog::setBackgroundOpacity(double opacity)
+void Dialog::setBackgroundOpacity(double opacity)
 {
     if (background_)
     {

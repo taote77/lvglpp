@@ -3,7 +3,7 @@
 
 // #include "DetailPulseTrayDialog.h"
 #include "components/progress_bar.h"
-#include "core/widgets/BaseDialog.h"
+#include "core/widgets/Dialog.h"
 #include "core/widgets/Widget.h"
 #include "core/widgets/Label.h"
 #include "core/widgets/Image.h"
@@ -23,7 +23,7 @@ using namespace wrapper::widgets;
 using ChangeDirCB  = std::function<void(const std::string &)>;
 using HandleCancel = std::function<void(const std::string &)>;
 
-class ModuleDetailPulseTrayDialog : public BaseDialog
+class ModuleDetailPulseTrayDialog : public Dialog
 {
 public:
     explicit ModuleDetailPulseTrayDialog(const double progress, const int status);

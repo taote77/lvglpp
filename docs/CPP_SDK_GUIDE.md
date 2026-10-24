@@ -55,7 +55,7 @@ cmake -S . -B build-static -DLVGLPP_ENABLE_ROTATION=OFF -DLVGLPP_ENABLE_RTL=OFF
 - `Widget` 包装对象是子对象的**非拥有句柄**：子包装对象可以在任意时刻销毁，LVGL 对象仍由父级持有。
 - 只有以下包装对象在析构时删除自己的 `lv_obj`：
   - 没有逻辑父对象的顶层对象（Activity root）；
-  - creator 实际把对象挂到 `lv_layer_top()/lv_layer_sys()` 的层对象（`BaseDialog` 根、`ToastImpl` 等）；
+  - creator 实际把对象挂到 `lv_layer_top()/lv_layer_sys()` 的层对象（`Dialog` 根、`ToastImpl` 等）；
   - 通过 `ownsLvglObject()` 可查询是否为拥有者。
 - `Widget` 禁止拷贝与移动。
 
@@ -157,7 +157,7 @@ auto conn = core::Object::connect(sender, "changed", receiver, [] { ... });
 
 - `BaseActivity::onResume()` 会为 Activity root 压入焦点作用域；
 - `BaseActivity::onPause()/onDestroy()` 弹出；
-- `BaseDialog::open()` 压入模态作用域，`close()` 弹出；ESC 默认关闭对话框；
+- `Dialog::open()` 压入模态作用域，`close()` 弹出；ESC 默认关闭对话框；
 - Activity 的返回导航由应用自行绑定（本 SDK 不默认 pop 页面）。
 
 ### 4.2 控件侧 API
@@ -325,7 +325,7 @@ bool portrait = cfg.isPortrait();
 
 ## 7. 控件
 
-原有控件：`Label`、`PushButton`、`Image`、`GifImage`、`LottieCanvas`、`QrCode`、`Video`、`Arc`、`ProgressBar`、`Slider`、`SpinBox`、`CheckBox`、`Switch`、`Dropdown`、`Roller`、`TextArea`、`Keyboard`、`Led`、`Line`、`Chart`、`Table`、`Calendar`、`TabView`、`ListView`、`PageView`、`PageIndicator`、`Loader`（配合 `LoaderComponent`）、`TouchArea`、`BaseDialog`、`Toast` 等。
+原有控件：`Label`、`PushButton`、`Image`、`GifImage`、`LottieCanvas`、`QrCode`、`Video`、`Arc`、`ProgressBar`、`Slider`、`SpinBox`、`CheckBox`、`Switch`、`Dropdown`、`Roller`、`TextArea`、`Keyboard`、`Led`、`Line`、`Chart`、`Table`、`Calendar`、`TabView`、`ListView`、`PageView`、`PageIndicator`、`Loader`（配合 `LoaderComponent`）、`TouchArea`、`Dialog`、`Toast` 等。
 
 所有控件都继承 `widgets::Widget`（原 `BaseItem`）。常用现代命名：
 

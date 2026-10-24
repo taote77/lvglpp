@@ -7,7 +7,7 @@ namespace lvglpp {
 using namespace tools;
 using namespace form::design;
 
-GameStateDialog::GameStateDialog() : widgets::BaseDialog()
+GameStateDialog::GameStateDialog() : widgets::Dialog()
 {
     this->getRoot()->setOpacity(1);
 
@@ -33,7 +33,7 @@ GameStateDialog::GameStateDialog() : widgets::BaseDialog()
 
 void GameStateDialog::open()
 {
-    BaseDialog::open();
+    Dialog::open();
 }
 
 }; // namespace lvglpp

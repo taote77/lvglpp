@@ -1,7 +1,7 @@
 #ifndef REBOOTCONFIRM_DIALOG_H
 #define REBOOTCONFIRM_DIALOG_H
 
-#include "core/widgets/BaseDialog.h"
+#include "core/widgets/Dialog.h"
 #include "core/widgets/Label.h"
 #include "core/widgets/PushButton.h"
 
@@ -11,7 +11,7 @@ using namespace lvglpp::widgets;
 using ChangeDirCB  = std::function<void(const std::string &)>;
 using HandleCancel = std::function<void(const std::string &)>;
 
-class RebootConfirmDialog : public BaseDialog
+class RebootConfirmDialog : public Dialog
 {
 public:
     RebootConfirmDialog();

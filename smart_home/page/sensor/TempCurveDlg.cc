@@ -13,7 +13,7 @@ constexpr int trough_pos_y = 395;
 
 using namespace form::design;
 
-TempCurveDlg::TempCurveDlg() : BaseDialog()
+TempCurveDlg::TempCurveDlg() : Dialog()
 {
     init();
 }

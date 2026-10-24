@@ -14,7 +14,7 @@ constexpr uint32_t   DIALOG_CONTENT_WIDTH{560};
 constexpr uint32_t   DIALOG_CONTENT_HEIGHT{300};
 constexpr lv_coord_t DIALOG_CONTENT_RADIUS{20};
 
-ModuleDetailPulseTrayDialog::ModuleDetailPulseTrayDialog(const double progress, const int status) : BaseDialog(BaseDialog::Layer::System), _change_dir_cb(nullptr), _cancel_cb(nullptr)
+ModuleDetailPulseTrayDialog::ModuleDetailPulseTrayDialog(const double progress, const int status) : Dialog(Dialog::Layer::System), _change_dir_cb(nullptr), _cancel_cb(nullptr)
 {
     _dialog_bg_item = std::make_shared<Widget>(this->getRoot());
     _dialog_bg_item->setSize(DIALOG_CONTENT_WIDTH, DIALOG_CONTENT_HEIGHT);
@@ -212,12 +212,12 @@ void ModuleDetailPulseTrayDialog::UpdatePulseTrayInfo(const double progress, con
 
 void ModuleDetailPulseTrayDialog::open()
 {
-    BaseDialog::open();
+    Dialog::open();
 }
 
 void ModuleDetailPulseTrayDialog::close()
 {
-    BaseDialog::close();
+    Dialog::close();
 }
 
 void PanelPulseTray::updateTrayInfo(const int32_t peeled_count, const int32_t resin_level, const int32_t tank_type, const int32_t tank_state, const bool sensor_resin,

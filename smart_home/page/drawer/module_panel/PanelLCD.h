@@ -2,7 +2,7 @@
 #define PANEL_LCD_H
 
 #include "components/progress_bar.h"
-#include "core/widgets/BaseDialog.h"
+#include "core/widgets/Dialog.h"
 #include "core/widgets/Label.h"
 #include "core/widgets/Image.h"
 #include "core/widgets/TouchArea.h"
@@ -21,7 +21,7 @@ using namespace wrapper::widgets;
 using ChangeDirCB  = std::function<void(const std::string &)>;
 using HandleCancel = std::function<void(const std::string &)>;
 
-class LCDInfoCard : public BaseDialog
+class LCDInfoCard : public Dialog
 {
 public:
     explicit LCDInfoCard(const double expose_time, const int32_t status);

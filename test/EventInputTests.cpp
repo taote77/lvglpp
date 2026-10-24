@@ -1,6 +1,6 @@
 #include "TestFramework.h"
 #include "core/sys/InputManager.h"
-#include "core/widgets/BaseDialog.h"
+#include "core/widgets/Dialog.h"
 #include "core/widgets/Widget.h"
 #include "core/widgets/KeyEvent.h"
 #include "lvgl.h"
@@ -14,10 +14,10 @@ using namespace lvglpp::widgets;
 
 namespace {
 
-class TestDialog : public BaseDialog
+class TestDialog : public Dialog
 {
 public:
-    TestDialog() : BaseDialog(BaseDialog::Layer::Application)
+    TestDialog() : Dialog(Dialog::Layer::Application)
     {}
 
     ~TestDialog() override = default;

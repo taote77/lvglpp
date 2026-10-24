@@ -1,7 +1,7 @@
 #ifndef TEMP_CURVE_DLG_H
 #define TEMP_CURVE_DLG_H
 
-#include "core/widgets/BaseDialog.h"
+#include "core/widgets/Dialog.h"
 #include "core/widgets/Widget.h"
 #include "core/widgets/Image.h"
 #include "core/widgets/Chart.h"
@@ -13,7 +13,7 @@
 using namespace lvglpp;
 using namespace lvglpp::widgets;
 
-class TempCurveDlg : public widgets::BaseDialog
+class TempCurveDlg : public widgets::Dialog
 {
 public:
     explicit TempCurveDlg();

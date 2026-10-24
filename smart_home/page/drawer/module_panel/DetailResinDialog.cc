@@ -13,7 +13,7 @@ constexpr uint32_t   DIALOG_CONTENT_WIDTH{560};
 constexpr uint32_t   DIALOG_CONTENT_HEIGHT{300};
 constexpr lv_coord_t DIALOG_CONTENT_RADIUS{20};
 
-ModuleDetailResinDialog::ModuleDetailResinDialog(const std::string &resin_name, bool mod_switch) : BaseDialog(BaseDialog::Layer::System), _change_dir_cb(nullptr), _cancel_cb(nullptr)
+ModuleDetailResinDialog::ModuleDetailResinDialog(const std::string &resin_name, bool mod_switch) : Dialog(Dialog::Layer::System), _change_dir_cb(nullptr), _cancel_cb(nullptr)
 {
     _dialog_bg_item = std::make_shared<Widget>(this->getRoot());
     _dialog_bg_item->setSize(DIALOG_CONTENT_WIDTH, DIALOG_CONTENT_HEIGHT);
@@ -138,12 +138,12 @@ void ModuleDetailResinDialog::open()
     _status_label->setText(lvTr("panel_resin_remaining"));
     _btn_label->setText(lvTr("panel_autofill_label"));
     // _remaing_info
-    BaseDialog::open();
+    Dialog::open();
 }
 
 void ModuleDetailResinDialog::close()
 {
-    BaseDialog::close();
+    Dialog::close();
 }
 
 } // namespace lvglpp::ui::page

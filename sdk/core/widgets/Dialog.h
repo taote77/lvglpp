@@ -1,5 +1,5 @@
-#ifndef LVGLPP_BASEDIALOG_H
-#define LVGLPP_BASEDIALOG_H
+#ifndef LVGLPP_DIALOG_H
+#define LVGLPP_DIALOG_H
 
 #include "Widget.h"
 #include "core/base/Connection.h"
@@ -9,23 +9,23 @@
 
 namespace lvglpp::widgets {
 
-/// Base frame for modal dialogs. It owns a full-screen background widget and
+/// Frame for modal dialogs. It owns a full-screen background widget and
 /// manages the modal focus scope; subclasses populate the background through
 /// getRoot().
-class BaseDialog
+class Dialog
 {
 public:
     /// Selects which LVGL layer hosts the background widget.
     enum class Layer { Application, System };
 
-    explicit BaseDialog(Layer layer = Layer::Application);
+    explicit Dialog(Layer layer = Layer::Application);
 
-    BaseDialog(const BaseDialog &)            = delete;
-    BaseDialog &operator=(const BaseDialog &) = delete;
-    BaseDialog(BaseDialog &&)                 = delete;
-    BaseDialog &operator=(BaseDialog &&)      = delete;
+    Dialog(const Dialog &)            = delete;
+    Dialog &operator=(const Dialog &) = delete;
+    Dialog(Dialog &&)                 = delete;
+    Dialog &operator=(Dialog &&)      = delete;
 
-    virtual ~BaseDialog();
+    virtual ~Dialog();
 
     virtual void open();
 
@@ -62,4 +62,4 @@ private:
 
 } // namespace lvglpp::widgets
 
-#endif // LVGLPP_BASEDIALOG_H
+#endif // LVGLPP_DIALOG_H

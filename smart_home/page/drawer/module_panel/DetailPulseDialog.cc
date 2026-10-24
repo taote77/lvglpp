@@ -14,7 +14,7 @@ constexpr uint32_t   DIALOG_CONTENT_WIDTH{560};
 constexpr uint32_t   DIALOG_CONTENT_HEIGHT{300};
 constexpr lv_coord_t DIALOG_CONTENT_RADIUS{20};
 
-ModuleDetailPulseDialog::ModuleDetailPulseDialog(const int progress, const int status) : BaseDialog(BaseDialog::Layer::System), _change_dir_cb(nullptr), _cancel_cb(nullptr)
+ModuleDetailPulseDialog::ModuleDetailPulseDialog(const int progress, const int status) : Dialog(Dialog::Layer::System), _change_dir_cb(nullptr), _cancel_cb(nullptr)
 {
     _dialog_bg_item = std::make_shared<Widget>(this->getRoot());
     _dialog_bg_item->setSize(DIALOG_CONTENT_WIDTH, DIALOG_CONTENT_HEIGHT);
@@ -106,12 +106,12 @@ ModuleDetailPulseDialog::~ModuleDetailPulseDialog()
 
 void ModuleDetailPulseDialog::open()
 {
-    BaseDialog::open();
+    Dialog::open();
 }
 
 void ModuleDetailPulseDialog::close()
 {
-    BaseDialog::close();
+    Dialog::close();
 }
 
 } // namespace lvglpp::ui::page
