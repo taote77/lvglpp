@@ -8,7 +8,7 @@ namespace lvglpp::tools {
 /**
  * stb_image keeps mutable process-global state (stbi__g_failure_reason and
  * decoder contexts). All stb calls from the SDK are serialized through this
- * mutex so the prefetch worker cannot race Base64Image.
+ * mutex so the prefetch worker cannot race Image base64 decoding.
  */
 inline std::mutex &stbImageMutex()
 {

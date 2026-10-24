@@ -325,7 +325,7 @@ bool portrait = cfg.isPortrait();
 
 ## 7. 控件
 
-原有控件：`Label`、`PushButton`、`Image`、`Base64Image`、`GifImage`、`LottieCanvas`、`QrCode`、`Video`、`Arc`、`ProgressBar`、`Slider`、`SpinBox`、`CheckBox`、`Switch`、`Dropdown`、`Roller`、`TextArea`、`Keyboard`、`Led`、`Line`、`Chart`、`Table`、`Calendar`、`TabView`、`ListView`、`PageView`、`PageIndicator`、`Loader`（配合 `LoaderComponent`）、`TouchArea`、`BaseDialog`、`Toast` 等。
+原有控件：`Label`、`PushButton`、`Image`、`GifImage`、`LottieCanvas`、`QrCode`、`Video`、`Arc`、`ProgressBar`、`Slider`、`SpinBox`、`CheckBox`、`Switch`、`Dropdown`、`Roller`、`TextArea`、`Keyboard`、`Led`、`Line`、`Chart`、`Table`、`Calendar`、`TabView`、`ListView`、`PageView`、`PageIndicator`、`Loader`（配合 `LoaderComponent`）、`TouchArea`、`BaseDialog`、`Toast` 等。
 
 所有控件都继承 `widgets::Widget`（原 `BaseItem`）。常用现代命名：
 
@@ -412,7 +412,7 @@ tools::ImageManager::clearCache();        // 只释放缓存引用；正在使�
   - `ImageButton::setSource()` 接受三个资产路径（内部解码为 descriptor 并 keepalive）；`setSourceFile()` 使用真实文件。
   - `LottieCanvas::setAsset()` 读取 pack 字节并调用 `lv_lottie_set_src_data()`；`setFile()` 走 ThorVG 的文件接口。
   - `GifImage::setAsset()` 转换为 `A:/...`；`setFsPath()` 接受显式 LVGL 路径。
-  - `Base64Image` 仍用于内联 base64 数据，与资产管线无关。
+  - 内联 base64 图片使用 `Image(Base64Source{data, width, height}, parent)` 或 `Image::setBase64()`，不经过资产管线。
 - **字体**：默认使用 `sdk/core/tools/fonts/` 下的点阵字体（静态数据），按 Excel 文案（`smart_home/i18n/strings.xlsx`）逐字号裁剪生成，`NotoSC_<size>_{Normal,Bold}` 覆盖中/英/日/俄/阿，Bold 通过 `NotoArabic_<size>_Bold` fallback 补齐阿拉伯语。启用 FreeType（`-DLVGLPP_ENABLE_FREETYPE=ON`）并通过 `LvFontManager::enableFreetype(true)` 切换后，才通过 `AssetManager::materialize()` 获取 TTF 路径；关闭时 `assets/common/fonts/*.ttf` 不进入 `common.pak`。生成/校验脚本见 `sdk/tools/i18n/`。
 - **构建**：`LVGLPP_ASSET_MODE=pack|directory|both`（默认 `pack`）；`lvglpp_attach_assets(<target>)` 负责 common 与 app 资源的打包/暂存。
 

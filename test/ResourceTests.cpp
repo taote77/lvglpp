@@ -3,7 +3,6 @@
 #include "core/tools/ImageManager.h"
 #include "core/tools/Utils.h"
 #include "core/tools/stb/StbImageHelpers.h"
-#include "core/widgets/Base64Image.h"
 #include "core/widgets/Image.h"
 #include "core/widgets/Widget.h"
 #include "lvgl.h"
@@ -87,13 +86,13 @@ struct ImageFixture {
 
 } // namespace
 
-TEST(Base64Image_pixels_survive_wrapper_destruction)
+TEST(Image_base64_pixels_survive_wrapper_destruction)
 {
     auto parent = std::make_unique<widgets::Widget>();
 
     lv_obj_t *image_obj = nullptr;
     {
-        auto image = std::make_unique<widgets::Base64Image>(kPng1x1Base64, 4, 4, parent.get());
+        auto image = std::make_unique<widgets::Image>(widgets::Base64Source{kPng1x1Base64, 4, 4}, parent.get());
         CHECK_TRUE(image->isAttached());
         image_obj = image->lvObj();
     }
@@ -119,10 +118,10 @@ TEST(Base64Image_pixels_survive_wrapper_destruction)
     return true;
 }
 
-TEST(Base64Image_update_replaces_descriptor_safely)
+TEST(Image_base64_update_replaces_descriptor_safely)
 {
     auto parent = std::make_unique<widgets::Widget>();
-    auto image  = std::make_unique<widgets::Base64Image>(kPng1x1Base64, 4, 4, parent.get());
+    auto image  = std::make_unique<widgets::Image>(widgets::Base64Source{kPng1x1Base64, 4, 4}, parent.get());
 
     const auto *before = static_cast<const lv_image_dsc_t *>(lv_image_get_src(image->lvObj()));
     CHECK(before != nullptr);
@@ -139,14 +138,14 @@ TEST(Base64Image_update_replaces_descriptor_safely)
     return true;
 }
 
-TEST(Base64Image_letterboxes_and_centers)
+TEST(Image_base64_letterboxes_and_centers)
 {
     const auto  png = makePng(2, 1, 255, 0, 0);
     std::string base64;
     CHECK_TRUE(tools::Utils::base64Encode(std::string(png.begin(), png.end()), base64));
 
     auto                 parent = std::make_unique<widgets::Widget>();
-    widgets::Base64Image image(base64, 4, 4, parent.get());
+    widgets::Image image(widgets::Base64Source{base64, 4, 4}, parent.get());
     const auto          *dsc = static_cast<const lv_image_dsc_t *>(lv_image_get_src(image.lvObj()));
     CHECK(dsc != nullptr);
     CHECK_EQ(dsc->header.w, 4);

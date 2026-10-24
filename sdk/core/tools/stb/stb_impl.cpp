@@ -1,6 +1,6 @@
 // Single translation unit providing the stb implementations used by the SDK.
 // Keeping them here (instead of a widget .cpp) avoids ImageManager depending
-// on symbols compiled in Base64Image.cpp.
+// on symbols compiled in Image.cpp.
 
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
