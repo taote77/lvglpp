@@ -1,34 +1,42 @@
 #include "Loader.h"
-#include "Component.h"
+#include "LoaderComponent.h"
+#include "core/log/log.h"
 
 namespace lvglpp::widgets {
 
 Loader::Loader(Widget *parent) : Widget(parent)
 {}
 
-void Loader::setSourceComponent(std::unique_ptr<Component> &component)
+void Loader::setSourceComponent(std::unique_ptr<LoaderComponent> component)
 {
-    if (loader_component_ptr_ != nullptr && component != nullptr && typeid(*loader_component_ptr_) == typeid(*component))
-    {
-        return;
-    }
     if (loader_component_ptr_ != nullptr)
     {
         loader_component_ptr_->onDestroy();
-        lv_obj_clean(this->lvObj());
+        lv_obj_clean(lvObj());
+        loader_component_ptr_.reset();
     }
-    loader_component_ptr_ = std::move(component);
-    if (loader_component_ptr_ != nullptr)
+
+    if (component == nullptr)
     {
-        loader_component_ptr_->onLoad(this);
+        return;
+    }
+
+    loader_component_ptr_ = std::move(component);
+    if (!loader_component_ptr_->onLoad(this))
+    {
+        LOG_WARN() << "LoaderComponent::onLoad() failed; discarding component";
+        loader_component_ptr_->onDestroy();
+        lv_obj_clean(lvObj());
+        loader_component_ptr_.reset();
     }
 }
 
-void Loader::sendEventToComponent(const Event &e)
+void Loader::sendEventToComponent(const sys::Event &event)
 {
     if (loader_component_ptr_ != nullptr)
     {
-        loader_component_ptr_->onNotifyUI(e);
+        loader_component_ptr_->onNotifyUI(event);
     }
 }
+
 } // namespace lvglpp::widgets

@@ -13,7 +13,7 @@ constexpr uint32_t   DIALOG_CONTENT_WIDTH{728};
 constexpr uint32_t   DIALOG_CONTENT_HEIGHT{464};
 constexpr lv_coord_t DIALOG_CONTENT_RADIUS{20};
 
-LCDInfoCard::LCDInfoCard(const double expose_time, const int32_t status) : BaseDialog(true), _change_dir_cb(nullptr), _cancel_cb(nullptr)
+LCDInfoCard::LCDInfoCard(const double expose_time, const int32_t status) : BaseDialog(BaseDialog::Layer::System), _change_dir_cb(nullptr), _cancel_cb(nullptr)
 {
     _dialog_bg_item = std::make_shared<Widget>(this->getRoot());
     _dialog_bg_item->setSize(DIALOG_CONTENT_WIDTH, DIALOG_CONTENT_HEIGHT);

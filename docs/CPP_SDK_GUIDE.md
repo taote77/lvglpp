@@ -325,7 +325,7 @@ bool portrait = cfg.isPortrait();
 
 ## 7. 控件
 
-原有控件：`Label/Label`、`PushButton/Button`、`Image`、`Base64Image`、`GifImage`、`LottieCanvas`、`QrCode`、`Video`、`Arc`、`ProgressBar/Bar`、`Slider`、`SpinBox`、`CheckBox`、`Switch`、`Dropdown`、`Roller`、`TextArea`、`Keyboard`、`Led`、`Line`、`Chart/Chart`、`Table`、`Calendar`、`TabView`、`ListView`、`PageView`、`PageIndicator`、`Loader`、`TouchArea`、`BaseDialog`、`Toast` 等。
+原有控件：`Label`、`PushButton`、`Image`、`Base64Image`、`GifImage`、`LottieCanvas`、`QrCode`、`Video`、`Arc`、`ProgressBar`、`Slider`、`SpinBox`、`CheckBox`、`Switch`、`Dropdown`、`Roller`、`TextArea`、`Keyboard`、`Led`、`Line`、`Chart`、`Table`、`Calendar`、`TabView`、`ListView`、`PageView`、`PageIndicator`、`Loader`（配合 `LoaderComponent`）、`TouchArea`、`BaseDialog`、`Toast` 等。
 
 所有控件都继承 `widgets::Widget`（原 `BaseItem`）。常用现代命名：
 

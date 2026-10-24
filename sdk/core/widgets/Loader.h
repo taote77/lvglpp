@@ -1,4 +1,3 @@
-
 #ifndef LVGLPP_LOADER_H
 #define LVGLPP_LOADER_H
 
@@ -8,22 +7,33 @@
 
 namespace lvglpp::widgets {
 
-using namespace lvglpp::sys;
+class LoaderComponent;
 
-class Component;
+/// Owns a LoaderComponent and gives it a widget subtree to populate.
 class Loader : public Widget
 {
 public:
     explicit Loader(Widget *parent = nullptr);
-    void       setSourceComponent(std::unique_ptr<Component> &component);
-    Component *getSourceComponent() const
+
+    /// Replace the current component. Passing nullptr clears the Loader.
+    /// The previous component receives onDestroy() and its subtree is removed.
+    void setSourceComponent(std::unique_ptr<LoaderComponent> component);
+
+    LoaderComponent *component() const
     {
         return loader_component_ptr_.get();
     }
-    void sendEventToComponent(const Event &e);
+
+    [[deprecated("use component()")]]
+    LoaderComponent *getSourceComponent() const
+    {
+        return component();
+    }
+
+    void sendEventToComponent(const sys::Event &event);
 
 private:
-    std::unique_ptr<Component> loader_component_ptr_;
+    std::unique_ptr<LoaderComponent> loader_component_ptr_;
 };
 
 } // namespace lvglpp::widgets

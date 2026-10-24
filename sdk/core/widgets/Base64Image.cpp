@@ -1,20 +1,19 @@
 #include "Base64Image.h"
 #include "core/base/LvObjFactory.h"
+#include "core/log/log.h"
 #include "core/tools/Utils.h"
-#include <cstdint>
-#include <iostream>
-#include <memory>
-#include <utility>
-#include <vector>
-
-#include "core/tools/stb/StbImageHelpers.h"
 #include "core/tools/stb/StbImageLock.h"
 #include "core/tools/stb/stb_image.h"
 #include "core/tools/stb/stb_image_resize2.h"
-#include "core/tools/stb/stb_image_write.h"
+#include <algorithm>
+#include <cstdint>
+#include <cstring>
+#include <memory>
+#include <mutex>
+#include <utility>
+#include <vector>
 
-namespace lvglpp {
-namespace widgets {
+namespace lvglpp::widgets {
 
 struct Base64Image::ImageState {
     lv_image_dsc_t dsc{};
@@ -29,169 +28,126 @@ struct Base64Image::ImageState {
     }
 };
 
-void Base64Resize(const std::string &src, std::string &output, int width, int height)
+Base64Image::Base64Image(std::string base64, int width, int height, Widget *parent) :
+    Widget(tools::LvObjFactory::createLvglImage, parent), width_(width), height_(height), base64_(std::move(base64))
 {
-    if (src.empty())
-    {
-        throw std::runtime_error("src is empty.");
-    }
-
-    // 解码Base64数据
-    int            srcImageWidth, srcImageHeight, srcImageChannels;
-    unsigned char *srcImageData =
-        stbi_load_from_memory(reinterpret_cast<const unsigned char *>(src.c_str()), static_cast<int>(src.length()), &srcImageWidth, &srcImageHeight, &srcImageChannels, 0);
-    if (!srcImageData)
-    {
-        throw std::runtime_error("stbi_load_from_memory error.");
-    }
-    // 在这里使用智能指针来管理srcImageData内存
-    std::unique_ptr<unsigned char, void (*)(void *)> imageDataGuard(srcImageData, stbi_image_free);
-
-    if (srcImageHeight == height && srcImageWidth == width)
-    {
-        output = src;
-        return;
-    }
-
-    // 计算等比例缩放后的尺寸
-    float scale     = std::min(static_cast<float>(width) / static_cast<float>(srcImageWidth), static_cast<float>(height) / static_cast<float>(srcImageHeight));
-    int   newWidth  = static_cast<int>(static_cast<float>(srcImageWidth) * scale);
-    int   newHeight = static_cast<int>(static_cast<float>(srcImageHeight) * scale);
-
-    // 创建一个新的图像数据缓冲区
-    const int                        outputChannels = srcImageChannels; // 保持通道数与原图一致
-    std::unique_ptr<unsigned char[]> resizedData(new unsigned char[width * height * outputChannels]);
-
-    // 获取输出图像的像素布局
-    auto pixelLayout = stbir_pixel_layout(srcImageChannels);
-
-    // 使用stbir_resize_uint8_srgb函数进行图像缩放
-    bool resizeResult = stbir_resize_uint8_srgb(srcImageData, srcImageWidth, srcImageHeight, 0, resizedData.get(), newWidth, newHeight, 0, pixelLayout);
-    if (!resizeResult)
-    {
-        throw std::runtime_error("stbir_resize_uint8_srgb error.");
-    }
-
-    // 创建新的画布，并将缩放后的图像居中显示，其余部分填充透明色
-    int                              offsetX = (width - newWidth) / 2;
-    int                              offsetY = (height - newHeight) / 2;
-    std::unique_ptr<unsigned char[]> finalData(new unsigned char[width * height * outputChannels]);
-
-    // 填充透明色
-    for (int i = 0; i < width * height * outputChannels; i += outputChannels)
-    {
-        finalData[i]     = 0; // R 通道
-        finalData[i + 1] = 0; // G 通道
-        finalData[i + 2] = 0; // B 通道
-        if (outputChannels == 4)
-        {
-            finalData[i + 3] = 0; // Alpha 通道
-        }
-    }
-
-    // 将缩放后的图像绘制到画布中心
-    for (int y = 0; y < newHeight; ++y)
-    {
-        for (int x = 0; x < newWidth; ++x)
-        {
-            int sourceIndex = (y * newWidth + x) * outputChannels;
-            int targetIndex = ((y + offsetY) * width + x + offsetX) * outputChannels;
-
-            for (int c = 0; c < outputChannels; ++c)
-            {
-                finalData[targetIndex + c] = resizedData[sourceIndex + c];
-            }
-        }
-    }
-
-    // 编码为Base64格式
-    const std::vector<std::uint8_t> encoded = tools::encodePng(finalData.get(), width, height, outputChannels);
-    if (encoded.empty())
-    {
-        throw std::runtime_error("encodePng error.");
-    }
-
-    output = std::string(reinterpret_cast<const char *>(encoded.data()), encoded.size());
-
-    if (output.empty())
-    {
-        throw std::runtime_error("encode error.");
-    }
+    setBase64(base64_);
 }
 
-Base64Image::Base64Image(std::string base64, int w, int h, Widget *parent) : Widget(tools::LvObjFactory::createLvglImage, parent), w_(w), h_(h), base64Data_(std::move(base64))
+void Base64Image::setBase64(const std::string &data)
 {
-    updateImage(base64Data_);
-}
-
-void Base64Image::updateImage(const std::string &data)
-{
+    base64_ = data;
     if (data.empty() || lvObj() == nullptr)
     {
         return;
     }
-
-    std::string img_decode;
-    std::string img_data;
-    if (!tools::Utils::base64Decode(data, img_decode))
+    if (width_ <= 0 || height_ <= 0)
     {
+        LOG_ERROR() << "Base64Image requires a positive target size, got " << width_ << "x" << height_;
         return;
     }
 
-    try
+    std::string decoded;
+    if (!tools::Utils::base64Decode(data, decoded))
     {
-        // stb keeps process-global decoder state; serialize with the
-        // ImageManager prefetch worker.
+        LOG_ERROR() << "Base64Image: invalid base64 data";
+        return;
+    }
+
+    int            sourceWidth  = 0;
+    int            sourceHeight = 0;
+    int            channels     = 0;
+    unsigned char *pixels       = nullptr;
+    {
+        // stb keeps process-global decoder state; serialize with ImageManager.
         std::lock_guard<std::mutex> stbLock(tools::stbImageMutex());
-        Base64Resize(img_decode, img_data, w_, h_);
+        pixels = stbi_load_from_memory(reinterpret_cast<const unsigned char *>(decoded.data()), static_cast<int>(decoded.size()),
+                                       &sourceWidth, &sourceHeight, &channels, 4);
     }
-    catch (const std::exception &e)
+    if (pixels == nullptr || sourceWidth <= 0 || sourceHeight <= 0)
     {
-        std::cerr << e.what() << '\n';
+        LOG_ERROR() << "Base64Image: failed to decode image data";
+        return;
+    }
+    (void)channels; // stbi expands to RGBA because desired_channels == 4
+
+    std::unique_ptr<unsigned char, void (*)(void *)> pixelsGuard(pixels, stbi_image_free);
+    applyDecoded(pixels, sourceWidth, sourceHeight);
+}
+
+void Base64Image::applyDecoded(const unsigned char *rgba, int sourceWidth, int sourceHeight)
+{
+    if (rgba == nullptr || sourceWidth <= 0 || sourceHeight <= 0)
+    {
         return;
     }
 
-    unsigned char *output_buf = nullptr;
-    unsigned       decode_w   = 0;
-    unsigned       decode_h   = 0;
+    // Preserve the aspect ratio and center the scaled image on a transparent
+    // canvas of the requested size.
+    const float scale    = std::min(static_cast<float>(width_) / static_cast<float>(sourceWidth),
+                                    static_cast<float>(height_) / static_cast<float>(sourceHeight));
+    const int   targetW  = std::max(1, static_cast<int>(static_cast<float>(sourceWidth) * scale));
+    const int   targetH  = std::max(1, static_cast<int>(static_cast<float>(sourceHeight) * scale));
+    const int   offsetX  = (width_ - targetW) / 2;
+    const int   offsetY  = (height_ - targetH) / 2;
 
-    const unsigned decode_error = lodepng_decode32_2(&output_buf, &decode_w, &decode_h, (unsigned char *)img_data.data(), img_data.length());
-    if (decode_error != 0 || output_buf == nullptr || decode_w == 0 || decode_h == 0)
+    std::vector<unsigned char> resized;
+    const unsigned char       *image       = rgba;
+    int                        imageStride = sourceWidth * 4;
+
+    if (targetW != sourceWidth || targetH != sourceHeight)
     {
-        std::cerr << "lodepng_decode32_2 failed: " << decode_error << '\n';
+        resized.resize(static_cast<std::size_t>(targetW) * static_cast<std::size_t>(targetH) * 4);
+        std::lock_guard<std::mutex> stbLock(tools::stbImageMutex());
+        if (!stbir_resize_uint8_srgb(rgba, sourceWidth, sourceHeight, 0, resized.data(), targetW, targetH, 0, STBIR_RGBA))
+        {
+            LOG_ERROR() << "Base64Image: failed to resize image";
+            return;
+        }
+        image       = resized.data();
+        imageStride = targetW * 4;
+    }
+
+    lv_draw_buf_t *drawBuf = lv_draw_buf_create(static_cast<uint32_t>(width_), static_cast<uint32_t>(height_),
+                                                LV_COLOR_FORMAT_ARGB8888, LV_STRIDE_AUTO);
+    if (drawBuf == nullptr || drawBuf->data == nullptr)
+    {
+        LOG_ERROR() << "Base64Image: failed to allocate draw buffer";
         return;
     }
 
-    // LVGL's vendored lodepng is patched: the decoder returns an lv_draw_buf_t*
-    // (ARGB8888) instead of a bare pixel buffer.
-    auto *draw_buf = reinterpret_cast<lv_draw_buf_t *>(output_buf);
-    if (draw_buf->data == nullptr || draw_buf->data_size < static_cast<uint32_t>(decode_w) * decode_h * 4)
-    {
-        lv_draw_buf_destroy(draw_buf);
-        return;
-    }
+    auto *destination = static_cast<unsigned char *>(drawBuf->data);
+    std::memset(destination, 0, drawBuf->data_size);
 
-    // postProcessScanlines writes RGBA bytes; LVGL's ARGB8888 is BGRA in memory.
-    const uint32_t pixel_bytes = static_cast<uint32_t>(decode_w) * decode_h * 4;
-    for (uint32_t i = 0; i + 3 < pixel_bytes; i += 4)
+    const uint32_t stride = drawBuf->header.stride;
+    for (int y = 0; y < targetH; ++y)
     {
-        std::swap(draw_buf->data[i], draw_buf->data[i + 2]);
+        const unsigned char *source = image + y * imageStride;
+        unsigned char       *target = destination + (offsetY + y) * stride + offsetX * 4;
+        for (int x = 0; x < targetW; ++x)
+        {
+            // Source is RGBA; LVGL's ARGB8888 is BGRA in memory.
+            target[x * 4 + 0] = source[x * 4 + 2];
+            target[x * 4 + 1] = source[x * 4 + 1];
+            target[x * 4 + 2] = source[x * 4 + 0];
+            target[x * 4 + 3] = source[x * 4 + 3];
+        }
     }
 
     auto state               = std::make_shared<ImageState>();
-    state->draw_buf          = draw_buf;
+    state->draw_buf          = drawBuf;
     state->dsc.header.magic  = LV_IMAGE_HEADER_MAGIC;
-    state->dsc.header.w      = static_cast<int32_t>(decode_w);
-    state->dsc.header.h      = static_cast<int32_t>(decode_h);
+    state->dsc.header.w      = static_cast<int32_t>(width_);
+    state->dsc.header.h      = static_cast<int32_t>(height_);
     state->dsc.header.cf     = LV_COLOR_FORMAT_ARGB8888;
-    state->dsc.header.stride = draw_buf->header.stride;
-    state->dsc.data_size     = pixel_bytes;
-    state->dsc.data          = draw_buf->data;
+    state->dsc.header.stride = stride;
+    state->dsc.data_size     = drawBuf->data_size;
+    state->dsc.data          = destination;
 
     // Switch LVGL to the new descriptor before releasing the previous state.
     lv_image_set_src(lvObj(), &state->dsc);
     setObjectKeepalive("base64image.dsc", state);
     image_state_ = std::move(state);
 }
-} // namespace widgets
-} // namespace lvglpp
+
+} // namespace lvglpp::widgets

@@ -12,7 +12,7 @@ using namespace lvglpp::tools;
 using namespace form;
 using namespace lvglpp;
 
-RebootConfirmDialog::RebootConfirmDialog() : BaseDialog(true), change_dir_cb_(nullptr), cancel_cb_(nullptr)
+RebootConfirmDialog::RebootConfirmDialog() : BaseDialog(BaseDialog::Layer::System), change_dir_cb_(nullptr), cancel_cb_(nullptr)
 {
     const auto &cfg      = sys::UiConfig::instance();
     const bool  portrait = cfg.isPortrait();

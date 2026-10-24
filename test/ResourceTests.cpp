@@ -4,8 +4,8 @@
 #include "core/tools/Utils.h"
 #include "core/tools/stb/StbImageHelpers.h"
 #include "core/widgets/Base64Image.h"
-#include "core/widgets/Widget.h"
 #include "core/widgets/Image.h"
+#include "core/widgets/Widget.h"
 #include "lvgl.h"
 
 #include <cstdint>
@@ -127,7 +127,7 @@ TEST(Base64Image_update_replaces_descriptor_safely)
     const auto *before = static_cast<const lv_image_dsc_t *>(lv_image_get_src(image->lvObj()));
     CHECK(before != nullptr);
 
-    image->updateImage(kPng1x1Base64);
+    image->setBase64(kPng1x1Base64);
 
     const auto *after = static_cast<const lv_image_dsc_t *>(lv_image_get_src(image->lvObj()));
     CHECK(after != nullptr);
@@ -136,6 +136,37 @@ TEST(Base64Image_update_replaces_descriptor_safely)
 
     lv_obj_invalidate(image->lvObj());
     lv_refr_now(nullptr);
+    return true;
+}
+
+TEST(Base64Image_letterboxes_and_centers)
+{
+    const auto  png = makePng(2, 1, 255, 0, 0);
+    std::string base64;
+    CHECK_TRUE(tools::Utils::base64Encode(std::string(png.begin(), png.end()), base64));
+
+    auto                 parent = std::make_unique<widgets::Widget>();
+    widgets::Base64Image image(base64, 4, 4, parent.get());
+    const auto          *dsc = static_cast<const lv_image_dsc_t *>(lv_image_get_src(image.lvObj()));
+    CHECK(dsc != nullptr);
+    CHECK_EQ(dsc->header.w, 4);
+    CHECK_EQ(dsc->header.h, 4);
+
+    const auto *pixels = static_cast<const std::uint8_t *>(dsc->data);
+    const auto  stride = dsc->header.stride;
+    for (std::uint32_t x = 0; x < 4; ++x)
+    {
+        // Top and bottom rows are transparent letterbox padding.
+        CHECK_EQ(pixels[x * 4 + 3], 0u);
+        CHECK_EQ(pixels[3 * stride + x * 4 + 3], 0u);
+
+        // The 2x1 red source is scaled to 4x2 and centered on row 1.
+        const auto *pixel = pixels + stride + x * 4;
+        CHECK_EQ(pixel[0], 0u);
+        CHECK_EQ(pixel[1], 0u);
+        CHECK_EQ(pixel[2], 255u);
+        CHECK_EQ(pixel[3], 255u);
+    }
     return true;
 }
 

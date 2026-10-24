@@ -17,7 +17,7 @@ namespace {
 class TestDialog : public BaseDialog
 {
 public:
-    TestDialog() : BaseDialog(false)
+    TestDialog() : BaseDialog(BaseDialog::Layer::Application)
     {}
 
     ~TestDialog() override = default;
