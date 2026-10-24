@@ -178,6 +178,9 @@ public:
 
     bool isVisible() const;
 
+    /// True when this widget and every ancestor are visible (not HIDDEN).
+    bool isEffectivelyVisible() const;
+
     [[deprecated("use isVisible()")]]
     bool getVisible() const
     {

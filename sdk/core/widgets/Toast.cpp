@@ -7,6 +7,7 @@ namespace lvglpp::widgets {
 void Toast::showToast(const std::string &msg, Toast::Type level)
 {
     getInstance().toast_impl_->setMessage(msg, (ToastImpl::IconType)level);
+    OverlayManager::getInstance().bringToFront(getInstance().overlay_token_);
     if (!getInstance().is_running_)
     {
         getInstance().toast_impl_->setOpacity(0);
@@ -47,6 +48,7 @@ Toast::Toast()
 {
     toast_impl_ = std::make_unique<ToastImpl>();
     toast_impl_->setVisible(false);
+    overlay_token_ = OverlayManager::getInstance().registerTransient(toast_impl_.get(), OverlayManager::Priority::Toast);
     lv_anim_init(&anim_show_t_);
     lv_anim_set_exec_cb(&anim_show_t_, [](void *p, int32_t progress) -> void {
         if (p != nullptr)

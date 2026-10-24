@@ -1,14 +1,13 @@
 #include "Dialog.h"
 #include "config/color_sheet.h"
 #include "core/base/LvObjFactory.h"
-#include "core/sys/InputManager.h"
 #include "core/sys/UiConfig.h"
 
 namespace lvglpp::widgets {
 
 Dialog::Dialog(Layer layer) :
-    background_(std::make_unique<Widget>(layer == Layer::System ? tools::LvObjFactory::createLvglSysDialog
-                                                               : tools::LvObjFactory::createLvglDialog))
+    background_(std::make_unique<Widget>(layer == Layer::System ? tools::LvObjFactory::createLvglSysDialog : tools::LvObjFactory::createLvglDialog)),
+    priority_(layer == Layer::System ? OverlayManager::Priority::SystemDialog : OverlayManager::Priority::Dialog)
 {
     background_->setOpacity(1);
     background_->setSize(sys::UiConfig::instance().width(), sys::UiConfig::instance().height());
@@ -18,8 +17,7 @@ Dialog::Dialog(Layer layer) :
 #if LVGLPP_DYNAMIC_UI
     // A configuration change invalidates absolute layouts. Close transient
     // dialogs; the owner can reopen them with the new configuration.
-    config_connection_ = core::ScopedConnection(
-        core::Object::connect(&sys::UiConfig::instance(), "configurationChanged", [this]() { close(); }));
+    config_connection_ = core::ScopedConnection(core::Object::connect(&sys::UiConfig::instance(), "configurationChanged", [this]() { close(); }));
 #endif
 }
 
@@ -42,18 +40,21 @@ void Dialog::open()
 
     background_->setVisible(true);
 
-    if (focus_scope_ == 0)
+    if (!overlay_)
     {
-        focus_scope_ = sys::InputManager::getInstance().pushModalScope(background_.get(), [this]() { close(); });
+        overlay_ = OverlayManager::getInstance().attach(background_.get(), priority_, [this]() {
+            close();
+            return true;
+        });
     }
 }
 
 void Dialog::close()
 {
-    if (focus_scope_ != 0)
+    if (overlay_)
     {
-        sys::InputManager::getInstance().popScope(focus_scope_);
-        focus_scope_ = 0;
+        OverlayManager::getInstance().detach(overlay_);
+        overlay_ = {};
     }
 
     if (background_)
@@ -65,6 +66,13 @@ void Dialog::close()
 bool Dialog::isOpen() const
 {
     return background_ && background_->isVisible();
+}
+
+void Dialog::setPriority(OverlayManager::Priority priority)
+{
+    priority_ = priority;
+    // Priority affects the next open(); an already attached overlay keeps its
+    // position until it is closed and reopened.
 }
 
 void Dialog::setOnBackgroundClicked(const std::function<void()> &func)

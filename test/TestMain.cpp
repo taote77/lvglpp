@@ -2,6 +2,7 @@
 #include "core/sys/InputManager.h"
 #include "core/tools/AssetManager.h"
 #include "core/tools/ImageManager.h"
+#include "core/widgets/OverlayManager.h"
 #include <cstdlib>
 #include <lvgl.h>
 
@@ -31,6 +32,7 @@ int main()
 
     lvglpp::tools::ImageManager::shutdown();
     lvglpp::tools::AssetManager::getInstance().reset();
+    lvglpp::widgets::OverlayManager::getInstance().shutdown();
     lvglpp::sys::InputManager::getInstance().shutdown();
 
     lv_display_delete(disp);

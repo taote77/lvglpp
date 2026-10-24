@@ -43,6 +43,7 @@ add_executable(test_unit
     UiConfigTests.cpp
     RtlLayoutTests.cpp
     LabelTests.cpp
+    OverlayTests.cpp
 )
 
 target_link_libraries(test_unit PRIVATE

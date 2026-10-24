@@ -11,6 +11,7 @@
 #include "core/log/log.h"
 #include "core/tools/AssetManager.h"
 #include "core/tools/ImageManager.h"
+#include "core/widgets/OverlayManager.h"
 
 #include <algorithm>
 #include <chrono>
@@ -248,6 +249,8 @@ void Application::shutdown()
 
     LOG_DEBUG() << "shutdown: image manager";
     tools::ImageManager::shutdown();
+    LOG_DEBUG() << "shutdown: overlays";
+    widgets::OverlayManager::getInstance().shutdown();
     LOG_DEBUG() << "shutdown: input manager";
     InputManager::getInstance().shutdown();
 

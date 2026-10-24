@@ -1,9 +1,9 @@
 #ifndef LVGLPP_DIALOG_H
 #define LVGLPP_DIALOG_H
 
+#include "OverlayManager.h"
 #include "Widget.h"
 #include "core/base/Connection.h"
-#include <cstdint>
 #include <functional>
 #include <memory>
 
@@ -33,6 +33,15 @@ public:
 
     bool isOpen() const;
 
+    /// Override the default priority (Dialog for Application layer,
+    /// SystemDialog for System layer). Same-layer ordering only.
+    void setPriority(OverlayManager::Priority priority);
+
+    OverlayManager::Priority priority() const
+    {
+        return priority_;
+    }
+
     /// Invoked when the dialog background (outside the content) is clicked.
     void setOnBackgroundClicked(const std::function<void()> &func);
 
@@ -55,9 +64,10 @@ protected:
     Widget *getRoot() const;
 
 private:
-    std::unique_ptr<Widget> background_;
-    std::uint64_t           focus_scope_ = 0;
-    core::ScopedConnection  config_connection_;
+    std::unique_ptr<Widget>  background_;
+    OverlayManager::Token    overlay_;
+    OverlayManager::Priority priority_ = OverlayManager::Priority::Dialog;
+    core::ScopedConnection   config_connection_;
 };
 
 } // namespace lvglpp::widgets

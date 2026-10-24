@@ -478,7 +478,12 @@ protected:
 
     void onConfigurationChanged(const sys::UiConfiguration &configuration) override
     {
-        const int index = _pageHost ? std::max(0, _pageHost->currentIndex()) : 0;
+        w::PageHost::State pageState;
+        if (_pageHost)
+        {
+            pageState = _pageHost->saveState();
+        }
+        const int index = _pageHost ? std::max(0, _pageHost->currentRoot()) : 0;
 
         _navBtns.clear();
         _navBar.reset();
@@ -490,6 +495,10 @@ protected:
 
         lvglpp::sys::BaseActivity::onConfigurationChanged(configuration);
         buildShell(index);
+        if (_pageHost && !pageState.stacks.empty())
+        {
+            _pageHost->restoreState(pageState);
+        }
         refreshFocus();
     }
 

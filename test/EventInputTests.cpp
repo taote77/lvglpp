@@ -1,8 +1,8 @@
 #include "TestFramework.h"
 #include "core/sys/InputManager.h"
 #include "core/widgets/Dialog.h"
-#include "core/widgets/Widget.h"
 #include "core/widgets/KeyEvent.h"
+#include "core/widgets/Widget.h"
 #include "lvgl.h"
 
 #include <memory>
@@ -208,7 +208,10 @@ TEST(Input_global_handler_and_back_handler)
     int back_calls   = 0;
     int global_calls = 0;
 
-    auto token = InputManager::getInstance().pushScope(root.get(), [&back_calls]() { back_calls++; });
+    auto token = InputManager::getInstance().pushScope(root.get(), [&back_calls]() {
+        back_calls++;
+        return true;
+    });
 
     auto conn = InputManager::getInstance().addGlobalKeyHandler([&global_calls](KeyEvent &event) {
         if (event.key == Key::Escape)
@@ -230,8 +233,11 @@ TEST(Input_global_handler_and_back_handler)
     CHECK_TRUE(InputManager::getInstance().dispatchKey(escape2));
     CHECK_EQ(back_calls, 1);
 
-    int fallback_calls = 0;
-    InputManager::getInstance().setBackHandler([&fallback_calls]() { fallback_calls++; });
+    int  fallback_calls = 0;
+    auto fallback       = InputManager::getInstance().addBackHandler(BackPriority::App, [&fallback_calls]() {
+        fallback_calls++;
+        return true;
+    });
 
     InputManager::getInstance().popScope(token);
 
@@ -239,7 +245,7 @@ TEST(Input_global_handler_and_back_handler)
     CHECK_TRUE(InputManager::getInstance().dispatchKey(escape3));
     CHECK_EQ(fallback_calls, 1);
 
-    InputManager::getInstance().setBackHandler(nullptr);
+    InputManager::getInstance().removeBackHandler(fallback);
     return true;
 }
 
@@ -330,6 +336,103 @@ TEST(Input_lvgl_key_event_path)
     return true;
 }
 
+TEST(Input_scope_priority_keeps_modal_focus)
+{
+    InputReset reset;
+
+    auto root1 = std::make_unique<Widget>();
+    auto a     = std::make_unique<Widget>(root1.get());
+    a->setFocusable(true);
+
+    auto root2 = std::make_unique<Widget>();
+    auto b     = std::make_unique<Widget>(root2.get());
+    b->setFocusable(true);
+
+    auto root3 = std::make_unique<Widget>();
+    auto c     = std::make_unique<Widget>(root3.get());
+    c->setFocusable(true);
+
+    auto activity = InputManager::getInstance().pushScope(root1.get(), {}, BackPriority::Activity);
+    auto dialog   = InputManager::getInstance().pushModalScope(root2.get(), {}, BackPriority::Dialog);
+
+    // A lower-priority scope pushed later must not steal focus from the dialog.
+    auto later_activity = InputManager::getInstance().pushScope(root3.get(), {}, BackPriority::Activity);
+    CHECK(InputManager::getInstance().focusedItem() == b.get());
+
+    InputManager::getInstance().popScope(dialog);
+    CHECK(InputManager::getInstance().focusedItem() == c.get());
+
+    InputManager::getInstance().popScope(later_activity);
+    CHECK(InputManager::getInstance().focusedItem() == a.get());
+
+    InputManager::getInstance().popScope(activity);
+    return true;
+}
+
+TEST(Input_back_priority_and_fallthrough)
+{
+    InputReset reset;
+
+    int page_calls     = 0;
+    int activity_calls = 0;
+
+    auto page     = InputManager::getInstance().addBackHandler(BackPriority::Page, [&]() {
+        page_calls++;
+        return false;
+    });
+    auto activity = InputManager::getInstance().addBackHandler(BackPriority::Activity, [&]() {
+        activity_calls++;
+        return true;
+    });
+
+    CHECK_TRUE(InputManager::getInstance().dispatchBack());
+    CHECK_EQ(page_calls, 1);
+    CHECK_EQ(activity_calls, 1);
+
+    InputManager::getInstance().removeBackHandler(page);
+    CHECK_TRUE(InputManager::getInstance().dispatchBack());
+    CHECK_EQ(activity_calls, 2);
+
+    InputManager::getInstance().removeBackHandler(activity);
+    CHECK_FALSE(InputManager::getInstance().dispatchBack());
+    return true;
+}
+
+TEST(Input_native_escape_runs_back_chain)
+{
+    InputReset reset;
+
+    auto root  = std::make_unique<Widget>();
+    auto child = std::make_unique<Widget>(root.get());
+    child->setFocusable(true);
+    auto scope = InputManager::getInstance().pushScope(root.get());
+
+    TestDialog dialog;
+    dialog.addFocusable();
+    dialog.open();
+    CHECK_TRUE(dialog.isOpen());
+
+    lv_indev_t *indev = lv_indev_create();
+    lv_indev_set_type(indev, LV_INDEV_TYPE_KEYPAD);
+    lv_indev_set_read_cb(indev, fakeKeypadRead);
+    lv_indev_set_display(indev, lv_display_get_default());
+    lv_indev_set_group(indev, InputManager::getInstance().activeGroup());
+
+    g_fake_key_data       = lv_indev_data_t{};
+    g_fake_key_data.key   = LV_KEY_ESC;
+    g_fake_key_data.state = LV_INDEV_STATE_PRESSED;
+    lv_indev_read(indev);
+
+    g_fake_key_data.state = LV_INDEV_STATE_RELEASED;
+    lv_indev_read(indev);
+
+    CHECK_FALSE(dialog.isOpen());
+
+    lv_indev_delete(indev);
+    InputManager::getInstance().popScope(scope);
+    return true;
+}
+
 TEST(Input_modal_scope_restores_previous_focus)
 {
     InputReset reset;
@@ -367,7 +470,7 @@ TEST(Input_dialog_modal_scope_closes_on_escape)
     CHECK(InputManager::getInstance().focusedItem() == activity_child.get());
 
     TestDialog dialog;
-    Widget  *dialog_child = dialog.addFocusable();
+    Widget    *dialog_child = dialog.addFocusable();
 
     dialog.open();
     CHECK_TRUE(dialog.isOpen());

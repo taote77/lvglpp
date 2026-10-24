@@ -190,13 +190,19 @@ auto conn = input.addGlobalKeyHandler([](widgets::KeyEvent &e) {
     }
 });
 
-input.setBackHandler([] { /* 无作用域处理器时的 ESC 回退 */ });
+auto token = input.addBackHandler(sys::BackPriority::App, [] {
+    // 应用级 ESC 回退；返回 true 表示已消费
+    return false;
+});
+input.removeBackHandler(token);
 ```
 
-作用域创建时也可以提供返回处理器：
+作用域和全局处理器都返回 `bool`（true = 已消费）；优先级顺序为
+`SystemDialog > Dialog > Popup > Page > Activity > App`，同优先级 LIFO：
 
 ```cpp
-input.pushScope(root, [] { /* ESC */ });
+input.pushScope(root, [] { return true; }, sys::BackPriority::Activity);
+input.pushModalScope(dialogRoot, [] { return true; }, sys::BackPriority::Dialog);
 ```
 
 ### 4.4 物理按键 / 后台线程
@@ -314,7 +320,7 @@ bool portrait = cfg.isPortrait();
 ```
 
 - 所有 `request*` 都是线程安全的原子请求；`Application::exec()` 在 `lv_timer_handler()` 前调用 `UiConfig::processPending()`，所以不要在 LVGL 回调里同步重建 UI。
-- `StackView` 把配置变更分发给每个 `Activity::onConfigurationChanged`；`BaseActivity` 调整 root 尺寸，具体页面通过 `PageHost::releaseAll()+show(currentIndex)` 重建。当前页索引保留，滚动位置和打开的对话框不保留。
+- `StackView` 把配置变更分发给每个 `Activity::onConfigurationChanged`；`BaseActivity` 调整 root 尺寸，具体页面通过 `PageHost::saveState()`/`restoreState()` 保留每 Tab 的页面栈与 args 后重建；滚动位置和打开的对话框不保留。
 - `Widget::setAlignment/setAlignmentTo/setPos` 会按 RTL 镜像显式 LEFT/RIGHT/OUT_* 和 x 偏移。**flex/grid 的 RTL 反向由 LVGL 自动完成，不要手动镜像**。`setMirrorInRtl(false)` 可关闭某个控件的镜像；`Chart` 固定 LTR。
 - 方向图片使用 `Image::setRtlAsset(path)`；LVGL 9.3 不支持负 scale 镜像。
 - 启动/调试环境变量：`LVGLPP_ORIENTATION=landscape|portrait|reverse-landscape|reverse-portrait`、`LVGLPP_RTL=1`、`LVGLPP_PANEL_ROTATION_OFFSET=90`、`LVGLPP_SDL_FIXED_PANEL=1`、`LVGLPP_DISABLE_PANEL_ROTATION=1`。smart_home 还支持 `1/2/3/4` 切换四方向、`R` 切换 RTL。
@@ -481,12 +487,24 @@ anim.setTarget(&widget)
 ```cpp
 auto page = std::make_shared<MyActivity>();
 sys::StackView::getInstance().pushView(page, arg);
-sys::StackView::getInstance().popView();
+sys::StackView::getInstance().popView(result);
+
+// activity result：新页面 pop 时把结果交给调用方
+sys::StackView::getInstance().pushView(page, arg, [](std::any result) {
+    // 处理子页面返回值
+});
+
+// 启动模式（Android 风格）
+stack.pushView(page, arg, {}, sys::StackView::LaunchMode::SingleTop);
+stack.pushView(page, arg, {}, sys::StackView::LaunchMode::ClearTop);
+stack.popTo(2);
+stack.popToRoot();
 ```
 
-- 生命周期：`onCreate(arg)` → `onResume()` → `onPause()` → `onDestroy()`。
+`Activity` 可覆盖 `routeId()`（默认 `typeid`）、`onNewArguments()`（SingleTop/ClearTop 复用）、`onBackPressed()`（返回 true 表示自行处理）。生命周期：`onCreate(arg)` → `onResume()` → `onPause()` → `onDestroy()`。
 - 在 `exec()` 之前多次 `pushView()` 是安全的：`StackView::start()` 会按栈顺序初始化所有已入栈页面，仅顶层处于 resumed 状态。
-- 页面切换动画进行中再次 push/pop 会被排队，动画结束后依次执行，不会出现两次 pop 回调或栈下溢。
+- 入场和退场动画期间再次 push/pop 会被排队，动画结束后依次执行，不会出现两次 pop 回调或栈下溢。
+- 返回键统一走 `InputManager::dispatchBack()`：Dialog/Popup → PageHost → Activity（`onBackPressed` 或 `popView`）→ App 回退。
 - 手动切换页面可见性（例如 smart_home 的 tab 容器）后，应调用 `BaseActivity::refreshFocus()`，让键盘焦点重新收集当前可见控件：
   ```cpp
   _pages[i]->setVisible(i == index);
@@ -521,19 +539,36 @@ host->addPage("Settings", [](widgets::PageContext &ctx) {
 
 host->show(0);   // 首次 show 才构建页面
 host->show(1);   // 构建并切换；Home 保留在内存中
+
+// 非 root 子页面：压在当前 Tab 的历史栈上
+const int detail = host->addPage("Detail", [](widgets::PageContext &ctx) {
+    ctx.onArguments([](const std::any &args) { /* 读取进入参数 */ })
+       .onResult([](std::any result) { /* 子页面 pop 回来 */ })
+       .onPause([] { /* 被覆盖 */ })
+       .onResume([] { /* 重新可见 */ });
+}, true, false);
+
+host->push(detail, std::any(42));
+host->pop(result);          // 返回上一页
+host->popToRoot();          // 回到当前 Tab 的根页
+host->back();               // 用于返回键：栈深度 > 1 时 pop
 ```
 
 特性：
 
-- **懒加载**：`addPage()` 默认不构建，首次 `show()` 时调用 builder；
-- **页面生命周期**：`PageContext::onShow/onHide/onDestroy`；
+- **懒加载**：`addPage(name, builder, lazy=true, root=true)` 默认不构建，首次 `show/push` 时调用 builder；root 页面是 Tab，非 root 页面用于 `push`；
+- **每 Tab 独立历史**：`show(root)` 切换 Tab 并恢复该 Tab 自己的栈顶；再次 `show` 当前 Tab 会 `popToRoot()`；
+- **参数/结果**：`push(index, args)` + `PageContext::onArguments/onResult`，参数用 `std::any`（需可拷贝，重对象用 `shared_ptr`）；
+- **页面生命周期**：`onArguments/onNewArguments/onShow/onHide/onPause/onResume/onDestroy/onResult`；
+- **返回键**：PageHost 注册 Page 优先级 back handler，栈深度 > 1 时先消费，否则交给 Activity/StackView；
 - **缓存策略**：
   - `KeepAll`（默认）：访问过的页面保留，切换最快；
-  - `ReleaseOnHide`：离开即销毁，下次进入重建（状态不保留）；
-  - `MaxCached(n)`：最多保留 n 个非当前页面，按最近显示时间淘汰；
-- **自动焦点刷新**：切换可见性后调用 `InputManager::refreshScopeContaining()`，键盘焦点自动移动到新页面的第一个可聚焦控件；
+  - `ReleaseOnHide`：离开根 Tab 即销毁其 built 页面，entry/args 保留，下次重建；
+  - `MaxCached(n)`：最多保留 n 个当前栈之外的页面，按最近显示时间淘汰；当前栈上的祖先永不淘汰；
+- **自动焦点刷新**：切换后刷新包含 PageHost 的焦点 scope；隐藏 Tab 内的控件不会进入焦点组；
 - **页面级 WidgetStore**：`ctx.emplace<T>()` 创建的交互控件随页面销毁而释放，不会泄漏回调；
-- `release(i)` / `releaseAll()` 可手动释放页面；`currentIndex()/page(i)/isBuilt(i)` 用于状态查询。
+- **配置变更恢复**：`saveState()` / `restoreState()` 保存每 Tab 的页面栈与 args；smart_home 在 `onConfigurationChanged` 中先保存、重建后恢复（页面内部滚动等瞬态不保留）；
+- `release(i)` / `releaseAll()` 可手动释放页面；`currentIndex()/currentRoot()/depth()/history()/page(i)/isBuilt(i)` 用于状态查询。
 
 smart_home 已迁移到 `PageHost`：启动时只构建 Home 页，其余四个 tab 首次点击时才构建，访问后默认保留状态。
 
@@ -543,7 +578,22 @@ smart_home 已迁移到 `PageHost`：启动时只构建 Home 页，其余四个 
 - `PageView` 的滚动索引有边界与宽度保护；挂起的异步页面创建会在包装对象销毁或 lv_obj 删除时取消。
 - `ListView`/`PageView` 目前只增不回收 delegate；数据量很大时应实现窗口化复用，避免隐藏行持续占用内存。
 
-### 11.4 Application、Platform 与退出
+### 11.4 Dialog / OverlayManager（层级与优先级）
+
+`Dialog::open()/close()` 会自动向 `OverlayManager` 注册/注销。优先级（数值大者优先）：
+
+```text
+SystemDialog (400) > Dialog (300) > Popup (200) > Toast (10, 仅显示)
+```
+
+- `Dialog::Layer::System` 使用 `lv_layer_sys` 且默认 `SystemDialog` 优先级；`Layer::Application` 使用 `lv_layer_top` 且默认 `Dialog`。
+- 多个对话框按 `(priority, 打开/置顶顺序)` 排 z-order；返回键从最高优先级开始，同优先级 LIFO。
+- `Dialog::setPriority()` 影响下一次 `open()`；需要运行时置顶可调用 `OverlayManager::bringToFront()`。
+- `OverlayManager::registerTransient()` 用于 Toast 等非焦点覆盖层：不创建 InputManager scope，不消费返回键，不阻挡键盘焦点。
+- 自定义覆盖层可用 `attach(root, priority, onBack)` 接入同一套 z-order/返回链；`detach(token)` 幂等。
+- 配置变更会关闭 Dialog（`LVGLPP_DYNAMIC_UI` 下），由 owner 按需重新打开。
+
+### 11.5 Application、Platform 与退出
 
 `sys::Application` 只负责通用生命周期（LVGL 初始化、资源挂载、事件队列、信号、主循环、清理）；显示/输入后端通过 `sys::Platform` 组合注入，后端类型不与 Application 继承体系耦合。
 

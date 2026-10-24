@@ -694,6 +694,14 @@ void Widget::handleLvglKeyEvent(lv_event_t *e)
     KeyEvent event{keyFromLvgl(raw), raw, action, false};
     dispatchKeyEvent(event);
 
+    // Native indevs bypass InputManager::dispatchKey(), so run the back chain
+    // here. Only a fresh press may consume the key.
+    if (!event.consumed && action == KeyAction::Press && event.key == Key::Escape
+        && sys::InputManager::getInstance().dispatchBack())
+    {
+        event.consumed = true;
+    }
+
     if (event.consumed)
     {
         lv_event_stop_processing(e);
@@ -1362,6 +1370,23 @@ void Widget::setVisible(bool visible)
 bool Widget::isVisible() const
 {
     return lv_base_ptr_ != nullptr && !lv_obj_has_flag(lv_base_ptr_, LV_OBJ_FLAG_HIDDEN);
+}
+
+bool Widget::isEffectivelyVisible() const
+{
+    if (lv_base_ptr_ == nullptr)
+    {
+        return false;
+    }
+
+    for (lv_obj_t *obj = lv_base_ptr_; obj != nullptr; obj = lv_obj_get_parent(obj))
+    {
+        if (lv_obj_has_flag(obj, LV_OBJ_FLAG_HIDDEN))
+        {
+            return false;
+        }
+    }
+    return true;
 }
 
 void Widget::setEnabled(bool enable)

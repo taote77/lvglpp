@@ -6,6 +6,7 @@ namespace lvglpp::widgets {
 ToastImpl::ToastImpl() : Widget(tools::LvObjFactory::createLvglDialog)
 {
     lv_obj_clear_flag(lvObj(), LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_clear_flag(lvObj(), LV_OBJ_FLAG_CLICKABLE);
     setBgColor(form::design::CLR_PRIMARY_DARK_BG);
     setRadius(8);
     setAlignment(LV_ALIGN_TOP_MID, 0, 70);

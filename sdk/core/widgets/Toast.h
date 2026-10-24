@@ -2,6 +2,7 @@
 #ifndef LVGLPP_TOAST_H
 #define LVGLPP_TOAST_H
 
+#include "OverlayManager.h"
 #include "ToastImpl.h"
 #include <lvgl.h>
 #include <memory>
@@ -24,11 +25,11 @@ private:
     static Toast &getInstance();
 
     Toast();
-    Toast(const Toast &) = default;
 
     static void showToast(const std::string &info, Type type);
 
     std::unique_ptr<ToastImpl> toast_impl_;
+    OverlayManager::Token      overlay_token_{};
 
     lv_anim_t anim_show_t_{};
     lv_anim_t anim_hide_t_{};

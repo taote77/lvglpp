@@ -25,12 +25,24 @@ namespace lvglpp::sys {
  * UI thread. Posted keys are queued thread-safely and consumed by the virtual
  * keypad indev on the UI thread.
  */
+/// Priority used by both focus scopes and global back handlers. Higher values
+/// win; equal priorities are resolved LIFO.
+enum class BackPriority : std::int32_t {
+    App          = -100,
+    Activity     = 0,
+    Page         = 100,
+    Popup        = 200,
+    Dialog       = 300,
+    SystemDialog = 400,
+};
+
 class InputManager
 {
 public:
     using ScopeToken       = std::uint64_t;
+    using BackToken        = std::uint64_t;
     using GlobalKeyHandler = std::function<void(widgets::KeyEvent &)>;
-    using BackHandler      = std::function<void()>;
+    using BackHandler      = std::function<bool()>; // true = consumed
 
     static InputManager &getInstance();
 
@@ -48,11 +60,12 @@ public:
         return installed_;
     }
 
-    /// Activity-level focus scope.
-    ScopeToken pushScope(widgets::Widget *root, BackHandler back = {});
+    /// Push a focus scope. It only becomes active when it is the highest
+    /// priority visible scope.
+    ScopeToken pushScope(widgets::Widget *root, BackHandler back = {}, BackPriority priority = BackPriority::Activity);
 
-    /// Modal (dialog) focus scope.
-    ScopeToken pushModalScope(widgets::Widget *root, BackHandler back = {});
+    /// Push a modal focus scope (dialog/popup).
+    ScopeToken pushModalScope(widgets::Widget *root, BackHandler back = {}, BackPriority priority = BackPriority::Dialog);
 
     void popScope(ScopeToken token);
 
@@ -60,9 +73,8 @@ public:
     void refresh(ScopeToken token);
 
     /**
-     * Refresh the top-most focus scope containing `item` (e.g. after page
-     * visibility changes). Does nothing when a modal scope is on top.
-     * Returns true when a scope was refreshed.
+     * Refresh the top-most visible focus scope containing `item` (e.g. after
+     * page visibility changes). Returns true when a scope was refreshed.
      */
     bool refreshScopeContaining(widgets::Widget *item);
 
@@ -90,8 +102,14 @@ public:
 
     core::Connection addGlobalKeyHandler(GlobalKeyHandler handler);
 
-    /// Fallback for an unconsumed Escape when the active scope has no handler.
-    void setBackHandler(BackHandler handler);
+    /// Register a global back handler (used for App/Activity fallbacks).
+    BackToken addBackHandler(BackPriority priority, BackHandler handler);
+
+    void removeBackHandler(BackToken token);
+
+    /// Run the unified back chain: scopes high-to-low, then global back
+    /// handlers, then legacy fallback. Returns true when consumed.
+    bool dispatchBack();
 
     lv_group_t *activeGroup() const;
 
@@ -106,12 +124,18 @@ private:
     ~InputManager() = default;
 
     struct Scope {
-        ScopeToken         id    = 0;
-        widgets::Widget *root  = nullptr;
-        lv_group_t        *group = nullptr;
-        bool               modal = false;
-        BackHandler        back;
+        ScopeToken       id       = 0;
+        widgets::Widget *root     = nullptr;
+        lv_group_t      *group    = nullptr;
+        BackPriority     priority = BackPriority::Activity;
+        BackHandler      back;
         widgets::Widget *sink = nullptr;
+    };
+
+    struct BackEntry {
+        BackToken    id       = 0;
+        BackPriority priority = BackPriority::App;
+        BackHandler  handler;
     };
 
     struct GlobalSlot {
@@ -130,6 +154,12 @@ private:
     void fillKeyData(lv_indev_data_t *data);
 
     void syncIndevs();
+
+    Scope *topVisibleScope();
+
+    const Scope *topVisibleScope() const;
+
+    void activateTopScope();
 
     void activateScope(Scope &scope);
 
@@ -152,7 +182,8 @@ private:
     std::vector<GlobalSlot> global_handlers_;
     std::uint64_t           next_global_id_ = 0;
 
-    BackHandler back_handler_;
+    std::vector<BackEntry> back_entries_;
+    BackToken              next_back_token_ = 1;
 
     std::mutex            queue_mutex_;
     std::deque<PostedKey> queue_;

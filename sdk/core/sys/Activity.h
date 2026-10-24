@@ -12,6 +12,7 @@ Description:定义不同活动的窗口。类似Android
 #include "UiTypes.h"
 #include "core/widgets/Widget.h"
 #include <any>
+#include <string>
 
 namespace lvglpp {
 namespace sys {
@@ -33,6 +34,22 @@ public:
 
     virtual void onNotifyUI(const Event &e) = 0;
 
+    /// Stable route identity used by StackView launch modes. Override when the
+    /// default typeid-based identity is not specific enough.
+    virtual std::string routeId() const;
+
+    /// Called instead of onCreate when SingleTop/ClearTop reuses this instance.
+    virtual void onNewArguments(std::any arg)
+    {
+        (void)arg;
+    }
+
+    /// Return true when the activity handled the back key itself.
+    virtual bool onBackPressed()
+    {
+        return false;
+    }
+
     /**
      * Called after a display orientation or layout-direction change.
      * The activity root has already been resized; rebuild content here.
@@ -43,7 +60,8 @@ public:
     }
 
     /// Rebuild the keyboard focus group after a rebuild/visibility change.
-    virtual void refreshFocus() {}
+    virtual void refreshFocus()
+    {}
 };
 } // namespace sys
 } // namespace lvglpp

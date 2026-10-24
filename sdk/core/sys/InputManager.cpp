@@ -65,36 +65,40 @@ void InputManager::shutdown()
         }
     }
     global_handlers_.clear();
-    back_handler_ = nullptr;
-    installed_    = false;
+    back_entries_.clear();
+    installed_ = false;
 }
 
 // ---------------------------------------------------------------- focus scopes
 
-InputManager::ScopeToken InputManager::pushScope(widgets::Widget *root, BackHandler back)
+InputManager::ScopeToken InputManager::pushScope(widgets::Widget *root, BackHandler back, BackPriority priority)
 {
     install();
 
     Scope scope;
-    scope.id    = next_scope_id_++;
-    scope.root  = root;
-    scope.group = lv_group_create();
-    scope.modal = false;
-    scope.back  = std::move(back);
+    scope.id       = next_scope_id_++;
+    scope.root     = root;
+    scope.group    = lv_group_create();
+    scope.priority = priority;
+    scope.back     = std::move(back);
 
+    const ScopeToken token = scope.id;
     scopes_.push_back(std::move(scope));
-    activateScope(scopes_.back());
-    return scopes_.back().id;
+    std::stable_sort(scopes_.begin(), scopes_.end(), [](const Scope &a, const Scope &b) {
+        if (a.priority != b.priority)
+        {
+            return static_cast<std::int32_t>(a.priority) < static_cast<std::int32_t>(b.priority);
+        }
+        return a.id < b.id;
+    });
+
+    activateTopScope();
+    return token;
 }
 
-InputManager::ScopeToken InputManager::pushModalScope(widgets::Widget *root, BackHandler back)
+InputManager::ScopeToken InputManager::pushModalScope(widgets::Widget *root, BackHandler back, BackPriority priority)
 {
-    const ScopeToken token = pushScope(root, std::move(back));
-    if (!scopes_.empty())
-    {
-        scopes_.back().modal = true;
-    }
-    return token;
+    return pushScope(root, std::move(back), priority);
 }
 
 void InputManager::popScope(ScopeToken token)
@@ -105,62 +109,52 @@ void InputManager::popScope(ScopeToken token)
         return;
     }
 
-    const bool was_top = (&*it == &scopes_.back());
     deactivateScope(*it);
     scopes_.erase(it);
-
-    if (was_top)
-    {
-        if (!scopes_.empty())
-        {
-            activateScope(scopes_.back());
-        } else
-        {
-            syncIndevs();
-        }
-    }
+    activateTopScope();
 }
 
 void InputManager::refresh(ScopeToken token)
 {
-    auto it = std::find_if(scopes_.begin(), scopes_.end(), [token](const Scope &scope) { return scope.id == token; });
-    if (it != scopes_.end())
+    auto *top = topVisibleScope();
+    if (top != nullptr && top->id == token)
     {
-        activateScope(*it);
+        activateScope(*top);
     }
 }
 
 bool InputManager::refreshScopeContaining(widgets::Widget *item)
 {
-    if (item == nullptr || scopes_.empty())
+    if (item == nullptr)
     {
         return false;
     }
 
-    Scope &top = scopes_.back();
-    if (!isUnderScope(top, item))
+    Scope *top = topVisibleScope();
+    if (top == nullptr || !isUnderScope(*top, item))
     {
         return false;
     }
 
-    activateScope(top);
+    activateScope(*top);
     return true;
 }
 
 void InputManager::refreshFor(widgets::Widget *item)
 {
-    if (item == nullptr || scopes_.empty() || item->lvObj() == nullptr)
+    Scope *top = topVisibleScope();
+    if (item == nullptr || top == nullptr || item->lvObj() == nullptr)
     {
         return;
     }
 
-    Scope &scope = scopes_.back();
+    Scope &scope = *top;
     if (scope.group == nullptr || !isUnderScope(scope, item))
     {
         return;
     }
 
-    const bool visible = item->isVisible();
+    const bool visible = item->isEffectivelyVisible();
     const bool enabled = item->isEnabled();
     if (item->isFocusable() && visible && enabled)
     {
@@ -173,7 +167,7 @@ void InputManager::refreshFor(widgets::Widget *item)
         if (scope.sink != nullptr && lv_group_get_focused(scope.group) == scope.sink->lvObj())
         {
             widgets::Widget *sink = scope.sink;
-            scope.sink              = nullptr;
+            scope.sink            = nullptr;
             lv_group_remove_obj(sink->lvObj());
             lv_group_focus_obj(item->lvObj());
         } else if (lv_group_get_focused(scope.group) == nullptr)
@@ -188,16 +182,18 @@ void InputManager::refreshFor(widgets::Widget *item)
 
 bool InputManager::requestFocus(widgets::Widget *item)
 {
-    if (item == nullptr || item->lvObj() == nullptr || scopes_.empty() || !item->isFocusable())
+    if (item == nullptr || item->lvObj() == nullptr || !item->isFocusable())
     {
         return false;
     }
 
-    Scope &scope = scopes_.back();
-    if (scope.group == nullptr || !isUnderScope(scope, item))
+    Scope *top = topVisibleScope();
+    if (top == nullptr || top->group == nullptr || !isUnderScope(*top, item))
     {
         return false;
     }
+
+    Scope &scope = *top;
 
     lv_group_add_obj(scope.group, item->lvObj());
     lv_group_focus_obj(item->lvObj());
@@ -234,11 +230,44 @@ void InputManager::focusLast()
 
 lv_group_t *InputManager::activeGroup() const
 {
-    if (scopes_.empty())
+    const Scope *top = topVisibleScope();
+    return top != nullptr ? top->group : nullptr;
+}
+
+InputManager::Scope *InputManager::topVisibleScope()
+{
+    for (auto it = scopes_.rbegin(); it != scopes_.rend(); ++it)
     {
-        return nullptr;
+        if (it->root != nullptr && it->root->isEffectivelyVisible())
+        {
+            return &*it;
+        }
     }
-    return scopes_.back().group;
+    return nullptr;
+}
+
+const InputManager::Scope *InputManager::topVisibleScope() const
+{
+    for (auto it = scopes_.rbegin(); it != scopes_.rend(); ++it)
+    {
+        if (it->root != nullptr && it->root->isEffectivelyVisible())
+        {
+            return &*it;
+        }
+    }
+    return nullptr;
+}
+
+void InputManager::activateTopScope()
+{
+    Scope *top = topVisibleScope();
+    if (top != nullptr)
+    {
+        activateScope(*top);
+    } else
+    {
+        syncIndevs();
+    }
 }
 
 void InputManager::activateScope(Scope &scope)
@@ -407,16 +436,7 @@ bool InputManager::dispatchKey(widgets::KeyEvent &event)
 
     if (!event.consumed && event.action == widgets::KeyAction::Press && event.key == widgets::Key::Escape)
     {
-        if (!scopes_.empty() && scopes_.back().back)
-        {
-            event.consumed = true;
-            auto back      = scopes_.back().back;
-            back();
-        } else if (back_handler_)
-        {
-            event.consumed = true;
-            back_handler_();
-        }
+        event.consumed = dispatchBack();
     }
 
     return event.consumed;
@@ -465,9 +485,60 @@ void InputManager::removeGlobalHandler(std::uint64_t id)
     global_handlers_.erase(found);
 }
 
-void InputManager::setBackHandler(BackHandler handler)
+InputManager::BackToken InputManager::addBackHandler(BackPriority priority, BackHandler handler)
 {
-    back_handler_ = std::move(handler);
+    if (!handler)
+    {
+        return 0;
+    }
+
+    const BackToken token = next_back_token_++;
+    back_entries_.push_back(BackEntry{token, priority, std::move(handler)});
+    return token;
+}
+
+void InputManager::removeBackHandler(BackToken token)
+{
+    back_entries_.erase(std::remove_if(back_entries_.begin(), back_entries_.end(), [token](const BackEntry &entry) { return entry.id == token; }), back_entries_.end());
+}
+
+bool InputManager::dispatchBack()
+{
+    // Copy first: a handler may pop scopes or destroy the widgets that own
+    // later handlers.
+    std::vector<BackHandler> scope_handlers;
+    for (auto it = scopes_.rbegin(); it != scopes_.rend(); ++it)
+    {
+        if (it->root != nullptr && it->root->isEffectivelyVisible() && it->back)
+        {
+            scope_handlers.push_back(it->back);
+        }
+    }
+    for (auto &handler : scope_handlers)
+    {
+        if (handler && handler())
+        {
+            return true;
+        }
+    }
+
+    std::vector<BackEntry> entries = back_entries_;
+    std::stable_sort(entries.begin(), entries.end(), [](const BackEntry &a, const BackEntry &b) {
+        if (a.priority != b.priority)
+        {
+            return static_cast<std::int32_t>(a.priority) > static_cast<std::int32_t>(b.priority);
+        }
+        return a.id > b.id;
+    });
+
+    for (auto &entry : entries)
+    {
+        if (entry.handler && entry.handler())
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 void InputManager::virtualReadCb(lv_indev_t *indev, lv_indev_data_t *data)

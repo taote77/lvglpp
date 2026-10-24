@@ -7,6 +7,7 @@
 #include "Event.h"
 #include "UiTypes.h"
 #include <any>
+#include <cstdint>
 #include <deque>
 #include <functional>
 #include <memory>
@@ -17,6 +18,15 @@ namespace lvglpp::sys {
 class StackView
 {
 public:
+    enum class LaunchMode {
+        Standard,  ///< Always push a new instance.
+        SingleTop, ///< Reuse the top instance when routeId() matches.
+        ClearTop,  ///< Pop to the nearest matching route, then reuse it.
+        Replace,   ///< Replace the current top instance.
+    };
+
+    using ResultHandler = std::function<void(std::any)>;
+
     StackView(const StackView &) = delete;
 
     StackView &operator=(const StackView &) = delete;
@@ -27,20 +37,25 @@ public:
 
     void start();
 
-    void pushView(const std::shared_ptr<Activity> &view, std::any arg = {});
+    bool pushView(const std::shared_ptr<Activity> &view, std::any arg = {}, ResultHandler onResult = {}, LaunchMode mode = LaunchMode::Standard);
 
-    void pushViewAndReplaced(const std::shared_ptr<Activity> &view, std::any arg = {});
+    bool pushViewAndReplaced(const std::shared_ptr<Activity> &view, std::any arg = {});
 
-    void pushViewAndReplacedImmediately(const std::shared_ptr<Activity> &view, std::any arg = {});
+    bool pushViewAndReplacedImmediately(const std::shared_ptr<Activity> &view, std::any arg = {});
 
-    void popView();
+    /// Pop the top activity, delivering result to the pusher's handler.
+    bool popView(std::any result = {});
 
     /**
      * 直接退出（没有动画）
      */
-    void popViewImmediately();
+    bool popViewImmediately(std::any result = {});
 
-    void pushViewImmediately(const std::shared_ptr<Activity> &view, std::any arg = {});
+    bool popTo(int32_t depth);
+
+    bool popToRoot();
+
+    bool pushViewImmediately(const std::shared_ptr<Activity> &view, std::any arg = {}, ResultHandler onResult = {}, LaunchMode mode = LaunchMode::Standard);
 
     int32_t depth() const
     {
@@ -104,18 +119,33 @@ private:
     const int                              pop_anim_ms_   = 250;
     std::vector<std::shared_ptr<Activity>> view_manager_;
     std::vector<std::any>                  view_args_;
+    std::vector<ResultHandler>             view_result_handlers_;
     std::vector<std::shared_ptr<Activity>> delete_view_manager_;
     std::deque<std::function<void()>>      pending_ops_;
     Application                           *app_ = nullptr;
+    std::any                               pending_pop_result_;
+    std::uint64_t                          back_token_ = 0;
 
     StackView();
 
-    /// Run immediately, or queue while a pop transition is in flight.
+    /// Run immediately, or queue while a transition is in flight.
     void runOrQueue(std::function<void()> op);
 
     void processPendingOps();
 
-    void popTop();
+    void finishTransition();
+
+    bool pushViewNow(const std::shared_ptr<Activity> &view, std::any arg, ResultHandler onResult, LaunchMode mode, bool animate);
+
+    bool pushOrApply(const std::shared_ptr<Activity> &view, std::any arg, ResultHandler onResult, LaunchMode mode, bool animate);
+
+    bool popOrApply(std::any result);
+
+    void pushEntry(const std::shared_ptr<Activity> &view, std::any arg, ResultHandler onResult);
+
+    void popEntry();
+
+    void popTop(bool animate, std::any result);
 
     void cancelAnimations(Activity *activity);
 
