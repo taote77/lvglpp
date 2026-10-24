@@ -537,6 +537,11 @@ Connection Widget::onSimpleEvent(lv_event_code_t code, ClickHandler handler)
     return Connection(state);
 }
 
+Connection Widget::onEvent(lv_event_code_t code, ClickHandler handler)
+{
+    return onSimpleEvent(code, std::move(handler));
+}
+
 Connection Widget::onClicked(ClickHandler handler)
 {
     return onSimpleEvent(LV_EVENT_CLICKED, std::move(handler));

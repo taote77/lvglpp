@@ -268,7 +268,8 @@ item->applyStyle(theme.focusStyle(), LV_PART_MAIN | LV_STATE_FOCUS_KEY);
   （深色/基础值）与 `color_sheet_light.h`（浅色值）。
 - 设计令牌可从 Figma 同步（Tokens Studio 导出或 Figma Variables REST），
   详见 `design/README.md`。生成头文件已提交，普通构建不依赖 Python 或网络。
-- **主题切换不回溯已创建控件**；请在构建 UI 之前设置模式。
+- **主题切换不回溯已创建控件**；运行期切换主题后需重建 UI（smart_home 设置页
+  已通过 `UiConfig::requestRebuild()` 接入）。
 - `PushButton` 的配色由 `Theme::buttonPalette()` 驱动，仍保留 `ColorStyle` 枚举。
 
 ### 5.3 设计令牌
@@ -281,8 +282,13 @@ python3 -I sdk/tools/design/sync_tokens.py generate
 cmake --build build --target design-check
 ```
 
-- `form::design::CLR_*` 是深色/基础值；`form::design::light::CLR_*` 是浅色值。
-- 需要跟随运行时主题的控件请使用 `core::Theme::color(ColorRole)`。
+- `form::design::CLR_*` 是 `ColorToken`，读取时会按当前 `ThemeMode` 隐式转换为
+  深色或浅色值；已有调用点无需改写即可跟随 `Theme::setMode()`。
+- 需要显式取值时用 `CLR_X.darkValue()` / `CLR_X.lightValue()`，或
+  `form::design::light::CLR_X`。它们是运行期值，不是 `constexpr`。
+- 控件在创建时保存颜色；切换主题后需要重建 UI。smart_home 设置页会调用
+  `sys::UiConfig::requestRebuild()`，由主循环安全地重建当前页面。
+- 需要语义角色（而不是具体 token）时使用 `core::Theme::color(ColorRole)`。
 - 不要直接编辑生成的两个头文件；新增角色时同步更新 `Theme.cpp` 的 `kPalette`
   （`static_assert` 会在漏掉角色时编译失败）。
 

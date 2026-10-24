@@ -9,95 +9,129 @@
 
 namespace form::design {
 
-// ---- colours (dark theme / base values) ----
-inline constexpr std::uint32_t CLR_PRIMARY = 0x4986FF; // #4986FF
-inline constexpr std::uint32_t CLR_ON_PRIMARY = 0xFFFFFF; // #FFFFFF
-inline constexpr std::uint32_t CLR_PRIMARY_CONTAINER = 0x11225D; // #11225D
-inline constexpr std::uint32_t CLR_ON_PRIMARY_CONTAINER = 0xD5DDFB; // #D5DDFB
-inline constexpr std::uint32_t CLR_SECONDARY = 0x191D2A; // #191D2A
-inline constexpr std::uint32_t CLR_ON_SECONDARY = 0xD7DBE7; // #D7DBE7
-inline constexpr std::uint32_t CLR_SECONDARY_CONTAINER = 0x485479; // #485479
-inline constexpr std::uint32_t CLR_ON_SECONDARY_CONTAINER = 0xE6EAF8; // #E6EAF8
-inline constexpr std::uint32_t CLR_ERROR = 0xE92E2B; // #E92E2B
-inline constexpr std::uint32_t CLR_ON_ERROR = 0xFFFFFF; // #FFFFFF
-inline constexpr std::uint32_t CLR_ERROR_CONTAINER = 0x5D1211; // #5D1211
-inline constexpr std::uint32_t CLR_WARN_CONTAINER = 0xF19F3B; // #F19F3B
-inline constexpr std::uint32_t CLR_ON_ERROR_CONTAINER = 0xFFD4D3; // #FFD4D3
-inline constexpr std::uint32_t CLR_WARNING = 0xF5A34A; // #F5A34A
-inline constexpr std::uint32_t CLR_ON_WARNING = 0xFFFFFF; // #FFFFFF
-inline constexpr std::uint32_t CLR_WARNING_CONTAINER = 0x5D3811; // #5D3811
-inline constexpr std::uint32_t CLR_ON_WARNING_CONTAINER = 0xFFECD8; // #FFECD8
-inline constexpr std::uint32_t CLR_SUCCESS = 0x0AC882; // #0AC882
-inline constexpr std::uint32_t CLR_ON_SUCCESS = 0xFFFFFF; // #FFFFFF
-inline constexpr std::uint32_t CLR_SUCCESS_CONTAINER = 0x115D42; // #115D42
-inline constexpr std::uint32_t CLR_ON_SUCCESS_CONTAINER = 0xD4FFEF; // #D4FFEF
-inline constexpr std::uint32_t CLR_INFO = 0x34BAEF; // #34BAEF
-inline constexpr std::uint32_t CLR_ON_INFO = 0xFFFFFF; // #FFFFFF
-inline constexpr std::uint32_t CLR_INFO_CONTAINER = 0x114B5D; // #114B5D
-inline constexpr std::uint32_t CLR_ON_INFO_CONTAINER = 0xD2F5FF; // #D2F5FF
-inline constexpr std::uint32_t CLR_SURFACE = 0x12151E; // #12151E
-inline constexpr std::uint32_t CLR_SURFACE_DIM = 0x1D1F29; // #1D1F29
-inline constexpr std::uint32_t CLR_SURFACE_BRIGHT = 0x313852; // #313852
-inline constexpr std::uint32_t CLR_SURFACE_CONTAINER_LOWEST = 0x1D1F29; // #1D1F29
-inline constexpr std::uint32_t CLR_SURFACE_CONTAINER_LOW = 0x191D2A; // #191D2A
-inline constexpr std::uint32_t CLR_SURFACE_CONTAINER = 0x252B3E; // #252B3E
-inline constexpr std::uint32_t CLR_SURFACE_CONTAINER_HIGH = 0x313852; // #313852
-inline constexpr std::uint32_t CLR_SURFACE_CONTAINER_HIGHEST = 0x3C4564; // #3C4564
-inline constexpr std::uint32_t CLR_SURFACE_CONTAINER_1 = 0x313852; // #313852
-inline constexpr std::uint32_t CLR_SURFACE_DIS_CONTAINER_1 = 0x3D3E4C; // #3D3E4C
-inline constexpr std::uint32_t CLR_ON_SURFACE = 0xFFFFFF; // #FFFFFF
-inline constexpr std::uint32_t CLR_ON_SURFACE_VARIANT_0 = 0xF3F4F7; // #F3F4F7
-inline constexpr std::uint32_t CLR_ON_SURFACE_VARIANT_1 = 0xD7DBE7; // #D7DBE7
-inline constexpr std::uint32_t CLR_ON_SURFACE_VARIANT_2 = 0xB0B7D0; // #B0B7D0
-inline constexpr std::uint32_t CLR_OUTLINE = 0x485479; // #485479
-inline constexpr std::uint32_t CLR_OUTLINE_VARIANT = 0x313852; // #313852
-inline constexpr std::uint32_t CLR_MAIN_BACKGROUND = 0x191D2A; // #191D2A
-inline constexpr std::uint32_t CLR_PROGRESS_NORMAL_FILL = 0x6297FF; // #6297FF
-inline constexpr std::uint32_t CLR_PROGRESS_WARN_FILL = 0xEE8A20; // #EE8A20
-inline constexpr std::uint32_t CLR_PROGRESS_ERROR_FILL = 0xE92E2B; // #E92E2B
-inline constexpr std::uint32_t CLR_GREATER_BUTTON = 0x578BEF; // #578BEF
-inline constexpr std::uint32_t CLR_BUTTON_GRADU_START = 0x6297FF; // #6297FF
-inline constexpr std::uint32_t CLR_BUTTON_GRADU_END = 0x3360B7; // #3360B7
-inline constexpr std::uint32_t CLR_GRADU = 0xB0B7D0; // #B0B7D0
-inline constexpr std::uint32_t CLR_WIDGET_BUTTON_BLUE = 0x4986FF; // #4986FF
-inline constexpr std::uint32_t CLR_WIDGET_BUTTON_BLUE_DIS = 0x3A67C0; // #3A67C0
-inline constexpr std::uint32_t CLR_WIDGET_BUTTON_GRAY_DIS = 0x3A4462; // #3A4462
-inline constexpr std::uint32_t CLR_INDICATOR_SELECTED = 0xFFFFFF; // #FFFFFF
-inline constexpr std::uint32_t CLR_INDICATOR_UNSELECTED = 0xABB6C3; // #ABB6C3
-inline constexpr std::uint32_t CLR_DIALOG_BG_COLOR = 0x000000; // #000000
-inline constexpr std::uint32_t CLR_DIALOG_BG_MASK = 0x1A1D22; // #1A1D22
-inline constexpr std::uint32_t CLR_CHECKBOX_CONTAINER = 0x647384; // #647384
-inline constexpr std::uint32_t CLR_CHECKBOX_SELECTED = 0x34BAEF; // #34BAEF
-inline constexpr std::uint32_t CLR_TEXT_PRIMARY_BLACK = 0x161616; // #161616
-inline constexpr std::uint32_t CLR_PRIMARY_BRIGHT = 0xFFFFFF; // #FFFFFF
-inline constexpr std::uint32_t CLR_BACKGROUND = 0x3B424D; // #3B424D
-inline constexpr std::uint32_t CLR_PRIMARY_BLACK = 0x161616; // #161616
-inline constexpr std::uint32_t CLR_BUTTON_BG_BLACK2 = 0xDDDEE2; // #DDDEE2
-inline constexpr std::uint32_t CLR_PRIMARY_BLUE = 0x3760EA; // #3760EA
-inline constexpr std::uint32_t CLR_PRIMARY_DARK_BLUE = 0x0025AC; // #0025AC
-inline constexpr std::uint32_t CLR_PRIMARY_BTN_BORDER = 0xC0C1D0; // #C0C1D0
-inline constexpr std::uint32_t CLR_PRIMARY_DARK_BG = 0x2C3138; // #2C3138
-inline constexpr std::uint32_t CLR_PRIMARY_BLACK_HOVER = 0xBCC3CC; // #BCC3CC
-inline constexpr std::uint32_t CLR_PRIMARY_DIS_BG = 0x6B7580; // #6B7580
-inline constexpr std::uint32_t CLR_PRIMARY_DIS_TEXT = 0xEDEFF2; // #EDEFF2
-inline constexpr std::uint32_t CLR_PRIMARY_DIS_TEXT_PRESS = 0x2C3138; // #2C3138
-inline constexpr std::uint32_t CLR_SECONDARY_DANGER_MASTER = 0xE55353; // #E55353
-inline constexpr std::uint32_t CLR_WARNING_DARK = 0xCA2525; // #CA2525
-inline constexpr std::uint32_t CLR_PRIMARY_BLUE_DIS_TEXT = 0xBAC8F8; // #BAC8F8
-inline constexpr std::uint32_t CLR_PRIMARY_BLUE_DIS_BG = 0xF7F9FF; // #F7F9FF
-inline constexpr std::uint32_t CLR_KEYBOARD_BG = 0xE1E5EA; // #E1E5EA
-inline constexpr std::uint32_t CLR_BANNER_INFO_BG = 0xE3E8F8; // #E3E8F8
-inline constexpr std::uint32_t CLR_BANNER_WARN_BG = 0xFCECD8; // #FCECD8
-inline constexpr std::uint32_t CLR_BANNER_ERROR_BG = 0xE55353; // #E55353
-inline constexpr std::uint32_t CLR_DASH_DOT = 0x4D536A; // #4D536A
-inline constexpr std::uint32_t CLR_PRIMARY_ZERO = 0x10B88F; // #10B88F
-inline constexpr std::uint32_t CLR_SURFACE_CANVAS = 0x444E5B; // #444E5B
-inline constexpr std::uint32_t CLR_BUTTON_LIGHT_BLUE_BG = 0xF7F9FF; // #F7F9FF
-inline constexpr std::uint32_t CLR_BUTTON_LIGHT_BLUE_PRESSED = 0xEAEFFF; // #EAEFFF
-inline constexpr std::uint32_t CLR_BUTTON_RED_PRESSED = 0x661616; // #661616
-inline constexpr std::uint32_t CLR_BUTTON_DARK_PRESSED = 0x161616; // #161616
-inline constexpr std::uint32_t CLR_BUTTON_DARK_DISABLED = 0xBCC3CC; // #BCC3CC
-inline constexpr std::uint32_t CLR_BUTTON_DARK_GRAY_BG = 0x485479; // #485479
+namespace detail {
+
+/// Set by core::Theme::rebuild(); read by ColorToken conversions.
+void setRuntimeTheme(bool light) noexcept;
+
+/// Resolve a generated token against the active theme.
+std::uint32_t resolveColor(std::uint32_t dark, std::uint32_t light) noexcept;
+
+} // namespace detail
+
+/**
+ * A generated design token.
+ *
+ * Implicit conversion returns the value for the active ThemeMode, so
+ * existing CLR_* call sites follow Theme::setMode() without rewriting
+ * every widget call. Use darkValue()/lightValue() for explicit values.
+ */
+struct ColorToken {
+    std::uint32_t dark;
+    std::uint32_t light;
+
+    constexpr std::uint32_t darkValue() const noexcept
+    {
+        return dark;
+    }
+
+    constexpr std::uint32_t lightValue() const noexcept
+    {
+        return light;
+    }
+
+    operator std::uint32_t() const noexcept;
+};
+
+// ---- colours (dark / light) ----
+inline constexpr ColorToken CLR_PRIMARY{0x4986FF, 0x3760EA}; // #4986FF / #3760EA
+inline constexpr ColorToken CLR_ON_PRIMARY{0xFFFFFF, 0xFFFFFF}; // #FFFFFF / #FFFFFF
+inline constexpr ColorToken CLR_PRIMARY_CONTAINER{0x11225D, 0xD5DDFB}; // #11225D / #D5DDFB
+inline constexpr ColorToken CLR_ON_PRIMARY_CONTAINER{0xD5DDFB, 0x11225D}; // #D5DDFB / #11225D
+inline constexpr ColorToken CLR_SECONDARY{0x191D2A, 0x5A6070}; // #191D2A / #5A6070
+inline constexpr ColorToken CLR_ON_SECONDARY{0xD7DBE7, 0xFFFFFF}; // #D7DBE7 / #FFFFFF
+inline constexpr ColorToken CLR_SECONDARY_CONTAINER{0x485479, 0xE6EAF8}; // #485479 / #E6EAF8
+inline constexpr ColorToken CLR_ON_SECONDARY_CONTAINER{0xE6EAF8, 0x191D2A}; // #E6EAF8 / #191D2A
+inline constexpr ColorToken CLR_ERROR{0xE92E2B, 0xD32F2F}; // #E92E2B / #D32F2F
+inline constexpr ColorToken CLR_ON_ERROR{0xFFFFFF, 0xFFFFFF}; // #FFFFFF / #FFFFFF
+inline constexpr ColorToken CLR_ERROR_CONTAINER{0x5D1211, 0xFFDAD6}; // #5D1211 / #FFDAD6
+inline constexpr ColorToken CLR_WARN_CONTAINER{0xF19F3B, 0xFFE0B2}; // #F19F3B / #FFE0B2
+inline constexpr ColorToken CLR_ON_ERROR_CONTAINER{0xFFD4D3, 0x410002}; // #FFD4D3 / #410002
+inline constexpr ColorToken CLR_WARNING{0xF5A34A, 0xED6C02}; // #F5A34A / #ED6C02
+inline constexpr ColorToken CLR_ON_WARNING{0xFFFFFF, 0xFFFFFF}; // #FFFFFF / #FFFFFF
+inline constexpr ColorToken CLR_WARNING_CONTAINER{0x5D3811, 0xFFE7CC}; // #5D3811 / #FFE7CC
+inline constexpr ColorToken CLR_ON_WARNING_CONTAINER{0xFFECD8, 0x3D2A00}; // #FFECD8 / #3D2A00
+inline constexpr ColorToken CLR_SUCCESS{0x0AC882, 0x2E7D32}; // #0AC882 / #2E7D32
+inline constexpr ColorToken CLR_ON_SUCCESS{0xFFFFFF, 0xFFFFFF}; // #FFFFFF / #FFFFFF
+inline constexpr ColorToken CLR_SUCCESS_CONTAINER{0x115D42, 0xC8F7DC}; // #115D42 / #C8F7DC
+inline constexpr ColorToken CLR_ON_SUCCESS_CONTAINER{0xD4FFEF, 0x00513A}; // #D4FFEF / #00513A
+inline constexpr ColorToken CLR_INFO{0x34BAEF, 0x0288D1}; // #34BAEF / #0288D1
+inline constexpr ColorToken CLR_ON_INFO{0xFFFFFF, 0xFFFFFF}; // #FFFFFF / #FFFFFF
+inline constexpr ColorToken CLR_INFO_CONTAINER{0x114B5D, 0xD2F5FF}; // #114B5D / #D2F5FF
+inline constexpr ColorToken CLR_ON_INFO_CONTAINER{0xD2F5FF, 0x003544}; // #D2F5FF / #003544
+inline constexpr ColorToken CLR_SURFACE{0x12151E, 0xF7F9FF}; // #12151E / #F7F9FF
+inline constexpr ColorToken CLR_SURFACE_DIM{0x1D1F29, 0xE6EAF8}; // #1D1F29 / #E6EAF8
+inline constexpr ColorToken CLR_SURFACE_BRIGHT{0x313852, 0xFFFFFF}; // #313852 / #FFFFFF
+inline constexpr ColorToken CLR_SURFACE_CONTAINER_LOWEST{0x1D1F29, 0xFFFFFF}; // #1D1F29 / #FFFFFF
+inline constexpr ColorToken CLR_SURFACE_CONTAINER_LOW{0x191D2A, 0xF7F9FF}; // #191D2A / #F7F9FF
+inline constexpr ColorToken CLR_SURFACE_CONTAINER{0x252B3E, 0xEEF1F8}; // #252B3E / #EEF1F8
+inline constexpr ColorToken CLR_SURFACE_CONTAINER_HIGH{0x313852, 0xE2E6EF}; // #313852 / #E2E6EF
+inline constexpr ColorToken CLR_SURFACE_CONTAINER_HIGHEST{0x3C4564, 0xD8DDE9}; // #3C4564 / #D8DDE9
+inline constexpr ColorToken CLR_SURFACE_CONTAINER_1{0x313852, 0xE2E6EF}; // #313852 / #E2E6EF
+inline constexpr ColorToken CLR_SURFACE_DIS_CONTAINER_1{0x3D3E4C, 0xCFD4DF}; // #3D3E4C / #CFD4DF
+inline constexpr ColorToken CLR_ON_SURFACE{0xFFFFFF, 0x161616}; // #FFFFFF / #161616
+inline constexpr ColorToken CLR_ON_SURFACE_VARIANT_0{0xF3F4F7, 0x161616}; // #F3F4F7 / #161616
+inline constexpr ColorToken CLR_ON_SURFACE_VARIANT_1{0xD7DBE7, 0x4A5060}; // #D7DBE7 / #4A5060
+inline constexpr ColorToken CLR_ON_SURFACE_VARIANT_2{0xB0B7D0, 0x6B7280}; // #B0B7D0 / #6B7280
+inline constexpr ColorToken CLR_OUTLINE{0x485479, 0xC0C1D0}; // #485479 / #C0C1D0
+inline constexpr ColorToken CLR_OUTLINE_VARIANT{0x313852, 0xD5D8E2}; // #313852 / #D5D8E2
+inline constexpr ColorToken CLR_MAIN_BACKGROUND{0x191D2A, 0xF7F9FF}; // #191D2A / #F7F9FF
+inline constexpr ColorToken CLR_PROGRESS_NORMAL_FILL{0x6297FF, 0x3760EA}; // #6297FF / #3760EA
+inline constexpr ColorToken CLR_PROGRESS_WARN_FILL{0xEE8A20, 0xED6C02}; // #EE8A20 / #ED6C02
+inline constexpr ColorToken CLR_PROGRESS_ERROR_FILL{0xE92E2B, 0xD32F2F}; // #E92E2B / #D32F2F
+inline constexpr ColorToken CLR_GREATER_BUTTON{0x578BEF, 0x3760EA}; // #578BEF / #3760EA
+inline constexpr ColorToken CLR_BUTTON_GRADU_START{0x6297FF, 0x6297FF}; // #6297FF / #6297FF
+inline constexpr ColorToken CLR_BUTTON_GRADU_END{0x3360B7, 0x3360B7}; // #3360B7 / #3360B7
+inline constexpr ColorToken CLR_GRADU{0xB0B7D0, 0xC0C1D0}; // #B0B7D0 / #C0C1D0
+inline constexpr ColorToken CLR_WIDGET_BUTTON_BLUE{0x4986FF, 0x3760EA}; // #4986FF / #3760EA
+inline constexpr ColorToken CLR_WIDGET_BUTTON_BLUE_DIS{0x3A67C0, 0x2448B8}; // #3A67C0 / #2448B8
+inline constexpr ColorToken CLR_WIDGET_BUTTON_GRAY_DIS{0x3A4462, 0xB8BFCC}; // #3A4462 / #B8BFCC
+inline constexpr ColorToken CLR_INDICATOR_SELECTED{0xFFFFFF, 0x161616}; // #FFFFFF / #161616
+inline constexpr ColorToken CLR_INDICATOR_UNSELECTED{0xABB6C3, 0xABB6C3}; // #ABB6C3 / #ABB6C3
+inline constexpr ColorToken CLR_DIALOG_BG_COLOR{0x000000, 0x000000}; // #000000 / #000000
+inline constexpr ColorToken CLR_DIALOG_BG_MASK{0x1A1D22, 0x1A1D22}; // #1A1D22 / #1A1D22
+inline constexpr ColorToken CLR_CHECKBOX_CONTAINER{0x647384, 0x647384}; // #647384 / #647384
+inline constexpr ColorToken CLR_CHECKBOX_SELECTED{0x34BAEF, 0x3760EA}; // #34BAEF / #3760EA
+inline constexpr ColorToken CLR_TEXT_PRIMARY_BLACK{0x161616, 0x161616}; // #161616 / #161616
+inline constexpr ColorToken CLR_PRIMARY_BRIGHT{0xFFFFFF, 0xFFFFFF}; // #FFFFFF / #FFFFFF
+inline constexpr ColorToken CLR_BACKGROUND{0x3B424D, 0xE7EBF2}; // #3B424D / #E7EBF2
+inline constexpr ColorToken CLR_PRIMARY_BLACK{0x161616, 0x161616}; // #161616 / #161616
+inline constexpr ColorToken CLR_BUTTON_BG_BLACK2{0xDDDEE2, 0xDDDEE2}; // #DDDEE2 / #DDDEE2
+inline constexpr ColorToken CLR_PRIMARY_BLUE{0x3760EA, 0x3760EA}; // #3760EA / #3760EA
+inline constexpr ColorToken CLR_PRIMARY_DARK_BLUE{0x0025AC, 0x0025AC}; // #0025AC / #0025AC
+inline constexpr ColorToken CLR_PRIMARY_BTN_BORDER{0xC0C1D0, 0xC0C1D0}; // #C0C1D0 / #C0C1D0
+inline constexpr ColorToken CLR_PRIMARY_DARK_BG{0x2C3138, 0xE2E6EF}; // #2C3138 / #E2E6EF
+inline constexpr ColorToken CLR_PRIMARY_BLACK_HOVER{0xBCC3CC, 0xC9CFDA}; // #BCC3CC / #C9CFDA
+inline constexpr ColorToken CLR_PRIMARY_DIS_BG{0x6B7580, 0xB0B7C3}; // #6B7580 / #B0B7C3
+inline constexpr ColorToken CLR_PRIMARY_DIS_TEXT{0xEDEFF2, 0x6B7280}; // #EDEFF2 / #6B7280
+inline constexpr ColorToken CLR_PRIMARY_DIS_TEXT_PRESS{0x2C3138, 0xD8DDE9}; // #2C3138 / #D8DDE9
+inline constexpr ColorToken CLR_SECONDARY_DANGER_MASTER{0xE55353, 0xD32F2F}; // #E55353 / #D32F2F
+inline constexpr ColorToken CLR_WARNING_DARK{0xCA2525, 0xD32F2F}; // #CA2525 / #D32F2F
+inline constexpr ColorToken CLR_PRIMARY_BLUE_DIS_TEXT{0xBAC8F8, 0x2448B8}; // #BAC8F8 / #2448B8
+inline constexpr ColorToken CLR_PRIMARY_BLUE_DIS_BG{0xF7F9FF, 0xF7F9FF}; // #F7F9FF / #F7F9FF
+inline constexpr ColorToken CLR_KEYBOARD_BG{0xE1E5EA, 0xE1E5EA}; // #E1E5EA / #E1E5EA
+inline constexpr ColorToken CLR_BANNER_INFO_BG{0xE3E8F8, 0xE3E8F8}; // #E3E8F8 / #E3E8F8
+inline constexpr ColorToken CLR_BANNER_WARN_BG{0xFCECD8, 0xFCECD8}; // #FCECD8 / #FCECD8
+inline constexpr ColorToken CLR_BANNER_ERROR_BG{0xE55353, 0xE55353}; // #E55353 / #E55353
+inline constexpr ColorToken CLR_DASH_DOT{0x4D536A, 0x9AA4B2}; // #4D536A / #9AA4B2
+inline constexpr ColorToken CLR_PRIMARY_ZERO{0x10B88F, 0x10B88F}; // #10B88F / #10B88F
+inline constexpr ColorToken CLR_SURFACE_CANVAS{0x444E5B, 0xE7EBF2}; // #444E5B / #E7EBF2
+inline constexpr ColorToken CLR_BUTTON_LIGHT_BLUE_BG{0xF7F9FF, 0xF7F9FF}; // #F7F9FF / #F7F9FF
+inline constexpr ColorToken CLR_BUTTON_LIGHT_BLUE_PRESSED{0xEAEFFF, 0xEAEFFF}; // #EAEFFF / #EAEFFF
+inline constexpr ColorToken CLR_BUTTON_RED_PRESSED{0x661616, 0x9A1F1F}; // #661616 / #9A1F1F
+inline constexpr ColorToken CLR_BUTTON_DARK_PRESSED{0x161616, 0xC9CFDA}; // #161616 / #C9CFDA
+inline constexpr ColorToken CLR_BUTTON_DARK_DISABLED{0xBCC3CC, 0xA6ADB8}; // #BCC3CC / #A6ADB8
+inline constexpr ColorToken CLR_BUTTON_DARK_GRAY_BG{0x485479, 0xD8DDE9}; // #485479 / #D8DDE9
 
 // ---- dimensions (theme independent) ----
 inline constexpr std::uint32_t BTN_HEIGHT_64 = 64;

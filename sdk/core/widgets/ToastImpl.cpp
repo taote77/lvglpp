@@ -20,6 +20,11 @@ ToastImpl::ToastImpl() : Widget(tools::LvObjFactory::createLvglDialog)
 
 void ToastImpl::setMessage(const std::string &str_msg, ToastImpl::IconType type)
 {
+    // The toast is a process-lifetime singleton, so refresh its colours on
+    // every show instead of relying on the tree rebuild.
+    setBgColor(form::design::CLR_PRIMARY_DARK_BG);
+    desc_->setTextColor(form::design::CLR_ON_SURFACE);
+
     // setSize(str_msg.length()*12+80,56);
     desc_->setText(str_msg);
     setSize(desc_->getDisplayTextWidth() + 72, 56);

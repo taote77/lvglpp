@@ -123,9 +123,10 @@ file(GLOB_RECURSE TOOLS_SRC CONFIGURE_DEPENDS
 )
 
 
-add_library(${PROJECT_NAME}  SHARED 
+add_library(${PROJECT_NAME}  SHARED
     ${WAYLAND_SRC}
     ${TOOLS_SRC}
+    config/color_sheet.cpp
     mouse_cursor_icon.c
 )
 

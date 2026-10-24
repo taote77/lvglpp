@@ -10,8 +10,8 @@ design/tokens.json                  <- edit / sync from Figma
         |
         |  sync_tokens.py generate
         v
-sdk/config/color_sheet.h            dark/base colours, dimensions, opacity
-sdk/config/color_sheet_light.h      light-theme colours (dark fallback)
+sdk/config/color_sheet.h            ColorToken values (dark + light), dimensions, opacity
+sdk/config/color_sheet_light.h      explicit light-theme values (dark fallback)
 ```
 
 Do not edit the generated headers by hand: `design-check` fails when they drift
@@ -109,18 +109,36 @@ values fall back to the dark value.
 
 ## Using tokens from C++
 
+The generated `CLR_*` constants are `form::design::ColorToken` values. They
+implicitly convert to the value for the active `core::ThemeMode`, so existing
+call sites follow `Theme::setMode()` without being rewritten:
+
 ```cpp
-// Base/dark palette constants (what existing smart_home code uses).
+// Resolves to the dark or light value at read time.
 label.setTextColor(form::design::CLR_ON_SURFACE);
 
-// Explicit light value.
-label.setTextColor(form::design::light::CLR_ON_SURFACE);
+// Explicit values when theme switching is not wanted.
+uint32_t dark  = form::design::CLR_ON_SURFACE.darkValue();
+uint32_t light = form::design::CLR_ON_SURFACE.lightValue();
+uint32_t same  = form::design::light::CLR_ON_SURFACE;
 
-// Preferred for widgets that must follow the runtime theme.
+// Semantic roles, including roles not exposed as a single CLR_ token.
 label.setTextColor(lvglpp::core::Theme::instance().color(
     lvglpp::core::ColorRole::OnSurface));
 ```
 
+Because a token resolves when it is read, widgets keep the colour they were
+created with. After calling `Theme::setMode()`, rebuild the UI to re-create it;
+smart_home does this from the Settings page with
+`sys::UiConfig::instance().requestRebuild()`. For manual testing the app also
+accepts `LVGLPP_THEME=light` at startup.
+
 `form::design::ThemeColor(color)` is a legacy no-op kept for existing call
-sites. New theme-aware code should use `core::Theme` or the explicit
+sites; its argument has already been resolved to the active theme. New
+theme-aware code can use `core::Theme` or the explicit
 `ThemeColor(dark, light, style)` overload.
+
+`ColorToken` conversions are implemented in `sdk/config/color_sheet.cpp`, so
+code using the generated tokens must link `lvglpp`. The token values are not
+compile-time constants; use `darkValue()/lightValue()` when a `constexpr` is
+required.

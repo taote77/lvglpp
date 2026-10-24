@@ -219,11 +219,48 @@ def render_dark_header(document: Dict[str, Any]) -> str:
         "",
         "namespace form::design {",
         "",
-        "// ---- colours (dark theme / base values) ----",
+        "namespace detail {",
+        "",
+        "/// Set by core::Theme::rebuild(); read by ColorToken conversions.",
+        "void setRuntimeTheme(bool light) noexcept;",
+        "",
+        "/// Resolve a generated token against the active theme.",
+        "std::uint32_t resolveColor(std::uint32_t dark, std::uint32_t light) noexcept;",
+        "",
+        "} // namespace detail",
+        "",
+        "/**",
+        " * A generated design token.",
+        " *",
+        " * Implicit conversion returns the value for the active ThemeMode, so",
+        " * existing CLR_* call sites follow Theme::setMode() without rewriting",
+        " * every widget call. Use darkValue()/lightValue() for explicit values.",
+        " */",
+        "struct ColorToken {",
+        "    std::uint32_t dark;",
+        "    std::uint32_t light;",
+        "",
+        "    constexpr std::uint32_t darkValue() const noexcept",
+        "    {",
+        "        return dark;",
+        "    }",
+        "",
+        "    constexpr std::uint32_t lightValue() const noexcept",
+        "    {",
+        "        return light;",
+        "    }",
+        "",
+        "    operator std::uint32_t() const noexcept;",
+        "};",
+        "",
+        "// ---- colours (dark / light) ----",
     ]
     for name, entry in document["colors"].items():
-        value = entry["dark"]
-        lines.append(f"inline constexpr std::uint32_t {name} = {cpp_hex(value)}; // {value.upper()}")
+        dark_value = entry["dark"]
+        light_value = entry.get("light", dark_value)
+        lines.append(
+            f"inline constexpr ColorToken {name}{{{cpp_hex(dark_value)}, {cpp_hex(light_value)}}}; // {dark_value.upper()} / {light_value.upper()}"
+        )
 
     dimensions = document.get("dimensions", {})
     if dimensions:
@@ -266,7 +303,7 @@ def render_light_header(document: Dict[str, Any]) -> str:
     for name, entry in document["colors"].items():
         value = entry.get("light")
         if value is None:
-            lines.append(f"inline constexpr std::uint32_t {name} = form::design::{name};")
+            lines.append(f"inline constexpr std::uint32_t {name} = form::design::{name}.darkValue();")
         else:
             lines.append(f"inline constexpr std::uint32_t {name} = {cpp_hex(value)}; // {value.upper()}")
 

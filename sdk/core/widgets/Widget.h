@@ -268,6 +268,10 @@ public:
 
     Connection onLongPressed(ClickHandler handler);
 
+    /// Register a handler for an arbitrary LVGL event code, e.g.
+    /// LV_EVENT_VALUE_CHANGED. The callback is removed with the wrapper.
+    Connection onEvent(lv_event_code_t code, ClickHandler handler);
+
     /// Key handler. Unconsumed keys bubble to ancestors and then to
     /// InputManager's global handlers.
     Connection onKey(KeyHandler handler);

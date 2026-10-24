@@ -1,4 +1,5 @@
 #include "TestFramework.h"
+#include "config/color_sheet.h"
 #include "core/style/Style.h"
 #include "core/style/Theme.h"
 #include "core/widgets/Widget.h"
@@ -117,6 +118,47 @@ TEST(Theme_light_tokens_cover_semantic_roles)
     CHECK_EQ(theme.hex(ColorRole::SurfaceCanvas), 0x444E5B);
     CHECK_EQ(theme.hex(ColorRole::ButtonRedPressed), 0x661616);
     CHECK_EQ(theme.hex(ColorRole::ButtonDarkGrayBg), 0x485479);
+    return true;
+}
+
+TEST(DesignToken_resolves_against_active_theme)
+{
+    Theme &theme = Theme::instance();
+
+    theme.setMode(ThemeMode::Dark);
+    CHECK_EQ(static_cast<uint32_t>(form::design::CLR_PRIMARY), 0x4986FF);
+    CHECK_EQ(static_cast<uint32_t>(form::design::CLR_ON_SURFACE), 0xFFFFFF);
+
+    theme.setMode(ThemeMode::Light);
+    CHECK_EQ(static_cast<uint32_t>(form::design::CLR_PRIMARY), 0x3760EA);
+    CHECK_EQ(static_cast<uint32_t>(form::design::CLR_ON_SURFACE), 0x161616);
+    // Explicit values are available for non-themed uses.
+    CHECK_EQ(form::design::CLR_ON_SURFACE.darkValue(), 0xFFFFFF);
+    CHECK_EQ(form::design::CLR_ON_SURFACE.lightValue(), 0x161616);
+
+    theme.setMode(ThemeMode::Dark);
+    CHECK_EQ(static_cast<uint32_t>(form::design::CLR_PRIMARY), 0x4986FF);
+    return true;
+}
+
+TEST(DesignToken_new_widgets_use_switched_theme)
+{
+    Theme &theme = Theme::instance();
+
+    theme.setMode(ThemeMode::Dark);
+    Widget dark_widget;
+    dark_widget.setBgColor(form::design::CLR_SURFACE);
+    CHECK(lv_color_eq(lv_obj_get_style_bg_color(dark_widget.lvObj(), LV_PART_MAIN), lv_color_hex(0x12151E)));
+
+    theme.setMode(ThemeMode::Light);
+    Widget light_widget;
+    light_widget.setBgColor(form::design::CLR_SURFACE);
+    CHECK(lv_color_eq(lv_obj_get_style_bg_color(light_widget.lvObj(), LV_PART_MAIN), lv_color_hex(0xF7F9FF)));
+
+    // Existing widgets keep the colour they were created with.
+    CHECK(lv_color_eq(lv_obj_get_style_bg_color(dark_widget.lvObj(), LV_PART_MAIN), lv_color_hex(0x12151E)));
+
+    theme.setMode(ThemeMode::Dark);
     return true;
 }
 

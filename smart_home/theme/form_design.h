@@ -23,9 +23,10 @@ enum class DesignStyle {
 /**
  * Legacy helper kept for existing call sites.
  *
- * The CLR_* constants are the dark/base palette. Widgets that must follow the
- * runtime theme should use core::Theme::color(ColorRole) instead, or the
- * explicit dark/light overload below.
+ * CLR_* tokens resolve to the active ThemeMode before reaching this function,
+ * so it is a no-op. Widgets that need a semantic role should use
+ * core::Theme::color(ColorRole); the explicit pair overload below is available
+ * for explicit dark/light choices.
  */
 inline LColorType ThemeColor(LColorType color, DesignStyle = DesignStyle::DARK)
 {

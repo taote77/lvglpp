@@ -12,6 +12,7 @@
 #include "components/SceneButton.h"
 #include "components/StatusBadge.h"
 #include "components/ThermostatWidget.h"
+#include "core/style/Theme.h"
 #include "core/sys/Application.h"
 #include "core/sys/BaseActivity.h"
 #include "core/sys/InputManager.h"
@@ -373,8 +374,21 @@ static void buildSettingsPage(w::Widget *root, w::WidgetStore &store)
     themeLbl->setAlignment(LV_ALIGN_TOP_LEFT, 32, y);
     auto *themeDrop = store.emplace<w::Dropdown>(scroll);
     themeDrop->setSize(180, 36);
-    themeDrop->setOptions(std::string(lvTr("settings_theme_dark")) + "\n" + lvTr("settings_theme_light") + "\n" + lvTr("settings_theme_auto"));
+    themeDrop->setOptions(std::string(lvTr("settings_theme_dark")) + "\n" + lvTr("settings_theme_light"));
+    themeDrop->setSelected(core::Theme::instance().mode() == core::ThemeMode::Light ? 1 : 0);
     themeDrop->setAlignment(LV_ALIGN_TOP_LEFT, 200, y - 3);
+    // Apply on the UI thread, then rebuild the widget tree through UiConfig so
+    // existing pages are recreated with the new palette. requestRebuild() is
+    // coalesced and runs outside this dropdown callback.
+    themeDrop->onChanged([](uint32_t index) {
+        const core::ThemeMode mode = index == 1 ? core::ThemeMode::Light : core::ThemeMode::Dark;
+        if (core::Theme::instance().mode() == mode)
+        {
+            return;
+        }
+        core::Theme::instance().setMode(mode);
+        sys::UiConfig::instance().requestRebuild();
+    });
     y += 44;
 
     auto *brightLbl = store.emplace<w::Label>(lvTr("settings_brightness"), CLR_ON_SURFACE_VARIANT_0, scroll, w::Label::FontSize20);
@@ -603,6 +617,13 @@ int main(int argc, char *argv[])
         }
     }
     LvTranslator::Instance().load(initialLanguage);
+
+    // Optional startup palette; the Settings page can switch it at runtime.
+    if (const char *theme = std::getenv("LVGLPP_THEME"))
+    {
+        core::Theme::instance().setMode(std::strcmp(theme, "light") == 0 ? core::ThemeMode::Light
+                                                                        : core::ThemeMode::Dark);
+    }
 
 #if LVGLPP_DYNAMIC_UI
     // Debug controls: 1/2/3/4 = four orientations, R = toggle RTL.

@@ -39,6 +39,10 @@ public:
     /// Get the text of the selected option
     std::string selectedText() const;
 
+    /// Called when the user selects an option (LV_EVENT_VALUE_CHANGED).
+    /// The handler receives the new 0-based option index.
+    Connection onChanged(std::function<void(uint32_t)> handler);
+
     /// Set the dropdown open direction (LV_DIR_BOTTOM, LV_DIR_TOP, LV_DIR_LEFT, LV_DIR_RIGHT)
     void setDirection(lv_dir_t dir);
 

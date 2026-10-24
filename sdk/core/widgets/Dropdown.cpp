@@ -101,6 +101,16 @@ std::string Dropdown::selectedText() const
     return std::string(buf);
 }
 
+Connection Dropdown::onChanged(std::function<void(uint32_t)> handler)
+{
+    return onEvent(LV_EVENT_VALUE_CHANGED, [this, handler = std::move(handler)]() {
+        if (handler)
+        {
+            handler(selected());
+        }
+    });
+}
+
 void Dropdown::setDirection(lv_dir_t dir)
 {
     lv_dropdown_set_dir(lvObj(), dir);

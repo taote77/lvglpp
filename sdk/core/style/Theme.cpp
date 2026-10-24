@@ -19,52 +19,52 @@ struct PaletteEntry {
 // Both themes are defined side by side so it is impossible to add a role to
 // one palette and forget the other.
 constexpr PaletteEntry kPalette[] = {
-    {ColorRole::Primary, CLR_PRIMARY, light::CLR_PRIMARY},
-    {ColorRole::OnPrimary, CLR_ON_PRIMARY, light::CLR_ON_PRIMARY},
-    {ColorRole::PrimaryContainer, CLR_PRIMARY_CONTAINER, light::CLR_PRIMARY_CONTAINER},
-    {ColorRole::OnPrimaryContainer, CLR_ON_PRIMARY_CONTAINER, light::CLR_ON_PRIMARY_CONTAINER},
+    {ColorRole::Primary, CLR_PRIMARY.dark, light::CLR_PRIMARY},
+    {ColorRole::OnPrimary, CLR_ON_PRIMARY.dark, light::CLR_ON_PRIMARY},
+    {ColorRole::PrimaryContainer, CLR_PRIMARY_CONTAINER.dark, light::CLR_PRIMARY_CONTAINER},
+    {ColorRole::OnPrimaryContainer, CLR_ON_PRIMARY_CONTAINER.dark, light::CLR_ON_PRIMARY_CONTAINER},
 
-    {ColorRole::Secondary, CLR_SECONDARY, light::CLR_SECONDARY},
-    {ColorRole::OnSecondary, CLR_ON_SECONDARY, light::CLR_ON_SECONDARY},
-    {ColorRole::SecondaryContainer, CLR_SECONDARY_CONTAINER, light::CLR_SECONDARY_CONTAINER},
-    {ColorRole::OnSecondaryContainer, CLR_ON_SECONDARY_CONTAINER, light::CLR_ON_SECONDARY_CONTAINER},
+    {ColorRole::Secondary, CLR_SECONDARY.dark, light::CLR_SECONDARY},
+    {ColorRole::OnSecondary, CLR_ON_SECONDARY.dark, light::CLR_ON_SECONDARY},
+    {ColorRole::SecondaryContainer, CLR_SECONDARY_CONTAINER.dark, light::CLR_SECONDARY_CONTAINER},
+    {ColorRole::OnSecondaryContainer, CLR_ON_SECONDARY_CONTAINER.dark, light::CLR_ON_SECONDARY_CONTAINER},
 
-    {ColorRole::Surface, CLR_SURFACE, light::CLR_SURFACE},
-    {ColorRole::SurfaceDim, CLR_SURFACE_DIM, light::CLR_SURFACE_DIM},
-    {ColorRole::SurfaceCanvas, CLR_SURFACE_CANVAS, light::CLR_SURFACE_CANVAS},
-    {ColorRole::SurfaceContainer, CLR_SURFACE_CONTAINER, light::CLR_SURFACE_CONTAINER},
-    {ColorRole::SurfaceContainerHigh, CLR_SURFACE_CONTAINER_HIGH, light::CLR_SURFACE_CONTAINER_HIGH},
-    {ColorRole::SurfaceContainerHighest, CLR_SURFACE_CONTAINER_HIGHEST, light::CLR_SURFACE_CONTAINER_HIGHEST},
+    {ColorRole::Surface, CLR_SURFACE.dark, light::CLR_SURFACE},
+    {ColorRole::SurfaceDim, CLR_SURFACE_DIM.dark, light::CLR_SURFACE_DIM},
+    {ColorRole::SurfaceCanvas, CLR_SURFACE_CANVAS.dark, light::CLR_SURFACE_CANVAS},
+    {ColorRole::SurfaceContainer, CLR_SURFACE_CONTAINER.dark, light::CLR_SURFACE_CONTAINER},
+    {ColorRole::SurfaceContainerHigh, CLR_SURFACE_CONTAINER_HIGH.dark, light::CLR_SURFACE_CONTAINER_HIGH},
+    {ColorRole::SurfaceContainerHighest, CLR_SURFACE_CONTAINER_HIGHEST.dark, light::CLR_SURFACE_CONTAINER_HIGHEST},
 
-    {ColorRole::OnSurface, CLR_ON_SURFACE, light::CLR_ON_SURFACE},
-    {ColorRole::OnSurfaceVariant, CLR_ON_SURFACE_VARIANT_1, light::CLR_ON_SURFACE_VARIANT_1},
-    {ColorRole::Outline, CLR_OUTLINE, light::CLR_OUTLINE},
-    {ColorRole::OutlineVariant, CLR_OUTLINE_VARIANT, light::CLR_OUTLINE_VARIANT},
+    {ColorRole::OnSurface, CLR_ON_SURFACE.dark, light::CLR_ON_SURFACE},
+    {ColorRole::OnSurfaceVariant, CLR_ON_SURFACE_VARIANT_1.dark, light::CLR_ON_SURFACE_VARIANT_1},
+    {ColorRole::Outline, CLR_OUTLINE.dark, light::CLR_OUTLINE},
+    {ColorRole::OutlineVariant, CLR_OUTLINE_VARIANT.dark, light::CLR_OUTLINE_VARIANT},
 
-    {ColorRole::Error, CLR_ERROR, light::CLR_ERROR},
-    {ColorRole::OnError, CLR_ON_ERROR, light::CLR_ON_ERROR},
-    {ColorRole::Warning, CLR_WARNING, light::CLR_WARNING},
-    {ColorRole::OnWarning, CLR_ON_WARNING, light::CLR_ON_WARNING},
-    {ColorRole::Success, CLR_SUCCESS, light::CLR_SUCCESS},
-    {ColorRole::OnSuccess, CLR_ON_SUCCESS, light::CLR_ON_SUCCESS},
-    {ColorRole::Info, CLR_INFO, light::CLR_INFO},
+    {ColorRole::Error, CLR_ERROR.dark, light::CLR_ERROR},
+    {ColorRole::OnError, CLR_ON_ERROR.dark, light::CLR_ON_ERROR},
+    {ColorRole::Warning, CLR_WARNING.dark, light::CLR_WARNING},
+    {ColorRole::OnWarning, CLR_ON_WARNING.dark, light::CLR_ON_WARNING},
+    {ColorRole::Success, CLR_SUCCESS.dark, light::CLR_SUCCESS},
+    {ColorRole::OnSuccess, CLR_ON_SUCCESS.dark, light::CLR_ON_SUCCESS},
+    {ColorRole::Info, CLR_INFO.dark, light::CLR_INFO},
 
-    {ColorRole::FocusRing, CLR_PRIMARY, light::CLR_PRIMARY},
-    {ColorRole::Disabled, CLR_PRIMARY_DIS_BG, light::CLR_PRIMARY_DIS_BG},
-    {ColorRole::DialogMask, CLR_DIALOG_BG_MASK, light::CLR_DIALOG_BG_MASK},
+    {ColorRole::FocusRing, CLR_PRIMARY.dark, light::CLR_PRIMARY},
+    {ColorRole::Disabled, CLR_PRIMARY_DIS_BG.dark, light::CLR_PRIMARY_DIS_BG},
+    {ColorRole::DialogMask, CLR_DIALOG_BG_MASK.dark, light::CLR_DIALOG_BG_MASK},
 
-    {ColorRole::ButtonBlue, CLR_WIDGET_BUTTON_BLUE, light::CLR_WIDGET_BUTTON_BLUE},
-    {ColorRole::ButtonBluePressed, CLR_WIDGET_BUTTON_BLUE_DIS, light::CLR_WIDGET_BUTTON_BLUE_DIS},
-    {ColorRole::ButtonDisabled, CLR_SURFACE_DIS_CONTAINER_1, light::CLR_SURFACE_DIS_CONTAINER_1},
-    {ColorRole::ButtonGrayPressed, CLR_WIDGET_BUTTON_GRAY_DIS, light::CLR_WIDGET_BUTTON_GRAY_DIS},
-    {ColorRole::ButtonDarkBg, CLR_PRIMARY_DARK_BG, light::CLR_PRIMARY_DARK_BG},
-    {ColorRole::ButtonDarkPressed, CLR_BUTTON_DARK_PRESSED, light::CLR_BUTTON_DARK_PRESSED},
-    {ColorRole::ButtonDarkDisabled, CLR_BUTTON_DARK_DISABLED, light::CLR_BUTTON_DARK_DISABLED},
-    {ColorRole::ButtonLightBlueBg, CLR_BUTTON_LIGHT_BLUE_BG, light::CLR_BUTTON_LIGHT_BLUE_BG},
-    {ColorRole::ButtonLightBluePressed, CLR_BUTTON_LIGHT_BLUE_PRESSED, light::CLR_BUTTON_LIGHT_BLUE_PRESSED},
-    {ColorRole::ButtonRedBg, CLR_WARNING_DARK, light::CLR_WARNING_DARK},
-    {ColorRole::ButtonRedPressed, CLR_BUTTON_RED_PRESSED, light::CLR_BUTTON_RED_PRESSED},
-    {ColorRole::ButtonDarkGrayBg, CLR_BUTTON_DARK_GRAY_BG, light::CLR_BUTTON_DARK_GRAY_BG},
+    {ColorRole::ButtonBlue, CLR_WIDGET_BUTTON_BLUE.dark, light::CLR_WIDGET_BUTTON_BLUE},
+    {ColorRole::ButtonBluePressed, CLR_WIDGET_BUTTON_BLUE_DIS.dark, light::CLR_WIDGET_BUTTON_BLUE_DIS},
+    {ColorRole::ButtonDisabled, CLR_SURFACE_DIS_CONTAINER_1.dark, light::CLR_SURFACE_DIS_CONTAINER_1},
+    {ColorRole::ButtonGrayPressed, CLR_WIDGET_BUTTON_GRAY_DIS.dark, light::CLR_WIDGET_BUTTON_GRAY_DIS},
+    {ColorRole::ButtonDarkBg, CLR_PRIMARY_DARK_BG.dark, light::CLR_PRIMARY_DARK_BG},
+    {ColorRole::ButtonDarkPressed, CLR_BUTTON_DARK_PRESSED.dark, light::CLR_BUTTON_DARK_PRESSED},
+    {ColorRole::ButtonDarkDisabled, CLR_BUTTON_DARK_DISABLED.dark, light::CLR_BUTTON_DARK_DISABLED},
+    {ColorRole::ButtonLightBlueBg, CLR_BUTTON_LIGHT_BLUE_BG.dark, light::CLR_BUTTON_LIGHT_BLUE_BG},
+    {ColorRole::ButtonLightBluePressed, CLR_BUTTON_LIGHT_BLUE_PRESSED.dark, light::CLR_BUTTON_LIGHT_BLUE_PRESSED},
+    {ColorRole::ButtonRedBg, CLR_WARNING_DARK.dark, light::CLR_WARNING_DARK},
+    {ColorRole::ButtonRedPressed, CLR_BUTTON_RED_PRESSED.dark, light::CLR_BUTTON_RED_PRESSED},
+    {ColorRole::ButtonDarkGrayBg, CLR_BUTTON_DARK_GRAY_BG.dark, light::CLR_BUTTON_DARK_GRAY_BG},
 };
 
 static_assert(sizeof(kPalette) / sizeof(kPalette[0]) == static_cast<size_t>(ColorRole::Count), "every ColorRole needs dark and light design tokens");
@@ -72,6 +72,31 @@ static_assert(sizeof(kPalette) / sizeof(kPalette[0]) == static_cast<size_t>(Colo
 uint32_t &at(std::array<uint32_t, static_cast<size_t>(ColorRole::Count)> &palette, ColorRole role)
 {
     return palette[static_cast<size_t>(role)];
+}
+
+/// Keep LVGL's own controls (dropdown lists, rollers, text areas, ...) in the
+/// same light/dark mode as the semantic palette. LVGL reuses one global theme
+/// object, so switching does not allocate or leak.
+void applyLvglTheme(ThemeMode mode, uint32_t primary, uint32_t secondary)
+{
+#if LV_USE_THEME_DEFAULT
+    if (!lv_is_initialized())
+    {
+        return;
+    }
+    lv_display_t *display = lv_display_get_default();
+    if (display == nullptr)
+    {
+        return;
+    }
+
+    lv_theme_t *theme = lv_theme_default_init(display, lv_color_hex(primary), lv_color_hex(secondary), mode == ThemeMode::Dark, LV_FONT_DEFAULT);
+    lv_display_set_theme(display, theme);
+#else
+    (void)mode;
+    (void)primary;
+    (void)secondary;
+#endif
 }
 
 } // namespace
@@ -152,10 +177,13 @@ const Style &Theme::buttonBaseStyle() const
 void Theme::rebuild()
 {
     const bool is_dark = mode_ == ThemeMode::Dark;
+    form::design::detail::setRuntimeTheme(!is_dark);
     for (const auto &entry : kPalette)
     {
         at(palette_, entry.role) = is_dark ? entry.dark : entry.light;
     }
+
+    applyLvglTheme(mode_, hex(ColorRole::Primary), hex(ColorRole::Secondary));
 
     // ---- button palettes ----
     auto &blue          = buttons_[static_cast<size_t>(ButtonStyle::Blue)];

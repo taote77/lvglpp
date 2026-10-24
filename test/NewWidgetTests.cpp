@@ -1,5 +1,6 @@
 #include "TestFramework.h"
 #include "core/widgets/Widget.h"
+#include "core/widgets/Dropdown.h"
 #include "core/widgets/ImageButton.h"
 #include "core/widgets/MsgBox.h"
 #include "core/widgets/Scale.h"
@@ -15,6 +16,27 @@ TEST(Spinner_creates_and_configures)
 
     CHECK_TRUE(spinner.isAttached());
     spinner.setAnimParams(1500, 90);
+    return true;
+}
+
+TEST(Dropdown_onChanged_reports_selection)
+{
+    Widget   root;
+    Dropdown dropdown(&root);
+    dropdown.setOptions("Dark\nLight");
+
+    uint32_t selected = 99;
+    int      calls    = 0;
+    dropdown.onChanged([&](uint32_t index) {
+        selected = index;
+        calls++;
+    });
+
+    dropdown.setSelected(1);
+    lv_obj_send_event(dropdown.lvObj(), LV_EVENT_VALUE_CHANGED, nullptr);
+
+    CHECK_EQ(calls, 1);
+    CHECK_EQ(selected, 1u);
     return true;
 }
 
