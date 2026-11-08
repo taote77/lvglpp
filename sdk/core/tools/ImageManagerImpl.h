@@ -3,7 +3,6 @@
 
 #include "ImageResource.h"
 
-#include <condition_variable>
 #include <cstddef>
 #include <deque>
 #include <functional>
@@ -11,10 +10,14 @@
 #include <memory>
 #include <mutex>
 #include <string>
-#include <thread>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
+
+#ifndef ESP_PLATFORM
+#include <condition_variable>
+#include <thread>
+#endif
 
 namespace lvglpp::tools {
 
@@ -59,7 +62,9 @@ private:
 
     void               touchLocked(Entry &entry);
     void               enforceLimitsLocked();
+#ifndef ESP_PLATFORM
     void               workerLoop();
+#endif
     static std::string normalizeKey(const std::string &key);
 
     mutable std::mutex                     cache_mutex_;
@@ -69,6 +74,7 @@ private:
     std::size_t                            max_bytes_   = 64ull * 1024 * 1024;
     std::size_t                            cache_bytes_ = 0;
 
+#ifndef ESP_PLATFORM
     std::mutex                      queue_mutex_;
     std::condition_variable         queue_cv_;
     std::condition_variable         wait_cv_;
@@ -78,6 +84,7 @@ private:
     bool                            processing_     = false;
     bool                            stop_           = false;
     std::thread                     worker_;
+#endif
 };
 
 } // namespace lvglpp::tools

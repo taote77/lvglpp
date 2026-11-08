@@ -16,6 +16,7 @@ enum class PlatformKind {
     Sdl,
     Framebuf,
     Drm,
+    Esp32,
 };
 
 /**

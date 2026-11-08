@@ -80,6 +80,10 @@ public:
     /// Mount pack bytes; the data is copied, so the caller may free it.
     bool mountMemory(const void *packBytes, std::size_t size, std::string *error = nullptr);
 
+    /// Mount pack bytes without copying (embedded flash array, mmap, ...).
+    /// The caller must keep the buffer alive for the lifetime of the mount.
+    bool mountMemoryView(const void *packBytes, std::size_t size, std::string *error = nullptr);
+
     void reset();
 
     /// Open an asset and verify its data CRC (pack sources only).

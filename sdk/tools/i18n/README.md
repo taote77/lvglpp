@@ -85,3 +85,32 @@ workbook. CJK is limited to characters found in the workbook.
 After changing the workbook, regenerate both `lv_i18n.c` and the fonts; the
 font manifest records the workbook/character-set hashes so `--check` catches
 stale files.
+
+## Constrained-target font profiles (ESP32)
+
+`gen_fonts_profile.py` writes an independent per-language profile and never
+modifies `sdk/core/tools/fonts/`:
+
+```bash
+python3 -I sdk/tools/i18n/gen_fonts_profile.py \
+  --xlsx smart_home/i18n/strings.xlsx \
+  --langs zh-CN,en-US --sizes 16,24 --styles normal \
+  --bpp 4 --compress \
+  --extra-charset ports/esp32/dynamic_charset.txt \
+  --out ports/esp32/fonts --emit-table
+```
+
+- `--langs` filters the workbook columns; only those glyphs are included.
+- `--sizes/--styles` keep only the faces the UI uses (default `16,24`/`normal`).
+- `--bpp 4 --compress` cuts flash substantially; use `--bpp 2` only if
+  legibility allows.
+- `--extra-charset FILE` adds characters needed by runtime data (device names,
+  SSIDs, user input).
+- `--emit-table` writes `font_table_<lang>.h/.c` with a `LvglppFontFace` table.
+  Register it at runtime with
+  `LvFontManager::setProfile(lvglpp_fonts_<lang>, lvglpp_fonts_<lang>_count);`
+  (or `setProfile(nullptr, 0)` to restore the desktop table).
+- `--dry-run` prints the `lv_font_conv` commands without writing anything.
+
+Never point `--out` at `sdk/core/tools/fonts/`; the desktop full set and its
+`font_manifest.json` must stay unchanged.

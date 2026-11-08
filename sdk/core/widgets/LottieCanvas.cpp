@@ -3,6 +3,7 @@
 #include "core/log/log.h"
 #include "core/tools/AssetManager.h"
 
+#if LV_USE_LOTTIE
 namespace lvglpp::widgets {
 
 LottieCanvas::LottieCanvas(const std::string &assetPath, Widget *parent) : Widget(tools::LvObjFactory::createLvglLottie, parent)
@@ -58,3 +59,4 @@ void LottieCanvas::setCacheSize(int32_t width, int32_t height)
 }
 
 } // namespace lvglpp::widgets
+#endif // LV_USE_LOTTIE

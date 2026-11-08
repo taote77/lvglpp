@@ -4,8 +4,7 @@
 
 #include "Widget.h"
 
-namespace lvglpp {
-namespace widgets {
+namespace lvglpp::widgets {
 
 class SpinBox : public Widget
 {
@@ -24,7 +23,6 @@ private:
     lv_style_t font_style_{};
 };
 
-} // namespace widgets
-} // namespace lvglpp
+} // namespace lvglpp::widgets
 
 #endif // LVGLPP_SPINBOX_H

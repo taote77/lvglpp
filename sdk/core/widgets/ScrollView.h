@@ -15,6 +15,7 @@ public:
 
     bool isScrollable() const;
 
+    /// Scroll with momentum after a flick (LV_OBJ_FLAG_SCROLL_MOMENTUM).
     void setFlickable(bool b);
 
     bool isFlickable() const;

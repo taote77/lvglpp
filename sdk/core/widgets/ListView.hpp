@@ -1,5 +1,5 @@
-#ifndef LV_LISTVIEW_H
-#define LV_LISTVIEW_H
+#ifndef LVGLPP_LISTVIEW_H
+#define LVGLPP_LISTVIEW_H
 
 #include "BaseModel.hpp"
 #include "ListViewDelegate.hpp"
@@ -261,4 +261,4 @@ bool ListView<T, T2>::changeModelData(int index, const T &data)
 }
 } // namespace lvglpp::widgets
 
-#endif // LV_LISTVIEW_H
+#endif // LVGLPP_LISTVIEW_H

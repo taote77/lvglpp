@@ -4,7 +4,6 @@
 #include "GameStateDialog.h"
 #include "core/sys/BaseActivity.h"
 #include "core/sys/Event.h"
-#include "core/widgets/TextButton.h"
 #include "core/widgets/Label.h"
 #include "core/widgets/PushButton.h"
 #include <iostream>

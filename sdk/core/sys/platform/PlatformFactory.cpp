@@ -3,8 +3,11 @@
 #include "core/sys/Application.h"
 #include "core/log/log.h"
 
-#include <filesystem>
 #include <utility>
+
+#ifndef ESP_PLATFORM
+#include <filesystem>
+#endif
 
 #if defined(LVGLPP_PLATFORM_SDL)
 #include "SdlPlatform.h"
@@ -26,6 +29,8 @@ const char *platformName(PlatformKind kind) noexcept
         return "FRAMEBUF";
     case PlatformKind::Drm:
         return "DRM";
+    case PlatformKind::Esp32:
+        return "ESP32";
     case PlatformKind::Auto:
         break;
     }
@@ -34,11 +39,17 @@ const char *platformName(PlatformKind kind) noexcept
 
 std::string executableStem(int argc, char **argv)
 {
+#if defined(ESP_PLATFORM)
+    (void)argc;
+    (void)argv;
+    return "app";
+#else
     if (argc > 0 && argv != nullptr && argv[0] != nullptr)
     {
         return std::filesystem::path(argv[0]).stem().string();
     }
     return {};
+#endif
 }
 
 std::unique_ptr<Platform> createPlatform(int argc, char **argv, PlatformKind kind)
@@ -49,6 +60,8 @@ std::unique_ptr<Platform> createPlatform(int argc, char **argv, PlatformKind kin
     constexpr PlatformKind built = PlatformKind::Framebuf;
 #elif defined(LVGLPP_PLATFORM_DRM)
     constexpr PlatformKind built = PlatformKind::Drm;
+#elif defined(LVGLPP_PLATFORM_ESP32)
+    constexpr PlatformKind built = PlatformKind::Esp32;
 #else
     constexpr PlatformKind built = PlatformKind::Auto;
 #endif
@@ -70,6 +83,14 @@ std::unique_ptr<Platform> createPlatform(int argc, char **argv, PlatformKind kin
     return std::make_unique<FramebufPlatform>(argc, argv);
 #elif defined(LVGLPP_PLATFORM_DRM)
     return std::make_unique<DrmPlatform>(argc, argv);
+#elif defined(LVGLPP_PLATFORM_ESP32)
+    // ESP-IDF has no generic platform: construct EspPlatform with the
+    // application's display/touch adapters and pass it to
+    // Application(std::unique_ptr<Platform>).
+    (void)argc;
+    (void)argv;
+    LOG_ERROR() << "ESP32 target: construct EspPlatform explicitly instead of createApplication()";
+    return nullptr;
 #else
     (void)argc;
     (void)argv;

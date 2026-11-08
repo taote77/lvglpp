@@ -2,6 +2,7 @@
 #include "config/color_sheet.h"
 #include "core/base/LvObjFactory.h"
 
+#if LV_USE_QRCODE
 namespace lvglpp::widgets {
 
 QrCode::QrCode(uint32_t length, lv_color_t back_color, lv_color_t front_color, Widget *parent) : Widget(tools::LvObjFactory::createLvglQrCode, parent), _length(length)
@@ -57,3 +58,4 @@ void QrCode::setImgFile(const std::string &fsPath)
 }
 
 } // namespace lvglpp::widgets
+#endif // LV_USE_QRCODE

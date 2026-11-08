@@ -55,6 +55,26 @@ TEST(Fonts_bold_arabic_fallback)
     return true;
 }
 
+TEST(Fonts_profile_override_and_reset)
+{
+    const lv_font_t *desktopNormal = LvFontManager::getFontInfo(LvFontManager::SansSC, 20, LvFontManager::Normal);
+    const lv_font_t *desktopBold   = LvFontManager::getFontInfo(LvFontManager::SansSC, 20, LvFontManager::Bold);
+
+    const LvglppFontFace profile[] = {
+        {24, &lv_font_montserrat_24, &lv_font_montserrat_24},
+    };
+    LvFontManager::setProfile(profile, 1);
+
+    // Requested size falls back to the nearest available profile face.
+    CHECK(LvFontManager::getFontInfo(LvFontManager::SansSC, 20, LvFontManager::Normal) == &lv_font_montserrat_24);
+    CHECK(LvFontManager::getFontInfo(LvFontManager::SansSC, 99, LvFontManager::Bold) == &lv_font_montserrat_24);
+
+    LvFontManager::setProfile(nullptr, 0);
+    CHECK(LvFontManager::getFontInfo(LvFontManager::SansSC, 20, LvFontManager::Normal) == desktopNormal);
+    CHECK(LvFontManager::getFontInfo(LvFontManager::SansSC, 20, LvFontManager::Bold) == desktopBold);
+    return true;
+}
+
 TEST(Fonts_large_styles_map_to_36_bold)
 {
     const lv_font_t *font48 = LvFontManager::getFontInfo(LvFontManager::SansSC, 48, LvFontManager::Bold);

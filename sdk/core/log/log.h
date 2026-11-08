@@ -1,6 +1,13 @@
 #ifndef NAMESPACELESS_LOGGER_H
 #define NAMESPACELESS_LOGGER_H
 
+#ifdef ESP_PLATFORM
+
+// ESP-IDF: ESP_LOGx backend, no std::filesystem / fstream / iostream.
+#include "log_esp.h"
+
+#else // ESP_PLATFORM
+
 #include <chrono>
 #include <filesystem>
 #include <fstream>
@@ -110,12 +117,20 @@ inline std::ostream &logStream(hglv::LogLevel level, const char *function) {
 #undef LogWarn
 #undef LogError
 
-#define LOG_DEBUG()  hglv::detail::logStream(hglv::LogLevel::Debug,   __PRETTY_FUNCTION__)
-#define LOG_INFO()   hglv::detail::logStream(hglv::LogLevel::Info,    __PRETTY_FUNCTION__)
-#define LOG_WARN()   hglv::detail::logStream(hglv::LogLevel::Warning, __PRETTY_FUNCTION__)
-#define LOG_ERROR()  hglv::detail::logStream(hglv::LogLevel::Error,   __PRETTY_FUNCTION__)
+#if defined(_MSC_VER)
+#define LVGLPP_LOG_FUNCTION __FUNCSIG__
+#else
+#define LVGLPP_LOG_FUNCTION __PRETTY_FUNCTION__
+#endif
+
+#define LOG_DEBUG()  hglv::detail::logStream(hglv::LogLevel::Debug,   LVGLPP_LOG_FUNCTION)
+#define LOG_INFO()   hglv::detail::logStream(hglv::LogLevel::Info,    LVGLPP_LOG_FUNCTION)
+#define LOG_WARN()   hglv::detail::logStream(hglv::LogLevel::Warning, LVGLPP_LOG_FUNCTION)
+#define LOG_ERROR()  hglv::detail::logStream(hglv::LogLevel::Error,   LVGLPP_LOG_FUNCTION)
 #define LogDebug     LOG_DEBUG()
 #define LogWarn      LOG_WARN()
 #define LogError     LOG_ERROR()
 
-#endif // LOGGER_H
+#endif // ESP_PLATFORM
+
+#endif // NAMESPACELESS_LOGGER_H

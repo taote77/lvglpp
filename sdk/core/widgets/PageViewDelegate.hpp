@@ -1,6 +1,6 @@
 
-#ifndef LV_PAGEVIEW_DELEGATE_H
-#define LV_PAGEVIEW_DELEGATE_H
+#ifndef LVGLPP_PAGEVIEWDELEGATE_H
+#define LVGLPP_PAGEVIEWDELEGATE_H
 
 #include "Delegate.hpp"
 
@@ -17,4 +17,4 @@ private:
 };
 } // namespace lvglpp::widgets
 
-#endif // LV_PAGEVIEW_DELEGATE_H
+#endif // LVGLPP_PAGEVIEWDELEGATE_H

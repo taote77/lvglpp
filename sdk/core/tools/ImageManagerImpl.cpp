@@ -9,9 +9,12 @@
 #include <climits>
 #include <cstdint>
 #include <cstring>
-#include <filesystem>
 #include <fstream>
 #include <utility>
+
+#ifndef ESP_PLATFORM
+#include <filesystem>
+#endif
 
 namespace lvglpp::tools {
 
@@ -59,9 +62,14 @@ std::string ImageManagerImpl::assetKey(const std::string &assetPath)
 
 std::string ImageManagerImpl::fileKey(const std::string &fsPath)
 {
+#if defined(ESP_PLATFORM)
+    // The ESP-IDF VFS path is already stable (e.g. /spiffs/image.png).
+    return "file:" + fsPath;
+#else
     std::error_code ec;
     const auto      absolute = std::filesystem::absolute(fsPath, ec);
     return "file:" + (ec ? fsPath : absolute.lexically_normal().string());
+#endif
 }
 
 ImageHandle ImageManagerImpl::load(const std::string &assetPath)
@@ -222,6 +230,13 @@ void ImageManagerImpl::enforceLimitsLocked()
 
 void ImageManagerImpl::prefetch(const std::vector<std::string> &assetPaths)
 {
+#if defined(ESP_PLATFORM)
+    // No prefetch worker on ESP-IDF: warm the cache synchronously.
+    for (const auto &assetPath : assetPaths)
+    {
+        load(assetPath);
+    }
+#else
     if (assetPaths.empty())
     {
         return;
@@ -248,14 +263,18 @@ void ImageManagerImpl::prefetch(const std::vector<std::string> &assetPaths)
         }
     }
     queue_cv_.notify_all();
+#endif // ESP_PLATFORM
 }
 
 void ImageManagerImpl::waitForPrefetch()
 {
+#if !defined(ESP_PLATFORM)
     std::unique_lock<std::mutex> lock(queue_mutex_);
     wait_cv_.wait(lock, [this]() { return queue_.empty() && !processing_; });
+#endif
 }
 
+#if !defined(ESP_PLATFORM)
 void ImageManagerImpl::workerLoop()
 {
     for (;;)
@@ -290,6 +309,7 @@ void ImageManagerImpl::workerLoop()
         }
     }
 }
+#endif // !ESP_PLATFORM
 
 void ImageManagerImpl::invalidate(const std::string &key)
 {
@@ -344,6 +364,10 @@ bool ImageManagerImpl::isCached(const std::string &key) const
 
 void ImageManagerImpl::shutdown()
 {
+#if defined(ESP_PLATFORM)
+    // No prefetch worker; only drop the cache.
+    clearCache();
+#else
     {
         std::lock_guard<std::mutex> lock(queue_mutex_);
         stop_ = true;
@@ -366,6 +390,7 @@ void ImageManagerImpl::shutdown()
     }
 
     clearCache();
+#endif
 }
 
 } // namespace lvglpp::tools

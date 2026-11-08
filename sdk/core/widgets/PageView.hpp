@@ -1,5 +1,5 @@
-#ifndef LV_PAGEVIEW_HPP
-#define LV_PAGEVIEW_HPP
+#ifndef LVGLPP_PAGEVIEW_H
+#define LVGLPP_PAGEVIEW_H
 
 #include "BaseModel.hpp"
 #include "PageViewDelegate.hpp"
@@ -224,4 +224,4 @@ void PageView<T, T2>::createDelegates()
 }
 } // namespace lvglpp::widgets
 
-#endif // LV_PAGEVIEW_HPP
+#endif // LVGLPP_PAGEVIEW_H

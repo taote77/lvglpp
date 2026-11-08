@@ -1,10 +1,9 @@
-#ifndef LV_BASE_MODEL_H
-#define LV_BASE_MODEL_H
+#ifndef LVGLPP_BASEMODEL_H
+#define LVGLPP_BASEMODEL_H
 
 #include <vector>
 
-namespace lvglpp {
-namespace widgets {
+namespace lvglpp::widgets {
 template <class T>
 class BaseModel
 {
@@ -94,7 +93,6 @@ bool BaseModel<T>::changed(int index, const T &data)
     model_data_[index] = data;
     return true;
 }
-} // namespace widgets
-} // namespace lvglpp
+} // namespace lvglpp::widgets
 
-#endif // LV_BASE_MODEL_H
+#endif // LVGLPP_BASEMODEL_H

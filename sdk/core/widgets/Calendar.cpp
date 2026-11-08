@@ -48,8 +48,8 @@ void Calendar::setHighlightedDates(const std::vector<CalendarDate> &dates)
     std::transform(dates.begin(), dates.end(), lvDates.begin(),
         [](const CalendarDate &d) -> lv_calendar_date_t {
             return {static_cast<uint16_t>(d.year),
-                    static_cast<int8_t>(d.month),
-                    static_cast<int8_t>(d.day)};
+                    static_cast<uint8_t>(d.month),
+                    static_cast<uint8_t>(d.day)};
         });
     lv_calendar_set_highlighted_dates(lvObj(), lvDates.data(), lvDates.size());
 }

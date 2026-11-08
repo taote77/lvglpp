@@ -2,8 +2,7 @@
 
 #include "SpinBox.h"
 
-namespace lvglpp {
-namespace widgets {
+namespace lvglpp::widgets {
 
 SpinBox::SpinBox(Widget *parent) : Widget(tools::LvObjFactory::createLvglSpinBox, parent)
 {
@@ -36,5 +35,4 @@ int SpinBox::getVal() const
 {
     return lv_spinbox_get_value(lvObj());
 }
-} // namespace widgets
-} // namespace lvglpp
+} // namespace lvglpp::widgets

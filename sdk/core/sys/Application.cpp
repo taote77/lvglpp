@@ -12,13 +12,20 @@
 #include "core/tools/AssetManager.h"
 #include "core/tools/ImageManager.h"
 #include "core/widgets/OverlayManager.h"
+#include "core/widgets/Toast.h"
 
 #include <algorithm>
-#include <chrono>
 #include <cstdlib>
+#include <utility>
+
+#if defined(ESP_PLATFORM)
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+#else
+#include <chrono>
 #include <filesystem>
 #include <system_error>
-#include <utility>
+#endif
 
 #if defined(__unix__) || defined(__APPLE__)
 #include <signal.h>
@@ -91,12 +98,18 @@ bool Application::initialize()
 
     initialize_started_ = true;
 
+#if defined(ESP_PLATFORM)
+    // ESP-IDF has no process working directory. Applications mount their
+    // embedded pack (or SPIFFS pack) from onInit()/before initialize().
+    application_dir_path_ = "/";
+#else
     std::error_code ec;
     application_dir_path_ = std::filesystem::current_path(ec).string();
     if (ec)
     {
         LOG_WARN() << "cannot resolve the current working directory: " << ec.message();
     }
+#endif
     if (application_name_.empty())
     {
         application_name_ = executable_name_;
@@ -105,14 +118,18 @@ bool Application::initialize()
     lv_init();
     lv_initialized_ = true;
 
+#if !defined(ESP_PLATFORM)
     auto &assets = tools::AssetManager::getInstance();
     if (assets.mountCount() == 0)
     {
         assets.mountDefaults(application_dir_path_, application_name_);
     }
+#endif
     FileSystemManager::getInstance().registerAssetDriver();
 
+#if LV_USE_LOG
     lv_log_register_print_cb([](lv_log_level_t, const char *buffer) { LogWarn << "lvgl logs:" << buffer; });
+#endif
 
     installSignalHandlers();
 
@@ -210,7 +227,11 @@ int Application::exec()
         {
             delay = 1;
         }
+#if defined(ESP_PLATFORM)
+        vTaskDelay(pdMS_TO_TICKS(delay));
+#else
         std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+#endif
     }
 
     LOG_DEBUG() << "main loop exiting";
@@ -247,6 +268,8 @@ void Application::shutdown()
 
     UiConfig::instance().shutdown();
 
+    LOG_DEBUG() << "shutdown: toast";
+    widgets::Toast::shutdown();
     LOG_DEBUG() << "shutdown: image manager";
     tools::ImageManager::shutdown();
     LOG_DEBUG() << "shutdown: overlays";
@@ -398,6 +421,10 @@ void Application::setLanguageType(LanguageType type)
 
 void Application::startTickThread()
 {
+#if defined(ESP_PLATFORM)
+    // EspPlatform::providesTick() is true and installs lv_tick_set_cb(), so
+    // the std::thread fallback is not compiled on ESP-IDF.
+#else
     if (tick_thread_.joinable())
     {
         return;
@@ -415,15 +442,20 @@ void Application::startTickThread()
             lv_tick_inc(5);
         }
     });
+#endif
 }
 
 void Application::stopTickThread()
 {
+#if defined(ESP_PLATFORM)
+    tick_running_.store(false, std::memory_order_release);
+#else
     tick_running_.store(false, std::memory_order_release);
     if (tick_thread_.joinable())
     {
         tick_thread_.join();
     }
+#endif
 }
 
 void Application::installSignalHandlers()

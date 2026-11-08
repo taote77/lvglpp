@@ -1,6 +1,6 @@
 
-#ifndef LV_LISTVIEW_DELEGATE_H
-#define LV_LISTVIEW_DELEGATE_H
+#ifndef LVGLPP_LISTVIEWDELEGATE_H
+#define LVGLPP_LISTVIEWDELEGATE_H
 
 #include "Delegate.hpp"
 
@@ -19,4 +19,4 @@ protected:
 
 } // namespace lvglpp::widgets
 
-#endif // LV_LISTVIEW_DELEGATE_H
+#endif // LVGLPP_LISTVIEWDELEGATE_H

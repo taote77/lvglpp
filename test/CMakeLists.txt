@@ -44,6 +44,7 @@ add_executable(test_unit
     RtlLayoutTests.cpp
     LabelTests.cpp
     OverlayTests.cpp
+    ToastTests.cpp
 )
 
 target_link_libraries(test_unit PRIVATE

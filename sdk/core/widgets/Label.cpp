@@ -19,10 +19,10 @@ struct TextStyleInfo {
 
 // Keep in sync with Label::TextStyle.
 constexpr TextStyleInfo kTextStyles[] = {
-    {20, false}, {22, false}, {24, false}, {28, false}, {32, false}, {36, false}, {20, true}, {22, true}, {24, true}, {28, true}, {32, true}, {36, true}, {48, true}, {64, true},
+    {20, false}, {22, false}, {24, false}, {28, false}, {32, false}, {36, false}, {20, true}, {22, true}, {24, true}, {28, true}, {32, true}, {36, true}, {48, true}, {64, true}, {16, false},
 };
 
-static_assert(sizeof(kTextStyles) / sizeof(kTextStyles[0]) == Label::TextStyle::FontSize64Bold + 1, "kTextStyles must cover every Label::TextStyle value");
+static_assert(sizeof(kTextStyles) / sizeof(kTextStyles[0]) == Label::TextStyle::FontSize16 + 1, "kTextStyles must cover every Label::TextStyle value");
 
 bool isCombiningMark(uint32_t codepoint)
 {

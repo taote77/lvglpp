@@ -1,0 +1,23 @@
+# Baseline ESP-IDF configuration for lvglpp.
+# Adjust target-specific values (PSRAM mode/speed, flash size) for your board.
+
+# lvglpp uses typeid/dynamic_cast and std::any_cast with exceptions.
+# Remove these after refactoring per docs/ESP32_PORTING.md §2.1.
+CONFIG_COMPILER_CXX_EXCEPTIONS=y
+CONFIG_COMPILER_CXX_RTTI=y
+
+CONFIG_FREERTOS_HZ=1000
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=8192
+
+# ESP32-S3 with PSRAM (adjust for your module).
+CONFIG_SPIRAM=y
+CONFIG_SPIRAM_MODE_OCT=y
+CONFIG_SPIRAM_SPEED_80M=y
+CONFIG_ESPTOOLPY_FLASHSIZE_16MB=y
+
+# LVGL configuration:
+# ports/esp32/CMakeLists.txt sets
+#   LV_CONF_PATH=ports/esp32/lv_conf_esp32.h
+#   LV_KCONFIG_IGNORE=1
+# so the committed ESP lv_conf overrides the desktop config and IDF Kconfig.
+# Adjust ports/esp32/lv_conf_esp32.h if you need Kconfig-driven LVGL settings.

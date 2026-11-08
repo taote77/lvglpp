@@ -1,5 +1,5 @@
-#ifndef LVOBJ_FACTORY_H
-#define LVOBJ_FACTORY_H
+#ifndef LVGLPP_LVOBJFACTORY_H
+#define LVGLPP_LVOBJFACTORY_H
 
 #include "lvgl.h"
 
@@ -51,8 +51,6 @@ public:
 
     static lv_obj_t *createLvglSysDialog(lv_obj_t *parent = nullptr);
 
-    static lv_obj_t *createLvglProgress(lv_obj_t *parent);
-
     static lv_obj_t *createLvglChart(lv_obj_t *parent);
 
     static lv_obj_t *createLvglVideo(lv_obj_t *parent);
@@ -64,14 +62,13 @@ public:
     // New widget factory methods
     static lv_obj_t *createLvglSlider(lv_obj_t *parent);
     static lv_obj_t *createLvglDropdown(lv_obj_t *parent);
-    static lv_obj_t *createLvglBar(lv_obj_t *parent);
+    static lv_obj_t *createLvglProgressBar(lv_obj_t *parent);
     static lv_obj_t *createLvglArc(lv_obj_t *parent);
     static lv_obj_t *createLvglTextArea(lv_obj_t *parent);
     static lv_obj_t *createLvglKeyboard(lv_obj_t *parent);
     static lv_obj_t *createLvglTabView(lv_obj_t *parent);
-    static lv_obj_t *createLvglCanvas(lv_obj_t *parent);
+    static lv_obj_t *createLvglTileView(lv_obj_t *parent);
     static lv_obj_t *createLvglLed(lv_obj_t *parent);
-    static lv_obj_t *createLvglList(lv_obj_t *parent);
     static lv_obj_t *createLvglLine(lv_obj_t *parent);
     static lv_obj_t *createLvglRoller(lv_obj_t *parent);
     static lv_obj_t *createLvglCalendar(lv_obj_t *parent);
@@ -86,4 +83,4 @@ using WidgetFactory = LvObjFactory;
 
 } // namespace lvglpp::tools
 
-#endif // LVOBJ_FACTORY_H
+#endif // LVGLPP_LVOBJFACTORY_H

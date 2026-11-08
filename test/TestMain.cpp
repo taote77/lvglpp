@@ -3,6 +3,7 @@
 #include "core/tools/AssetManager.h"
 #include "core/tools/ImageManager.h"
 #include "core/widgets/OverlayManager.h"
+#include "core/widgets/Toast.h"
 #include <cstdlib>
 #include <lvgl.h>
 
@@ -30,6 +31,7 @@ int main()
 
     int failures = lvglpp::test::TestRunner::instance().runAll();
 
+    lvglpp::widgets::Toast::shutdown();
     lvglpp::tools::ImageManager::shutdown();
     lvglpp::tools::AssetManager::getInstance().reset();
     lvglpp::widgets::OverlayManager::getInstance().shutdown();

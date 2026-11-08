@@ -1,93 +1,210 @@
-
 #include "Toast.h"
-#include "core/log/log.h"
+
+#include "ToastView.h"
 
 namespace lvglpp::widgets {
 
-void Toast::showToast(const std::string &msg, Toast::Type level)
+namespace {
+constexpr std::uint32_t kFadeInMs  = 200;
+constexpr std::uint32_t kFadeOutMs = 200;
+} // namespace
+
+Toast *&Toast::instanceSlot()
 {
-    getInstance().toast_impl_->setMessage(msg, (ToastImpl::IconType)level);
-    OverlayManager::getInstance().bringToFront(getInstance().overlay_token_);
-    if (!getInstance().is_running_)
-    {
-        getInstance().toast_impl_->setOpacity(0);
-        getInstance().toast_impl_->setVisible(true);
-        lv_anim_start(&getInstance().anim_show_t_);
-        getInstance().is_running_ = true;
-        LogDebug << "show toast:-- " << msg << " --";
-    } else
-    {
-        LogWarn << "toast is running now " << msg << " --";
-    }
+    static Toast *instance = nullptr;
+    return instance;
 }
 
-void Toast::success(const std::string &msg)
+Toast *Toast::instanceIfCreated()
 {
-    showToast(msg, Toast::Succeed);
-}
-
-void Toast::warn(const std::string &msg)
-{
-    showToast(msg, Toast::Warn);
-}
-
-void Toast::error(const std::string &msg)
-{
-    showToast(msg, Toast::Error);
+    return instanceSlot();
 }
 
 Toast &Toast::getInstance()
 {
-    // Process-lifetime: the toast root lives on lv_layer_top() and must not be
-    // deleted by a static destructor after lv_deinit().
-    static Toast *instance = new Toast();
-    return *instance;
+    Toast *&slot = instanceSlot();
+    if (slot == nullptr)
+    {
+        slot = new Toast();
+    }
+    return *slot;
 }
 
 Toast::Toast()
 {
-    toast_impl_ = std::make_unique<ToastImpl>();
-    toast_impl_->setVisible(false);
-    overlay_token_ = OverlayManager::getInstance().registerTransient(toast_impl_.get(), OverlayManager::Priority::Toast);
-    lv_anim_init(&anim_show_t_);
-    lv_anim_set_exec_cb(&anim_show_t_, [](void *p, int32_t progress) -> void {
-        if (p != nullptr)
-        {
-            ((Toast *)p)->toast_impl_->setOpacity(progress / 100.0);
-        }
-    });
-    lv_anim_set_values(&anim_show_t_, 0, 100);
-    lv_anim_set_time(&anim_show_t_, 300);
-    lv_anim_set_path_cb(&anim_show_t_, lv_anim_path_ease_out);
-    lv_anim_set_var(&anim_show_t_, this);
-    lv_anim_set_ready_cb(&anim_show_t_, [](struct _lv_anim_t *anim_t) -> void {
-        lv_timer_set_repeat_count(lv_timer_create(
-                                      [](lv_timer_t *t) -> void {
-                                          auto user_data = lv_timer_get_user_data(t);
-                                          if (user_data != nullptr)
-                                          {
-                                              auto p = (Toast *)user_data;
-                                              lv_anim_start(&p->anim_hide_t_);
-                                          }
-                                      },
-                                      3000, anim_t->var),
-                                  1);
-    });
-
-    lv_anim_init(&anim_hide_t_);
-    lv_anim_set_exec_cb(&anim_hide_t_, [](void *p, int32_t progress) -> void {
-        if (p != nullptr)
-        {
-            ((Toast *)p)->toast_impl_->setOpacity((100 - progress) / 100.0);
-        }
-    });
-    lv_anim_set_ready_cb(&anim_hide_t_, [](struct _lv_anim_t *t) -> void {
-        ((Toast *)t->var)->toast_impl_->setVisible(false);
-        ((Toast *)t->var)->is_running_ = false;
-    });
-    lv_anim_set_values(&anim_hide_t_, 0, 100);
-    lv_anim_set_time(&anim_hide_t_, 300);
-    lv_anim_set_path_cb(&anim_hide_t_, lv_anim_path_ease_out);
-    lv_anim_set_var(&anim_hide_t_, this);
+    view_ = std::make_unique<ToastView>();
+    view_->setVisible(false);
+    overlay_token_ = OverlayManager::getInstance().registerTransient(view_.get(), OverlayManager::Priority::Toast);
 }
+
+Toast::~Toast()
+{
+    stopAnimations();
+    if (overlay_token_)
+    {
+        OverlayManager::getInstance().unregisterTransient(overlay_token_);
+    }
+}
+
+void Toast::show(const std::string &message, ToastType type, std::uint32_t durationMs)
+{
+    getInstance().showImpl(message, type, durationMs);
+}
+
+void Toast::success(const std::string &message)
+{
+    show(message, ToastType::Success);
+}
+
+void Toast::warn(const std::string &message)
+{
+    show(message, ToastType::Warning);
+}
+
+void Toast::error(const std::string &message)
+{
+    show(message, ToastType::Error);
+}
+
+void Toast::cancel()
+{
+    if (Toast *instance = instanceIfCreated())
+    {
+        instance->hideNow();
+    }
+}
+
+void Toast::shutdown()
+{
+    Toast *&slot = instanceSlot();
+    delete slot;
+    slot = nullptr;
+}
+
+void Toast::showImpl(const std::string &message, ToastType type, std::uint32_t durationMs)
+{
+    if (message.empty())
+    {
+        return;
+    }
+    if (durationMs == 0)
+    {
+        durationMs = kDefaultDurationMs;
+    }
+
+    stopAnimations();
+    current_duration_ms_ = durationMs;
+
+    view_->setContent(type, message);
+    view_->setVisible(true);
+    view_->setOpacity(1.0);
+    OverlayManager::getInstance().bringToFront(overlay_token_);
+
+    if (state_ == State::Idle)
+    {
+        view_->setOpacity(0);
+        state_ = State::Showing;
+        startShowAnimation();
+        return;
+    }
+
+    // Already on screen (or fading out): update in place and restart the
+    // display timer instead of queueing a second toast.
+    state_ = State::Visible;
+    scheduleHide(current_duration_ms_);
+}
+
+void Toast::startShowAnimation()
+{
+    lv_anim_init(&show_anim_);
+    lv_anim_set_var(&show_anim_, this);
+    lv_anim_set_exec_cb(&show_anim_, [](void *target, int32_t value) {
+        static_cast<Toast *>(target)->view_->setOpacity(value / 100.0);
+    });
+    lv_anim_set_values(&show_anim_, 0, 100);
+    lv_anim_set_duration(&show_anim_, kFadeInMs);
+    lv_anim_set_path_cb(&show_anim_, lv_anim_path_ease_out);
+    lv_anim_set_completed_cb(&show_anim_, [](lv_anim_t *anim) {
+        auto *self = static_cast<Toast *>(anim->var);
+        if (self->state_ != State::Showing)
+        {
+            return;
+        }
+        self->state_ = State::Visible;
+        self->scheduleHide(self->current_duration_ms_);
+    });
+    lv_anim_start(&show_anim_);
+}
+
+void Toast::scheduleHide(std::uint32_t durationMs)
+{
+    if (hide_timer_ != nullptr)
+    {
+        lv_timer_delete(hide_timer_);
+        hide_timer_ = nullptr;
+    }
+
+    hide_timer_ = lv_timer_create(
+        [](lv_timer_t *timer) {
+            auto *self = static_cast<Toast *>(lv_timer_get_user_data(timer));
+            if (self == nullptr)
+            {
+                return;
+            }
+            self->hide_timer_ = nullptr; // one-shot timer deletes itself
+            self->startHideAnimation();
+        },
+        durationMs, this);
+    lv_timer_set_repeat_count(hide_timer_, 1);
+}
+
+void Toast::startHideAnimation()
+{
+    if (state_ == State::Idle)
+    {
+        return;
+    }
+
+    state_ = State::Hiding;
+    lv_anim_init(&hide_anim_);
+    lv_anim_set_var(&hide_anim_, this);
+    lv_anim_set_exec_cb(&hide_anim_, [](void *target, int32_t value) {
+        static_cast<Toast *>(target)->view_->setOpacity((100 - value) / 100.0);
+    });
+    lv_anim_set_values(&hide_anim_, 0, 100);
+    lv_anim_set_duration(&hide_anim_, kFadeOutMs);
+    lv_anim_set_path_cb(&hide_anim_, lv_anim_path_ease_out);
+    lv_anim_set_completed_cb(&hide_anim_, [](lv_anim_t *anim) {
+        auto *self = static_cast<Toast *>(anim->var);
+        if (self->state_ != State::Hiding)
+        {
+            return;
+        }
+        self->state_ = State::Idle;
+        self->view_->setVisible(false);
+    });
+    lv_anim_start(&hide_anim_);
+}
+
+void Toast::hideNow()
+{
+    stopAnimations();
+    state_ = State::Idle;
+    if (view_)
+    {
+        view_->setVisible(false);
+        view_->setOpacity(0.0);
+    }
+}
+
+void Toast::stopAnimations()
+{
+    lv_anim_delete(this, nullptr);
+    if (hide_timer_ != nullptr)
+    {
+        lv_timer_delete(hide_timer_);
+        hide_timer_ = nullptr;
+    }
+}
+
 } // namespace lvglpp::widgets

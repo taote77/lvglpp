@@ -1,10 +1,9 @@
-#ifndef LV_DELEGATE_H
-#define LV_DELEGATE_H
+#ifndef LVGLPP_DELEGATE_H
+#define LVGLPP_DELEGATE_H
 
 #include "ScrollView.h"
 
-namespace lvglpp {
-namespace widgets {
+namespace lvglpp::widgets {
 template <class T>
 class Delegate : public ScrollView
 {
@@ -47,7 +46,6 @@ Delegate<T>::~Delegate()
     }
 }
 
-} // namespace widgets
-} // namespace lvglpp
+} // namespace lvglpp::widgets
 
-#endif // LV_DELEGATE_H
+#endif // LVGLPP_DELEGATE_H

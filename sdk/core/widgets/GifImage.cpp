@@ -1,6 +1,7 @@
 #include "GifImage.h"
 #include "core/base/LvObjFactory.h"
 
+#if LV_USE_GIF
 namespace lvglpp::widgets {
 
 GifImage::GifImage(const std::string &assetPath, Widget *parent) : Widget(tools::LvObjFactory::createLvglGif, parent)
@@ -46,3 +47,4 @@ void GifImage::applyLvglPath(const std::string &lvglPath)
 }
 
 } // namespace lvglpp::widgets
+#endif // LV_USE_GIF

@@ -24,18 +24,19 @@ bool ScrollView::isScrollable() const
 
 void ScrollView::setFlickable(bool b)
 {
+    // "Flickable" is LVGL momentum scrolling; elasticity is a separate flag.
     if (b)
     {
-        lv_obj_add_flag(lvObj(), LV_OBJ_FLAG_SCROLL_ELASTIC);
+        lv_obj_add_flag(lvObj(), LV_OBJ_FLAG_SCROLL_MOMENTUM);
     } else
     {
-        lv_obj_clear_flag(lvObj(), LV_OBJ_FLAG_SCROLL_ELASTIC);
+        lv_obj_clear_flag(lvObj(), LV_OBJ_FLAG_SCROLL_MOMENTUM);
     }
 }
 
 bool ScrollView::isFlickable() const
 {
-    return lv_obj_has_flag(lvObj(), LV_OBJ_FLAG_SCROLL_ELASTIC);
+    return lv_obj_has_flag(lvObj(), LV_OBJ_FLAG_SCROLL_MOMENTUM);
 }
 
 void ScrollView::setScrollbarVisible(bool b)

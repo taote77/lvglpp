@@ -16,7 +16,6 @@
 - **Label** - 文本控件
 - **Image** - 图片控件
 - **PushButton** - 按钮控件
-- **CheckBox** - 复选框控件
 - **Switch** - 开关按钮控件
 
 ## 编译
@@ -96,10 +95,6 @@ button:set_on_clicked(function()
     print("Button clicked!")
 end)
 
--- 创建复选框
-local checkbox = lvgl.create_checkbox(30, 30, 0x333333, 0x00AAFF, root)
-checkbox:set_pos(50, 200)
-
 -- 创建开关
 local switch = lvgl.create_switch(64, 32, root)
 switch:set_pos(200, 200)
@@ -162,18 +157,6 @@ switch:set_pos(200, 200)
 - `parent` (Widget) - 父控件
 
 **返回:** PushButton 对象
-
-#### lvgl.create_checkbox(width, height, bg_color, check_color, parent)
-创建一个复选框控件。
-
-**参数:**
-- `width` (number) - 宽度
-- `height` (number) - 高度
-- `bg_color` (number) - 背景颜色
-- `check_color` (number) - 选中颜色
-- `parent` (Widget) - 父控件
-
-**返回:** CheckBox 对象
 
 #### lvgl.create_switch(width, height, parent)
 创建一个开关按钮控件。
@@ -247,10 +230,6 @@ switch:set_pos(200, 200)
 - `change_image_asset(path)` - 更改图片资产路径
 - `set_color_type(type)` - 设置颜色类型
 - `set_repeat_ms(ms)` - 设置重复间隔
-
-### CheckBox 特有方法
-
-- `get_check_state()` - 获取选中状态
 
 ### Switch 特有方法
 

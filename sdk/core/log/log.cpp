@@ -1,5 +1,12 @@
 #include "log.h"
 
+#ifdef ESP_PLATFORM
+
+// ESP-IDF: the backend is header-only (log_esp.h); this translation unit is
+// intentionally empty so the file can stay in a shared source glob.
+
+#else // ESP_PLATFORM
+
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -76,3 +83,5 @@ void Logger::Configure(const std::filesystem::path &setting)
 }
 
 } // namespace hglv
+
+#endif // ESP_PLATFORM

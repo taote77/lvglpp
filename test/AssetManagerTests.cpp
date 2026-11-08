@@ -74,6 +74,22 @@ TEST(AssetManager_memory_pack)
     return true;
 }
 
+TEST(AssetManager_memory_view_pack)
+{
+    AssetFixture fixture;
+
+    const auto bytes = makePack("image/view.txt", "borrowed");
+    CHECK_TRUE(tools::AssetManager::getInstance().mountMemoryView(bytes.data(), bytes.size()));
+
+    const auto asset = tools::AssetManager::getInstance().open("image/view.txt");
+    CHECK(asset != nullptr);
+    CHECK_EQ(readAsset(asset), std::string("borrowed"));
+    // Zero-copy: the entry must point into the caller-owned pack buffer.
+    CHECK(asset->data() >= bytes.data());
+    CHECK(asset->data() < bytes.data() + bytes.size());
+    return true;
+}
+
 TEST(AssetManager_directory_hot_reload_and_list)
 {
     AssetFixture    fixture;

@@ -62,7 +62,12 @@ lv_obj_t *LvObjFactory::createLvglSpinBox(lv_obj_t *parent)
 
 lv_obj_t *LvObjFactory::createLvglGif(lv_obj_t *parent)
 {
+#if LV_USE_GIF
     return lv_gif_create(parent);
+#else
+    (void)parent;
+    return nullptr;
+#endif
 }
 
 lv_obj_t *LvObjFactory::createLvglDialog(lv_obj_t *parent)
@@ -71,11 +76,6 @@ lv_obj_t *LvObjFactory::createLvglDialog(lv_obj_t *parent)
     lv_obj_t *item = lv_obj_create(lv_layer_top());
     containerBaseStyle().applyTo(item);
     return item;
-}
-
-lv_obj_t *LvObjFactory::createLvglProgress(lv_obj_t *parent)
-{
-    return lv_bar_create(parent);
 }
 
 lv_obj_t *LvObjFactory::createLvglSysDialog(lv_obj_t *parent)
@@ -94,17 +94,32 @@ lv_obj_t *LvObjFactory::createLvglChart(lv_obj_t *parent)
 
 lv_obj_t *LvObjFactory::createLvglVideo(lv_obj_t *parent)
 {
+#if LV_USE_FFMPEG
     return lv_ffmpeg_player_create(parent);
+#else
+    (void)parent;
+    return nullptr;
+#endif
 }
 
 lv_obj_t *LvObjFactory::createLvglLottie(lv_obj_t *parent)
 {
+#if LV_USE_LOTTIE
     return lv_lottie_create(parent);
+#else
+    (void)parent;
+    return nullptr;
+#endif
 }
 
 lv_obj_t *LvObjFactory::createLvglQrCode(lv_obj_t *parent)
 {
+#if LV_USE_QRCODE
     return lv_qrcode_create(parent);
+#else
+    (void)parent;
+    return nullptr;
+#endif
 }
 
 lv_obj_t *LvObjFactory::createLvglSlider(lv_obj_t *parent)
@@ -117,7 +132,7 @@ lv_obj_t *LvObjFactory::createLvglDropdown(lv_obj_t *parent)
     return lv_dropdown_create(parent);
 }
 
-lv_obj_t *LvObjFactory::createLvglBar(lv_obj_t *parent)
+lv_obj_t *LvObjFactory::createLvglProgressBar(lv_obj_t *parent)
 {
     return lv_bar_create(parent);
 }
@@ -142,19 +157,19 @@ lv_obj_t *LvObjFactory::createLvglTabView(lv_obj_t *parent)
     return lv_tabview_create(parent);
 }
 
-lv_obj_t *LvObjFactory::createLvglCanvas(lv_obj_t *parent)
+lv_obj_t *LvObjFactory::createLvglTileView(lv_obj_t *parent)
 {
-    return lv_canvas_create(parent);
+#if LV_USE_TILEVIEW
+    return lv_tileview_create(parent);
+#else
+    (void)parent;
+    return nullptr;
+#endif
 }
 
 lv_obj_t *LvObjFactory::createLvglLed(lv_obj_t *parent)
 {
     return lv_led_create(parent);
-}
-
-lv_obj_t *LvObjFactory::createLvglList(lv_obj_t *parent)
-{
-    return lv_list_create(parent);
 }
 
 lv_obj_t *LvObjFactory::createLvglLine(lv_obj_t *parent)

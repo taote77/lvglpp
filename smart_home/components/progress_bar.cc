@@ -4,7 +4,7 @@
 #include <algorithm>
 
 namespace wrapper::widgets {
-ProgressBar::ProgressBar(widgets::Widget *parent, int w, int h, int min, int max, int val) : Widget(tools::LvObjFactory::createLvglProgress, parent), _max_value(max), _min_value(min)
+ProgressBar::ProgressBar(widgets::Widget *parent, int w, int h, int min, int max, int val) : Widget(tools::LvObjFactory::createLvglProgressBar, parent), _max_value(max), _min_value(min)
 {
     setSize(w, h);
     updateValue(val);

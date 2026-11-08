@@ -11,7 +11,10 @@
 #include <mutex>
 #include <queue>
 #include <string>
+
+#ifndef ESP_PLATFORM
 #include <thread>
+#endif
 
 namespace lvglpp::sys {
 
@@ -109,7 +112,9 @@ private:
 
     std::unique_ptr<Platform>    platform_;
     std::string                  executable_name_;
+#ifndef ESP_PLATFORM
     std::thread                  tick_thread_;
+#endif
     std::atomic<bool>            tick_running_{false};
     std::atomic<bool>            quit_requested_{false};
     std::atomic<int>             exit_code_{0};

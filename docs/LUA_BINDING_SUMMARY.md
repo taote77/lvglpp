@@ -25,7 +25,6 @@
   - 绑定 Label（文本控件）
   - 绑定 Image（图片控件）
   - 绑定 PushButton（按钮控件）
-  - 绑定 CheckBox（复选框控件）
   - 绑定 Switch（开关按钮控件）
 
 - **LuaUtils.cpp** - Lua 工具函数实现
@@ -106,9 +105,6 @@
 - 样式：`set_color_type(type)`
 - 其他：`set_repeat_ms(ms)`
 
-### CheckBox（复选框控件）
-- 状态：`get_check_state()`
-
 ### Switch（开关按钮控件）
 - 状态：`set_check(bool)`, `is_check()`
 
@@ -121,7 +117,6 @@ lvgl.create_text_ex(text, color, parent, style, font_type)
 lvgl.create_image(asset_path, parent)
 lvgl.create_button(width, height, text, parent)
 lvgl.create_button_ex(width, height, color_style, text, parent)
-lvgl.create_checkbox(width, height, bg_color, check_color, parent)
 lvgl.create_switch(width, height, parent)
 ```
 

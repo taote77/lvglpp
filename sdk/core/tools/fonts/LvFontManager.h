@@ -2,7 +2,8 @@
 #ifndef LVFONTMANAGER_H
 #define LVFONTMANAGER_H
 
-#include "lvgl.h"
+#include "FontProfile.h"
+
 #include <map>
 #include <string>
 
@@ -20,6 +21,13 @@ public:
     LvFontManager operator=(const LvFontManager &) = delete;
 
     static const lv_font_t *getFontInfo(FontName name, int size, FontStyle style);
+
+    /**
+     * Select a generated font profile (gen_fonts_profile.py --emit-table).
+     * The profile takes precedence over the compiled-in desktop table.
+     * Pass (nullptr, 0) to restore the default table.
+     */
+    static void setProfile(const LvglppFontFace *faces, unsigned count);
 
     /// Default inherited font for widgets that do not use Label (roller,
     /// dropdown, button internals, ...). Covers Arabic presentation forms.

@@ -24,7 +24,8 @@ public:
         FontSize32Bold,
         FontSize36Bold,
         FontSize48Bold,
-        FontSize64Bold
+        FontSize64Bold,
+        FontSize16
     };
 
     enum FontType { Auto, DMSans, SansSC, Oswald };

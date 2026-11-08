@@ -7,6 +7,7 @@
 #include <tuple>
 #endif
 
+#if !defined(ESP_PLATFORM) && !defined(LVGLPP_NO_BUILTIN_FONTS)
 LV_FONT_DECLARE(NotoSC_20_Normal)
 LV_FONT_DECLARE(NotoSC_20_Bold)
 LV_FONT_DECLARE(NotoSC_22_Normal)
@@ -19,9 +20,11 @@ LV_FONT_DECLARE(NotoSC_32_Normal)
 LV_FONT_DECLARE(NotoSC_32_Bold)
 LV_FONT_DECLARE(NotoSC_36_Normal)
 LV_FONT_DECLARE(NotoSC_36_Bold)
+#endif
 
 namespace {
 
+#if !defined(ESP_PLATFORM) && !defined(LVGLPP_NO_BUILTIN_FONTS)
 struct BitmapFontEntry
 {
     int             size;
@@ -66,6 +69,55 @@ int bitmapIndexForSize(int size)
         }
     }
     return 0;
+}
+#endif // !ESP_PLATFORM && !LVGLPP_NO_BUILTIN_FONTS
+
+const LvglppFontFace *g_fontProfile      = nullptr;
+unsigned              g_fontProfileCount = 0;
+
+// Nearest-size lookup in a generated profile; falls back to the smallest face
+// and to the normal weight when the requested one is absent.
+const lv_font_t *profileFont(int size, lvglpp::tools::LvFontManager::FontStyle style)
+{
+    if (g_fontProfile == nullptr || g_fontProfileCount == 0)
+    {
+        return nullptr;
+    }
+
+    const LvglppFontFace *best = nullptr;
+    for (unsigned i = 0; i < g_fontProfileCount; ++i)
+    {
+        const LvglppFontFace &face = g_fontProfile[i];
+        if (face.normal == nullptr && face.bold == nullptr)
+        {
+            continue;
+        }
+        if (face.size <= size && (best == nullptr || face.size > best->size))
+        {
+            best = &face;
+        }
+    }
+    if (best == nullptr)
+    {
+        for (unsigned i = 0; i < g_fontProfileCount; ++i)
+        {
+            const LvglppFontFace &face = g_fontProfile[i];
+            if ((face.normal != nullptr || face.bold != nullptr) && (best == nullptr || face.size < best->size))
+            {
+                best = &face;
+            }
+        }
+    }
+    if (best == nullptr)
+    {
+        return nullptr;
+    }
+
+    if (style == lvglpp::tools::LvFontManager::Bold && best->bold != nullptr)
+    {
+        return best->bold;
+    }
+    return best->normal != nullptr ? best->normal : best->bold;
 }
 
 #if LV_USE_FREETYPE
@@ -133,8 +185,21 @@ const lv_font_t *getFreeTypeFont(int size, lvglpp::tools::LvFontManager::FontSty
 
 const lv_font_t *getBitmapFont(int size, lvglpp::tools::LvFontManager::FontStyle style)
 {
+    if (const lv_font_t *font = profileFont(size, style))
+    {
+        return font;
+    }
+
+#if defined(ESP_PLATFORM) || defined(LVGLPP_NO_BUILTIN_FONTS)
+    // Constrained targets and the PC simulator use a registered profile or
+    // LVGL's own default font instead of the desktop Noto bitmap set.
+    (void)size;
+    (void)style;
+    return LV_FONT_DEFAULT;
+#else
     const BitmapFontEntry &entry = kBitmapFonts[bitmapIndexForSize(size)];
     return style == lvglpp::tools::LvFontManager::Bold ? entry.bold : entry.normal;
+#endif
 }
 
 } // namespace
@@ -142,6 +207,12 @@ const lv_font_t *getBitmapFont(int size, lvglpp::tools::LvFontManager::FontStyle
 namespace lvglpp::tools {
 
 bool LvFontManager::kEnableFreetype = false;
+
+void LvFontManager::setProfile(const LvglppFontFace *faces, unsigned count)
+{
+    g_fontProfile      = faces;
+    g_fontProfileCount = faces != nullptr ? count : 0;
+}
 
 void LvFontManager::enableFreetype(bool enable)
 {

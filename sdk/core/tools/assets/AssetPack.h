@@ -5,7 +5,9 @@
 #include <array>
 #include <cstdint>
 #include <cstring>
+#ifndef ESP_PLATFORM
 #include <filesystem>
+#endif
 #include <fstream>
 #include <limits>
 #include <string>
@@ -478,6 +480,7 @@ inline bool verifyEntryData(const std::uint8_t *file, std::size_t size, const En
     return true;
 }
 
+#if !defined(ESP_PLATFORM)
 // ---------------------------------------------------------------- writer
 
 class Writer
@@ -738,6 +741,7 @@ private:
     std::vector<Item>               items_;
     std::unordered_set<std::string> paths_;
 };
+#endif // !ESP_PLATFORM
 
 // ---------------------------------------------------------------- reader
 

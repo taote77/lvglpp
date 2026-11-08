@@ -55,7 +55,7 @@ cmake -S . -B build-static -DLVGLPP_ENABLE_ROTATION=OFF -DLVGLPP_ENABLE_RTL=OFF
 - `Widget` 包装对象是子对象的**非拥有句柄**：子包装对象可以在任意时刻销毁，LVGL 对象仍由父级持有。
 - 只有以下包装对象在析构时删除自己的 `lv_obj`：
   - 没有逻辑父对象的顶层对象（Activity root）；
-  - creator 实际把对象挂到 `lv_layer_top()/lv_layer_sys()` 的层对象（`Dialog` 根、`ToastImpl` 等）；
+  - creator 实际把对象挂到 `lv_layer_top()/lv_layer_sys()` 的层对象（`Dialog` 根、`ToastView` 等）；
   - 通过 `ownsLvglObject()` 可查询是否为拥有者。
 - `Widget` 禁止拷贝与移动。
 
@@ -356,7 +356,7 @@ bool portrait = cfg.isPortrait();
 
 ## 7. 控件
 
-原有控件：`Label`、`PushButton`、`Image`、`GifImage`、`LottieCanvas`、`QrCode`、`Video`、`Arc`、`ProgressBar`、`Slider`、`SpinBox`、`CheckBox`、`Switch`、`Dropdown`、`Roller`、`TextArea`、`Keyboard`、`Led`、`Line`、`Chart`、`Table`、`Calendar`、`TabView`、`ListView`、`PageView`、`PageIndicator`、`Loader`（配合 `LoaderComponent`）、`TouchArea`、`Dialog`、`Toast` 等。
+原有控件：`Label`、`PushButton`、`Image`、`GifImage`、`LottieCanvas`、`QrCode`、`Video`、`Arc`、`ProgressBar`、`Slider`、`SpinBox`、`Switch`、`Dropdown`、`Roller`、`TextArea`、`Keyboard`、`Led`、`Line`、`Chart`、`Table`、`Calendar`、`TabView`、`ListView`、`PageView`、`PageIndicator`、`Loader`（配合 `LoaderComponent`）、`TouchArea`、`Dialog`、`Toast` 等。
 
 所有控件都继承 `widgets::Widget`（原 `BaseItem`）。常用现代命名：
 
@@ -381,7 +381,7 @@ widget->setAlignment(...);       // 原拼写 setAligment
 | `MsgBox` | 标题/正文/按钮消息框，按钮自动加入焦点组 |
 | `Scale` | 刻度尺，支持范围、刻度数、角度、模式 |
 
-交互控件（PushButton、Slider、Switch、Dropdown、Roller、CheckBox、TextArea、Arc、Calendar、Table、ImageButton、Scale 等）默认 focusable。
+交互控件（PushButton、Slider、Switch、Dropdown、Roller、TextArea、Arc、Calendar、Table、ImageButton、Scale 等）默认 focusable。
 
 ### 7.1 资源管理
 
@@ -615,6 +615,7 @@ SystemDialog (400) > Dialog (300) > Popup (200) > Toast (10, 仅显示)
 - 多个对话框按 `(priority, 打开/置顶顺序)` 排 z-order；返回键从最高优先级开始，同优先级 LIFO。
 - `Dialog::setPriority()` 影响下一次 `open()`；需要运行时置顶可调用 `OverlayManager::bringToFront()`。
 - `OverlayManager::registerTransient()` 用于 Toast 等非焦点覆盖层：不创建 InputManager scope，不消费返回键，不阻挡键盘焦点。
+- `Toast` 是现成的 transient 覆盖层：`Toast::show(msg, ToastType::Warning, durationMs)`，或 `success/warn/error` 快捷方法。新消息会替换当前 Toast 并重置停留时间（不排队，避免过期提示堆积）；`Toast::cancel()` 立即隐藏，`Application::shutdown()` 负责销毁。
 - 自定义覆盖层可用 `attach(root, priority, onBack)` 接入同一套 z-order/返回链；`detach(token)` 幂等。
 - 配置变更会关闭 Dialog（`LVGLPP_DYNAMIC_UI` 下），由 owner 按需重新打开。
 
@@ -644,10 +645,10 @@ int main(int argc, char **argv)
 - **生命周期**：
   1. `initialize()`：`lv_init` → 资产挂载 + `A:` 驱动 → 日志 → SIGINT/SIGTERM → ThorVG → `platform_->init()` → tick 兜底 → `InputManager::install()` → `onInit()`（子类钩子）。
   2. `exec()`：排空事件队列 → `lv_timer_handler()` → `min(idle, 5ms)` 睡眠；`requestQuit()` 或信号后退出并返回退出码。
-  3. `shutdown()`：`onShutdown()` → 停止 tick → `StackView::shutdown()` → `ImageManager::shutdown()` → `InputManager::shutdown()` → `platform_->shutdown()` → `lv_deinit()` → 资源/信号恢复。幂等，部分初始化失败也安全。
+  3. `shutdown()`：`onShutdown()` → 停止 tick → `StackView::shutdown()` → `UiConfig::shutdown()` → `Toast::shutdown()` → `ImageManager::shutdown()` → `OverlayManager::shutdown()` → `InputManager::shutdown()` → `platform_->shutdown()` → `lv_deinit()` → 资源/信号恢复。幂等，部分初始化失败也安全。
 - **退出来源**：
   - `requestQuit(code)` 可从任意线程调用，首个 code 生效；`exec()` 正常返回。
   - `SIGTERM`/`SIGINT`：退出码分别为 143/130。`SDL_HINT_NO_SIGNAL_HANDLERS` 禁止 SDL 接管信号。
   - SDL 窗口关闭：`SdlPlatform` 用 `SDL_SetEventFilter` 拦截 `SDL_QUIT`/`SDL_WINDOWEVENT_CLOSE`，调用 `requestQuit()` 并丢弃事件，从而绕开 LVGL SDL 驱动的 `lv_deinit(); exit(0)`。
-- `StackView`、`Theme`、`Toast` 及工厂默认 Style 仍是进程生命周期单例；不要在一进程内重复 `initialize()`/`lv_init()`。
+- `StackView`、`Theme` 及工厂默认 Style 仍是进程生命周期单例；`Toast` 复用进程级视图，但由 `Application::shutdown()` 显式销毁。不要在一进程内重复 `initialize()`/`lv_init()`。
 - 不要在 `lv_deinit()` 之后销毁仍持有 `lv_obj`/`lv_style_t` 的对象；`Application::shutdown()` 已保证正确的销毁顺序。

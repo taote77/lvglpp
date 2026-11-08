@@ -7,27 +7,43 @@
 #include <cctype>
 #include <cstdlib>
 #include <cstring>
-#include <filesystem>
 #include <fstream>
 #include <functional>
 #include <memory>
 #include <mutex>
+#ifndef ESP_PLATFORM
 #include <shared_mutex>
+#endif
 #include <system_error>
 #include <unordered_map>
 #include <unordered_set>
 #include <utility>
 
+#ifndef ESP_PLATFORM
+#include <filesystem>
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#endif
 
 namespace lvglpp::tools {
 
 namespace {
 
+#if defined(ESP_PLATFORM)
+// ESP-IDF libstdc++ may not provide std::shared_mutex; an exclusive mutex is
+// sufficient because asset mounts are configuration-time operations.
+using AssetRwMutex  = std::mutex;
+using AssetReadLock = std::unique_lock<AssetRwMutex>;
+#else
+using AssetRwMutex  = std::shared_mutex;
+using AssetReadLock = std::shared_lock<AssetRwMutex>;
+#endif
+
+#ifndef ESP_PLATFORM
 namespace fs = std::filesystem;
+#endif
 
 enum class SourceResult {
     NotFound,
@@ -47,10 +63,12 @@ public:
     virtual std::vector<std::string> list(const std::string &prefix) const = 0;
     virtual std::string              name() const                          = 0;
 
+#if !defined(ESP_PLATFORM)
     virtual bool realPath(const std::string &, std::filesystem::path &) const
     {
         return false;
     }
+#endif
 };
 
 class PackSource final : public AssetSource
@@ -61,6 +79,15 @@ public:
         auto source   = std::shared_ptr<PackSource>(new PackSource());
         source->name_ = path;
 
+#if defined(ESP_PLATFORM)
+        // ESP-IDF: read through the VFS (SPIFFS/LittleFS) without mmap.
+        if (!readWholeFile(path, source->owned_, error))
+        {
+            return nullptr;
+        }
+        source->data_ = source->owned_.data();
+        source->size_ = source->owned_.size();
+#else
         const int fd = ::open(path.c_str(), O_RDONLY | O_CLOEXEC);
         if (fd < 0)
         {
@@ -108,7 +135,29 @@ public:
             source->data_ = source->owned_.data();
             source->size_ = source->owned_.size();
         }
+#endif // ESP_PLATFORM
 
+        if (!source->parse(error))
+        {
+            return nullptr;
+        }
+        return source;
+    }
+
+    /// Borrow a caller-owned pack buffer (embedded flash array, mmap, ...).
+    /// The caller guarantees the bytes outlive the mounted source.
+    static std::shared_ptr<PackSource> fromView(const std::uint8_t *data, std::size_t size, std::string name, std::string *error)
+    {
+        if (data == nullptr || size == 0)
+        {
+            pack::setError(error, "empty asset pack");
+            return nullptr;
+        }
+
+        auto source   = std::shared_ptr<PackSource>(new PackSource());
+        source->name_ = std::move(name);
+        source->data_ = data;
+        source->size_ = size;
         if (!source->parse(error))
         {
             return nullptr;
@@ -132,10 +181,12 @@ public:
 
     ~PackSource() override
     {
+#if !defined(ESP_PLATFORM)
         if (mapped_ && data_ != nullptr)
         {
             ::munmap(const_cast<std::uint8_t *>(data_), size_);
         }
+#endif
     }
 
     SourceResult open(const std::string &path, bool verifyCrc, const std::uint8_t *&data, std::size_t &size, std::shared_ptr<const void> &owner, std::string *error) const override
@@ -188,6 +239,30 @@ public:
     }
 
 private:
+    static bool readWholeFile(const std::string &path, std::vector<std::uint8_t> &out, std::string *error)
+    {
+        std::ifstream input(path, std::ios::binary | std::ios::ate);
+        if (!input)
+        {
+            pack::setError(error, "cannot open asset pack: " + path);
+            return false;
+        }
+        const std::streamoff length = input.tellg();
+        if (length <= 0)
+        {
+            pack::setError(error, "cannot stat asset pack: " + path);
+            return false;
+        }
+        input.seekg(0, std::ios::beg);
+        out.resize(static_cast<std::size_t>(length));
+        if (!input.read(reinterpret_cast<char *>(out.data()), length))
+        {
+            pack::setError(error, "cannot read asset pack: " + path);
+            return false;
+        }
+        return true;
+    }
+
     bool parse(std::string *error)
     {
         if (!pack::parseHeader(data_, size_, header_, error))
@@ -216,6 +291,7 @@ private:
     std::unordered_map<std::string, const pack::Entry *> index_;
 };
 
+#if !defined(ESP_PLATFORM)
 class DirectorySource final : public AssetSource
 {
 public:
@@ -364,6 +440,7 @@ private:
 
     fs::path root_;
 };
+#endif // !ESP_PLATFORM
 
 std::string normalizePath(std::string_view path)
 {
@@ -383,19 +460,23 @@ std::string normalizePath(std::string_view path)
 struct AssetManager::Impl {
     ~Impl()
     {
+#if !defined(ESP_PLATFORM)
         if (!temp_dir_.empty())
         {
             std::error_code ec;
             std::filesystem::remove_all(temp_dir_, ec);
         }
+#endif
     }
 
-    mutable std::shared_mutex                       mutex;
+    mutable AssetRwMutex                           mutex;
     std::vector<std::shared_ptr<const AssetSource>> mounts;
     mutable std::mutex                              warn_mutex;
     mutable std::unordered_set<std::string>         warned;
     std::mutex                                      temp_mutex;
+#if !defined(ESP_PLATFORM)
     std::filesystem::path                           temp_dir_;
+#endif
     std::unordered_set<std::string>                 materialized;
 
     void warnMissing(const std::string &path) const
@@ -419,7 +500,7 @@ struct AssetManager::Impl {
 
         std::vector<std::shared_ptr<const AssetSource>> snapshot;
         {
-            std::shared_lock<std::shared_mutex> lock(mutex);
+            AssetReadLock lock(mutex);
             snapshot = mounts;
         }
 
@@ -472,7 +553,7 @@ bool AssetManager::mountPack(const std::string &packPath, std::string *error)
     }
 
     {
-        std::unique_lock<std::shared_mutex> lock(impl_->mutex);
+        std::unique_lock<AssetRwMutex> lock(impl_->mutex);
         impl_->mounts.push_back(std::move(source));
     }
     LOG_DEBUG() << "mounted asset pack: " << packPath;
@@ -481,6 +562,11 @@ bool AssetManager::mountPack(const std::string &packPath, std::string *error)
 
 bool AssetManager::mountDirectory(const std::string &root, std::string *error)
 {
+#if defined(ESP_PLATFORM)
+    (void)root;
+    pack::setError(error, "directory mounts are not available on ESP-IDF; use mountMemoryView() or mountPack()");
+    return false;
+#else
     auto source = DirectorySource::create(root, error);
     if (!source)
     {
@@ -489,11 +575,12 @@ bool AssetManager::mountDirectory(const std::string &root, std::string *error)
     }
 
     {
-        std::unique_lock<std::shared_mutex> lock(impl_->mutex);
+        std::unique_lock<AssetRwMutex> lock(impl_->mutex);
         impl_->mounts.push_back(std::move(source));
     }
     LOG_DEBUG() << "mounted asset directory: " << root;
     return true;
+#endif // ESP_PLATFORM
 }
 
 bool AssetManager::mountMemory(const void *packBytes, std::size_t size, std::string *error)
@@ -515,17 +602,40 @@ bool AssetManager::mountMemory(const void *packBytes, std::size_t size, std::str
     }
 
     {
-        std::unique_lock<std::shared_mutex> lock(impl_->mutex);
+        std::unique_lock<AssetRwMutex> lock(impl_->mutex);
         impl_->mounts.push_back(std::move(source));
     }
     LOG_DEBUG() << "mounted in-memory asset pack (" << size << " bytes)";
     return true;
 }
 
+bool AssetManager::mountMemoryView(const void *packBytes, std::size_t size, std::string *error)
+{
+    if (packBytes == nullptr || size == 0)
+    {
+        pack::setError(error, "empty asset pack");
+        return false;
+    }
+
+    auto source = PackSource::fromView(static_cast<const std::uint8_t *>(packBytes), size, "<memory-view>", error);
+    if (!source)
+    {
+        LOG_ERROR() << "failed to mount borrowed asset pack";
+        return false;
+    }
+
+    {
+        std::unique_lock<AssetRwMutex> lock(impl_->mutex);
+        impl_->mounts.push_back(std::move(source));
+    }
+    LOG_DEBUG() << "mounted borrowed asset pack (" << size << " bytes)";
+    return true;
+}
+
 void AssetManager::reset()
 {
     {
-        std::unique_lock<std::shared_mutex> lock(impl_->mutex);
+        std::unique_lock<AssetRwMutex> lock(impl_->mutex);
         impl_->mounts.clear();
     }
     {
@@ -559,7 +669,7 @@ bool AssetManager::exists(const std::string &logicalPath) const
 
     std::vector<std::shared_ptr<const AssetSource>> snapshot;
     {
-        std::shared_lock<std::shared_mutex> lock(impl_->mutex);
+        AssetReadLock lock(impl_->mutex);
         snapshot = impl_->mounts;
     }
     for (auto it = snapshot.rbegin(); it != snapshot.rend(); ++it)
@@ -576,7 +686,7 @@ std::vector<std::string> AssetManager::list(const std::string &prefix) const
 {
     std::vector<std::shared_ptr<const AssetSource>> sources;
     {
-        std::shared_lock<std::shared_mutex> lock(impl_->mutex);
+        AssetReadLock lock(impl_->mutex);
         sources = impl_->mounts;
     }
 
@@ -598,6 +708,11 @@ std::vector<std::string> AssetManager::list(const std::string &prefix) const
 
 bool AssetManager::materialize(const std::string &logicalPath, std::string &outPath)
 {
+#if defined(ESP_PLATFORM)
+    (void)logicalPath;
+    outPath.clear();
+    return false;
+#else
     const std::string path = normalizePath(logicalPath);
     if (!pack::isCanonicalPath(path))
     {
@@ -606,7 +721,7 @@ bool AssetManager::materialize(const std::string &logicalPath, std::string &outP
 
     std::vector<std::shared_ptr<const AssetSource>> snapshot;
     {
-        std::shared_lock<std::shared_mutex> lock(impl_->mutex);
+        AssetReadLock lock(impl_->mutex);
         snapshot = impl_->mounts;
     }
 
@@ -670,10 +785,17 @@ bool AssetManager::materialize(const std::string &logicalPath, std::string &outP
 
     outPath = target.string();
     return true;
+#endif // ESP_PLATFORM
 }
 
 bool AssetManager::mountDefaults(const std::string &baseDir, const std::string &exeName, std::string *error)
 {
+#if defined(ESP_PLATFORM)
+    (void)baseDir;
+    (void)exeName;
+    pack::setError(error, "asset auto-discovery is not available on ESP-IDF; mount an embedded pack with mountMemoryView()");
+    return false;
+#else
     std::error_code ec;
     const fs::path  base = baseDir.empty() ? fs::current_path(ec) : fs::path(baseDir);
     if (ec)
@@ -781,17 +903,18 @@ bool AssetManager::mountDefaults(const std::string &baseDir, const std::string &
     }
 
     return mountCount() > before;
+#endif // ESP_PLATFORM
 }
 
 std::size_t AssetManager::mountCount() const
 {
-    std::shared_lock<std::shared_mutex> lock(impl_->mutex);
+    AssetReadLock lock(impl_->mutex);
     return impl_->mounts.size();
 }
 
 std::vector<std::string> AssetManager::mountNames() const
 {
-    std::shared_lock<std::shared_mutex> lock(impl_->mutex);
+    AssetReadLock lock(impl_->mutex);
     std::vector<std::string>            names;
     names.reserve(impl_->mounts.size());
     for (const auto &source : impl_->mounts)
