@@ -180,11 +180,11 @@ protected:
 
 `sync_to_smart_speaker.sh` 会把 lvglpp `demo/smart_speaker/` 的
 `FaceTypes.h`、`FacePage.*`、`CandlePage.*` 复制到工程的
-`main/face_ui/`。`main/CMakeLists.txt` 需要：
+`main/smart_speaker_ui/`。`main/CMakeLists.txt` 需要：
 
 ```cmake
-SRCS ... "face_ui/FacePage.cc" "face_ui/CandlePage.cc"
-INCLUDE_DIRS "." "face_ui"
+SRCS ... "smart_speaker_ui/FacePage.cc" "smart_speaker_ui/CandlePage.cc"
+INCLUDE_DIRS "." "smart_speaker_ui"
 ```
 
 `ui_menu.cpp` 直接把两个页面放进外层 TileView 的 tile0/tile1：

@@ -46,7 +46,7 @@ works.
 
 The two pages are independent of the demo activity. Host them directly in an
 existing `TileView` (this is what the smart-speaker app does; the sync script
-copies these files into its `main/face_ui/`):
+copies these files into its `main/smart_speaker_ui/`):
 
 ```cpp
 #include "CandlePage.h"
