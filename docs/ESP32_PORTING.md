@@ -438,7 +438,7 @@ lvglpp 的 Widget 包装、`std::string`、`std::function`、信号槽和全局�
   判成 drag，从而吞掉 `LV_EVENT_CLICKED`。
 - I2C 读失败不要当成 release；让 adapter 保持上一触摸状态，否则一次总线
   错误就会取消点击。
-- 用 `CST816: raw=(x,y)` 日志校准；如果 raw 已经到 359，说明无需缩放。
+- 调试时临时打印 `CST816: raw=(x,y)`；如果 raw 已经到 359，说明无需缩放。
 
 ---
 
