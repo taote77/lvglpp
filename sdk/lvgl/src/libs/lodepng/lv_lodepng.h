@@ -35,9 +35,6 @@ void lv_lodepng_init(void);
 
 void lv_lodepng_deinit(void);
 
-#include <stdlib.h>
-unsigned lodepng_decode32_2(unsigned char ** out, unsigned * w, unsigned * h, const unsigned char * in, size_t insize);
-
 /**********************
  *      MACROS
  **********************/

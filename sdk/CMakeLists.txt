@@ -63,8 +63,20 @@ add_compile_definitions($<$<BOOL:${LV_USE_LIBPNG}>:LV_USE_LIBPNG=1>)
 add_compile_definitions($<$<BOOL:${LV_USE_LIBJPEG_TURBO}>:LV_USE_LIBJPEG_TURBO=1>)
 add_compile_definitions($<$<BOOL:${LV_USE_FFMPEG}>:LV_USE_FFMPEG=1>)
 
-# Add LVGL subdirectory
+# Add LVGL subdirectory. Keep the vendored tree unmodified: point upstream
+# LVGL at the SDK's lv_conf.h and disable the demo/example libraries, which
+# lvglpp never links.
+set(LV_BUILD_CONF_DIR ${CMAKE_CURRENT_SOURCE_DIR}
+    CACHE PATH "Directory containing lv_conf.h" FORCE)
+set(CONFIG_LV_BUILD_DEMOS OFF CACHE BOOL "" FORCE)
+set(CONFIG_LV_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 add_subdirectory(lvgl)
+# Upstream LVGL exposes the ThorVG include dir only to its own sources, but
+# lvglpp initializes the ThorVG runtime directly in Application.cpp.
+if(TARGET lvgl_thorvg)
+    target_include_directories(lvgl_thorvg PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/lvgl/src/libs/thorvg)
+endif()
 target_include_directories(lvgl PUBLIC ${PROJECT_SOURCE_DIR} ${SDL2_INCLUDE_DIRS})
 target_compile_definitions(lvgl PUBLIC
     LVGLPP_ENABLE_ROTATION=$<BOOL:${LVGLPP_ENABLE_ROTATION}>
@@ -145,11 +157,6 @@ if (ENABLE_LUA)
     target_link_libraries(${PROJECT_NAME} ${LUA_LIBRARIES})
 endif ()
 
-
-target_include_directories(${PROJECT_NAME} PRIVATE
-    lvgl/src/
-    lvgl/src/core
-)
 
 if (ENABLE_LUA)
     target_include_directories(${PROJECT_NAME} PRIVATE

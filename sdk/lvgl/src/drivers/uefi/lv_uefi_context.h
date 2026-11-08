@@ -14,7 +14,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../lvgl.h"
+#include "../../lv_conf_internal.h"
 
 #if LV_USE_UEFI
 
@@ -69,3 +69,4 @@ void lv_uefi_platform_deinit(void);
 #endif
 
 #endif //__LV_UEFI_CONTEXT_H__
+

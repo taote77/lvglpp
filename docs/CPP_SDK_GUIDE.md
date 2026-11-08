@@ -1,6 +1,6 @@
 # LVGL++ C++ SDK 使用指南
 
-本指南面向使用 `sdk/` 中 `lvglpp` 库开发 LVGL 9.3 界面的工程师。SDK 的目标是：
+本指南面向使用 `sdk/` 中 `lvglpp` 库开发 LVGL 9.5 界面的工程师。SDK 的目标是：
 
 - 保留 LVGL 的父子对象模型与灵活性；
 - 让 C++ 包装对象的生命周期、事件回调和焦点管理可预测、可安全销毁；
@@ -346,8 +346,8 @@ bool portrait = cfg.isPortrait();
 
 - 所有 `request*` 都是线程安全的原子请求；`Application::exec()` 在 `lv_timer_handler()` 前调用 `UiConfig::processPending()`，所以不要在 LVGL 回调里同步重建 UI。
 - `StackView` 把配置变更分发给每个 `Activity::onConfigurationChanged`；`BaseActivity` 调整 root 尺寸，具体页面通过 `PageHost::saveState()`/`restoreState()` 保留每 Tab 的页面栈与 args 后重建；滚动位置和打开的对话框不保留。
-- `Widget::setAlignment/setAlignmentTo/setPos` 会按 RTL 镜像显式 LEFT/RIGHT/OUT_* 和 x 偏移。**flex/grid 的 RTL 反向由 LVGL 自动完成，不要手动镜像**。`setMirrorInRtl(false)` 可关闭某个控件的镜像；`Chart` 固定 LTR。
-- 方向图片使用 `Image::setRtlAsset(path)`；LVGL 9.3 不支持负 scale 镜像。
+- `Widget::setAlignment/setAlignmentTo/setPos` 会按 RTL 镜像显式 LEFT/RIGHT/OUT_* 和 x 偏移。LVGL 9.5 起对齐镜像由 LVGL 自身按父级 `base_dir` 完成，`Widget` 只补偿偏移量以保持行为不变。**flex/grid 的 RTL 反向由 LVGL 自动完成，不要手动镜像**。`setMirrorInRtl(false)` 可关闭某个控件的镜像；`Chart` 固定 LTR。
+- 方向图片使用 `Image::setRtlAsset(path)`；LVGL 9.5 不支持负 scale 镜像。
 - 启动/调试环境变量：`LVGLPP_ORIENTATION=landscape|portrait|reverse-landscape|reverse-portrait`、`LVGLPP_RTL=1`、`LVGLPP_PANEL_ROTATION_OFFSET=90`、`LVGLPP_SDL_FIXED_PANEL=1`、`LVGLPP_DISABLE_PANEL_ROTATION=1`。smart_home 还支持 `1/2/3/4` 切换四方向、`R` 切换 RTL。
 - 静态产品零开销：`-DLVGLPP_ENABLE_ROTATION=OFF -DLVGLPP_ENABLE_RTL=OFF`，旋转/RTL 代码、每控件镜像状态和矩阵变换都会在编译期移除；`processPending()` 仍保留（每帧一次原子读取），用于语言切换时的页面重建。
 - 平台：FBDEV 用 PARTIAL 软件旋转；SDL 默认通过窗口 reshape 模拟横竖屏（fixed-panel 仅 0/180）；DRM 用 DIRECT + matrix 软件旋转，CPU 成本需实测。`LV_DRAW_TRANSFORM_USE_MATRIX` 由 rotation 开关自动定义。

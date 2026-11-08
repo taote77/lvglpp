@@ -16,6 +16,13 @@ std::string displayed(const Label &text)
     return text.lvObj() != nullptr ? lv_label_get_text(text.lvObj()) : std::string();
 }
 
+int textWidth(const char *text, const lv_font_t *font)
+{
+    lv_point_t size{};
+    lv_text_get_size(&size, text, font, 0, 0, LV_COORD_MAX, LV_TEXT_FLAG_NONE);
+    return size.x;
+}
+
 std::size_t codepointCount(const std::string &value)
 {
     std::size_t count = 0;
@@ -196,9 +203,9 @@ TEST(Label_display_width_uses_widest_line)
 
     const int        width    = text.getDisplayTextWidth();
     const lv_font_t *font     = lv_obj_get_style_text_font(text.lvObj(), LV_PART_MAIN);
-    const int        longLine = lv_text_get_width("longerline", 10, font, 0);
+    const int        longLine = textWidth("longerline", font);
     CHECK_EQ(width, longLine);
-    CHECK_TRUE(width > lv_text_get_width("short", 5, font, 0));
+    CHECK_TRUE(width > textWidth("short", font));
     return true;
 }
 

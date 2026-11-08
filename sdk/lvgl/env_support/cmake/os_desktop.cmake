@@ -6,7 +6,7 @@ set(LV_BUILD_CONF_PATH "" CACHE PATH
     "Use this to specify the location of and/or filename of lv_conf.h")
 
 set(LV_BUILD_CONF_DIR "" CACHE PATH
-    "Can be used to specify the include dir containing lv_conf.h, to be used in conjuction with LV_CONF_INCLUDE_SIMPLE")
+    "Can be used to specify the include dir containing lv_conf.h, to be used in conjunction with LV_CONF_INCLUDE_SIMPLE")
 
 option(LV_BUILD_USE_KCONFIG "Use Kconfig" OFF)
 set(LV_BUILD_DEFCONFIG_PATH "" CACHE PATH
@@ -59,11 +59,23 @@ get_directory_property(HAS_PARENT_SCOPE PARENT_DIRECTORY)
 
 # Set sources used for LVGL components
 file(GLOB_RECURSE SOURCES ${LVGL_ROOT_DIR}/src/*.c
+                          ${LVGL_ROOT_DIR}/src/*.cpp
                           ${LVGL_ROOT_DIR}/src/*.S)
 file(GLOB_RECURSE EXAMPLE_SOURCES ${LVGL_ROOT_DIR}/examples/*.c)
 file(GLOB_RECURSE DEMO_SOURCES ${LVGL_ROOT_DIR}/demos/*.c)
 file(GLOB_RECURSE THORVG_SOURCES ${LVGL_ROOT_DIR}/src/libs/thorvg/*.cpp
                                  ${LVGL_ROOT_DIR}/src/others/vg_lite_tvg/*.cpp)
+
+# Check for the case where LVGL is distributed with only its source code
+if(NOT EXAMPLE_SOURCES AND CONFIG_LV_BUILD_EXAMPLES)
+    message(STATUS "No Examples found. Disabling Examples build")
+    set(CONFIG_LV_BUILD_EXAMPLES OFF)
+endif()
+
+if(NOT DEMO_SOURCES AND CONFIG_LV_BUILD_DEMOS)
+    message(STATUS "No Demos found. Disabling Demos build")
+    set(CONFIG_LV_BUILD_DEMOS OFF)
+endif()
 
 # Build LVGL library
 add_library(lvgl ${SOURCES})

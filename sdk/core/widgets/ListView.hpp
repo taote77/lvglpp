@@ -4,7 +4,6 @@
 #include "BaseModel.hpp"
 #include "ListViewDelegate.hpp"
 #include "ScrollView.h"
-#include "lvgl/src/misc/lv_timer.h"
 #include <any>
 #include <memory>
 

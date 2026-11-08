@@ -7,8 +7,6 @@
  *      INCLUDES
  *********************/
 
-#include "../../misc/lv_area_private.h"
-#include "../lv_draw_private.h"
 #include "lv_draw_vg_lite.h"
 
 #if LV_USE_DRAW_VG_LITE
@@ -17,6 +15,7 @@
 #include "lv_vg_lite_utils.h"
 #include "lv_vg_lite_path.h"
 #include "lv_vg_lite_math.h"
+#include "../../misc/lv_area_private.h"
 
 /*********************
  *      DEFINES
@@ -164,7 +163,7 @@ static vg_lite_fill_t path_append_inner_rect(lv_vg_lite_path_t * path,
         return VG_LITE_FILL_EVEN_ODD;
     }
 
-    /* reset outter rect path */
+    /* reset outer rect path */
     lv_vg_lite_path_reset(path, VG_LITE_FP32);
 
     /* coordinate reference map: https://github.com/lvgl/lvgl/pull/6796 */

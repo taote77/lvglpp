@@ -4,7 +4,6 @@
 #include "core/widgets/Widget.h"
 #include "thorvg.h"
 #include <iostream>
-#include <src/others/observer/lv_observer.h>
 
 BindDemo::BindDemo() : sys::BaseActivity()
 {}

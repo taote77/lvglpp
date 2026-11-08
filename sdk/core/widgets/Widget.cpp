@@ -104,6 +104,47 @@ lv_align_t mirrorAlignForRtl(lv_align_t align)
     }
 }
 
+// LVGL 9.5+ mirrors explicit alignments itself when the parent's base_dir is
+// RTL (see lv_obj_refr_pos). lvglpp keeps its own contract on top of that:
+//   - logical placement: LVGL flips the side, but for right-anchored
+//     alignments the offset sign must be flipped too so that a positive
+//     inset stays an inset;
+//   - physical placement: pre-mirror the request so LVGL's native mirroring
+//     cancels out and the widget lands where the caller asked.
+bool isRightAnchored(lv_align_t align)
+{
+    return align == LV_ALIGN_TOP_RIGHT || align == LV_ALIGN_RIGHT_MID || align == LV_ALIGN_BOTTOM_RIGHT;
+}
+
+bool physicalPlacementNeedsNegatedOffset(lv_align_t align)
+{
+    switch (align)
+    {
+    case LV_ALIGN_TOP_RIGHT:
+    case LV_ALIGN_RIGHT_MID:
+    case LV_ALIGN_BOTTOM_RIGHT:
+    case LV_ALIGN_TOP_MID:
+    case LV_ALIGN_BOTTOM_MID:
+    case LV_ALIGN_CENTER:
+        return true;
+    default:
+        return false;
+    }
+}
+
+// Undo LVGL's RTL pass for a style x that was computed in LTR coordinates.
+lv_coord_t counterMirroredX(lv_obj_t *obj, lv_coord_t x, lv_coord_t requestedWidth)
+{
+    lv_obj_t  *parent      = lv_obj_get_parent(obj);
+    lv_coord_t parentWidth = parent != nullptr ? lv_obj_get_content_width(parent) : 0;
+    lv_coord_t width       = lv_obj_get_width(obj);
+    if (width <= 0 && requestedWidth > 0 && requestedWidth < kMaxRequestedWidthSanity)
+    {
+        width = requestedWidth;
+    }
+    return parentWidth - width - x;
+}
+
 } // namespace
 
 #endif // LVGLPP_ENABLE_RTL
@@ -1004,21 +1045,13 @@ Widget &Widget::setPos(lv_coord_t x, lv_coord_t y)
     if (lv_base_ptr_ != nullptr)
     {
 #if LVGLPP_ENABLE_RTL
-        if (mirror_in_rtl_ && sys::UiConfig::instance().isRtl())
+        if (!mirror_in_rtl_ && sys::UiConfig::instance().isRtl())
         {
-            lv_obj_t  *parent = lv_obj_get_parent(lv_base_ptr_);
-            lv_coord_t width  = lv_obj_get_width(lv_base_ptr_);
-            if (width <= 0 && requested_width_ > 0 && requested_width_ < kMaxRequestedWidthSanity)
-            {
-                width = requested_width_;
-            }
-            lv_coord_t parentWidth = parent != nullptr ? lv_obj_get_content_width(parent) : 0;
-            x                      = parentWidth - x - width;
+            x = counterMirroredX(lv_base_ptr_, x, requested_width_);
         }
 #endif
-        // An explicit position overrides a previous alignment request.
-        // Use TOP_LEFT (physical) so RTL's DEFAULT -> TOP_RIGHT translation
-        // does not add the parent width a second time.
+        // An explicit position overrides a previous alignment request. Keep
+        // TOP_LEFT so LVGL's own RTL pass applies consistently.
         lv_obj_set_style_align(lv_base_ptr_, LV_ALIGN_TOP_LEFT, 0);
 #if LVGLPP_ENABLE_RTL
         has_logical_align_ = false;
@@ -1032,6 +1065,12 @@ Widget &Widget::setPosPhysical(lv_coord_t x, lv_coord_t y)
 {
     if (lv_base_ptr_ != nullptr)
     {
+#if LVGLPP_ENABLE_RTL
+        if (sys::UiConfig::instance().isRtl())
+        {
+            x = counterMirroredX(lv_base_ptr_, x, requested_width_);
+        }
+#endif
         lv_obj_set_style_align(lv_base_ptr_, LV_ALIGN_TOP_LEFT, 0);
 #if LVGLPP_ENABLE_RTL
         has_logical_align_ = false;
@@ -1074,6 +1113,14 @@ Widget &Widget::setAlignmentPhysical(lv_align_t align, lv_coord_t offsetX, lv_co
     {
 #if LVGLPP_ENABLE_RTL
         has_logical_align_ = false;
+        if (sys::UiConfig::instance().isRtl())
+        {
+            if (physicalPlacementNeedsNegatedOffset(align))
+            {
+                offsetX = -offsetX;
+            }
+            align = mirrorAlignForRtl(align);
+        }
 #endif
         lv_obj_align(lv_base_ptr_, align, offsetX, offsetY);
     }
@@ -1122,11 +1169,26 @@ void Widget::applyLogicalAlignment()
 
     lv_align_t align   = logical_align_;
     lv_coord_t offsetX = logical_x_;
+    const bool rtl     = sys::UiConfig::instance().isRtl();
 
-    if (mirror_in_rtl_ && sys::UiConfig::instance().isRtl())
+    if (rtl)
     {
-        align   = mirrorAlignForRtl(align);
-        offsetX = -offsetX;
+        if (mirror_in_rtl_)
+        {
+            // LVGL flips the alignment side itself; only right-anchored
+            // offsets need their sign flipped to keep an inset an inset.
+            if (isRightAnchored(align))
+            {
+                offsetX = -offsetX;
+            }
+        } else
+        {
+            if (physicalPlacementNeedsNegatedOffset(align))
+            {
+                offsetX = -offsetX;
+            }
+            align = mirrorAlignForRtl(align);
+        }
     }
 
     lv_obj_align(lv_base_ptr_, align, offsetX, logical_y_);
@@ -1138,13 +1200,23 @@ Widget &Widget::setAlignmentTo(const Widget &item, lv_align_t align, lv_coord_t 
     if (lv_base_ptr_ != nullptr && item.lvObj() != nullptr)
     {
 #if LVGLPP_ENABLE_RTL
-        if (mirror_in_rtl_ && sys::UiConfig::instance().isRtl())
+        const bool rtl = sys::UiConfig::instance().isRtl();
+        if (rtl && mirror_in_rtl_)
         {
             align   = mirrorAlignForRtl(align);
             offsetX = -offsetX;
         }
 #endif
         lv_obj_align_to(lv_base_ptr_, item.lvObj(), align, offsetX, offsetY);
+#if LVGLPP_ENABLE_RTL
+        if (rtl)
+        {
+            // lv_obj_align_to() stores LTR coordinates; LVGL's RTL pass would
+            // mirror them a second time, so pre-compensate the style x.
+            const lv_coord_t x = lv_obj_get_style_x(lv_base_ptr_, LV_PART_MAIN);
+            lv_obj_set_style_x(lv_base_ptr_, counterMirroredX(lv_base_ptr_, x, requested_width_), LV_PART_MAIN);
+        }
+#endif
     }
     return *this;
 }

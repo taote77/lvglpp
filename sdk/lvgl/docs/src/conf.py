@@ -1,3 +1,4 @@
+# #########################################################################
 # Configuration file for the Sphinx documentation builder.
 # Created by sphinx-quickstart on Wed Jun 12 16:38:40 2019.
 #
@@ -17,6 +18,7 @@
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath() to make it absolute, as shown here.
+# #########################################################################
 import os
 import sys
 from sphinx.builders.html import StandaloneHTMLBuilder
@@ -29,6 +31,8 @@ sys.path.insert(0, os.path.abspath('./_ext'))
 sys.path.insert(0, base_path)
 from lvgl_version import lvgl_version #NoQA
 
+cfg_lv_version_file = 'lv_version.h'
+
 
 
 # *************************************************************************
@@ -36,13 +40,21 @@ from lvgl_version import lvgl_version #NoQA
 # *************************************************************************
 
 project = 'LVGL'
-copyright = '2024-%Y, LVGL Kft'
+copyright = '2021-%Y, LVGL Kft'
 author = 'LVGL Community'
+
 if __name__ == '__main__':
     version_src_path = os.path.join(base_path, '../../lv_version.h')
 else:
-    version_src_path = os.path.join(base_path, 'lv_version.h')
-version = lvgl_version(version_src_path)
+    version_src_path = os.path.join(base_path, cfg_lv_version_file)
+
+if os.path.isfile(version_src_path):
+    # We have lv_version.h.  Use it.
+    version = lvgl_version(version_src_path)
+else:
+    # We have to guess.
+    version = '9.3'
+
 release = version
 # Notes about `version` here:
 # ---------------------------
@@ -74,15 +86,16 @@ release = version
 # As of 6-Jan-2025, `link_roles` is being commented out because it is being
 # replaced by a manually-installed translation link in ./docs/index.rst.
 extensions = [
-    'sphinx_rtd_theme',
     'sphinx.ext.autodoc',
+    'sphinx.ext.extlinks',
     'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
+    'sphinx.ext.viewcode',      # Eye icon at top of page to view page source code on GitHub.
+    'sphinx_copybutton',        # Copy-to-clipboard button in code blocks & code examples.
     'breathe',
     'sphinx_sitemap',
     'lv_example',
     'sphinx_design',
-    'sphinx_rtd_dark_mode',
     # 'link_roles',
     'sphinxcontrib.mermaid',
 ]
@@ -116,7 +129,8 @@ del add_redirects
 highlight_language = 'c'
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = 'github-light'
+pygments_dark_style = 'github-dark'
 
 # -------------------------------------------------------------------------
 # Options for Internationalisation
@@ -141,8 +155,8 @@ primary_domain = 'c'      # Default:  'py'
 # List of glob-style patterns, relative to source directory, that
 # match files and directories to ignore when looking for source files.
 # These patterns also effect html_static_path and html_extra_path.
-exclude_patterns = ['build', 'doxygen', 'Thumbs.db', '.DS_Store',
-                    'README.md', 'README_*', 'lv_examples', 'out_html', 'env', '_ext', 'examples']
+exclude_patterns = ['build', 'doxygen', 'intermediate', 'doxygen_html', 'Thumbs.db', '.DS_Store',
+                    'README.md', 'README_*', 'lv_examples', 'env', '_ext', 'examples']
 
 # The master toctree document.  (Root of TOC tree.)
 master_doc = 'index'
@@ -189,7 +203,7 @@ templates_path = ['_templates']
 # Options for HTML Builder
 # -------------------------------------------------------------------------
 # The theme for HTML output.  See https://www.sphinx-doc.org/en/master/usage/theming.html
-html_theme = 'sphinx_rtd_theme'
+html_theme = 'furo'
 
 # Theme options are theme-specific and customize the look and feel of a
 # theme further.  For a list of options available for each theme, see the
@@ -197,23 +211,29 @@ html_theme = 'sphinx_rtd_theme'
 #
 # Various other builders are derived from the HTML output, and also make use
 # of these options.
-
-# Note:  'display_version' option is now obsolete in the current (08-Oct-2024)
-# version of sphinx-rtd-theme (upgraded for Sphinx v8.x).  The removed line
-# is preserved by commenting it out in case it is ever needed again.
 html_theme_options = {
-    # 'display_version': True,
-    'prev_next_buttons_location': 'both',
-    'style_external_links': False,
-    # 'vcs_pageview_mode': '',
-    # 'style_nav_header_background': 'white',
-    # Toc options
-    'sticky_navigation': True,
-    'navigation_depth': 4,
-    'includehidden': False,
-    'titles_only': False,
-    'collapse_navigation': False,
-    'logo_only': True,
+    "sidebar_hide_name": True,      # True when the logo carries project name
+    "light_logo": "images/logo-light.svg",
+    "dark_logo": "images/logo-dark.svg",
+    "top_of_page_buttons": ["view"],
+    # The below 3 direct the "top_of_page_buttons" to github for view and edit buttons.
+    "source_repository": "https://github.com/lvgl/lvgl/",
+    "source_branch": "master",
+    "source_directory": "docs/src/",
+    # "announcement": "<em>Semi-permanent announcement</em> from <code>conf.py</code>.",
+}
+
+html_sidebars = {
+    "**": [
+        "sidebar/brand.html",
+        "sidebar/version-selector.html",
+        "sidebar/search.html",
+        "sidebar/scroll-start.html",
+        "sidebar/navigation.html",
+        "sidebar/ethical-ads.html",
+        "sidebar/scroll-end.html",
+        "sidebar/variant-selector.html"
+    ]
 }
 
 # For site map generation
@@ -243,12 +263,14 @@ html_context = {
     'conf_py_path': '/docs/src/'
 }
 
-html_logo = '_static/images/logo_lvgl.png'
+html_logo = ''
 html_favicon = '_static/images/favicon.png'
 
 html_css_files = [
-    'css/custom.css',
-    'css/fontawesome.min.css'
+    'css/fontawesome.min.css',
+    'css/solid.min.css',
+    'css/brands.min.css',
+    'css/custom.css'
 ]
 
 html_js_files = [
@@ -261,12 +283,13 @@ html_last_updated_fmt = ''          # Empty string uses default format:  '%b %d,
 html_last_updated_use_utc = False   # False = use generating system's local date, not GMT.
 html_permalinks = True              # Default = True, add link anchor for each heading and description environment.
 
-html_sidebars = {
-    '**': [
-        'relations.html',  # needs 'show_related': True theme option to display
-        'searchbox.html',
-    ]
-}
+# 10-Mar-2025 16:21 -- commented out for Furo theme.
+# html_sidebars = {
+#     '**': [
+#         'relations.html',  # needs 'show_related': True theme option to display
+#         'searchbox.html',
+#     ]
+# }
 
 # html_domain_indices
 # html_use_index = True            # Default = True
@@ -279,7 +302,7 @@ html_sidebars = {
 # html_link_suffix = html_file_suffix
 html_show_copyright = True         # Default = True; shows copyright notice in footer.
 # html_show_search_summary = True  # Default = True
-# html_show_sphinx = True          # Default = True; adds "Created using Sphinx" to footer.
+html_show_sphinx = False          # Default = True; adds "Created using Sphinx" to footer.
 # html_output_encoding = 'utf-8'   # Default = 'utf-8'
 # html_compact_lists = True        # Default = True
 # html_secnumber_suffix = '. '     # Default = '. '; set to ' ' to suppress final dot on section numbers.
@@ -288,7 +311,7 @@ html_show_copyright = True         # Default = True; shows copyright notice in f
 
 # Link images that have been resized with a scale option (scale, width, or height)
 # to their original full-resolution image.  This will not overwrite any link given
-# by the target option on the the image directive, if present.
+# by the target option on the image directive, if present.
 #
 # Tip
 #
@@ -425,6 +448,8 @@ todo_include_todos = True
 # -------------------------------------------------------------------------
 # See https://sphinx-sitemap.readthedocs.io/en/latest/index.html
 sitemap_url_scheme = "{link}"
+# Prettyfy output using 4 spaces to indent.
+sitemap_indent = 4
 
 # -------------------------------------------------------------------------
 # Options for breathe extension
@@ -443,176 +468,99 @@ breathe_default_project = "lvgl"
 # The below generates .HTML page redirects for pages that have been moved.
 # Browsers are redirected via `<meta http-equiv="refresh" content="0; url=new_url">`.
 redirects = {
-    "CONTRIBUTING":                               "contributing/index.html"                                         ,
-    "get-started/index":                          "../intro/getting_started.html"                                   ,
-    "get-started/os/nuttx":                       "../../details/integration/os/nuttx.html"                         ,
-    "get-started/platforms/arduino":              "../../details/integration/framework/arduino.html"                ,
-    "get-started/platforms/espressif":            "../../details/integration/chip/espressif.html"                   ,
-    "get-started/platforms/pc-simulator":         "../../details/integration/ide/pc-simulator.html"                 ,
-    "get-started/quick-overview":                 "../intro/getting_started.html"                                   ,
-    "integration/bindings/api_json":              "../../details/integration/bindings/api_json.html"                ,
-    "integration/bindings/cpp":                   "../../details/integration/bindings/cpp.html"                     ,
-    "integration/bindings/index":                 "../../details/integration/bindings/index.html"                   ,
-    "integration/bindings/javascript":            "../../details/integration/bindings/javascript.html"              ,
-    "integration/bindings/micropython":           "../../details/integration/bindings/micropython.html"             ,
-    "integration/bindings/pikascript":            "../../details/integration/bindings/pikascript.html"              ,
-    "integration/building/cmake":                 "../../details/integration/building/cmake.html"                   ,
-    "integration/building/index":                 "../../details/integration/building/index.html"                   ,
-    "integration/building/make":                  "../../details/integration/building/make.html"                    ,
-    "integration/chip/arm":                       "../../details/integration/chip/arm.html"                         ,
-    "integration/chip/espressif":                 "../../details/integration/chip/espressif.html"                   ,
-    "integration/chip/index":                     "../../details/integration/chip/index.html"                       ,
-    "integration/chip/nxp":                       "../../details/integration/chip/nxp.html"                         ,
-    "integration/chip/renesas":                   "../../details/integration/chip/renesas/index.html"               ,
-    "integration/chip/stm32":                     "../../details/integration/chip/stm32.html"                       ,
-    "integration/driver/X11":                     "../../details/integration/driver/X11.html"                       ,
-    "integration/driver/display/fbdev":           "../../../details/integration/driver/display/fbdev.html"          ,
-    "integration/driver/display/gen_mipi":        "../../../details/integration/driver/display/gen_mipi.html"       ,
-    "integration/driver/display/ili9341":         "../../../details/integration/driver/display/ili9341.html"        ,
-    "integration/driver/display/index":           "../../../details/integration/driver/display/index.html"          ,
-    "integration/driver/display/lcd_stm32_guide": "../../../details/integration/driver/display/lcd_stm32_guide.html",
-    "integration/driver/display/renesas_glcdc":   "../../../details/integration/driver/display/renesas_glcdc.html"  ,
-    "integration/driver/display/st7735":          "../../../details/integration/driver/display/st7735.html"         ,
-    "integration/driver/display/st7789":          "../../../details/integration/driver/display/st7789.html"         ,
-    "integration/driver/display/st7796":          "../../../details/integration/driver/display/st7796.html"         ,
-    "integration/driver/display/st_ltdc":         "../../../details/integration/driver/display/st_ltdc.html"        ,
-    "integration/driver/index":                   "../../details/integration/driver/index.html"                     ,
-    "integration/driver/libinput":                "../../details/integration/driver/libinput.html"                  ,
-    "integration/driver/opengles":                "../../details/integration/driver/opengles.html"                  ,
-    "integration/driver/touchpad/evdev":          "../../../details/integration/driver/touchpad/evdev.html"         ,
-    "integration/driver/touchpad/ft6x36":         "../../../details/integration/driver/touchpad/ft6x36.html"        ,
-    "integration/driver/touchpad/index":          "../../../details/integration/driver/touchpad/index.html"         ,
-    "integration/driver/wayland":                 "../../details/integration/driver/wayland.html"                   ,
-    "integration/driver/windows":                 "../../details/integration/driver/windows.html"                   ,
-    "integration/framework/arduino":              "../../details/integration/framework/arduino.html"                ,
-    "integration/framework/index":                "../../details/integration/framework/index.html"                  ,
-    "integration/framework/platformio":           "../../details/integration/framework/platformio.html"             ,
-    "integration/framework/tasmota-berry":        "../../details/integration/framework/tasmota-berry.html"          ,
-    "integration/ide/index":                      "../../details/integration/ide/index.html"                        ,
-    "integration/ide/mdk":                        "../../details/integration/ide/mdk.html"                          ,
-    "integration/ide/pc-simulator":               "../../details/integration/ide/pc-simulator.html"                 ,
-    "integration/index":                          "../details/integration/index.html"                               ,
-    "integration/os/freertos":                    "../../details/integration/os/freertos.html"                      ,
-    "integration/os/index":                       "../../details/integration/os/index.html"                         ,
-    "integration/os/mqx":                         "../../details/integration/os/mqx.html"                           ,
-    "integration/os/nuttx":                       "../../details/integration/os/nuttx.html"                         ,
-    "integration/os/px5":                         "../../details/integration/os/px5.html"                           ,
-    "integration/os/qnx":                         "../../details/integration/os/qnx.html"                           ,
-    "integration/os/rt-thread":                   "../../details/integration/os/rt-thread.html"                     ,
-    "integration/os/yocto/core_components":       "../../../details/integration/os/yocto/core_components.html"      ,
-    "integration/os/yocto/index":                 "../../../details/integration/os/yocto/index.html"                ,
-    "integration/os/yocto/lvgl_recipe":           "../../../details/integration/os/yocto/lvgl_recipe.html"          ,
-    "integration/os/yocto/terms_and_variables":   "../../../details/integration/os/yocto/terms_and_variables.html"  ,
-    "integration/os/zephyr":                      "../../details/integration/os/zephyr.html"                        ,
-    "layouts/flex":                               "../details/common-widget-features/layouts/flex.html"             ,
-    "layouts/grid":                               "../details/common-widget-features/layouts/grid.html"             ,
-    "layouts/index":                              "../details/common-widget-features/layouts/index.html"            ,
-    "libs/arduino_esp_littlefs":                  "../details/libs/arduino_esp_littlefs.html"                       ,
-    "libs/arduino_sd":                            "../details/libs/arduino_sd.html"                                 ,
-    "libs/barcode":                               "../details/libs/barcode.html"                                    ,
-    "libs/bmp":                                   "../details/libs/bmp.html"                                        ,
-    "libs/ffmpeg":                                "../details/libs/ffmpeg.html"                                     ,
-    "libs/freetype":                              "../details/libs/freetype.html"                                   ,
-    "libs/fs":                                    "../details/libs/fs.html"                                         ,
-    "libs/gif":                                   "../details/libs/gif.html"                                        ,
-    "libs/index":                                 "../details/libs/index.html"                                      ,
-    "libs/lfs":                                   "../details/libs/lfs.html"                                        ,
-    "libs/libjpeg_turbo":                         "../details/libs/libjpeg_turbo.html"                              ,
-    "libs/libpng":                                "../details/libs/libpng.html"                                     ,
-    "libs/lodepng":                               "../details/libs/lodepng.html"                                    ,
-    "libs/qrcode":                                "../details/libs/qrcode.html"                                     ,
-    "libs/rle":                                   "../details/libs/rle.html"                                        ,
-    "libs/rlottie":                               "../details/libs/rlottie.html"                                    ,
-    "libs/svg":                                   "../details/libs/svg.html"                                        ,
-    "libs/tiny_ttf":                              "../details/libs/tiny_ttf.html"                                   ,
-    "libs/tjpgd":                                 "../details/libs/tjpgd.html"                                      ,
-    "others/file_explorer":                       "../details/auxiliary-modules/file_explorer.html"                 ,
-    "others/font_manager":                        "../details/auxiliary-modules/font_manager.html"                  ,
-    "others/fragment":                            "../details/auxiliary-modules/fragment.html"                      ,
-    "others/gridnav":                             "../details/auxiliary-modules/gridnav.html"                       ,
-    "others/ime_pinyin":                          "../details/auxiliary-modules/ime_pinyin.html"                    ,
-    "others/imgfont":                             "../details/auxiliary-modules/imgfont.html"                       ,
-    "others/index":                               "../details/auxiliary-modules/index.html"                         ,
-    "others/monkey":                              "../details/auxiliary-modules/monkey.html"                        ,
-    "others/obj_id":                              "../details/auxiliary-modules/obj_id.html"                        ,
-    "others/obj_property":                        "../details/auxiliary-modules/obj_property.html"                  ,
-    "others/observer":                            "../details/auxiliary-modules/observer.html"                      ,
-    "others/snapshot":                            "../details/auxiliary-modules/snapshot.html"                      ,
-    "overview/animations":                        "../details/main-modules/animation.html"                          ,
-    "overview/color":                             "../details/main-modules/color.html"                              ,
-    "overview/coord":                             "../details/common-widget-features/coord.html"                    ,
-    "overview/debugging/gdb_plugin":              "../../details/debugging/gdb_plugin.html"                         ,
-    "overview/debugging/index":                   "../../details/debugging/index.html"                              ,
-    "overview/debugging/log":                     "../../details/debugging/log.html"                                ,
-    "overview/debugging/profiler":                "../../details/debugging/profiler.html"                           ,
-    "overview/debugging/vg_lite_tvg":             "../../details/debugging/vg_lite_tvg.html"                        ,
-    "overview/display":                           "../details/main-modules/display/index.html"                      ,
-    "overview/event":                             "../details/common-widget-features/event.html"                    ,
-    "overview/font":                              "../details/main-modules/font.html"                               ,
-    "overview/fs":                                "../details/main-modules/fs.html"                                 ,
-    "overview/image":                             "../details/main-modules/image.html"                              ,
-    "overview/indev":                             "../details/main-modules/indev.html"                              ,
-    "overview/index":                             "../details/main-modules/index.html"                              ,
-    "overview/layer":                             "../details/common-widget-features/layer.html"                    ,
-    "overview/new_widget":                        "../details/widgets/new_widget.html"                              ,
-    "overview/obj":                               "../details/common-widget-features/obj.html"                      ,
-    "overview/renderers/arm2d":                   "../../details/integration/renderers/arm2d.html"                  ,
-    "overview/renderers/index":                   "../../details/integration/renderers/index.html"                  ,
-    "overview/renderers/nema_gfx":                "../../details/integration/renderers/nema_gfx.html"               ,
-    "overview/renderers/pxp":                     "../../details/integration/renderers/nxp_pxp.html"                ,
-    "overview/renderers/sdl":                     "../../details/integration/renderers/sdl.html"                    ,
-    "overview/renderers/stm32_dma2d":             "../../details/integration/renderers/stm32_dma2d.html"            ,
-    "overview/renderers/sw":                      "../../details/integration/renderers/sw.html"                     ,
-    "overview/renderers/vg_lite":                 "../../details/integration/renderers/vg_lite.html"                ,
-    "overview/renderers/vglite":                  "../../details/integration/renderers/nxp_vglite_gpu.html"         ,
-    "overview/scroll":                            "../details/common-widget-features/scroll.html"                   ,
-    "overview/style":                             "../details/common-widget-features/styles/styles.html"            ,
-    "overview/style-props":                       "../details/common-widget-features/styles/style-properties.html"  ,
-    "overview/timer":                             "../details/main-modules/timer.html"                              ,
-    "porting/display":                            "../details/main-modules/display/index.html"                      ,
-    "porting/draw":                               "../details/main-modules/draw.html"                               ,
-    "porting/indev":                              "../details/main-modules/indev.html"                              ,
-    "porting/index":                              "../details/integration/adding-lvgl-to-your-project/index.html"   ,
-    "porting/os":                                 "../details/integration/adding-lvgl-to-your-project/threading.html",
-    "porting/project":                            "../details/integration/adding-lvgl-to-your-project/connecting_lvgl.html",
-    "porting/sleep":                              "../details/integration/adding-lvgl-to-your-project/threading.html",
-    "porting/tick":                               "../details/integration/adding-lvgl-to-your-project/connecting_lvgl.html",
-    "porting/timer_handler":                      "../details/integration/adding-lvgl-to-your-project/timer_handler.html",
-    "widgets/animimg":                            "../details/widgets/animimg.html"                                 ,
-    "widgets/arc":                                "../details/widgets/arc.html"                                     ,
-    "widgets/bar":                                "../details/widgets/bar.html"                                     ,
-    "widgets/button":                             "../details/widgets/button.html"                                  ,
-    "widgets/buttonmatrix":                       "../details/widgets/buttonmatrix.html"                            ,
-    "widgets/calendar":                           "../details/widgets/calendar.html"                                ,
-    "widgets/canvas":                             "../details/widgets/canvas.html"                                  ,
-    "widgets/chart":                              "../details/widgets/chart.html"                                   ,
-    "widgets/checkbox":                           "../details/widgets/checkbox.html"                                ,
-    "widgets/dropdown":                           "../details/widgets/dropdown.html"                                ,
-    "widgets/image":                              "../details/widgets/image.html"                                   ,
-    "widgets/imagebutton":                        "../details/widgets/imagebutton.html"                             ,
-    "widgets/index":                              "../details/widgets/index.html"                                   ,
-    "widgets/keyboard":                           "../details/widgets/keyboard.html"                                ,
-    "widgets/label":                              "../details/widgets/label.html"                                   ,
-    "widgets/led":                                "../details/widgets/led.html"                                     ,
-    "widgets/line":                               "../details/widgets/line.html"                                    ,
-    "widgets/list":                               "../details/widgets/list.html"                                    ,
-    "widgets/lottie":                             "../details/widgets/lottie.html"                                  ,
-    "widgets/menu":                               "../details/widgets/menu.html"                                    ,
-    "widgets/msgbox":                             "../details/widgets/msgbox.html"                                  ,
-    "widgets/obj":                                "../details/widgets/base_widget.html"                             ,
-    "widgets/roller":                             "../details/widgets/roller.html"                                  ,
-    "widgets/scale":                              "../details/widgets/scale.html"                                   ,
-    "widgets/slider":                             "../details/widgets/slider.html"                                  ,
-    "widgets/span":                               "../details/widgets/spangroup.html"                               ,
-    "widgets/spinbox":                            "../details/widgets/spinbox.html"                                 ,
-    "widgets/spinner":                            "../details/widgets/spinner.html"                                 ,
-    "widgets/switch":                             "../details/widgets/switch.html"                                  ,
-    "widgets/table":                              "../details/widgets/table.html"                                   ,
-    "widgets/tabview":                            "../details/widgets/tabview.html"                                 ,
-    "widgets/textarea":                           "../details/widgets/textarea.html"                                ,
-    "widgets/tileview":                           "../details/widgets/tileview.html"                                ,
-    "widgets/win":                                "../details/widgets/win.html"                                     ,
-    "details/widgets/span":                       "../../details/widgets/spangroup.html"                            ,
+    "CONTRIBUTING":                               "contributing/index.html"                                 ,
+    "get-started/index":                          "../getting_started.html"                                 ,
+    "get-started/os/nuttx":                       "../../integration/rtos/nuttx.html"                       ,
+    "get-started/platforms/arduino":              "../../integration/framework/arduino.html"                ,
+    "get-started/platforms/espressif":            "../../integration/chip/espressif.html"                   ,
+    "get-started/platforms/pc-simulator":         "../../integration/ide/pc-simulator.html"                 ,
+    "get-started/quick-overview":                 "../getting_started.html"                                 ,
+    "integration/framework/arduino":              "../../integration/frameworks/arduino.html"               ,
+    "integration/framework/index":                "../../integration/frameworks/index.html"                 ,
+    "integration/framework/platformio":           "../../integration/frameworks/platformio.html"            ,
+    "integration/framework/tasmota-berry":        "../../integration/frameworks/tasmota-berry.html"         ,
+    "integration/ide/pc-simulator":               "../../integration/ide/pc-simulator.html"                 ,
+    "integration/os/rt-thread":                   "../../integration/os/rt-thread.html"                     ,
+    "intro/getting_started/index":                "../../getting_started/index.html"                        ,
+    "layouts/flex":                               "../common-widget-features/layouts/flex.html"             ,
+    "layouts/grid":                               "../common-widget-features/layouts/grid.html"             ,
+    "layouts/index":                              "../common-widget-features/layouts/index.html"            ,
+    "others/file_explorer":                       "../auxiliary-modules/file_explorer.html"                 ,
+    "others/font_manager":                        "../auxiliary-modules/font_manager.html"                  ,
+    "others/fragment":                            "../auxiliary-modules/fragment.html"                      ,
+    "others/gridnav":                             "../auxiliary-modules/gridnav.html"                       ,
+    "others/ime_pinyin":                          "../auxiliary-modules/ime_pinyin.html"                    ,
+    "others/imgfont":                             "../auxiliary-modules/imgfont.html"                       ,
+    "others/index":                               "../auxiliary-modules/index.html"                         ,
+    "others/monkey":                              "../auxiliary-modules/monkey.html"                        ,
+    "others/obj_id":                              "../auxiliary-modules/obj_id.html"                        ,
+    "others/obj_property":                        "../auxiliary-modules/obj_property.html"                  ,
+    "others/observer":                            "../main-modules/observer.html"                           ,
+    "others/snapshot":                            "../auxiliary-modules/snapshot.html"                      ,
+    "overview/animations":                        "../main-modules/animation.html"                          ,
+    "overview/color":                             "../main-modules/color.html"                              ,
+    "overview/coord":                             "../common-widget-features/coord.html"                    ,
+    "overview/debugging/gdb_plugin":              "../../debugging/gdb_plugin.html"                         ,
+    "overview/debugging/index":                   "../../debugging/index.html"                              ,
+    "overview/debugging/log":                     "../../debugging/log.html"                                ,
+    "overview/debugging/profiler":                "../../debugging/profiler.html"                           ,
+    "overview/debugging/vg_lite_tvg":             "../../debugging/vg_lite_tvg.html"                        ,
+    "overview/display":                           "../main-modules/display/index.html"                      ,
+    "overview/event":                             "../common-widget-features/event.html"                    ,
+    "overview/font":                              "../main-modules/font.html"                               ,
+    "overview/fs":                                "../main-modules/fs.html"                                 ,
+    "overview/image":                             "../main-modules/image.html"                              ,
+    "overview/indev":                             "../main-modules/indev.html"                              ,
+    "overview/index":                             "../main-modules/index.html"                              ,
+    "overview/layer":                             "../common-widget-features/layer.html"                    ,
+    "overview/new_widget":                        "../widgets/new_widget.html"                              ,
+    "overview/obj":                               "../common-widget-features/obj.html"                      ,
+    "overview/renderers/arm2d":                   "../../integration/renderers/arm2d.html"                  ,
+    "overview/renderers/index":                   "../../integration/renderers/index.html"                  ,
+    "overview/renderers/nema_gfx":                "../../integration/renderers/nema_gfx.html"               ,
+    "overview/renderers/pxp":                     "../../integration/renderers/nxp_pxp.html"                ,
+    "overview/renderers/sdl":                     "../../integration/renderers/sdl.html"                    ,
+    "overview/renderers/stm32_dma2d":             "../../integration/renderers/stm32_dma2d.html"            ,
+    "overview/renderers/sw":                      "../../integration/renderers/sw.html"                     ,
+    "overview/renderers/vg_lite":                 "../../integration/renderers/vg_lite.html"                ,
+    "overview/renderers/vglite":                  "../../integration/renderers/nxp_vglite_gpu.html"         ,
+    "overview/scroll":                            "../common-widget-features/scroll.html"                   ,
+    "overview/style":                             "../common-widget-features/styles/styles.html"            ,
+    "overview/style-props":                       "../common-widget-features/styles/style-properties.html"  ,
+    "overview/timer":                             "../main-modules/timer.html"                              ,
+    "porting/display":                            "../main-modules/display/index.html"                      ,
+    "porting/draw":                               "../main-modules/draw.html"                               ,
+    "porting/indev":                              "../main-modules/indev.html"                              ,
+    "porting/index":                              "../integration/adding-lvgl-to-your-project/index.html"   ,
+    "porting/os":                                 "../integration/adding-lvgl-to-your-project/threading.html",
+    "porting/project":                            "../integration/adding-lvgl-to-your-project/connecting_lvgl.html",
+    "porting/sleep":                              "../integration/adding-lvgl-to-your-project/threading.html",
+    "porting/tick":                               "../integration/adding-lvgl-to-your-project/connecting_lvgl.html",
+    "porting/timer_handler":                      "../integration/adding-lvgl-to-your-project/timer_handler.html",
+    "widgets/obj":                                "../widgets/base_widget.html"                             ,
+    # After 27-Nov-2025
+    "intro/getting_started/index":                   "../../getting_started/index.html"                     ,
+    "details/auxiliary-modules/observer/index":      "../../../main-modules/observer/index.html"            ,
+    "details/common-widget-features/layouts/flex":   "../../../common-widget-features/layouts/flex.html"    ,
+    "details/common-widget-features/layouts/grid":   "../../../common-widget-features/layouts/grid.html"    ,
+    "details/common-widget-features/layouts/index":  "../../../common-widget-features/layouts/index.html"   ,
+    "details/common-widget-features/styles/index":   "../../../common-widget-features/styles/index.html"    ,
+    "details/integration/framework/arduino":         "../../../integration/frameworks/arduino.html"         ,
+    "details/integration/os/nuttx":                  "../../../integration/rtos/nuttx.html"                 ,
+    "details/integration/os/rt-thread":              "../../../integration/rtos/rt-thread.html"             ,
+    "details/integration/os/zephyr":                 "../../../integration/rtos/zephyr.html"                ,
+    "details/libs/gltf":                             "../../libs/gltf.html"                                 ,
+    "details/main-modules/display/overview":         "../../../main-modules/display/overview.html"          ,
+    "details/main-modules/indev":                    "../../main-modules/indev/index.html"                  ,
+    "details/widgets/index":                         "../../widgets/index.html"                             ,
+    "details/xml/editor/index":                      "../../../xml/editor/index.html"                       ,
+    "details/xml/index":                             "../../xml/index.html"                                 ,
+    "details/xml/integration/renesas-dev-tools":     "../../../xml/integration/renesas-dev-tools.html"      ,
+    "details/xml/tools/cli":                         "../../../xml/tools/cli.html"                          ,
+    "details/xml/tools/figma":                       "../../../xml/tools/figma.html"                        ,
+    "details/xml/tools/online_share":                "../../../xml/tools/online_share.html"                 ,
+    "details/xml/xml/index":                         "../../../xml/xml/index.html"                          ,
+    "details/xml/features/index":                    "../../../xml/features/index.html"                     ,
 }
 
 

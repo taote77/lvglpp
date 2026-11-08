@@ -5,8 +5,6 @@
 #include "core/tools/fonts/LvFontManager.h"
 #include <algorithm>
 #include <cstdint>
-#include <src/misc/lv_text_private.h>
-#include <src/widgets/label/lv_label.h>
 #include <string>
 #include <vector>
 
@@ -40,6 +38,41 @@ bool isClusterJoiner(uint32_t codepoint)
     return codepoint == 0x200C || codepoint == 0x200D || (codepoint >= 0xFE00 && codepoint <= 0xFE0F) || (codepoint >= 0xE0100 && codepoint <= 0xE01EF);
 }
 
+// Decode one UTF-8 codepoint and advance past it. Invalid/truncated sequences
+// are consumed as single bytes.
+uint32_t nextCodepoint(const char *text, uint32_t &index)
+{
+    const auto lead   = static_cast<unsigned char>(text[index]);
+    uint32_t   length = 1;
+    uint32_t   value  = lead;
+    if (lead >= 0xF0)
+    {
+        length = 4;
+        value  = lead & 0x07;
+    } else if (lead >= 0xE0)
+    {
+        length = 3;
+        value  = lead & 0x0F;
+    } else if (lead >= 0xC0)
+    {
+        length = 2;
+        value  = lead & 0x1F;
+    }
+    uint32_t consumed = 1;
+    for (uint32_t i = 1; i < length; ++i)
+    {
+        const auto continuation = static_cast<unsigned char>(text[index + i]);
+        if ((continuation & 0xC0) != 0x80)
+        {
+            break;
+        }
+        value = (value << 6) | (continuation & 0x3F);
+        ++consumed;
+    }
+    index += consumed;
+    return value;
+}
+
 // Advance past one user-perceived character: a base codepoint plus any
 // combining marks/variation selectors that follow it.
 void advanceCluster(const char *text, uint32_t &index)
@@ -50,11 +83,11 @@ void advanceCluster(const char *text, uint32_t &index)
         return;
     }
 
-    lv_text_encoded_next(text, &index);
+    nextCodepoint(text, index);
     while (text[index] != '\0')
     {
         uint32_t       probe = index;
-        const uint32_t next  = lv_text_encoded_next(text, &probe);
+        const uint32_t next  = nextCodepoint(text, probe);
         if (!isCombiningMark(next) && !isClusterJoiner(next))
         {
             break;
@@ -437,7 +470,12 @@ int Label::measure(const char *text, uint32_t bytes) const
     }
 
     const lv_text_flag_t flags = recolor_ ? LV_TEXT_FLAG_RECOLOR : LV_TEXT_FLAG_NONE;
-    return lv_text_get_width_with_flags(text, bytes, measurementFont(), letterSpace(), flags);
+    // LVGL 9.5 exposes only the NUL-terminated form publicly, so measure a
+    // bounded prefix by copying it.
+    const std::string prefix(text, bytes);
+    lv_point_t        size{};
+    lv_text_get_size(&size, prefix.c_str(), measurementFont(), letterSpace(), 0, LV_COORD_MAX, flags);
+    return size.x;
 }
 
 int Label::measureLine(const std::string &line) const
