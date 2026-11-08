@@ -1,4 +1,4 @@
-#include "FaceDemoActivity.h"
+#include "SmartSpeakerActivity.h"
 
 #include <ctime>
 #include <string>
@@ -22,7 +22,7 @@ const char* stateName(VoiceState state)
 
 }    // namespace
 
-void FaceDemoActivity::onCreate(std::any arg)
+void SmartSpeakerActivity::onCreate(std::any arg)
 {
     sys::BaseActivity::onCreate(arg);
 
@@ -38,8 +38,7 @@ void FaceDemoActivity::onCreate(std::any arg)
     const int width = lv_display_get_horizontal_resolution(lv_display_get_default());
     if (width > 400)
     {
-        title_
-            = std::make_unique<widgets::Label>("lvglpp 360x360 face demo", 0xFFFFFF, root, widgets::Label::FontSize24);
+        title_ = std::make_unique<widgets::Label>("lvglpp smart speaker", 0xFFFFFF, root, widgets::Label::FontSize24);
         title_->setAlignment(LV_ALIGN_TOP_MID, 0, 16);
 
         state_label_
@@ -93,7 +92,7 @@ void FaceDemoActivity::onCreate(std::any arg)
         100);
 }
 
-void FaceDemoActivity::onDestroy()
+void SmartSpeakerActivity::onDestroy()
 {
     state_timer_.reset();
     clock_timer_.reset();
@@ -107,7 +106,7 @@ void FaceDemoActivity::onDestroy()
     sys::BaseActivity::onDestroy();
 }
 
-void FaceDemoActivity::applyState(VoiceState state)
+void SmartSpeakerActivity::applyState(VoiceState state)
 {
     state_ = state;
     if (face_ != nullptr)
@@ -120,7 +119,7 @@ void FaceDemoActivity::applyState(VoiceState state)
     }
 }
 
-void FaceDemoActivity::updateClock()
+void SmartSpeakerActivity::updateClock()
 {
     if (face_ == nullptr)
     {

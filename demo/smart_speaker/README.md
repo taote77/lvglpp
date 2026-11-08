@@ -1,6 +1,8 @@
-# face_ui — 360×360 smart-speaker face demo
+# smart_speaker — 360×360 智能音响 / 运动表盘 demo
 
-A lvglpp Widget demo derived from the smart-speaker ESP32 UI:
+A lvglpp Widget demo derived from the smart-speaker ESP32 UI. The same round
+face also works as a sports-watch face; the demo is named after the
+smart-speaker use case:
 
 - a round **living face** that mirrors the voice-assistant state
   (`Init / Idle / Listening / Thinking / Speaking / Error`)
@@ -16,9 +18,9 @@ From the repository root:
 
 ```bash
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
-cmake --build build --target face_ui -j$(nproc)
+cmake --build build --target smart_speaker -j$(nproc)
 cd build/target/bin
-./face_ui
+./smart_speaker
 ```
 
 On a desktop window larger than 360×360 the panel is centred, with a title,
@@ -95,5 +97,5 @@ buttons will land off target.
 - `CandlePage.h/.cc` — candle game page; `setVoiceState`, `setMicLevel`,
   `setActive`, `setOnBack`
 - `FacePanel.h/.cc` — TileView composition of the two pages
-- `FaceDemoActivity.h/.cc` — demo host, state cycling and clock
+- `SmartSpeakerActivity.h/.cc` — demo host, state cycling and clock
 - `main.cc` — creates the lvglpp Application and pushes the activity

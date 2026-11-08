@@ -1,5 +1,5 @@
-#ifndef LVGLPP_FACE_DEMO_ACTIVITY_H
-#define LVGLPP_FACE_DEMO_ACTIVITY_H
+#ifndef LVGLPP_SMART_SPEAKER_ACTIVITY_H
+#define LVGLPP_SMART_SPEAKER_ACTIVITY_H
 
 #include "core/sys/BaseActivity.h"
 #include "core/sys/Timer.h"
@@ -12,18 +12,19 @@ namespace lvglpp::demo
 {
 
 /**
- * Desktop demo host for FacePanel. Cycles the voice state every 3 seconds and
- * simulates a microphone level while Listening so the ring, eyes and mouth
- * animate without a real audio pipeline.
+ * Desktop host for the 360x360 smart-speaker UI (which also works as a round
+ * sports-watch face). Cycles the voice state every 3 seconds and simulates a
+ * microphone level while Listening so the ring, eyes and mouth animate
+ * without a real audio pipeline.
  *
  * On a real device, host FacePanel directly and call setVoiceState() /
  * setMicLevel() from the voice pipeline instead of using this activity.
  */
-class FaceDemoActivity final : public sys::BaseActivity
+class SmartSpeakerActivity final : public sys::BaseActivity
 {
 public:
-    FaceDemoActivity()           = default;
-    ~FaceDemoActivity() override = default;
+    SmartSpeakerActivity()           = default;
+    ~SmartSpeakerActivity() override = default;
 
 protected:
     void onCreate(std::any arg) override;
@@ -49,4 +50,4 @@ private:
 
 }    // namespace lvglpp::demo
 
-#endif    // LVGLPP_FACE_DEMO_ACTIVITY_H
+#endif    // LVGLPP_SMART_SPEAKER_ACTIVITY_H

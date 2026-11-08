@@ -42,14 +42,14 @@ cp "${SCRIPT_DIR}/components_lvglpp_CMakeLists.txt" "${COMPONENT_DIR}/CMakeLists
 cp "${SCRIPT_DIR}/SmartSpeakerAdapters.h" "${PROJECT_DIR}/main/"
 cp "${SCRIPT_DIR}/SmartSpeakerAdapters.cpp" "${PROJECT_DIR}/main/"
 
-# Shared face/candle pages: one source in lvglpp/demo/face_ui, copied into the
+# Shared face/candle pages: one source in lvglpp/demo/smart_speaker, copied into the
 # app component. FacePage/CandlePage are compiled by main/CMakeLists.txt.
 mkdir -p "${PROJECT_DIR}/main/face_ui"
-cp "${LVGLPP_ROOT}/demo/face_ui/FaceTypes.h" "${PROJECT_DIR}/main/face_ui/"
-cp "${LVGLPP_ROOT}/demo/face_ui/FacePage.h" "${PROJECT_DIR}/main/face_ui/"
-cp "${LVGLPP_ROOT}/demo/face_ui/FacePage.cc" "${PROJECT_DIR}/main/face_ui/"
-cp "${LVGLPP_ROOT}/demo/face_ui/CandlePage.h" "${PROJECT_DIR}/main/face_ui/"
-cp "${LVGLPP_ROOT}/demo/face_ui/CandlePage.cc" "${PROJECT_DIR}/main/face_ui/"
+cp "${LVGLPP_ROOT}/demo/smart_speaker/FaceTypes.h" "${PROJECT_DIR}/main/face_ui/"
+cp "${LVGLPP_ROOT}/demo/smart_speaker/FacePage.h" "${PROJECT_DIR}/main/face_ui/"
+cp "${LVGLPP_ROOT}/demo/smart_speaker/FacePage.cc" "${PROJECT_DIR}/main/face_ui/"
+cp "${LVGLPP_ROOT}/demo/smart_speaker/CandlePage.h" "${PROJECT_DIR}/main/face_ui/"
+cp "${LVGLPP_ROOT}/demo/smart_speaker/CandlePage.cc" "${PROJECT_DIR}/main/face_ui/"
 
 echo "synced lvglpp -> ${COMPONENT_DIR}"
 echo "copied SmartSpeakerAdapters.{h,cpp} -> ${PROJECT_DIR}/main/"

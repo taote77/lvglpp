@@ -59,7 +59,7 @@ This directory contains the ESP-IDF side of lvglpp:
 `adapters/smart_speaker/` contains a ready-to-adapt implementation for the
 existing `smart-speaker` ESP32-S3 project (ST77916 360x360 QSPI + CST816S,
 managed LVGL 9.5). The same board's face + candle UI is available as the
-reusable `demo/face_ui/` example (`FacePanel` accepts voice state and mic
+reusable `demo/smart_speaker/` example (`FacePanel` accepts voice state and mic
 level from the application). See `adapters/smart_speaker/README.md` for the component
 CMake, RTTI/exception requirement, static draw buffers and main-loop wiring.
 

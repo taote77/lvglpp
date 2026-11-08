@@ -11,7 +11,7 @@ CST816S，ESP-IDF 6.2，LVGL 9.5 managed component）。
   buffer、40px scroll limit、10ms 触摸轮询、RGB565_SWAPPED）。
 - `installSmartSpeakerFontProfile()`：把 lvglpp `Label` 字号映射到工程已启用的
   Montserrat 16/20/24/48。
-- 圆脸 + 吹蜡烛 UI 已抽成独立示例：`demo/face_ui/`。ESP32 工程可以直接
+- 圆脸 + 吹蜡烛 UI 已抽成独立示例：`demo/smart_speaker/`。ESP32 工程可以直接
   复用 `FacePanel`，由语音管线调用 `setVoiceState()` / `setMicLevel()`。
 
 ## 1. 关键差异（与桌面/通用 ESP 配置）
@@ -178,7 +178,7 @@ protected:
 
 ### 4.3 共享圆脸/蜡烛页
 
-`sync_to_smart_speaker.sh` 会把 lvglpp `demo/face_ui/` 的
+`sync_to_smart_speaker.sh` 会把 lvglpp `demo/smart_speaker/` 的
 `FaceTypes.h`、`FacePage.*`、`CandlePage.*` 复制到工程的
 `main/face_ui/`。`main/CMakeLists.txt` 需要：
 

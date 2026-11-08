@@ -1,11 +1,11 @@
-project(face_ui)
+project(smart_speaker)
 
 set(CMAKE_CXX_STANDARD 17)
 
 add_executable(${PROJECT_NAME}
     main.cc
-    FaceDemoActivity.h
-    FaceDemoActivity.cc
+    SmartSpeakerActivity.h
+    SmartSpeakerActivity.cc
     FaceTypes.h
     FacePage.h
     FacePage.cc
