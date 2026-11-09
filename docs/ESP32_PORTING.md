@@ -73,7 +73,7 @@ Phase 0 的验收标准必须包含：**桌面端所有现有构建组合（SDL/
 | 原方案 | 结论 | 需要修正的点 |
 |---|---|---|
 | 字体按需裁剪 | ✅ 方向正确 | 现有的 `gen_fonts.py` 已经按 `strings.xlsx` 裁剪，但仍是 **5 种语言 × 6 字号 × 2 字重 × 8bpp × 不压缩**，24 个 `.c` 共约 90 MB 源码。ESP32 必须按“语言 + 字号 + 字重 + bpp + 压缩”生成 profile。见 §4。 |
-| ESP-IDF 版 `core/log/log.h` | ✅ 可行，已落地 | 已新增 `sdk/core/log/log_esp.h`，`log.h` 在 `ESP_PLATFORM` 下切换；保持 `LOG_DEBUG() << ...` 调用不变，避免 `<filesystem>/<fstream>/<iostream>`。见 §3。 |
+| ESP-IDF 版 `core/log/log.h` | ✅ 可行，已落地 | 已新增 `framework/core/log/log_esp.h`，`log.h` 在 `ESP_PLATFORM` 下切换；保持 `LOG_DEBUG() << ...` 调用不变，避免 `<filesystem>/<fstream>/<iostream>`。见 §3。 |
 | `EspPlatform : sys::Platform` 复用 st77916/cst816 | ✅ 可行 | **不要在 SDK 里 include 应用的驱动头**。用 `DisplayAdapter`/`TouchAdapter` 注入，应用侧写两个薄适配器包住现有驱动。见 §5。 |
 | tick 线程换 esp_timer/FreeRTOS task | ✅ 可行，但不需要改 Application | `Platform::providesTick()` 已存在：`EspPlatform` 返回 `true`，在 `init()` 里 `lv_tick_set_cb([]{ return esp_timer_get_time()/1000; })`，`Application` 就不会启动 `std::thread`。 |
 | `std::filesystem/signal/ThorVG` 用 `#ifndef ESP_PLATFORM` 裁掉 | ⚠️ 部分已存在，但范围被低估 | `signal` 已由 `__unix__ || __APPLE__` 守卫；`Application.cpp` 的 `#include "thorvg.h"` 已有 `#if LV_USE_THORVG` 守卫，ESP target 必须把 `LV_USE_THORVG` 配成 0；`std::filesystem` 涉及 7 个文件，不能只加一个总开关。见 §2。 |
@@ -149,7 +149,7 @@ CONFIG_COMPILER_CXX_EXCEPTIONS=y
 
 ### 2.5 LVGL 配置
 
-当前 `sdk/lv_conf.h` 是桌面模拟器配置，ESP32 必须覆盖：
+当前 `framework/lv_conf.h` 是桌面模拟器配置，ESP32 必须覆盖：
 
 | 宏 | 当前 | ESP32 建议 |
 |---|---|---|
@@ -166,11 +166,11 @@ CONFIG_COMPILER_CXX_EXCEPTIONS=y
 | `LV_USE_GIF` / `LV_USE_QRCODE` | 1 | 按需；QR 码有 flash 成本 |
 | `LV_DEF_REFR_PERIOD` | 33 ms | 按面板/动画需求调整 |
 
-已提供 `ports/esp32/lv_conf_esp32.h`：它 include 桌面 `sdk/lv_conf.h` 后只覆盖 MCU 相关项。`ports/esp32/CMakeLists.txt` 通过 `LV_CONF_PATH` + `LV_KCONFIG_IGNORE=1` 把它同时应用到 `lvgl` 和 `lvglpp` target；桌面构建永远不会包含它。
+已提供 `ports/esp32/lv_conf_esp32.h`：它 include 桌面 `framework/lv_conf.h` 后只覆盖 MCU 相关项。`ports/esp32/CMakeLists.txt` 通过 `LV_CONF_PATH` + `LV_KCONFIG_IGNORE=1` 把它同时应用到 `lvgl` 和 `lvglpp` target；桌面构建永远不会包含它。
 
 如果更倾向 LVGL 的 Kconfig，也可以改用 `CONFIG_LV_CONF_SKIP=y` + `CONFIG_LV_*`，但不要在同一个构建里同时启用两套配置源。
 
-不要复用桌面 `sdk/lv_conf.h`，它的 800×480/32bpp/5MB/ThorVG 假设会直接把 RAM 吃光。
+不要复用桌面 `framework/lv_conf.h`，它的 800×480/32bpp/5MB/ThorVG 假设会直接把 RAM 吃光。
 
 ### 2.6 其他
 
@@ -200,13 +200,13 @@ CONFIG_COMPILER_CXX_EXCEPTIONS=y
 
 ## 3. ESP-IDF 日志后端（已实现）
 
-- `sdk/core/log/log.h`：`#ifdef ESP_PLATFORM` 时 include `log_esp.h`，否则保持原实现。
-- `sdk/core/log/log_esp.h`：
+- `framework/core/log/log.h`：`#ifdef ESP_PLATFORM` 时 include `log_esp.h`，否则保持原实现。
+- `framework/core/log/log_esp.h`：
   - `LOG_DEBUG()/INFO/WARN/ERROR` 返回一个 `EspLogStream`，`operator<<` 写入固定 256 字节行缓冲，析构时 `esp_log_write(level, "lvglpp", "%s", line)`。
   - 支持 `const char*`、`std::string`、`std::string_view`、字符、整数、浮点、枚举、指针；不引入 `<filesystem>/<fstream>/<iostream>`。
   - 定义 `LVGLPP_LOG_DISABLE` 时宏展开为 `NullLogStream`，所有日志编译成空操作。
   - `Logger::Init/Configure` 保留为模板空实现，兼容旧调用（ESP 上没有文件日志）。
-- `sdk/core/log/log.cpp`：ESP 下为空翻译单元；IDF component 可以不编译它。
+- `framework/core/log/log.cpp`：ESP 下为空翻译单元；IDF component 可以不编译它。
 
 推荐配置：
 
@@ -224,7 +224,7 @@ LVGLPP_LOG_DISABLE=1                 # release 构建彻底移除日志
 
 ### 4.1 现状与问题
 
-- `sdk/core/tools/fonts/*.c` 共 24 个文件，源文件合计约 90 MB；每个 face 1.7–9.2 MB 源文本。
+- `framework/core/tools/fonts/*.c` 共 24 个文件，源文件合计约 90 MB；每个 face 1.7–9.2 MB 源文本。
 - 生成参数：6 个字号（20/22/24/28/32/36）× Normal/Bold × 5 种语言字符集 × 8bpp × `--no-compress`。
 - 即使在桌面，这也是明显的 flash 浪费；ESP32 上不可接受。
 
@@ -232,11 +232,11 @@ LVGLPP_LOG_DISABLE=1                 # release 构建彻底移除日志
 
 核心思想：**按产品实际需要的语言/字号/字重生成字体，而不是把整个 workbook 的所有语言都编进去。**
 
-已新增 `sdk/tools/i18n/gen_fonts_profile.py`（独立于桌面 `gen_fonts.py`，不会修改 `sdk/core/tools/fonts/`）：
+已新增 `framework/tools/i18n/gen_fonts_profile.py`（独立于桌面 `gen_fonts.py`，不会修改 `framework/core/tools/fonts/`）：
 
 ```bash
-python3 -I sdk/tools/i18n/gen_fonts_profile.py \
-  --xlsx smart_home/i18n/strings.xlsx \
+python3 -I framework/tools/i18n/gen_fonts_profile.py \
+  --xlsx demo/smart_home/i18n/strings.xlsx \
   --langs zh-CN,en-US \
   --sizes 16,24 \
   --styles normal \
@@ -457,8 +457,8 @@ ports/esp32/
 
 `CMakeLists.txt` 的职责：
 
-- `EXTRA_COMPONENT_DIRS` 加入 `sdk/lvgl`（LVGL 9.5 自带 `env_support/cmake/esp.cmake`）。
-- 编译 `sdk/core/{base,widgets,style,sys,tools}` 的便携子集。
+- `EXTRA_COMPONENT_DIRS` 加入 `framework/lvgl`（LVGL 9.5 自带 `env_support/cmake/esp.cmake`）。
+- 编译 `framework/core/{base,widgets,style,sys,tools}` 的便携子集。
 - 排除：`sys/platform/{Sdl,Framebuf,Drm}Platform.cpp`、`EvdevInput.cpp`、`sys/automation/*`、`log/log.cpp`。
 - `REQUIRES lvgl esp_timer esp_lcd driver`。
 - `target_compile_definitions(... PUBLIC ESP_PLATFORM=1 LVGLPP_PLATFORM_ESP32=1)`。
@@ -553,4 +553,4 @@ cmake --build build --target i18n-check
 - **不允许**出现“ESP 能编、桌面编不过”或“桌面功能被 guard 掉”的情况。
 - `test_unit` 必须与改动前保持同样的测试数量/通过率（新增 ESP 专属测试除外）。
 - FreeType、ThorVG、FFmpeg、evdev、filesystem 热更新、prefetch、automation、Lua、ws_gw 在桌面构建中仍然可用。
-- 字体默认生成命令不变；ESP profile 输出到独立目录（如 `ports/esp32/fonts/`），不得覆盖 `sdk/core/tools/fonts/`。
+- 字体默认生成命令不变；ESP profile 输出到独立目录（如 `ports/esp32/fonts/`），不得覆盖 `framework/core/tools/fonts/`。

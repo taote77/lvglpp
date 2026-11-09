@@ -178,7 +178,7 @@ lvgl.log("Log")       -- 记录日志
 ## 下一步
 
 - 查看 [QUICKSTART.md](QUICKSTART.md) 了解更多用法
-- 查看 [README.md](../sdk/lua/README.md) 获取完整 API 文档
+- 查看 [README.md](../framework/wrappers/lua/README.md) 获取完整 API 文档
 - 创建你自己的 Lua UI 脚本
 - 扩展绑定以支持更多控件
 

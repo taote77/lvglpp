@@ -8,9 +8,8 @@ This document describes patterns and prompts for working on the LVGL++ framework
 
 ```
 The project root has:
-- sdk/core/ — the framework library (lvglpp)
-- smart_home/ — the main application
-- demo/ — demo/test apps
+- framework/core/ — the framework library (lvglpp)
+- demo/ — demo/test apps, including the main application under demo/smart_home/
 - test/ — test app
 
 Key architectural patterns:
@@ -27,7 +26,7 @@ Key architectural patterns:
 
 ```
 Rules:
-- New classes go in the appropriate sdk/core/ subdirectory
+- New classes go in the appropriate framework/core/ subdirectory
 - Add include guards matching the LVGLPP_* pattern
 - Use std::any for type-erased data, NOT void*
 - Use std::unique_ptr for owned sub-objects, NOT raw new/delete
@@ -43,7 +42,7 @@ Rules:
 ### Add a new widget
 
 ```
-Add a new widget class [ClassName] in sdk/core/widgets/ that inherits Widget.
+Add a new widget class [ClassName] in framework/core/widgets/ that inherits Widget.
 It should:
 - Take [params] in constructor
 - Use tools::LvObjFactory::createXxx as the Creator function
@@ -86,7 +85,7 @@ Refactor [widget] to:
 ### Add Lua bindings for a widget
 
 ```
-Add Lua bindings for [widget] in sdk/wrappers/lua/WidgetLuaBind.cc.
+Add Lua bindings for [widget] in framework/wrappers/lua/WidgetLuaBind.cc.
 Follow the existing pattern:
 - bind[WidgetName](sol::state&) static method
 - Bind all public methods using sol's usertype

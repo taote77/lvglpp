@@ -19,8 +19,8 @@ target_link_libraries(testd PRIVATE
 )
 
 target_include_directories(testd PRIVATE
-    ${CMAKE_CURRENT_LIST_DIR}/../sdk/lvgl/
-    ${CMAKE_CURRENT_LIST_DIR}/../sdk/lvgl/src/
+    ${CMAKE_CURRENT_LIST_DIR}/../framework/lvgl/
+    ${CMAKE_CURRENT_LIST_DIR}/../framework/lvgl/src/
     ${CMAKE_CURRENT_LIST_DIR}/../
 )
 
@@ -52,12 +52,12 @@ target_link_libraries(test_unit PRIVATE
 )
 
 target_include_directories(test_unit PRIVATE
-    ${CMAKE_CURRENT_LIST_DIR}/../sdk/lvgl/
-    ${CMAKE_CURRENT_LIST_DIR}/../sdk/lvgl/src/
+    ${CMAKE_CURRENT_LIST_DIR}/../framework/lvgl/
+    ${CMAKE_CURRENT_LIST_DIR}/../framework/lvgl/src/
     ${CMAKE_CURRENT_LIST_DIR}/../
 )
 
-# Sanitizer flags are set in sdk/ scope, which does not propagate to this
+# Sanitizer flags are set in framework/ scope, which does not propagate to this
 # directory. Mirror them here so test_unit is instrumented too.
 if (ASAN AND CMAKE_BUILD_TYPE STREQUAL "Debug")
     target_compile_options(test_unit PRIVATE -fsanitize=address -fno-omit-frame-pointer -g)

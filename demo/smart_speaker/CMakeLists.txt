@@ -21,6 +21,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 )
 
 include_directories(${PROJECT_NAME}
-    ${CMAKE_CURRENT_LIST_DIR}/../../sdk/lvgl/
-    ${CMAKE_CURRENT_LIST_DIR}/../../sdk/lvgl/src/
+    ${CMAKE_CURRENT_LIST_DIR}/../../framework/lvgl/
+    ${CMAKE_CURRENT_LIST_DIR}/../../framework/lvgl/src/
 )

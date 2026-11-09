@@ -9,7 +9,7 @@ This directory contains the ESP-IDF side of lvglpp:
 - `sdkconfig.defaults` — RTTI/exceptions/PSRAM/FreeRTOS baseline.
 - `lv_conf_esp32.h` — additive LVGL config (RGB565, libc malloc, no
   ThorVG/Lottie/FFmpeg/FreeType/GIF/QRCode). It includes the desktop
-  `sdk/lv_conf.h` and overrides only the MCU-specific values.
+  `framework/lv_conf.h` and overrides only the MCU-specific values.
 - `CMakeLists.txt` — IDF component template (not part of the desktop build).
 
 ## Integration
@@ -18,7 +18,7 @@ This directory contains the ESP-IDF side of lvglpp:
 
    ```cmake
    set(EXTRA_COMPONENT_DIRS
-       "${CMAKE_CURRENT_LIST_DIR}/../../sdk/lvgl"
+       "${CMAKE_CURRENT_LIST_DIR}/../../framework/lvgl"
        "${CMAKE_CURRENT_LIST_DIR}")
    ```
 
@@ -69,14 +69,14 @@ CMake, RTTI/exception requirement, static draw buffers and main-loop wiring.
   additive: Linux keeps its filesystem/mmap/FreeType/ThorVG/FFmpeg/evdev/
   prefetch/automation capabilities. See `docs/ESP32_PORTING.md` §0.
 - The log backend for ESP-IDF is implemented in
-  `sdk/core/log/log_esp.h` and selected by `ESP_PLATFORM`.
+  `framework/core/log/log_esp.h` and selected by `ESP_PLATFORM`.
 - `AssetManager` / `ImageManager` / `AssetPack` now have `ESP_PLATFORM`
   branches: embedded/SPIFFS pack (`mountMemoryView`, `mountPack`), no mmap or
   filesystem directory source, synchronous prefetch. The Linux implementations
   are unchanged. See `docs/ESP32_PORTING.md` §2.7 for the status table.
 - Fonts must be generated as an ESP profile with
-  `sdk/tools/i18n/gen_fonts_profile.py`; do not add
-  `sdk/core/tools/fonts/*.c` wholesale. See `docs/ESP32_PORTING.md` §4.
+  `framework/tools/i18n/gen_fonts_profile.py`; do not add
+  `framework/core/tools/fonts/*.c` wholesale. See `docs/ESP32_PORTING.md` §4.
   Register the generated table before building the UI:
 
   ```cpp

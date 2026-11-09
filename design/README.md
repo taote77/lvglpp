@@ -10,8 +10,8 @@ design/tokens.json                  <- edit / sync from Figma
         |
         |  sync_tokens.py generate
         v
-sdk/config/color_sheet.h            ColorToken values (dark + light), dimensions, opacity
-sdk/config/color_sheet_light.h      explicit light-theme values (dark fallback)
+framework/config/color_sheet.h            ColorToken values (dark + light), dimensions, opacity
+framework/config/color_sheet_light.h      explicit light-theme values (dark fallback)
 ```
 
 Do not edit the generated headers by hand: `design-check` fails when they drift
@@ -21,10 +21,10 @@ from the token file.
 
 ```bash
 # edit design/tokens.json, then
-python3 -I sdk/tools/design/sync_tokens.py generate
+python3 -I framework/tools/design/sync_tokens.py generate
 
 # verify committed headers are current (used by CI)
-python3 -I sdk/tools/design/sync_tokens.py generate --check
+python3 -I framework/tools/design/sync_tokens.py generate --check
 # or
 cmake --build build --target design-check
 ```
@@ -44,8 +44,8 @@ plan:
 3. Import it:
 
 ```bash
-python3 -I sdk/tools/design/sync_tokens.py import /tmp/figma-tokens.json --dry-run
-python3 -I sdk/tools/design/sync_tokens.py import /tmp/figma-tokens.json
+python3 -I framework/tools/design/sync_tokens.py import /tmp/figma-tokens.json --dry-run
+python3 -I framework/tools/design/sync_tokens.py import /tmp/figma-tokens.json
 ```
 
 The importer understands the usual `$themes` export (one theme named `Dark` and
@@ -60,9 +60,9 @@ Requires a Figma Enterprise plan and a personal access token:
 
 ```bash
 export FIGMA_TOKEN=...            # never commit this
-python3 -I sdk/tools/design/sync_tokens.py fetch \
+python3 -I framework/tools/design/sync_tokens.py fetch \
     --file-key <figma-file-key> --dry-run
-python3 -I sdk/tools/design/sync_tokens.py fetch --file-key <figma-file-key>
+python3 -I framework/tools/design/sync_tokens.py fetch --file-key <figma-file-key>
 ```
 
 Mode names are matched through `meta.figma.themeMap` in the token file
@@ -103,7 +103,7 @@ values fall back to the dark value.
 
 - Names must be `UPPER_SNAKE_CASE` and are emitted as C++ identifiers.
 - Dimensions are non-negative integers; opacity values are `0.0 .. 1.0`.
-- Adding a `ColorRole` in `sdk/core/style/Theme.h` also requires adding the
+- Adding a `ColorRole` in `framework/core/style/Theme.h` also requires adding the
   matching pair to `kPalette` in `Theme.cpp`; a `static_assert` catches a missed
   role at compile time.
 
@@ -138,7 +138,7 @@ sites; its argument has already been resolved to the active theme. New
 theme-aware code can use `core::Theme` or the explicit
 `ThemeColor(dark, light, style)` overload.
 
-`ColorToken` conversions are implemented in `sdk/config/color_sheet.cpp`, so
+`ColorToken` conversions are implemented in `framework/config/color_sheet.cpp`, so
 code using the generated tokens must link `lvglpp`. The token values are not
 compile-time constants; use `darkValue()/lightValue()` when a `constexpr` is
 required.

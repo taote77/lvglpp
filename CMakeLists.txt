@@ -39,17 +39,15 @@ endif ()
 
 option(ENABLE_LUA "Enable Lua bindings (requires lua-5.4)" OFF)
 
-add_subdirectory(sdk)
+add_subdirectory(framework)
 
-# Asset pack/directory staging (needs the respack target from sdk/).
+# Asset pack/directory staging (needs the respack target from framework/).
 include(cmake/assets.cmake)
 
 set(ENABLE_DEMO ON CACHE BOOL "Enable demo application")
 if (ENABLE_DEMO)
     add_subdirectory(demo)
 endif ()
-
-add_subdirectory(smart_home)
 
 add_subdirectory(test)
 
@@ -58,7 +56,7 @@ add_subdirectory(test)
 find_package(Python3 COMPONENTS Interpreter QUIET)
 if (Python3_Interpreter_FOUND)
     add_custom_target(design-check
-        COMMAND ${Python3_EXECUTABLE} -I ${CMAKE_CURRENT_LIST_DIR}/sdk/tools/design/sync_tokens.py generate --check
+        COMMAND ${Python3_EXECUTABLE} -I ${CMAKE_CURRENT_LIST_DIR}/framework/tools/design/sync_tokens.py generate --check
         COMMENT "Checking design tokens and generated C++ headers"
         VERBATIM)
 else ()

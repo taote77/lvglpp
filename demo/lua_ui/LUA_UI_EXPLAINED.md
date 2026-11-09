@@ -547,4 +547,4 @@ end)
 - [simple_demo.lua](simple_demo.lua) - 简单示例
 - [RUN_GUIDE.md](RUN_GUIDE.md) - 运行指南
 - [QUICKSTART.md](QUICKSTART.md) - 快速入门
-- [sdk/lua/README.md](../sdk/lua/README.md) - 完整 API 文档
+- [framework/wrappers/lua/README.md](../framework/wrappers/lua/README.md) - 完整 API 文档

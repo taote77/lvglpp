@@ -4,15 +4,15 @@
 /*
  * ESP-IDF LVGL configuration.
  *
- * This file is additive: it reuses the desktop sdk/lv_conf.h and then
+ * This file is additive: it reuses the desktop framework/lv_conf.h and then
  * overrides only the settings that do not fit an MCU. Desktop builds never
- * include it (they use sdk/lv_conf.h directly).
+ * include it (they use framework/lv_conf.h directly).
  *
  * Select it with -DLV_CONF_PATH=".../ports/esp32/lv_conf_esp32.h" and
  * -DLV_KCONFIG_IGNORE=1 so ESP-IDF Kconfig does not redefine these values.
  */
 
-#include "../../sdk/lv_conf.h"
+#include "../../framework/lv_conf.h"
 
 /* ST77916 is RGB565. */
 #undef LV_COLOR_DEPTH

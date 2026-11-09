@@ -4,7 +4,7 @@ build*/
 bin/
 
 # Node/Python tooling for the font generator
-sdk/tools/i18n/node_modules/
+framework/tools/i18n/node_modules/
 __pycache__/
 
 # Ignore UI folder, this should be commited in its own repository

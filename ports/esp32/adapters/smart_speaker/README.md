@@ -18,7 +18,7 @@ CST816S，ESP-IDF 6.2，LVGL 9.5 managed component）。
 
 | 项 | smart-speaker 做法 | 适配方式 |
 |---|---|---|
-| LVGL 来源 | managed `lvgl/lvgl` 9.5.0 | lvglpp component `REQUIRES lvgl`，**不要再加 `sdk/lvgl`** |
+| LVGL 来源 | managed `lvgl/lvgl` 9.5.0 | lvglpp component `REQUIRES lvgl`，**不要再加 `framework/lvgl`** |
 | 颜色格式 | `LV_COLOR_FORMAT_RGB565_SWAPPED` | adapter 的 `colorFormat()` 返回它 |
 | draw buffer | 静态 `uint16_t[360*20]` × 2（内部 DMA RAM 紧张） | `EspPlatformConfig::drawBuffer1/2` + `drawBufferSize` |
 | flush | `esp_lcd_panel_draw_bitmap`，DMA 完成回调里 `flush_ready` | adapter `flush()` 返回 `true`，回调调用 `lv_display_flush_ready()` |
@@ -58,7 +58,7 @@ CONFIG_COMPILER_CXX_RTTI=y
 
 ```cmake
 set(LVGLPP_ROOT "${CMAKE_CURRENT_LIST_DIR}/lvglpp" CACHE PATH "lvglpp checkout")
-set(LVGLPP_SDK  "${LVGLPP_ROOT}/sdk")
+set(LVGLPP_SDK  "${LVGLPP_ROOT}/framework")
 
 file(GLOB_RECURSE LVGLPP_SOURCES
     "${LVGLPP_SDK}/core/base/*.cpp"
@@ -93,10 +93,10 @@ target_compile_definitions(${COMPONENT_LIB} PUBLIC LVGLPP_PLATFORM_ESP32=1)
 
 要点：
 
-- **不要**把 `sdk/lvgl` 加进 `EXTRA_COMPONENT_DIRS`；工程已经有 managed LVGL。
+- **不要**把 `framework/lvgl` 加进 `EXTRA_COMPONENT_DIRS`；工程已经有 managed LVGL。
 - **不要**设置 `LV_CONF_PATH`/`LV_KCONFIG_IGNORE`；managed LVGL 使用工程的
   `sdkconfig` Kconfig。
-- 只编译 `sdk/core`，不要 glob `sdk/core/tools/fonts/*.c`；ESP 下
+- 只编译 `framework/core`，不要 glob `framework/core/tools/fonts/*.c`；ESP 下
   `LvFontManager` 会回退 `LV_FONT_DEFAULT`，字库由 §5 的 profile 提供。
 - 如果只想先做 Widget 层，也可以只编译 `base/widgets/style/sys/tools` 的
   便携子集；`Application` 不是必须的。
@@ -208,11 +208,11 @@ candle_page_->setOnBack([this] { go_home(); });
 `installSmartSpeakerFontProfile()`，让 lvglpp `Label::FontSize*` 映射到这些
 内置字体。没有 CJK 字形（当前 `ui_menu` 也没有中文）。
 
-需要中文/多语言时，用 `sdk/tools/i18n/gen_fonts_profile.py` 生成 profile：
+需要中文/多语言时，用 `framework/tools/i18n/gen_fonts_profile.py` 生成 profile：
 
 ```bash
-python3 -I sdk/tools/i18n/gen_fonts_profile.py \
-  --xlsx smart_home/i18n/strings.xlsx \
+python3 -I framework/tools/i18n/gen_fonts_profile.py \
+  --xlsx demo/smart_home/i18n/strings.xlsx \
   --langs zh-CN --sizes 16,24 --styles normal --bpp 4 --compress \
   --out ports/esp32/fonts --emit-table
 ```

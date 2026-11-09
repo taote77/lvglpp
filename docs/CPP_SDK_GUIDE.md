@@ -1,6 +1,6 @@
 # LVGL++ C++ SDK 使用指南
 
-本指南面向使用 `sdk/` 中 `lvglpp` 库开发 LVGL 9.5 界面的工程师。SDK 的目标是：
+本指南面向使用 `framework/` 中 `lvglpp` 库开发 LVGL 9.5 界面的工程师。SDK 的目标是：
 
 - 保留 LVGL 的父子对象模型与灵活性；
 - 让 C++ 包装对象的生命周期、事件回调和焦点管理可预测、可安全销毁；
@@ -264,7 +264,7 @@ item->applyStyle(theme.focusStyle(), LV_PART_MAIN | LV_STATE_FOCUS_KEY);
 
 - 语义色角色见 `core/style/Theme.h` 的 `ColorRole`。
 - 深色/浅色 palette 都来自设计令牌，不再手写：`design/tokens.json` 是唯一来源，
-  `sdk/tools/design/sync_tokens.py generate` 生成 `sdk/config/color_sheet.h`
+  `framework/tools/design/sync_tokens.py generate` 生成 `framework/config/color_sheet.h`
   （深色/基础值）与 `color_sheet_light.h`（浅色值）。
 - 设计令牌可从 Figma 同步（Tokens Studio 导出或 Figma Variables REST），
   详见 `design/README.md`。生成头文件已提交，普通构建不依赖 Python 或网络。
@@ -276,7 +276,7 @@ item->applyStyle(theme.focusStyle(), LV_PART_MAIN | LV_STATE_FOCUS_KEY);
 
 ```bash
 # 修改 design/tokens.json 后重新生成
-python3 -I sdk/tools/design/sync_tokens.py generate
+python3 -I framework/tools/design/sync_tokens.py generate
 
 # CI / 本地检查生成头文件是否过期
 cmake --build build --target design-check
@@ -444,7 +444,7 @@ tools::ImageManager::clearCache();        // 只释放缓存引用；正在使�
   - `LottieCanvas::setAsset()` 读取 pack 字节并调用 `lv_lottie_set_src_data()`；`setFile()` 走 ThorVG 的文件接口。
   - `GifImage::setAsset()` 转换为 `A:/...`；`setFsPath()` 接受显式 LVGL 路径。
   - 内联 base64 图片使用 `Image(Base64Source{data, width, height}, parent)` 或 `Image::setBase64()`，不经过资产管线。
-- **字体**：默认使用 `sdk/core/tools/fonts/` 下的点阵字体（静态数据），按 Excel 文案（`smart_home/i18n/strings.xlsx`）逐字号裁剪生成，`NotoSC_<size>_{Normal,Bold}` 覆盖中/英/日/俄/阿，Bold 通过 `NotoArabic_<size>_Bold` fallback 补齐阿拉伯语。启用 FreeType（`-DLVGLPP_ENABLE_FREETYPE=ON`）并通过 `LvFontManager::enableFreetype(true)` 切换后，才通过 `AssetManager::materialize()` 获取 TTF 路径；关闭时 `assets/common/fonts/*.ttf` 不进入 `common.pak`。生成/校验脚本见 `sdk/tools/i18n/`。
+- **字体**：默认使用 `framework/core/tools/fonts/` 下的点阵字体（静态数据），按 Excel 文案（`demo/smart_home/i18n/strings.xlsx`）逐字号裁剪生成，`NotoSC_<size>_{Normal,Bold}` 覆盖中/英/日/俄/阿，Bold 通过 `NotoArabic_<size>_Bold` fallback 补齐阿拉伯语。启用 FreeType（`-DLVGLPP_ENABLE_FREETYPE=ON`）并通过 `LvFontManager::enableFreetype(true)` 切换后，才通过 `AssetManager::materialize()` 获取 TTF 路径；关闭时 `assets/common/fonts/*.ttf` 不进入 `common.pak`。生成/校验脚本见 `framework/tools/i18n/`。
 - **构建**：`LVGLPP_ASSET_MODE=pack|directory|both`（默认 `pack`）；`lvglpp_attach_assets(<target>)` 负责 common 与 app 资源的打包/暂存。
 
 ---
@@ -640,7 +640,7 @@ int main(int argc, char **argv)
 }
 ```
 
-- **平台选择**：`-DLVGLPP_PLATFORM=AUTO|SDL|FRAMEBUF|DRM`（默认 `AUTO`：非 ARM 选 SDL，ARM 选 FRAMEBUF）。CMake 只定义一个 `LVGLPP_PLATFORM_*` 宏，`sdk/lv_conf.h` 据此启用对应的 LVGL 驱动。
+- **平台选择**：`-DLVGLPP_PLATFORM=AUTO|SDL|FRAMEBUF|DRM`（默认 `AUTO`：非 ARM 选 SDL，ARM 选 FRAMEBUF）。CMake 只定义一个 `LVGLPP_PLATFORM_*` 宏，`framework/lv_conf.h` 据此启用对应的 LVGL 驱动。
 - **后端**：`SdlPlatform`、`FramebufPlatform`、`DrmPlatform`（`core/sys/platform/`）。新增后端实现 `Platform`（`name/init/shutdown/display/setTheme/simulatePointerClick/providesTick`）并在 `PlatformFactory.cpp` 注册即可。
 - **生命周期**：
   1. `initialize()`：`lv_init` → 资产挂载 + `A:` 驱动 → 日志 → SIGINT/SIGTERM → ThorVG → `platform_->init()` → tick 兜底 → `InputManager::install()` → `onInit()`（子类钩子）。

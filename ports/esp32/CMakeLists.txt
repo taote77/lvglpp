@@ -6,14 +6,14 @@
 #
 # Usage in the ESP-IDF project:
 #   set(EXTRA_COMPONENT_DIRS
-#       "${CMAKE_CURRENT_LIST_DIR}/../../sdk/lvgl"
+#       "${CMAKE_CURRENT_LIST_DIR}/../../framework/lvgl"
 #       "${CMAKE_CURRENT_LIST_DIR}")
 #   include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 #
-# LVGL 9.5 has its own ESP-IDF support (sdk/lvgl/env_support/cmake/esp.cmake)
+# LVGL 9.5 has its own ESP-IDF support (framework/lvgl/env_support/cmake/esp.cmake)
 # and is registered as the `lvgl` component.
 
-set(LVGLPP_SDK_ROOT "${CMAKE_CURRENT_LIST_DIR}/../../sdk")
+set(LVGLPP_SDK_ROOT "${CMAKE_CURRENT_LIST_DIR}/../../framework")
 
 # Core sources that do not depend on a desktop OS. Keep this list explicit so
 # portability regressions are visible; globs are used only inside the portable
@@ -77,8 +77,8 @@ target_compile_definitions(${COMPONENT_LIB} PUBLIC
 # Keep third-party/stb warnings non-fatal under IDF's global -Werror.
 target_compile_options(${COMPONENT_LIB} PRIVATE -Wno-error)
 
-# Fonts: do NOT glob sdk/core/tools/fonts/*.c. Add only the profile generated
-# by sdk/tools/i18n/gen_fonts.py (--langs/--sizes/--bpp/--compress), for
+# Fonts: do NOT glob framework/core/tools/fonts/*.c. Add only the profile generated
+# by framework/tools/i18n/gen_fonts.py (--langs/--sizes/--bpp/--compress), for
 # example:
 #
 # target_sources(${COMPONENT_LIB} PRIVATE

@@ -7,7 +7,7 @@
 # Default project dir: /mnt/c/workspace/esp32/smart-speaker
 #
 # The ESP target uses the project's managed lvgl/lvgl component, so this script
-# copies only sdk/core (without the large Noto .c font files), sdk/config and
+# copies only framework/core (without the large Noto .c font files), framework/config and
 # ports/esp32. It also copies the board adapters into main/.
 set -euo pipefail
 
@@ -23,16 +23,16 @@ fi
 
 mkdir -p "${COMPONENT_DIR}/sdk" "${COMPONENT_DIR}/ports"
 
-# sdk/core minus the generated Noto font .c files (ESP uses LV_FONT_DEFAULT or
+# framework/core minus the generated Noto font .c files (ESP uses LV_FONT_DEFAULT or
 # a generated profile, never the desktop full set).
 rsync -a --delete \
     --exclude '*.c' \
     --exclude '__pycache__' \
-    "${LVGLPP_ROOT}/sdk/core/" "${COMPONENT_DIR}/sdk/core/"
+    "${LVGLPP_ROOT}/framework/core/" "${COMPONENT_DIR}/framework/core/"
 
 rsync -a --delete \
     --exclude '__pycache__' \
-    "${LVGLPP_ROOT}/sdk/config/" "${COMPONENT_DIR}/sdk/config/"
+    "${LVGLPP_ROOT}/framework/config/" "${COMPONENT_DIR}/framework/config/"
 
 rsync -a --delete \
     --exclude '__pycache__' \

@@ -6,7 +6,7 @@
 
 ## 实现内容
 
-### 1. 核心库 (sdk/lua/)
+### 1. 核心库 (framework/lua/)
 
 #### 头文件
 - **LvglLuaBind.h** - Lua 绑定核心类，管理 Lua 状态和绑定注册
@@ -71,7 +71,7 @@
 
 ### 3. 构建系统更新
 
-#### sdk/CMakeLists.txt
+#### framework/CMakeLists.txt
 - 添加了 `add_subdirectory(lua)` 以包含 Lua 绑定库
 
 #### demo/CMakeLists.txt
@@ -176,7 +176,7 @@ cd demo/lua_ui
 
 ```
 lvglpp/
-├── sdk/
+├── framework/
 │   ├── lua/
 │   │   ├── LvglLuaBind.h/cpp      # 核心绑定类
 │   │   ├── WidgetLuaBind.h/cpp    # 控件绑定
