@@ -2,6 +2,7 @@
 #define LVGLPP_LABEL_H
 
 #include "Widget.h"
+#include "core/tools/fonts/FontProfile.h"
 #include "lvgl.h"
 #include <string>
 
@@ -32,7 +33,37 @@ public:
 
     enum LongMode { None, AutoEllipsis, MiddleEllipsis };
 
+    /// Semantic typography roles. Values mirror LvglppFontRole so generated
+    /// C tables can be consumed directly.
+    enum class Role {
+        None   = LVGLPP_FONT_ROLE_NONE,
+        Title  = LVGLPP_FONT_ROLE_TITLE,
+        Title2 = LVGLPP_FONT_ROLE_TITLE2,
+        Body1  = LVGLPP_FONT_ROLE_BODY1,
+        Body2  = LVGLPP_FONT_ROLE_BODY2,
+    };
+
+    /// Resolves a semantic role to a font for the current language. Install
+    /// one with setRoleFontResolver().
+    using RoleFontResolver = const lv_font_t *(*)(LvglppFontRole role);
+
+    static void setRoleFontResolver(RoleFontResolver resolver);
+
     Label(const std::string &strMsg, uint32_t clr, Widget *parent, TextStyle style = TextStyle::FontSize20, FontType type = FontType::Auto);
+
+    /// Role-based constructor: the font is looked up through the installed
+    /// RoleFontResolver when the label is created.
+    Label(const std::string &strMsg, uint32_t clr, Widget *parent, Role role, FontType type = FontType::Auto);
+
+    /// Apply a semantic role font. The resolver decides the actual font for
+    /// the current language; without a resolver the label keeps its current
+    /// font.
+    void setFontRole(Role role);
+
+    Role getFontRole() const
+    {
+        return font_role_;
+    }
 
     ~Label() override;
 
@@ -47,6 +78,15 @@ public:
     }
 
     void setTextColor(uint32_t clr);
+
+    /// Apply a generated font directly (used by semantic role fonts such as
+    /// Title/Body1). Passing nullptr is ignored.
+    void setFont(const lv_font_t *font);
+
+    const lv_font_t *getFont() const
+    {
+        return font_;
+    }
 
     [[deprecated("use setTextColor()")]]
     void setTextClr(uint32_t clr)
@@ -107,7 +147,10 @@ private:
     int              letterSpace() const;
     const lv_font_t *measurementFont() const;
 
+    static RoleFontResolver role_font_resolver_;
+
     std::string      text_;
+    Role             font_role_       = Role::None;
     int              max_len_         = -1;
     LongMode         long_mode_       = LongMode::None;
     int              long_mode_width_ = 0;

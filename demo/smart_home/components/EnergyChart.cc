@@ -15,11 +15,11 @@ EnergyChart::EnergyChart(const std::string &title, w::Widget *parent)
     setRadius(RADIUS_12);
 
     // Title
-    _titleLabel = std::make_unique<w::Label>(title, CLR_ON_SURFACE_VARIANT_0, this, w::Label::FontSize22Bold);
+    _titleLabel = std::make_unique<w::Label>(title, CLR_ON_SURFACE_VARIANT_0, this, ::lvglpp::widgets::Label::Role::Title2);
     _titleLabel->setAlignment(LV_ALIGN_TOP_LEFT, 12, 8);
 
     // Total kWh
-    _totalLabel = std::make_unique<w::Label>(lvTrFmt("common_energy_kwh", 0.0f), CLR_PRIMARY, this, w::Label::FontSize28Bold);
+    _totalLabel = std::make_unique<w::Label>(lvTrFmt("common_energy_kwh", 0.0f), CLR_PRIMARY, this, ::lvglpp::widgets::Label::Role::Title);
     _totalLabel->setAlignment(LV_ALIGN_TOP_RIGHT, -12, 8);
 
     // Chart

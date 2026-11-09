@@ -1,0 +1,276 @@
+{
+  "tool": "lv_font_conv",
+  "xlsx_sha256": "ed01201cc75c6dfbcf44d503b0fcb2db2dbb1bdbf7bd843a50fba2a5ab23adeb",
+  "fonts_sheet": "fonts",
+  "prefix": "typography_demo",
+  "default_role": "Body1",
+  "langs": [
+    "en-US",
+    "ar",
+    "ja-JP",
+    "ru-RU",
+    "zh-CN"
+  ],
+  "roles": [
+    "Title",
+    "Title2",
+    "Body1",
+    "Body2"
+  ],
+  "bpp": 4,
+  "compress": false,
+  "fonts": [
+    {
+      "file": "RoleFont_en_us_Title.c",
+      "locale": "en-US",
+      "role": "Title",
+      "family": "NotoSansSC",
+      "size": 32,
+      "weight": "bold",
+      "source": "NotoSansSC-Bold.ttf",
+      "sha256": "c5ab8fb5127dc1569cb9c964f2a2fa759f6b92f6f3c64f8febaece80c7aac843"
+    },
+    {
+      "file": "RoleFont_en_us_Title2.c",
+      "locale": "en-US",
+      "role": "Title2",
+      "family": "NotoSansSC",
+      "size": 28,
+      "weight": "bold",
+      "source": "NotoSansSC-Bold.ttf",
+      "sha256": "a08f284524d89415aab009c51f141ac6d7df34c30f8381ed744cada1ffb087e7"
+    },
+    {
+      "file": "RoleFont_en_us_Body1.c",
+      "locale": "en-US",
+      "role": "Body1",
+      "family": "NotoSansSC",
+      "size": 20,
+      "weight": "normal",
+      "source": "NotoSansSC-Regular.ttf",
+      "sha256": "d84d94fc40fdad415349f1c775f559bfefa101e262829a3bb7f76d72142f5cdb"
+    },
+    {
+      "file": "RoleFont_en_us_Body2.c",
+      "locale": "en-US",
+      "role": "Body2",
+      "family": "NotoSansSC",
+      "size": 16,
+      "weight": "normal",
+      "source": "NotoSansSC-Regular.ttf",
+      "sha256": "83f335551a3a8f7a351f74a6bbcc758e4af528f6a028069737c7207589bbeba2"
+    },
+    {
+      "file": "RoleFont_ar_Title.c",
+      "locale": "ar",
+      "role": "Title",
+      "family": "NotoSansArabic",
+      "size": 34,
+      "weight": "bold",
+      "source": "NotoSansArabic-Bold.ttf",
+      "sha256": "f4737e80c33a0ad9c089166546e0b0cc50cbea9b91f9cddd15584af5574fbb97"
+    },
+    {
+      "file": "RoleFont_ar_Title2.c",
+      "locale": "ar",
+      "role": "Title2",
+      "family": "NotoSansArabic",
+      "size": 30,
+      "weight": "bold",
+      "source": "NotoSansArabic-Bold.ttf",
+      "sha256": "2226899e6708db339ea7b6dac7c4bbaa8e40b9c7df44a68a317afd0dc819bdff"
+    },
+    {
+      "file": "RoleFont_ar_Body1.c",
+      "locale": "ar",
+      "role": "Body1",
+      "family": "NotoSansArabic",
+      "size": 22,
+      "weight": "normal",
+      "source": "NotoSansArabic-Regular.ttf",
+      "sha256": "1813c58bf6b53a13ab5f1af4cb7124ea545879b59f3f51aff1228e44c7055c48"
+    },
+    {
+      "file": "RoleFont_ar_Body2.c",
+      "locale": "ar",
+      "role": "Body2",
+      "family": "NotoSansArabic",
+      "size": 18,
+      "weight": "normal",
+      "source": "NotoSansArabic-Regular.ttf",
+      "sha256": "13bc4c4ba259214655ee4a69029d8b79bb10204391bca3ef59b82171e29bcfb9"
+    },
+    {
+      "file": "RoleFont_ja_jp_Title.c",
+      "locale": "ja-JP",
+      "role": "Title",
+      "family": "NotoSansJP",
+      "size": 32,
+      "weight": "bold",
+      "source": "NotoSansJP-Bold.ttf",
+      "sha256": "de93d889d44ff597675aade627a4ce022ecc339378a336fb79cd67c3612803c0"
+    },
+    {
+      "file": "RoleFont_ja_jp_Title2.c",
+      "locale": "ja-JP",
+      "role": "Title2",
+      "family": "NotoSansJP",
+      "size": 28,
+      "weight": "bold",
+      "source": "NotoSansJP-Bold.ttf",
+      "sha256": "997597dd385816d362bdc1e1853173cad99870aed036afb081bb971c8a759c2d"
+    },
+    {
+      "file": "RoleFont_ja_jp_Body1.c",
+      "locale": "ja-JP",
+      "role": "Body1",
+      "family": "NotoSansJP",
+      "size": 20,
+      "weight": "normal",
+      "source": "NotoSansJP-Regular.ttf",
+      "sha256": "cfd3a80d87c728bdff8b0df5eb03f04026d1b93e4d2d88302c5d4c1cefe0aaec"
+    },
+    {
+      "file": "RoleFont_ja_jp_Body2.c",
+      "locale": "ja-JP",
+      "role": "Body2",
+      "family": "NotoSansJP",
+      "size": 16,
+      "weight": "normal",
+      "source": "NotoSansJP-Regular.ttf",
+      "sha256": "b0dcdc6b3e99700a02f5f9cfcd8f55ae8c19ffa45a42b7c883584012ed4eca8e"
+    },
+    {
+      "file": "RoleFont_ru_ru_Title.c",
+      "locale": "ru-RU",
+      "role": "Title",
+      "family": "NotoSansSC",
+      "size": 32,
+      "weight": "bold",
+      "source": "NotoSansSC-Bold.ttf",
+      "sha256": "9c6e65a4213e1ed82090c1840429da18e676fad8213e83f72cc0cd1027c1ae82"
+    },
+    {
+      "file": "RoleFont_ru_ru_Title2.c",
+      "locale": "ru-RU",
+      "role": "Title2",
+      "family": "NotoSansSC",
+      "size": 28,
+      "weight": "bold",
+      "source": "NotoSansSC-Bold.ttf",
+      "sha256": "1d0b3cdac828f84a6fdd7b92dddb326aaf28683cceb6da1a0f6f6fd5f2e0da35"
+    },
+    {
+      "file": "RoleFont_ru_ru_Body1.c",
+      "locale": "ru-RU",
+      "role": "Body1",
+      "family": "NotoSansSC",
+      "size": 20,
+      "weight": "normal",
+      "source": "NotoSansSC-Regular.ttf",
+      "sha256": "11e4ff27913161644b69c290a594b434f5c0aeb5b438cd59990e5343f8761d52"
+    },
+    {
+      "file": "RoleFont_ru_ru_Body2.c",
+      "locale": "ru-RU",
+      "role": "Body2",
+      "family": "NotoSansSC",
+      "size": 16,
+      "weight": "normal",
+      "source": "NotoSansSC-Regular.ttf",
+      "sha256": "9d04457876902ac97072c6d89bc7a125922aa49e6c5a9637ce7f8d6c4debb576"
+    },
+    {
+      "file": "RoleFont_zh_cn_Title.c",
+      "locale": "zh-CN",
+      "role": "Title",
+      "family": "NotoSansSC",
+      "size": 32,
+      "weight": "bold",
+      "source": "NotoSansSC-Bold.ttf",
+      "sha256": "b4b3f7ccb7444b4e8e9a27c863f431ba1f2acc6b9044693c7ca55cfa5d54ebd3"
+    },
+    {
+      "file": "RoleFont_zh_cn_Title2.c",
+      "locale": "zh-CN",
+      "role": "Title2",
+      "family": "NotoSansSC",
+      "size": 28,
+      "weight": "bold",
+      "source": "NotoSansSC-Bold.ttf",
+      "sha256": "91967d4d1e99b2a48b15a48116be85abeddf8060c7ab7f31b8613deeb408b2cf"
+    },
+    {
+      "file": "RoleFont_zh_cn_Body1.c",
+      "locale": "zh-CN",
+      "role": "Body1",
+      "family": "NotoSansSC",
+      "size": 20,
+      "weight": "normal",
+      "source": "NotoSansSC-Regular.ttf",
+      "sha256": "feeab21aef86d61709c398489b5bd3df3bb0445c1c12cc6b44159539f3f9a154"
+    },
+    {
+      "file": "RoleFont_zh_cn_Body2.c",
+      "locale": "zh-CN",
+      "role": "Body2",
+      "family": "NotoSansSC",
+      "size": 16,
+      "weight": "normal",
+      "source": "NotoSansSC-Regular.ttf",
+      "sha256": "60ffb9a7edee553684ba5b8033a5a85767b922ff0d0838a13ccd90b21e01fb87"
+    }
+  ],
+  "tables": [
+    {
+      "file": "font_table_en_us.h",
+      "sha256": "a33d5502d14b277ad37b5f37314b48a4aff4016f071f3a9be160a3a42c253d09"
+    },
+    {
+      "file": "font_table_en_us.c",
+      "sha256": "714fc13249444fc678eefaa3f4dc74818c3b8e6e767186d6178e6cfacbd8fdb8"
+    },
+    {
+      "file": "font_table_ar.h",
+      "sha256": "1d1729c207582f17810b40fd581f751d22feecbe94510d583b73822504c35603"
+    },
+    {
+      "file": "font_table_ar.c",
+      "sha256": "b3ea489cfadaaff8a4f44f036294bc790371c044b593c89d7fa08976341a431e"
+    },
+    {
+      "file": "font_table_ja_jp.h",
+      "sha256": "ef9908e61434947e6047ddef9e31169f261bf64831b876f650cd0345c22bc9eb"
+    },
+    {
+      "file": "font_table_ja_jp.c",
+      "sha256": "3ffe4ff92487ad5b41cf3ea2d36cff48ca15d4eb3f20e0e8f7a876febf1b346a"
+    },
+    {
+      "file": "font_table_ru_ru.h",
+      "sha256": "10214e1907493b15bac4501f5480f1542ce8cb70da775a026abff1a5b08dbf6c"
+    },
+    {
+      "file": "font_table_ru_ru.c",
+      "sha256": "4eb6bd4335d64bae1e49f7bc53729ef8268d3da2f58e3d2b3c6ba9831b323d76"
+    },
+    {
+      "file": "font_table_zh_cn.h",
+      "sha256": "f246d43f4a15e7f1607513172177640af7f6796433d8236c6d538335892e2113"
+    },
+    {
+      "file": "font_table_zh_cn.c",
+      "sha256": "da1d747f64f958735b6326d8561bc4af3ee9958d871a11883cc3298171caf14a"
+    }
+  ],
+  "registry": [
+    {
+      "file": "role_fonts.h",
+      "sha256": "1860a42bfaf9f13660490a02931b20eb5d28645f210ad63f1ff6d0ef08efbe7e"
+    },
+    {
+      "file": "role_fonts.c",
+      "sha256": "935994fd3ff34f0f2823c62d9ae60cab67901d96fa09491429975b4b1bbe54e8"
+    }
+  ]
+}

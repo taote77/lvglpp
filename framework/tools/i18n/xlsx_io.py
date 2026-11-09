@@ -196,30 +196,40 @@ def _sheet_xml(rows: list[list[str]]) -> str:
     return "".join(parts)
 
 
-def _workbook_xml(sheet_name: str) -> str:
-    name = escape(sheet_name, {'"': "&quot;"})
+def _workbook_xml(sheet_names: list[str]) -> str:
+    sheets = "".join(
+        '<sheet name="{}" sheetId="{}" r:id="rId{}"/>'.format(
+            escape(name, {'"': "&quot;"}), index + 1, index + 1
+        )
+        for index, name in enumerate(sheet_names)
+    )
     return (
         '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
         f'<workbook xmlns="{NS_MAIN[1:-1]}" '
         f'xmlns:r="{NS_REL[1:-1]}">'
-        f'<sheets><sheet name="{name}" sheetId="1" r:id="rId1"/></sheets>'
+        f"<sheets>{sheets}</sheets>"
         "</workbook>"
     )
 
 
-_CONTENT_TYPES = (
-    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-    '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
-    '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
-    '<Default Extension="xml" ContentType="application/xml"/>'
-    '<Override PartName="/xl/workbook.xml" '
-    'ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>'
-    '<Override PartName="/xl/worksheets/sheet1.xml" '
-    'ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>'
-    '<Override PartName="/xl/styles.xml" '
-    'ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>'
-    "</Types>"
-)
+def _content_types(sheet_count: int) -> str:
+    overrides = "".join(
+        f'<Override PartName="/xl/worksheets/sheet{index + 1}.xml" '
+        'ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>'
+        for index in range(sheet_count)
+    )
+    return (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+        '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+        '<Default Extension="xml" ContentType="application/xml"/>'
+        '<Override PartName="/xl/workbook.xml" '
+        'ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>'
+        f"{overrides}"
+        '<Override PartName="/xl/styles.xml" '
+        'ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>'
+        "</Types>"
+    )
 
 _ROOT_RELS = (
     '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
@@ -230,17 +240,22 @@ _ROOT_RELS = (
     "</Relationships>"
 )
 
-_WORKBOOK_RELS = (
-    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-    '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
-    '<Relationship Id="rId1" '
-    'Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" '
-    'Target="worksheets/sheet1.xml"/>'
-    '<Relationship Id="rId2" '
-    'Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" '
-    'Target="styles.xml"/>'
-    "</Relationships>"
-)
+def _workbook_rels(sheet_count: int) -> str:
+    sheets = "".join(
+        f'<Relationship Id="rId{index + 1}" '
+        'Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" '
+        f'Target="worksheets/sheet{index + 1}.xml"/>'
+        for index in range(sheet_count)
+    )
+    return (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+        f"{sheets}"
+        f'<Relationship Id="rId{sheet_count + 1}" '
+        'Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" '
+        'Target="styles.xml"/>'
+        "</Relationships>"
+    )
 
 _STYLES = (
     '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
@@ -256,11 +271,20 @@ _STYLES = (
 )
 
 
-def write_sheet(path: str | Path, rows: list[list[object]], sheet_name: str = "strings") -> None:
-    """Write a minimal single-sheet .xlsx workbook."""
+def write_workbook(path: str | Path, sheets: list[tuple[str, list[list[object]]]]) -> None:
+    """Write a minimal multi-sheet .xlsx workbook.
+
+    ``sheets`` is an ordered list of ``(name, rows)`` pairs. Sheet names must
+    be unique.
+    """
+    if not sheets:
+        raise ValueError("workbook needs at least one sheet")
+    names = [name for name, _rows in sheets]
+    if len(set(names)) != len(names):
+        raise ValueError(f"duplicate sheet names: {names}")
+
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    normalized = [[str(value) if value is not None else "" for value in row] for row in rows]
 
     with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as zf:
         def put(name: str, data: str) -> None:
@@ -268,12 +292,19 @@ def write_sheet(path: str | Path, rows: list[list[object]], sheet_name: str = "s
             info.compress_type = zipfile.ZIP_DEFLATED
             zf.writestr(info, data.encode("utf-8"))
 
-        put("[Content_Types].xml", _CONTENT_TYPES)
+        put("[Content_Types].xml", _content_types(len(sheets)))
         put("_rels/.rels", _ROOT_RELS)
-        put("xl/workbook.xml", _workbook_xml(sheet_name))
-        put("xl/_rels/workbook.xml.rels", _WORKBOOK_RELS)
+        put("xl/workbook.xml", _workbook_xml(names))
+        put("xl/_rels/workbook.xml.rels", _workbook_rels(len(sheets)))
         put("xl/styles.xml", _STYLES)
-        put("xl/worksheets/sheet1.xml", _sheet_xml(normalized))
+        for index, (_name, rows) in enumerate(sheets):
+            normalized = [[str(value) if value is not None else "" for value in row] for row in rows]
+            put(f"xl/worksheets/sheet{index + 1}.xml", _sheet_xml(normalized))
+
+
+def write_sheet(path: str | Path, rows: list[list[object]], sheet_name: str = "strings") -> None:
+    """Write a minimal single-sheet .xlsx workbook."""
+    write_workbook(path, [(sheet_name, rows)])
 
 
 def _self_test() -> int:

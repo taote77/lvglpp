@@ -160,6 +160,35 @@ const lv_font_t *fontForStyle(Label::TextStyle style, Label::FontType type)
 
 } // namespace
 
+Label::RoleFontResolver Label::role_font_resolver_ = nullptr;
+
+void Label::setRoleFontResolver(RoleFontResolver resolver)
+{
+    role_font_resolver_ = resolver;
+}
+
+Label::Label(const std::string &strMsg, uint32_t clr, Widget *parent, Role role, FontType type)
+    : Label(strMsg, clr, parent, TextStyle::FontSize20, type)
+{
+    setFontRole(role);
+}
+
+void Label::setFontRole(Role role)
+{
+    font_role_ = role;
+    if (role == Role::None)
+    {
+        return;
+    }
+    if (role_font_resolver_ != nullptr)
+    {
+        if (const lv_font_t *font = role_font_resolver_(static_cast<LvglppFontRole>(role)))
+        {
+            setFont(font);
+        }
+    }
+}
+
 Label::Label(const std::string &strMsg, uint32_t clr, Widget *parent, TextStyle style, FontType type) : Widget(tools::LvObjFactory::createLvglLabel, parent), text_(strMsg)
 {
     font_ = fontForStyle(style, type);
@@ -189,6 +218,20 @@ void Label::setTextColor(uint32_t clr)
     {
         lv_obj_set_style_text_color(lvObj(), lv_color_hex(clr), LV_STATE_DEFAULT);
     }
+}
+
+void Label::setFont(const lv_font_t *font)
+{
+    if (font == nullptr)
+    {
+        return;
+    }
+    font_ = font;
+    if (lvObj() != nullptr)
+    {
+        lv_obj_set_style_text_font(lvObj(), font_, LV_STATE_DEFAULT);
+    }
+    refreshDisplayText();
 }
 
 void Label::setTextAlign(lv_text_align_t align)

@@ -80,7 +80,7 @@ PanelResinBottle::PanelResinBottle(Widget *parent) : Widget(parent)
     _icon_bottle = std::make_shared<widgets::Image>("image/36x36/mod_resin_bottle.png", this);
     _icon_bottle->setPos(lv_coord_t(mod_item_edge_x), lv_coord_t(18));
 
-    _lbl_material_name = std::make_shared<Label>("", CLR_ON_SURFACE, this, Label::FontSize22Bold);
+    _lbl_material_name = std::make_shared<Label>("", CLR_ON_SURFACE, this, ::lvglpp::widgets::Label::Role::Title2);
 
     if (sys::Application::getLanguageType() == sys::Application::LanguageType::English)
     {
@@ -96,7 +96,7 @@ PanelResinBottle::PanelResinBottle(Widget *parent) : Widget(parent)
     _lbl_material_name->setWidth(panel_text_max_length);
     // _lbl_material_name->setPos(mod_item_edge_x + offset, 18);
 
-    _lbl_bottle_status = std::make_shared<Label>("", CLR_ON_SURFACE, this, Label::FontSize22);
+    _lbl_bottle_status = std::make_shared<Label>("", CLR_ON_SURFACE, this, ::lvglpp::widgets::Label::Role::Body1);
     _lbl_bottle_status->setAlignment(LV_ALIGN_BOTTOM_LEFT, 16, -12);
 
     _touch_area = std::make_shared<widgets::TouchArea>(this);

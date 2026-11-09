@@ -25,7 +25,7 @@ RebootConfirmDialog::RebootConfirmDialog() : Dialog(Dialog::Layer::System), chan
     dialog_bg_item_->setAlignment(LV_ALIGN_CENTER, 0, 0);
     dialog_bg_item_->setOpacity(1.0);
 
-    title_label_ = std::make_shared<Label>(lvTr("restart_tips"), design::ThemeColor(design::CLR_ON_SURFACE), dialog_bg_item_.get(), Label::FontSize32Bold);
+    title_label_ = std::make_shared<Label>(lvTr("restart_tips"), design::ThemeColor(design::CLR_ON_SURFACE), dialog_bg_item_.get(), ::lvglpp::widgets::Label::Role::Title);
     title_label_->setAlignment(LV_ALIGN_TOP_MID, 0, 170);
 
     bt_btn_ = std::make_shared<PushButton>(200, 64, PushButton::Dark, lvTr("common_bootloader"), dialog_bg_item_.get());

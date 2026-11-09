@@ -19,6 +19,9 @@ LOCALES: tuple["Locale", ...] = (
 )
 
 STRID_HEADERS = {"strid", "code", "key"}
+# A role cell holds one or more roles written by the spreadsheet's
+# multi-select dropdown (comma / semicolon / pipe / newline separated).
+ROLE_HEADERS = {"role", "roles", "style", "typography", "text_style", "font_role"}
 COMMENT_HEADERS = {"comment", "comments", "note", "notes", "context", "description"}
 
 _CJK_RE = re.compile(r"[㐀-鿿぀-ヿ가-힯]")
@@ -39,6 +42,7 @@ class Row:
     strid: str
     values: dict[str, str] = field(default_factory=dict)
     comment: str = ""
+    role: str = ""
     source_row: int = 0
 
 
@@ -118,7 +122,12 @@ def load_model(xlsx_path: str | Path, sheet_name: str | None = None) -> Model:
                 + f"; using {raw_headers[locale_columns[locale.tag]]!r}"
             )
 
+    role_columns = _find_column(raw_headers, ROLE_HEADERS)
+    role_col = role_columns[0] if role_columns else None
+
     known_columns = {strid_col, *locale_columns.values()}
+    if role_col is not None:
+        known_columns.add(role_col)
     for index, header in enumerate(headers):
         if index in known_columns or not header:
             continue
@@ -159,6 +168,7 @@ def load_model(xlsx_path: str | Path, sheet_name: str | None = None) -> Model:
                 strid=strid,
                 values=values,
                 comment=cell(comment_col),
+                role=cell(role_col).strip(),
                 source_row=excel_row,
             )
         )

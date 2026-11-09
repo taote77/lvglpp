@@ -17,7 +17,7 @@ void DeviceControlPage::onCreate(std::any arg) {
     BaseActivity::onCreate(arg);
     getRoot()->setBgColor(CLR_SURFACE);
 
-    _title = std::make_unique<w::Label>("Devices", CLR_ON_SURFACE, getRoot(), w::Label::FontSize28Bold);
+    _title = std::make_unique<w::Label>("Devices", CLR_ON_SURFACE, getRoot(), ::lvglpp::widgets::Label::Role::Title);
     _title->setAlignment(LV_ALIGN_TOP_LEFT, 20, 10);
 
     int y = 50;
@@ -29,7 +29,7 @@ void DeviceControlPage::onCreate(std::any arg) {
 }
 
 void DeviceControlPage::buildLightsSection(int &y) {
-    auto sectionLabel = std::make_unique<w::Label>("Lights", CLR_ON_SURFACE_VARIANT_1, getRoot(), w::Label::FontSize22Bold);
+    auto sectionLabel = std::make_unique<w::Label>("Lights", CLR_ON_SURFACE_VARIANT_1, getRoot(), ::lvglpp::widgets::Label::Role::Title2);
     sectionLabel->setAlignment(LV_ALIGN_TOP_LEFT, 20, y);
     y += 28;
 
@@ -47,7 +47,7 @@ void DeviceControlPage::buildLightsSection(int &y) {
 }
 
 void DeviceControlPage::buildThermostatsSection(int &y) {
-    auto sectionLabel = std::make_unique<w::Label>("Thermostats", CLR_ON_SURFACE_VARIANT_1, getRoot(), w::Label::FontSize22Bold);
+    auto sectionLabel = std::make_unique<w::Label>("Thermostats", CLR_ON_SURFACE_VARIANT_1, getRoot(), ::lvglpp::widgets::Label::Role::Title2);
     sectionLabel->setAlignment(LV_ALIGN_TOP_LEFT, 20, y);
     y += 28;
 
@@ -57,7 +57,7 @@ void DeviceControlPage::buildThermostatsSection(int &y) {
 }
 
 void DeviceControlPage::buildLocksSection(int &y) {
-    auto sectionLabel = std::make_unique<w::Label>("Security", CLR_ON_SURFACE_VARIANT_1, getRoot(), w::Label::FontSize22Bold);
+    auto sectionLabel = std::make_unique<w::Label>("Security", CLR_ON_SURFACE_VARIANT_1, getRoot(), ::lvglpp::widgets::Label::Role::Title2);
     sectionLabel->setAlignment(LV_ALIGN_TOP_LEFT, 20, y);
     y += 28;
 

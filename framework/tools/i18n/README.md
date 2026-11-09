@@ -11,6 +11,9 @@ It is a real `.xlsx` workbook (sheet `strings`) with one row per `strid`:
 | strid | zh-CN | en-US | ja-JP | ru-RU | ar | comment |
 |---|---|---|---|---|---|---|
 
+An optional `role` column (styles such as `Title` / `Body1`) is used by the
+role-font workflow described below.
+
 - `strid` and `en-US` are required.
 - A blank language cell means "not translated". The generator **omits** that
   row from the locale's table, so `lv_i18n_get_text` falls back to `en-US`
@@ -45,6 +48,64 @@ python3 -I framework/tools/i18n/migrate_yaml_to_xlsx.py
 
 `lv_i18n.h` is a fixed template and is not regenerated. The C generator uses
 `framework/tools/i18n/templates/lv_i18n.c.in`.
+
+## Semantic typography roles (`strings` + `fonts` sheets)
+
+`gen_role_fonts.py` reads the `strings` sheet and a `fonts` sheet, and
+generates one bitmap font per **(language, role)** from the characters of the
+strids assigned to that role. Role names are a closed enum:
+`LVGLPP_FONT_ROLE_TITLE`, `_TITLE2`, `_BODY1`, `_BODY2`
+(`Label::Role` in C++).
+
+The `roles` cell is a **multi-select dropdown**: it may be empty, hold one
+role, or hold several. The control stores the selections with a delimiter
+(comma, semicolon, pipe or newline); the generator accepts all of them, so
+users only click options and never type separators.
+
+```text
+strings: strid | roles | en-US | zh-CN | ja-JP | ru-RU | ar | comment
+fonts:   lang  | role  | family | size | weight | size_delta
+```
+
+Example (the cell itself is rendered as a multi-select dropdown in Excel/WPS):
+
+| strid | roles | en-US |
+|---|---|---|
+| home_title | Title | Smart Home |
+| common_energy_kwh | Title,Body2 | {:.1f} kWh |
+
+Each selected role adds that string's characters to the role's font.
+Rendering a string with a role it was not selected for intentionally produces
+missing glyphs. An empty cell means the string belongs to no role font.
+
+The repo's minimal xlsx writer creates the `roles` column values but not the
+dropdown control itself; apply the Excel/WPS multi-select dropdown to that
+column in the workbook. If your control stores selections in a different
+format, provide a saved sample and the parser can be adapted.
+
+- `lang = *` (or `default`) rows define the shared role table.
+- A concrete locale row overrides only the cells it fills in; blanks inherit
+  from `*`. `size_delta` adds to the inherited pixel size.
+- Supported families map to `assets/common/fonts/*.ttf` (`NotoSansSC`,
+  `NotoSansSC-AR`, `NotoSansJP`, `NotoSansArabic`).
+- Generated output: `RoleFont_<locale>_<role>.c`, `font_table_<locale>.h/.c`,
+  `role_fonts.h/.c` and `role_font_manifest.json`.
+
+```bash
+python3 -I framework/tools/i18n/gen_role_fonts.py \
+  --xlsx demo/typography_demo/i18n/strings.xlsx \
+  --out demo/typography_demo/i18n/fonts --prefix typography_demo
+
+# verify the workbook and generated fonts are in sync
+python3 -I framework/tools/i18n/gen_role_fonts.py \
+  --xlsx demo/typography_demo/i18n/strings.xlsx \
+  --out demo/typography_demo/i18n/fonts --prefix typography_demo --check
+```
+
+See `demo/typography_demo/README.md` for the complete example. The real
+`demo/smart_home/i18n/strings.xlsx` uses the same multi-select `roles` column;
+its generated fonts live in `demo/smart_home/i18n/fonts/` and are verified by
+`cmake --build build --target i18n-check`.
 
 ## Bitmap fonts
 

@@ -27,7 +27,7 @@ namespace wrapper::widgets
         }
 
 
-        _label = std::make_shared<Label>(text, ThemeColor(CLR_ON_SURFACE), this, Label::FontSize24Bold);
+        _label = std::make_shared<Label>(text, ThemeColor(CLR_ON_SURFACE), this, ::lvglpp::widgets::Label::Role::Title2);
 
         _label->setAlignment(LV_ALIGN_CENTER, 0, 0);
     }
@@ -38,7 +38,7 @@ namespace wrapper::widgets
 
         _label->setAlignment(LV_ALIGN_TOP_MID, 0, 60);
 
-        _foot_label = std::make_shared<Label>(note, ThemeColor(CLR_ON_SURFACE), this, Label::FontSize24);
+        _foot_label = std::make_shared<Label>(note, ThemeColor(CLR_ON_SURFACE), this, ::lvglpp::widgets::Label::Role::Body1);
         _foot_label->setAlignment(LV_ALIGN_TOP_MID, 0, 60 + 40);
     }
 

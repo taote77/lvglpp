@@ -15,7 +15,7 @@ LightWidget::LightWidget(const std::string &lightName, w::Widget *parent)
     setRadius(RADIUS_12);
 
     // Name
-    _nameLabel = std::make_unique<w::Label>(lightName, CLR_ON_SURFACE, this, w::Label::FontSize24Bold);
+    _nameLabel = std::make_unique<w::Label>(lightName, CLR_ON_SURFACE, this, ::lvglpp::widgets::Label::Role::Title2);
     _nameLabel->setAlignment(LV_ALIGN_TOP_LEFT, 12, 12);
 
     // Power toggle
@@ -39,7 +39,7 @@ LightWidget::LightWidget(const std::string &lightName, w::Widget *parent)
     });
 
     // Value label
-    _valueLabel = std::make_unique<w::Label>(lvTrFmt("common_percent", 100), CLR_ON_SURFACE_VARIANT_1, this, w::Label::FontSize28Bold);
+    _valueLabel = std::make_unique<w::Label>(lvTrFmt("common_percent", 100), CLR_ON_SURFACE_VARIANT_1, this, ::lvglpp::widgets::Label::Role::Title);
     _valueLabel->setAlignment(LV_ALIGN_CENTER, 0, 25);
 
     // Color presets

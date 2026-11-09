@@ -31,6 +31,9 @@ public:
 
     static void load(LANGUAGE lang);
 
+    /// Locale tag for the current language ("en-US", "zh-CN", "ja-JP", ...).
+    static const char *currentLocale();
+
     static const char *tr(const char *text);
 
     static const char *getI18nText(const char *text);

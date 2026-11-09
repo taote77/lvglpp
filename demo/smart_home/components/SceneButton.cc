@@ -14,15 +14,15 @@ SceneButton::SceneButton(const std::string &icon, const std::string &name,
     setRadius(RADIUS_12);
 
     // Icon
-    _iconLabel = std::make_unique<w::Label>(icon, CLR_ON_SURFACE, this, w::Label::FontSize36);
+    _iconLabel = std::make_unique<w::Label>(icon, CLR_ON_SURFACE, this, ::lvglpp::widgets::Label::Role::Title);
     _iconLabel->setAlignment(LV_ALIGN_TOP_MID, 0, 8);
 
     // Name
-    _nameLabel = std::make_unique<w::Label>(name, CLR_ON_SURFACE_VARIANT_0, this, w::Label::FontSize22Bold);
+    _nameLabel = std::make_unique<w::Label>(name, CLR_ON_SURFACE_VARIANT_0, this, ::lvglpp::widgets::Label::Role::Title2);
     _nameLabel->setAlignment(LV_ALIGN_CENTER, 0, 5);
 
     // Description
-    _descLabel = std::make_unique<w::Label>(description, CLR_ON_SURFACE_VARIANT_2, this, w::Label::FontSize20);
+    _descLabel = std::make_unique<w::Label>(description, CLR_ON_SURFACE_VARIANT_2, this, ::lvglpp::widgets::Label::Role::Body1);
     _descLabel->setAlignment(LV_ALIGN_BOTTOM_MID, 0, -8);
 
     setOnClickedListener([this]() {

@@ -19,13 +19,13 @@ DeviceCard::DeviceCard(const std::string &name, const std::string &iconText,
     _iconArea->setBgColor(CLR_PRIMARY);
     _iconArea->setAlignment(LV_ALIGN_LEFT_MID, 12, 0);
 
-    _iconLabel = std::make_unique<w::Label>(iconText, CLR_ON_PRIMARY, _iconArea.get(), w::Label::FontSize20Bold);
+    _iconLabel = std::make_unique<w::Label>(iconText, CLR_ON_PRIMARY, _iconArea.get(), ::lvglpp::widgets::Label::Role::Title2);
     _iconLabel->setAlignment(LV_ALIGN_CENTER, 0, 0);
 
-    _nameLabel = std::make_unique<w::Label>(name, CLR_ON_SURFACE, this, w::Label::FontSize22Bold);
+    _nameLabel = std::make_unique<w::Label>(name, CLR_ON_SURFACE, this, ::lvglpp::widgets::Label::Role::Title2);
     _nameLabel->setAlignment(LV_ALIGN_TOP_LEFT, 64, 10);
 
-    _subtitleLabel = std::make_unique<w::Label>("", CLR_ON_SURFACE_VARIANT_2, this, w::Label::FontSize20);
+    _subtitleLabel = std::make_unique<w::Label>("", CLR_ON_SURFACE_VARIANT_2, this, ::lvglpp::widgets::Label::Role::Body1);
     _subtitleLabel->setAlignment(LV_ALIGN_TOP_LEFT, 64, 36);
 
     _switch = std::make_unique<w::Switch>(48, 24, this);

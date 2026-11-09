@@ -79,10 +79,10 @@ PanelHeater::PanelHeater(Widget *parent) : Widget(parent)
     constexpr short mod_item_edge_x{16};
     constexpr short mod_item_edge_row2_y{60};
 
-    _label_mod_scraper = std::make_shared<Label>(lvTr("heating_scraper"), CLR_ON_SURFACE, this, Label::FontSize22Bold);
+    _label_mod_scraper = std::make_shared<Label>(lvTr("heating_scraper"), CLR_ON_SURFACE, this, ::lvglpp::widgets::Label::Role::Title2);
     _label_mod_scraper->setPos(lv_coord_t(mod_item_edge_x + offset), lv_coord_t(18));
 
-    _label_scraper_state = std::make_shared<Label>("", CLR_WARNING, this, Label::FontSize22);
+    _label_scraper_state = std::make_shared<Label>("", CLR_WARNING, this, ::lvglpp::widgets::Label::Role::Body1);
     _label_scraper_state->setAlignment(LV_ALIGN_BOTTOM_LEFT, 16, -21);
 
     _touch_area = std::make_shared<widgets::TouchArea>(this);

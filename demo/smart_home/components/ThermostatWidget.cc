@@ -24,12 +24,12 @@ ThermostatWidget::ThermostatWidget(float currentTemp, float targetTemp,
 
     // Current temperature (large)
     _currentLabel = std::make_unique<w::Label>(
-        lvTrFmt("common_temperature_c", _currentTemp), CLR_ON_SURFACE, this, w::Label::FontSize36Bold);
+        lvTrFmt("common_temperature_c", _currentTemp), CLR_ON_SURFACE, this, ::lvglpp::widgets::Label::Role::Title);
     _currentLabel->setAlignment(LV_ALIGN_CENTER, 30, -30);
 
     // Target temperature
     _targetLabel = std::make_unique<w::Label>(
-        lvTrFmt("thermostat_target", _targetTemp), CLR_ON_SURFACE_VARIANT_1, this, w::Label::FontSize22);
+        lvTrFmt("thermostat_target", _targetTemp), CLR_ON_SURFACE_VARIANT_1, this, ::lvglpp::widgets::Label::Role::Body1);
     _targetLabel->setAlignment(LV_ALIGN_CENTER, 30, 10);
 
     // Minus button

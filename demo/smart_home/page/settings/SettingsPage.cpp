@@ -15,7 +15,7 @@ void SettingsPage::onCreate(std::any arg) {
     BaseActivity::onCreate(arg);
     getRoot()->setBgColor(CLR_SURFACE);
 
-    _title = std::make_unique<w::Label>("Settings", CLR_ON_SURFACE, getRoot(), w::Label::FontSize28Bold);
+    _title = std::make_unique<w::Label>("Settings", CLR_ON_SURFACE, getRoot(), ::lvglpp::widgets::Label::Role::Title);
     _title->setAlignment(LV_ALIGN_TOP_LEFT, 20, 10);
 
     buildAppearanceSection();
@@ -27,11 +27,11 @@ void SettingsPage::onCreate(std::any arg) {
 }
 
 void SettingsPage::buildAppearanceSection() {
-    auto sectionLabel = std::make_unique<w::Label>("Appearance", CLR_ON_SURFACE_VARIANT_1, getRoot(), w::Label::FontSize22Bold);
+    auto sectionLabel = std::make_unique<w::Label>("Appearance", CLR_ON_SURFACE_VARIANT_1, getRoot(), ::lvglpp::widgets::Label::Role::Title2);
     sectionLabel->setAlignment(LV_ALIGN_TOP_LEFT, 20, 50);
 
     // Theme dropdown
-    auto themeLabel = std::make_unique<w::Label>("Theme:", CLR_ON_SURFACE_VARIANT_0, getRoot(), w::Label::FontSize20);
+    auto themeLabel = std::make_unique<w::Label>("Theme:", CLR_ON_SURFACE_VARIANT_0, getRoot(), ::lvglpp::widgets::Label::Role::Body1);
     themeLabel->setAlignment(LV_ALIGN_TOP_LEFT, 40, 85);
 
     _themeDropdown = std::make_unique<w::Dropdown>(getRoot());
@@ -41,7 +41,7 @@ void SettingsPage::buildAppearanceSection() {
     _themeDropdown->setAlignment(LV_ALIGN_TOP_LEFT, 200, 85);
 
     // Brightness slider
-    auto brightLabel = std::make_unique<w::Label>("Brightness:", CLR_ON_SURFACE_VARIANT_0, getRoot(), w::Label::FontSize20);
+    auto brightLabel = std::make_unique<w::Label>("Brightness:", CLR_ON_SURFACE_VARIANT_0, getRoot(), ::lvglpp::widgets::Label::Role::Body1);
     brightLabel->setAlignment(LV_ALIGN_TOP_LEFT, 40, 130);
 
     _brightnessSlider = std::make_unique<w::Slider>(getRoot());
@@ -52,7 +52,7 @@ void SettingsPage::buildAppearanceSection() {
 }
 
 void SettingsPage::buildLanguageSection() {
-    auto sectionLabel = std::make_unique<w::Label>(lvTr("language"), CLR_ON_SURFACE_VARIANT_1, getRoot(), w::Label::FontSize22Bold);
+    auto sectionLabel = std::make_unique<w::Label>(lvTr("language"), CLR_ON_SURFACE_VARIANT_1, getRoot(), ::lvglpp::widgets::Label::Role::Title2);
     sectionLabel->setAlignment(LV_ALIGN_TOP_LEFT, 20, 175);
 
     _langRoller = std::make_unique<w::Roller>(getRoot());
@@ -64,28 +64,28 @@ void SettingsPage::buildLanguageSection() {
 }
 
 void SettingsPage::buildNetworkSection() {
-    auto sectionLabel = std::make_unique<w::Label>("Network", CLR_ON_SURFACE_VARIANT_1, getRoot(), w::Label::FontSize22Bold);
+    auto sectionLabel = std::make_unique<w::Label>("Network", CLR_ON_SURFACE_VARIANT_1, getRoot(), ::lvglpp::widgets::Label::Role::Title2);
     sectionLabel->setAlignment(LV_ALIGN_TOP_LEFT, 20, 295);
 
-    auto wifiLabel = std::make_unique<w::Label>("WiFi:", CLR_ON_SURFACE_VARIANT_0, getRoot(), w::Label::FontSize20);
+    auto wifiLabel = std::make_unique<w::Label>("WiFi:", CLR_ON_SURFACE_VARIANT_0, getRoot(), ::lvglpp::widgets::Label::Role::Body1);
     wifiLabel->setAlignment(LV_ALIGN_TOP_LEFT, 40, 325);
 
     _wifiSwitch = std::make_unique<w::Switch>(48, 24, getRoot());
     _wifiSwitch->setChecked(true);
     _wifiSwitch->setAlignment(LV_ALIGN_TOP_LEFT, 200, 325);
 
-    auto wifiInfo = std::make_unique<w::Label>("SSID: MyHomeWiFi  |  IP: 192.168.1.100", CLR_ON_SURFACE_VARIANT_2, getRoot(), w::Label::FontSize20);
+    auto wifiInfo = std::make_unique<w::Label>("SSID: MyHomeWiFi  |  IP: 192.168.1.100", CLR_ON_SURFACE_VARIANT_2, getRoot(), ::lvglpp::widgets::Label::Role::Body1);
     wifiInfo->setAlignment(LV_ALIGN_TOP_LEFT, 260, 327);
 }
 
 void SettingsPage::buildAboutSection() {
-    auto sectionLabel = std::make_unique<w::Label>("About", CLR_ON_SURFACE_VARIANT_1, getRoot(), w::Label::FontSize22Bold);
+    auto sectionLabel = std::make_unique<w::Label>("About", CLR_ON_SURFACE_VARIANT_1, getRoot(), ::lvglpp::widgets::Label::Role::Title2);
     sectionLabel->setAlignment(LV_ALIGN_TOP_LEFT, 20, 370);
 
-    auto versionLabel = std::make_unique<w::Label>("LVGL++ Smart Home v2.0", CLR_ON_SURFACE_VARIANT_2, getRoot(), w::Label::FontSize20);
+    auto versionLabel = std::make_unique<w::Label>("LVGL++ Smart Home v2.0", CLR_ON_SURFACE_VARIANT_2, getRoot(), ::lvglpp::widgets::Label::Role::Body1);
     versionLabel->setAlignment(LV_ALIGN_TOP_LEFT, 40, 400);
 
-    auto copyright = std::make_unique<w::Label>("(c) 2024-2026 LVGL++ Team", CLR_PRIMARY_DIS_BG, getRoot(), w::Label::FontSize20);
+    auto copyright = std::make_unique<w::Label>("(c) 2024-2026 LVGL++ Team", CLR_PRIMARY_DIS_BG, getRoot(), ::lvglpp::widgets::Label::Role::Body1);
     copyright->setAlignment(LV_ALIGN_TOP_LEFT, 40, 425);
 }
 

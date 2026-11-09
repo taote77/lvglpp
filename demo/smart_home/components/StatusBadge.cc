@@ -27,7 +27,7 @@ StatusBadge::StatusBadge(State state, w::Widget *parent)
     _dot->setRadius(5);
     _dot->setAlignment(LV_ALIGN_LEFT_MID, 0, 0);
 
-    _label = std::make_unique<w::Label>("", CLR_ON_SURFACE_VARIANT_1, this, w::Label::FontSize20);
+    _label = std::make_unique<w::Label>("", CLR_ON_SURFACE_VARIANT_1, this, ::lvglpp::widgets::Label::Role::Body1);
     _label->setAlignment(LV_ALIGN_LEFT_MID, 16, 0);
 
     _updateAppearance();

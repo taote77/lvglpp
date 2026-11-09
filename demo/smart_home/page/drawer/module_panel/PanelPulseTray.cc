@@ -22,10 +22,10 @@ ModuleDetailPulseTrayDialog::ModuleDetailPulseTrayDialog(const double progress, 
     _dialog_bg_item->setBgColor(ThemeColor(CLR_SURFACE_CONTAINER));
     _dialog_bg_item->setAlignment(LV_ALIGN_TOP_MID, 0, 72);
 
-    _title_label = std::make_shared<Label>(lvTr("empty_info"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), Label::FontSize24Bold);
+    _title_label = std::make_shared<Label>(lvTr("empty_info"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ::lvglpp::widgets::Label::Role::Title2);
     _title_label->setAlignment(LV_ALIGN_TOP_LEFT, 24, 20);
 
-    _tray_state_label = std::make_shared<Label>(lvTr("status_abnormal"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), Label::FontSize24);
+    _tray_state_label = std::make_shared<Label>(lvTr("status_abnormal"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ::lvglpp::widgets::Label::Role::Body1);
 
     std::string status_str;
     if (status == 1)
@@ -40,7 +40,7 @@ ModuleDetailPulseTrayDialog::ModuleDetailPulseTrayDialog(const double progress, 
     _tray_state_label->setText(lvTr(status_str.c_str()));
     _tray_state_label->setAlignmentTo(*_dialog_bg_item.get(), LV_ALIGN_TOP_RIGHT, -24, 20);
 
-    _progress_label = std::make_shared<Label>(lvTr("panel_pulse_used"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), Label::FontSize24);
+    _progress_label = std::make_shared<Label>(lvTr("panel_pulse_used"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ::lvglpp::widgets::Label::Role::Body1);
     _progress_label->setAlignmentTo(*_title_label, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 24);
 
     _progress_bar = std::make_shared<ProgressBar>(_dialog_bg_item.get(), 115, 20);
@@ -54,25 +54,25 @@ ModuleDetailPulseTrayDialog::ModuleDetailPulseTrayDialog(const double progress, 
     _progress_bar->setIndicatorColor(ThemeColor(CLR_PROGRESS_NORMAL_FILL));
     _progress_bar->setVisible(false);
 
-    _progress_bar_replace = std::make_shared<Label>(lvTr("empty_info"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), Label::FontSize24);
+    _progress_bar_replace = std::make_shared<Label>(lvTr("empty_info"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ::lvglpp::widgets::Label::Role::Body1);
     _progress_bar_replace->setAlignmentTo(*_progress_label, LV_ALIGN_OUT_RIGHT_MID, 12, 0);
 
-    _warn_lbl = std::make_shared<Label>("", ThemeColor(CLR_WARNING), _dialog_bg_item.get(), Label::FontSize24);
+    _warn_lbl = std::make_shared<Label>("", ThemeColor(CLR_WARNING), _dialog_bg_item.get(), ::lvglpp::widgets::Label::Role::Body1);
     _warn_lbl->setAlignmentTo(*_progress_bar, LV_ALIGN_OUT_RIGHT_MID, 12, 0);
     _warn_lbl->setWidth(120);
 
     /// -------------
 
-    _status_label = std::make_shared<Label>(lvTr("panel_resin_remaining"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), Label::FontSize22);
+    _status_label = std::make_shared<Label>(lvTr("panel_resin_remaining"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ::lvglpp::widgets::Label::Role::Body1);
     _status_label->setPos(24, 82 + 32 + 15);
 
-    _resin_remain_label = std::make_shared<Label>(lvTr("empty_info"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), Label::FontSize22);
+    _resin_remain_label = std::make_shared<Label>(lvTr("empty_info"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ::lvglpp::widgets::Label::Role::Body1);
     _resin_remain_label->setAlignmentTo(*_status_label, LV_ALIGN_OUT_RIGHT_MID, 4, 0);
 
-    _temperature_tag_label = std::make_shared<Label>("", ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), Label::FontSize22);
+    _temperature_tag_label = std::make_shared<Label>("", ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ::lvglpp::widgets::Label::Role::Body1);
     _temperature_tag_label->setPos(286, 82 + 32 + 15);
 
-    _temperature_value_label = std::make_shared<Label>(lvTr("empty_info"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), Label::FontSize22);
+    _temperature_value_label = std::make_shared<Label>(lvTr("empty_info"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ::lvglpp::widgets::Label::Role::Body1);
     ;
     _temperature_value_label->setAlignmentTo(*_temperature_tag_label, LV_ALIGN_OUT_RIGHT_MID, 4, 0);
 
@@ -87,11 +87,11 @@ ModuleDetailPulseTrayDialog::ModuleDetailPulseTrayDialog(const double progress, 
     _warn_icon = std::make_shared<widgets::Image>("image/28x28/warn_icon.png", _warn_bar_bg.get());
     _warn_icon->setAlignment(LV_ALIGN_LEFT_MID, 12, 0);
 
-    _warn_bar_0 = std::make_shared<Label>(lvTr("replace_material_tray_tips"), ThemeColor(CLR_ON_SURFACE), _warn_bar_bg.get(), Label::FontSize24);
-    // _warn_bar_0 = std::make_shared<Label>("请尽快更换料盘。", ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), Label::FontSize24);
+    _warn_bar_0 = std::make_shared<Label>(lvTr("replace_material_tray_tips"), ThemeColor(CLR_ON_SURFACE), _warn_bar_bg.get(), ::lvglpp::widgets::Label::Role::Body1);
+    // _warn_bar_0 = std::make_shared<Label>("请尽快更换料盘。", ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ::lvglpp::widgets::Label::Role::Body1);
     _warn_bar_0->setAlignmentTo(*_warn_icon, LV_ALIGN_OUT_RIGHT_MID, 12, 0);
 
-    _warn_bar_1 = std::make_shared<Label>("", ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), Label::FontSize24);
+    _warn_bar_1 = std::make_shared<Label>("", ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ::lvglpp::widgets::Label::Role::Body1);
     _warn_bar_1->setAlignmentTo(*_warn_bar_0, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 8);
 
     _close_button = std::make_shared<PushButton>(48, 48, PushButton::ColorStyle::Gray, "", "image/32x32/x_close.png", _dialog_bg_item.get());
@@ -316,18 +316,18 @@ PanelPulseTray::PanelPulseTray(Widget *parent) : Widget(parent)
 
     if (sys::Application::getLanguageType() == sys::Application::LanguageType::English)
     {
-        _label_tray_text = std::make_shared<Label>(lvTr("pulsing_release_resin_tank"), CLR_ON_SURFACE, this, Label::FontSize22Bold);
+        _label_tray_text = std::make_shared<Label>(lvTr("pulsing_release_resin_tank"), CLR_ON_SURFACE, this, ::lvglpp::widgets::Label::Role::Title2);
         _label_tray_text->setPos(lv_coord_t(mod_item_edge_x + offset), lv_coord_t(8));
     } else
     {
-        _label_tray_text = std::make_shared<Label>(lvTr("pulsing_release_resin_tank"), CLR_ON_SURFACE, this, Label::FontSize22Bold);
+        _label_tray_text = std::make_shared<Label>(lvTr("pulsing_release_resin_tank"), CLR_ON_SURFACE, this, ::lvglpp::widgets::Label::Role::Title2);
         _label_tray_text->setPos(lv_coord_t(mod_item_edge_x + offset), lv_coord_t(18));
     }
 
     constexpr int panel_text_max_length{260};
     _label_tray_text->setWidth(panel_text_max_length);
 
-    _label_mod_status = std::make_shared<Label>(lvTr("status_uninstalled"), CLR_ON_SURFACE, this, Label::FontSize20);
+    _label_mod_status = std::make_shared<Label>(lvTr("status_uninstalled"), CLR_ON_SURFACE, this, ::lvglpp::widgets::Label::Role::Body1);
     _label_mod_status->setRecolorEnabled(true);
     _label_mod_status->setTextColor(CLR_WARNING);
     _label_mod_status->setPos(mod_item_edge_x, 60);

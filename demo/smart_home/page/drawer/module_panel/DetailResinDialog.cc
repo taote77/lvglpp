@@ -22,10 +22,10 @@ ModuleDetailResinDialog::ModuleDetailResinDialog(const std::string &resin_name, 
     _dialog_bg_item->setAlignment(LV_ALIGN_TOP_MID, 0, 72);
 
     std::string material_str = resin_name.empty() ? lvTr("empty_info") : resin_name;
-    _material_name_label     = std::make_shared<Label>(material_str, ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), Label::FontSize24Bold);
+    _material_name_label     = std::make_shared<Label>(material_str, ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ::lvglpp::widgets::Label::Role::Title2);
     _material_name_label->setAlignment(LV_ALIGN_TOP_LEFT, 24, 20);
 
-    _btn_label = std::make_shared<Label>(lvTr("panel_autofill_label"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), Label::FontSize24);
+    _btn_label = std::make_shared<Label>(lvTr("panel_autofill_label"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ::lvglpp::widgets::Label::Role::Body1);
     _btn_label->setPos(24, 82);
 
     _auto_fill_switch = std::make_shared<widgets::Switch>(72, 36, _dialog_bg_item.get());
@@ -51,10 +51,10 @@ ModuleDetailResinDialog::ModuleDetailResinDialog(const std::string &resin_name, 
         widgets::Toast::warn(lvTr(msg.c_str()));
     });
 
-    _status_label = std::make_shared<Label>(lvTr("panel_resin_remaining"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), Label::FontSize24);
+    _status_label = std::make_shared<Label>(lvTr("panel_resin_remaining"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ::lvglpp::widgets::Label::Role::Body1);
     _status_label->setPos(24, 82 + 32 + 15);
 
-    _remaing_info = std::make_shared<Label>(lvTr("empty_info"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), Label::FontSize24);
+    _remaing_info = std::make_shared<Label>(lvTr("empty_info"), ThemeColor(CLR_ON_SURFACE), _dialog_bg_item.get(), ::lvglpp::widgets::Label::Role::Body1);
     _remaing_info->setAlignmentTo(*_status_label, LV_ALIGN_OUT_RIGHT_MID, 12, 0);
 
     _close_button = std::make_shared<PushButton>(48, 48, PushButton::ColorStyle::Gray, "", "image/32x32/x_close.png", _dialog_bg_item.get());

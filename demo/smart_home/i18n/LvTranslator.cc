@@ -1,6 +1,8 @@
 #include "LvTranslator.h"
 #include "core/sys/Application.h"
 #include "core/sys/UiConfig.h"
+#include "core/widgets/Label.h"
+#include "fonts/role_fonts.h"
 #include "translations/lv_i18n.h"
 #include <lvgl.h>
 
@@ -49,6 +51,13 @@ void LvTranslator::init()
 {
     lv_i18n_init(lv_i18n_language_pack);
 
+    // Labels created with a semantic role resolve the generated role font for
+    // the current language. Pages are rebuilt on a language change, so each
+    // label is re-created with the new locale's font.
+    widgets::Label::setRoleFontResolver([](LvglppFontRole role) {
+        return smart_home_role_font(currentLocale(), role);
+    });
+
     lv_subject_init_int(&g_subject_language, 1);
     lv_subject_add_observer_obj(&g_subject_language, language_observer_cb, lv_screen_active(), nullptr);
 }
@@ -91,6 +100,25 @@ void LvTranslator::load(const LANGUAGE lang)
     // Re-translate existing pages and re-run their builders. This works even
     // when rotation/RTL are compiled out; only the direction part is a no-op.
     sys::UiConfig::instance().requestRebuild();
+}
+
+const char *LvTranslator::currentLocale()
+{
+    switch (sys::Application::getLanguageType())
+    {
+    case sys::Application::Chinese:
+        return "zh-CN";
+    case sys::Application::Japanese:
+        return "ja-JP";
+    case sys::Application::Russian:
+        return "ru-RU";
+    case sys::Application::Arabic:
+        return "ar";
+    case sys::Application::English:
+    case sys::Application::LOCAL:
+    default:
+        return "en-US";
+    }
 }
 
 const char *LvTranslator::tr(const char *text)

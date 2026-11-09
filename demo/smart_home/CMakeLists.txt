@@ -6,8 +6,14 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_executable(${PROJECT_NAME})
 
+# Generated per-(language, role) bitmap fonts and the role_fonts registry.
+file(GLOB SMART_HOME_ROLE_FONT_SOURCES CONFIGURE_DEPENDS
+    ${CMAKE_CURRENT_SOURCE_DIR}/i18n/fonts/*.c
+)
+
 target_sources(${PROJECT_NAME} PRIVATE
     main.cc
+    ${SMART_HOME_ROLE_FONT_SOURCES}
 
     # New smart home components
     components/DeviceCard.h
@@ -89,6 +95,7 @@ target_sources(${PROJECT_NAME} PRIVATE
 
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}
+    ${CMAKE_CURRENT_LIST_DIR}/i18n/fonts
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
@@ -106,7 +113,11 @@ if(Python3_Interpreter_FOUND)
         COMMAND ${Python3_EXECUTABLE} -I ${CMAKE_SOURCE_DIR}/framework/tools/i18n/check_keys.py
                 --xlsx ${CMAKE_CURRENT_SOURCE_DIR}/i18n/strings.xlsx
                 --sources ${CMAKE_CURRENT_SOURCE_DIR}
-        COMMENT "Checking demo/smart_home i18n workbook, generated C and source keys"
+        COMMAND ${Python3_EXECUTABLE} -I ${CMAKE_SOURCE_DIR}/framework/tools/i18n/gen_role_fonts.py
+                --xlsx ${CMAKE_CURRENT_SOURCE_DIR}/i18n/strings.xlsx
+                --out ${CMAKE_CURRENT_SOURCE_DIR}/i18n/fonts
+                --prefix smart_home --check
+        COMMENT "Checking demo/smart_home i18n workbook, role fonts and source keys"
         VERBATIM)
 endif()
 
